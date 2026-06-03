@@ -1,1 +1,1 @@
-# greenroot-app
+# greenroot-platform
