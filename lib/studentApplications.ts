@@ -1,5 +1,6 @@
 import { supabase } from './supabase'
 import { checkProfileCompletion } from './studentProfiles'
+import { getPostHogClient } from './posthog-server'
 
 // ─────────────────────────────────────────
 // START A NEW APPLICATION
@@ -44,6 +45,18 @@ export async function startApplication(internshipId: string) {
     })
     .select()
     .single()
+
+  if (!error && data) {
+    const posthog = getPostHogClient()
+    posthog.capture({
+      distinctId: user.id,
+      event: 'application_started',
+      properties: {
+        internship_id: internshipId,
+        application_id: data.id,
+      },
+    })
+  }
 
   return { data, error }
 }
@@ -163,6 +176,21 @@ export async function uploadFileAnswer(
       updated_at: new Date().toISOString()
     }, { onConflict: 'application_id,field_key' })
 
+  if (!error) {
+    const posthog = getPostHogClient()
+    posthog.capture({
+      distinctId: user.id,
+      event: 'document_uploaded',
+      properties: {
+        application_id: applicationId,
+        step_number: stepNumber,
+        field_key: fieldKey,
+        file_type: file.type.includes('pdf') ? 'pdf' : 'image',
+        file_size_kb: Math.round(file.size / 1024),
+      },
+    })
+  }
+
   return { data, error }
 }
 
@@ -182,6 +210,7 @@ export async function updateCurrentStep(applicationId: string, stepNumber: numbe
 // SUBMIT APPLICATION
 // ─────────────────────────────────────────
 export async function submitApplication(applicationId: string) {
+  const { data: { user } } = await supabase.auth.getUser()
   const { data, error } = await supabase
     .from('applications')
     .update({
@@ -190,6 +219,15 @@ export async function submitApplication(applicationId: string) {
       current_step: 10
     })
     .eq('id', applicationId)
+
+  if (!error && user) {
+    const posthog = getPostHogClient()
+    posthog.capture({
+      distinctId: user.id,
+      event: 'application_submitted',
+      properties: { application_id: applicationId },
+    })
+  }
 
   return { data, error }
 }
@@ -220,6 +258,15 @@ export async function acceptOffer(applicationId: string) {
     .eq('student_id', user.id)
     .neq('id', applicationId)
 
+  if (!withdrawError) {
+    const posthog = getPostHogClient()
+    posthog.capture({
+      distinctId: user.id,
+      event: 'offer_accepted',
+      properties: { application_id: applicationId },
+    })
+  }
+
   return { data: 'Offer accepted successfully', error: withdrawError }
 }
 
@@ -227,10 +274,20 @@ export async function acceptOffer(applicationId: string) {
 // WITHDRAW APPLICATION
 // ─────────────────────────────────────────
 export async function withdrawApplication(applicationId: string) {
+  const { data: { user } } = await supabase.auth.getUser()
   const { data, error } = await supabase
     .from('applications')
     .update({ status: 'withdrawn' })
     .eq('id', applicationId)
+
+  if (!error && user) {
+    const posthog = getPostHogClient()
+    posthog.capture({
+      distinctId: user.id,
+      event: 'application_withdrawn',
+      properties: { application_id: applicationId },
+    })
+  }
 
   return { data, error }
 }
