@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { getPostHogClient } from './posthog-server'
 
 // Get my student profile
 export async function getMyStudentProfile() {
@@ -43,6 +44,19 @@ export async function createStudentProfile(profileData: {
     .from('student_profiles')
     .insert({ id: user.id, ...profileData })
 
+  if (!error) {
+    const posthog = getPostHogClient()
+    posthog.capture({
+      distinctId: user.id,
+      event: 'student_profile_created',
+      properties: {
+        university_name: profileData.university_name,
+        degree: profileData.degree,
+        course_status: profileData.course_status,
+      },
+    })
+  }
+
   return { data, error }
 }
 
@@ -75,6 +89,17 @@ export async function updateStudentProfile(profileData: {
     .from('student_profiles')
     .update({ ...profileData, updated_at: new Date().toISOString() })
     .eq('id', user.id)
+
+  if (!error) {
+    const posthog = getPostHogClient()
+    posthog.capture({
+      distinctId: user.id,
+      event: 'student_profile_updated',
+      properties: {
+        updated_fields: Object.keys(profileData),
+      },
+    })
+  }
 
   return { data, error }
 }

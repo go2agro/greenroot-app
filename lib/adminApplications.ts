@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { getPostHogClient } from './posthog-server'
 
 // ─────────────────────────────────────────
 // GET ALL APPLICATIONS (with filters)
@@ -86,6 +87,7 @@ export async function markUnderReview(applicationId: string) {
 // APPROVE APPLICATION
 // ─────────────────────────────────────────
 export async function approveApplication(applicationId: string, remarks?: string) {
+  const { data: { user } } = await supabase.auth.getUser()
   const { data, error } = await supabase
     .from('applications')
     .update({
@@ -95,6 +97,18 @@ export async function approveApplication(applicationId: string, remarks?: string
     })
     .eq('id', applicationId)
 
+  if (!error && user) {
+    const posthog = getPostHogClient()
+    posthog.capture({
+      distinctId: user.id,
+      event: 'application_approved',
+      properties: {
+        application_id: applicationId,
+        has_remarks: !!remarks,
+      },
+    })
+  }
+
   return { data, error }
 }
 
@@ -102,6 +116,7 @@ export async function approveApplication(applicationId: string, remarks?: string
 // REJECT APPLICATION
 // ─────────────────────────────────────────
 export async function rejectApplication(applicationId: string, remarks: string) {
+  const { data: { user } } = await supabase.auth.getUser()
   const { data, error } = await supabase
     .from('applications')
     .update({
@@ -110,6 +125,17 @@ export async function rejectApplication(applicationId: string, remarks: string) 
       admin_remarks: remarks
     })
     .eq('id', applicationId)
+
+  if (!error && user) {
+    const posthog = getPostHogClient()
+    posthog.capture({
+      distinctId: user.id,
+      event: 'application_rejected',
+      properties: {
+        application_id: applicationId,
+      },
+    })
+  }
 
   return { data, error }
 }

@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { getPostHogClient } from './posthog-server'
 
 // ─────────────────────────────────────────
 // GET ALL INTERNSHIPS (with filters + search)
@@ -67,9 +68,26 @@ export async function createInternship(internshipData: {
   stipend_yearly?: number
   image_url?: string
 }) {
+  const { data: { user } } = await supabase.auth.getUser()
   const { data, error } = await supabase
     .from('internships')
     .insert(internshipData)
+
+  if (!error && user) {
+    const posthog = getPostHogClient()
+    posthog.capture({
+      distinctId: user.id,
+      event: 'internship_created',
+      properties: {
+        title: internshipData.title,
+        country: internshipData.country,
+        city: internshipData.city,
+        duration_months: internshipData.duration_months,
+        stipend_monthly: internshipData.stipend_monthly,
+        badge: internshipData.badge,
+      },
+    })
+  }
 
   return { data, error }
 }

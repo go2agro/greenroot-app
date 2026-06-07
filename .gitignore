@@ -42,3 +42,10 @@ next-env.d.ts
 
 # project documentation (internal use only - not for git)
 PROJECT_MASTER_DOCUMENTATION.md
+.env.local
+
+# Cursor agent skills (local AI assistance only)
+.claude/
+
+# Setup reports and documentation
+*-setup-report.md
