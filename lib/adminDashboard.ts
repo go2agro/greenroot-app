@@ -337,3 +337,132 @@ export async function getRecentInternships() {
 
   return { data, error }
 }
+
+// ─────────────────────────────────────────
+// BILLING CALCULATOR
+// ─────────────────────────────────────────
+export async function getMonthlyBillingReport() {
+  // Get current month's start and end
+  const now = new Date()
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString()
+
+  // Get all submitted applications this month
+  const { data, error } = await supabase
+    .from('applications')
+    .select(`
+      id,
+      status,
+      submitted_at,
+      internships (
+        title,
+        country
+      ),
+      student_profiles (
+        first_name,
+        last_name
+      )
+    `)
+    .eq('status', 'submitted')
+    .gte('submitted_at', monthStart)
+    .lte('submitted_at', monthEnd)
+    .order('submitted_at', { ascending: false })
+
+  if (!data) return { data: null, error }
+
+  const totalSubmitted = data.length
+
+  // Calculate fee based on contract
+  const baseRetainer = 5000
+  let volumeFee = 0
+  let tier = ''
+
+  if (totalSubmitted >= 1 && totalSubmitted <= 10) {
+    volumeFee = 10000
+    tier = '1 - 10 Applications'
+  } else if (totalSubmitted > 10 && totalSubmitted <= 20) {
+    volumeFee = 20000
+    tier = '10 - 20 Applications'
+  } else if (totalSubmitted > 20) {
+    volumeFee = 30000
+    tier = '20+ Applications'
+  } else {
+    volumeFee = 0
+    tier = 'No applications this month'
+  }
+
+  const totalPayable = baseRetainer + volumeFee
+
+  return {
+    data: {
+      // Billing period
+      billing_period: `${now.toLocaleString('default', { month: 'long' })} ${now.getFullYear()}`,
+
+      // Application details
+      total_submitted: totalSubmitted,
+      applications: data,
+
+      // Fee breakdown
+      base_retainer: baseRetainer,
+      volume_fee: volumeFee,
+      tier,
+      total_payable: totalPayable,
+
+      // Formatted for display
+      summary: `${totalSubmitted} applications submitted in ${now.toLocaleString('default', { month: 'long' })} ${now.getFullYear()}. Total payable: ₹${totalPayable.toLocaleString()}`
+    },
+    error
+  }
+}
+
+// ─────────────────────────────────────────
+// BILLING HISTORY (past months)
+// ─────────────────────────────────────────
+export async function getBillingHistory(monthsBack: number = 6) {
+  const reports = []
+
+  for (let i = 0; i < monthsBack; i++) {
+    const date = new Date()
+    date.setMonth(date.getMonth() - i)
+
+    const monthStart = new Date(date.getFullYear(), date.getMonth(), 1).toISOString()
+    const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0).toISOString()
+
+    const { count } = await supabase
+      .from('applications')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'submitted')
+      .gte('submitted_at', monthStart)
+      .lte('submitted_at', monthEnd)
+
+    const total = count || 0
+    const baseRetainer = 5000
+    let volumeFee = 0
+    let tier = ''
+
+    if (total >= 1 && total <= 10) {
+      volumeFee = 10000
+      tier = '1 - 10 Applications'
+    } else if (total > 10 && total <= 20) {
+      volumeFee = 20000
+      tier = '10 - 20 Applications'
+    } else if (total > 20) {
+      volumeFee = 30000
+      tier = '20+ Applications'
+    } else {
+      tier = 'No applications'
+    }
+
+    reports.push({
+      month: date.toLocaleString('default', { month: 'long' }),
+      year: date.getFullYear(),
+      total_submitted: total,
+      tier,
+      base_retainer: baseRetainer,
+      volume_fee: volumeFee,
+      total_payable: baseRetainer + volumeFee
+    })
+  }
+
+  return { data: reports, error: null }
+}
