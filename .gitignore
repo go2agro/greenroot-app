@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# project documentation (internal use only - not for git)
+PROJECT_MASTER_DOCUMENTATION.md
