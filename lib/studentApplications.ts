@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { checkProfileCompletion } from './studentProfiles'
 
 // ─────────────────────────────────────────
 // START A NEW APPLICATION
@@ -14,11 +15,13 @@ export async function startApplication(internshipId: string) {
     .eq('id', user.id)
     .single()
 
-  if (!profile?.first_name || !profile?.last_name || !profile?.email ||
-      !profile?.phone_number || !profile?.university_name ||
-      !profile?.degree || !profile?.passport_number) {
-    return { data: null, error: 'Please complete your profile before applying' }
-  }
+    const { isComplete, missingFields } = await checkProfileCompletion()
+    if (!isComplete) {
+      return {
+        data: null,
+        error: `Please complete your profile before applying. Missing: ${missingFields.join(', ')}`
+      }
+    }
 
   // Check if already applied
   const { data: existing } = await supabase
