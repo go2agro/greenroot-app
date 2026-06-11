@@ -1,0 +1,21 @@
+{
+    "app_name": "GreenRoot",
+    "app_tagline": "Explore International Agriculture Internships",
+    "home_hero_heading": "Explore International Agriculture Internships",
+    "home_hero_subheading": "Apply to world class internship programmes from India",
+    "home_hero_cta_button": "Explore Internships",
+    "btn_apply_now": "Apply Now",
+    "btn_next_step": "Next",
+    "btn_prev_step": "Back",
+    "btn_save_draft": "Save Draft",
+    "btn_submit_application": "Submit Application",
+    "btn_accept_offer": "Accept Offer",
+    "btn_withdraw_application": "Withdraw",
+    "internships_page_heading": "Available Internships",
+    "internships_page_subheading": "Find your perfect international agriculture internship",
+    "contact_email": "support@greenroot.in",
+    "contact_phone": "+91 00000 00000",
+    "footer_text": "© 2025 GreenRoot. All rights reserved.",
+    "maintenance_mode": false,
+    "max_applications_per_student": 5
+  }
