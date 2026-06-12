@@ -145,6 +145,14 @@ export const NAVIGATION_CONFIG: Record<string, NavigationRoute> = {
     roles: ['student'],
     category: 'student'
   },
+  studentMyInternship: {
+    id: 'studentMyInternship',
+    label: 'My Internship',
+    route: '/student/my-internship',
+    roles: ['student'],
+    category: 'student',
+    description: 'Post selection internship details'
+  },
   
   // Admin routes
   adminDashboard: {
