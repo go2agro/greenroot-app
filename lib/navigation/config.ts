@@ -1,0 +1,269 @@
+import { NavigationRoute } from './types';
+
+export const APP_VERSION = '0.1.0';
+
+export const NAVIGATION_CONFIG: Record<string, NavigationRoute> = {
+  // Public routes
+  home: {
+    id: 'home',
+    label: 'Home',
+    route: '/',
+    roles: ['public', 'student', 'admin'],
+    category: 'public'
+  },
+  about: {
+    id: 'about',
+    label: 'About',
+    route: '/about',
+    roles: ['public', 'student', 'admin'],
+    category: 'public'
+  },
+  contact: {
+    id: 'contact',
+    label: 'Contact',
+    route: '/contact',
+    roles: ['public', 'student', 'admin'],
+    category: 'public'
+  },
+  internships: {
+    id: 'internships',
+    label: 'Browse Internships',
+    route: '/internships',
+    roles: ['public', 'student', 'admin'],
+    category: 'public'
+  },
+  internshipDetail: {
+    id: 'internshipDetail',
+    label: 'Internship Details',
+    route: '/internships/[id]',
+    roles: ['public', 'student', 'admin'],
+    category: 'public'
+  },
+  
+  // Auth routes
+  login: {
+    id: 'login',
+    label: 'Login',
+    route: '/login',
+    roles: ['public'],
+    category: 'auth'
+  },
+  signup: {
+    id: 'signup',
+    label: 'Sign Up',
+    route: '/signup',
+    roles: ['public'],
+    category: 'auth'
+  },
+  forgotPassword: {
+    id: 'forgotPassword',
+    label: 'Forgot Password',
+    route: '/forgot-password',
+    roles: ['public'],
+    category: 'auth'
+  },
+  resetPassword: {
+    id: 'resetPassword',
+    label: 'Reset Password',
+    route: '/reset-password',
+    roles: ['public'],
+    category: 'auth'
+  },
+  
+  // Student routes
+  studentDashboard: {
+    id: 'studentDashboard',
+    label: 'Dashboard',
+    route: '/student/dashboard',
+    roles: ['student'],
+    category: 'student'
+  },
+  studentProfile: {
+    id: 'studentProfile',
+    label: 'My Profile',
+    route: '/student/profile',
+    roles: ['student'],
+    category: 'student'
+  },
+  studentInternships: {
+    id: 'studentInternships',
+    label: 'Internships',
+    route: '/student/internships',
+    roles: ['student'],
+    category: 'student'
+  },
+  studentInternshipDetail: {
+    id: 'studentInternshipDetail',
+    label: 'Internship Details',
+    route: '/student/internships/[id]',
+    roles: ['student'],
+    category: 'student'
+  },
+  studentApplications: {
+    id: 'studentApplications',
+    label: 'My Applications',
+    route: '/student/applications',
+    roles: ['student'],
+    minVersion: '1.0.0',
+    category: 'student'
+  },
+  studentApplicationDetail: {
+    id: 'studentApplicationDetail',
+    label: 'Application Details',
+    route: '/student/applications/[id]',
+    roles: ['student'],
+    category: 'student'
+  },
+  studentLibrary: {
+    id: 'studentLibrary',
+    label: 'Library',
+    route: '/student/library',
+    roles: ['student'],
+    minVersion: '1.1.0',
+    category: 'student',
+    description: 'Access learning resources and videos'
+  },
+  studentLibraryDetail: {
+    id: 'studentLibraryDetail',
+    label: 'Library Content',
+    route: '/student/library/[id]',
+    roles: ['student'],
+    minVersion: '1.1.0',
+    category: 'student'
+  },
+  studentSettings: {
+    id: 'studentSettings',
+    label: 'Settings',
+    route: '/student/settings',
+    roles: ['student'],
+    category: 'student'
+  },
+  studentNotifications: {
+    id: 'studentNotifications',
+    label: 'Notifications',
+    route: '/student/notifications',
+    roles: ['student'],
+    category: 'student'
+  },
+  
+  // Admin routes
+  adminDashboard: {
+    id: 'adminDashboard',
+    label: 'Admin Dashboard',
+    route: '/admin/dashboard',
+    roles: ['admin'],
+    category: 'admin'
+  },
+  adminStudents: {
+    id: 'adminStudents',
+    label: 'Students',
+    route: '/admin/students',
+    roles: ['admin'],
+    category: 'admin'
+  },
+  adminStudentDetail: {
+    id: 'adminStudentDetail',
+    label: 'Student Details',
+    route: '/admin/students/[id]',
+    roles: ['admin'],
+    category: 'admin'
+  },
+  adminAdmins: {
+    id: 'adminAdmins',
+    label: 'Admins',
+    route: '/admin/admins',
+    roles: ['admin'],
+    category: 'admin'
+  },
+  adminAdminDetail: {
+    id: 'adminAdminDetail',
+    label: 'Admin Details',
+    route: '/admin/admins/[id]',
+    roles: ['admin'],
+    category: 'admin'
+  },
+  adminAdminNew: {
+    id: 'adminAdminNew',
+    label: 'Add New Admin',
+    route: '/admin/admins/new',
+    roles: ['admin'],
+    category: 'admin'
+  },
+  adminInternships: {
+    id: 'adminInternships',
+    label: 'Manage Internships',
+    route: '/admin/internships',
+    roles: ['admin'],
+    category: 'admin'
+  },
+  adminInternshipDetail: {
+    id: 'adminInternshipDetail',
+    label: 'Internship Details',
+    route: '/admin/internships/[id]',
+    roles: ['admin'],
+    category: 'admin'
+  },
+  adminInternshipNew: {
+    id: 'adminInternshipNew',
+    label: 'Create Internship',
+    route: '/admin/internships/new',
+    roles: ['admin'],
+    category: 'admin'
+  },
+  adminApplications: {
+    id: 'adminApplications',
+    label: 'Applications',
+    route: '/admin/applications',
+    roles: ['admin'],
+    category: 'admin'
+  },
+  adminApplicationDetail: {
+    id: 'adminApplicationDetail',
+    label: 'Application Details',
+    route: '/admin/applications/[id]',
+    roles: ['admin'],
+    category: 'admin'
+  },
+  adminLibrary: {
+    id: 'adminLibrary',
+    label: 'Library Management',
+    route: '/admin/library',
+    roles: ['admin'],
+    category: 'admin'
+  },
+  adminLibraryDetail: {
+    id: 'adminLibraryDetail',
+    label: 'Library Content',
+    route: '/admin/library/[id]',
+    roles: ['admin'],
+    category: 'admin'
+  },
+  adminLibraryNew: {
+    id: 'adminLibraryNew',
+    label: 'Add Library Content',
+    route: '/admin/library/new',
+    roles: ['admin'],
+    category: 'admin'
+  },
+  adminSettings: {
+    id: 'adminSettings',
+    label: 'Settings',
+    route: '/admin/settings',
+    roles: ['admin'],
+    category: 'admin'
+  },
+  adminBilling: {
+    id: 'adminBilling',
+    label: 'Billing',
+    route: '/admin/billing',
+    roles: ['admin'],
+    category: 'admin'
+  },
+  adminNotifications: {
+    id: 'adminNotifications',
+    label: 'Notifications',
+    route: '/admin/notifications',
+    roles: ['admin'],
+    category: 'admin'
+  }
+};

@@ -42,6 +42,8 @@ next-env.d.ts
 
 # project documentation (internal use only - not for git)
 PROJECT_MASTER_DOCUMENTATION.md
+NAVIGATION_SYSTEM.md
+lib/navigation/README.md
 .env.local
 
 # Cursor agent skills (local AI assistance only)

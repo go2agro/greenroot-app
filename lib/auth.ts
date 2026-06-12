@@ -3,7 +3,13 @@ import { getPostHogClient } from './posthog-server'
 
 // Sign Up
 export async function signUp(email: string, password: string) {
-  const { data, error } = await supabase.auth.signUp({ email, password })
+  const { data, error } = await supabase.auth.signUp({ 
+    email, 
+    password,
+    options: {
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/login`
+    }
+  })
   if (!error && data.user) {
     const posthog = getPostHogClient()
     posthog.capture({
@@ -65,7 +71,10 @@ export async function getSession() {
 
 // Reset Password (sends email)
 export async function resetPassword(email: string) {
-  const { data, error } = await supabase.auth.resetPasswordForEmail(email)
+  const { data, error } = await supabase.auth.resetPasswordForEmail(
+    email,
+    {redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/reset-password`}
+  )
   if (!error) {
     const posthog = getPostHogClient()
     posthog.capture({
