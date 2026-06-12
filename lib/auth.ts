@@ -71,7 +71,10 @@ export async function getSession() {
 
 // Reset Password (sends email)
 export async function resetPassword(email: string) {
-  const { data, error } = await supabase.auth.resetPasswordForEmail(email)
+  const { data, error } = await supabase.auth.resetPasswordForEmail(
+    email,
+    {redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/reset-password`}
+  )
   if (!error) {
     const posthog = getPostHogClient()
     posthog.capture({
