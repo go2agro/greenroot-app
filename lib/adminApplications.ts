@@ -194,3 +194,47 @@ export async function getApplicationsByStudent(studentId: string) {
 
   return { data, error }
 }
+
+// ─────────────────────────────────────────
+// UPLOAD OFFER LETTER (admin only)
+// ─────────────────────────────────────────
+export async function uploadOfferLetter(
+  applicationId: string,
+  file: File
+) {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { data: null, error: 'Not logged in' }
+
+  // Check file size (max 1MB)
+  if (file.size > 1024 * 1024) {
+    return { data: null, error: 'File size must be under 1MB' }
+  }
+
+  // Upload to storage
+  const filePath = `offer-letters/${applicationId}/offer-letter.pdf`
+
+  const { error: uploadError } = await supabase.storage
+    .from('application-documents')
+    .upload(filePath, file, { upsert: true })
+
+  if (uploadError) return { data: null, error: uploadError }
+
+  // Save path to application
+  const { data, error } = await supabase
+    .from('applications')
+    .update({ offer_letter_url: filePath })
+    .eq('id', applicationId)
+
+  return { data, error }
+}
+
+// ─────────────────────────────────────────
+// GET OFFER LETTER SIGNED URL (admin only)
+// ─────────────────────────────────────────
+export async function getOfferLetterUrl(filePath: string) {
+  const { data, error } = await supabase.storage
+    .from('application-documents')
+    .createSignedUrl(filePath, 60 * 60)
+
+  return { data, error }
+}
