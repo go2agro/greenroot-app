@@ -1,4 +1,7 @@
+"use server"
+
 import { supabase } from './supabase'
+import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // ─────────────────────────────────────────
 // GET ALL STUDENTS (with filters + search)
@@ -44,7 +47,7 @@ export async function getAllStudents(filters?: {
 
   const { data, error } = await query
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -84,7 +87,7 @@ export async function getAllAdmins(filters?: {
 
   const { data, error } = await query
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────

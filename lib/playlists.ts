@@ -1,4 +1,7 @@
+"use server"
+
 import { supabase } from './supabase'
+import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // ─────────────────────────────────────────
 // GET ALL PLAYLISTS
@@ -9,7 +12,7 @@ export async function getAllPlaylists() {
     .select('*')
     .order('created_at', { ascending: false })
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -26,7 +29,7 @@ export async function getPlaylistWithVideos(playlistId: string) {
     .order('order_number', { referencedTable: 'playlist_videos', ascending: true })
     .single()
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -39,7 +42,7 @@ export async function createPlaylist(name: string) {
     .select()
     .single()
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -51,7 +54,7 @@ export async function updatePlaylistName(playlistId: string, name: string) {
     .update({ name })
     .eq('id', playlistId)
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -63,7 +66,7 @@ export async function deletePlaylist(playlistId: string) {
     .delete()
     .eq('id', playlistId)
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -106,7 +109,7 @@ export async function addVideoToPlaylist(
     .select()
     .single()
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -118,7 +121,7 @@ export async function deleteVideo(videoId: string) {
     .delete()
     .eq('id', videoId)
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -135,5 +138,5 @@ export async function reorderVideos(
   )
 
   await Promise.all(updates)
-  return { success: true }
+  return toPlainResponse({ success: true }, null)
 }

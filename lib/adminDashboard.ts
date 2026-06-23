@@ -1,4 +1,7 @@
+"use server"
+
 import { supabase } from './supabase'
+import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // ─────────────────────────────────────────
 // USERS KPIs
@@ -11,7 +14,7 @@ export async function getTotalStudents() {
     .select('*', { count: 'exact', head: true })
     .eq('role', 'student')
 
-  return { count, error }
+  return toPlainResponse({ count }, error)
 }
 
 // New students this week
@@ -58,7 +61,7 @@ export async function getProfileCompletionStats() {
     .from('student_profiles')
     .select('first_name, last_name, email, phone_number, university_name, degree, passport_number')
 
-  if (!data) return { complete: 0, incomplete: 0, error }
+  if (!data) return toPlainResponse({ complete: 0, incomplete: 0 }, error)
 
   const complete = data.filter((p: any) =>
     p.first_name && p.last_name && p.email &&
@@ -66,11 +69,10 @@ export async function getProfileCompletionStats() {
     p.degree && p.passport_number
   ).length
 
-  return {
+  return toPlainResponse({
     complete,
-    incomplete: data.length - complete,
-    error
-  }
+    incomplete: data.length - complete
+  }, error)
 }
 
 // ─────────────────────────────────────────
@@ -92,7 +94,7 @@ export async function getInternshipsByCountry() {
     .from('internships')
     .select('country')
 
-  if (!data) return { data: null, error }
+  if (!data) return toPlainResponse(null, error)
 
   const grouped = data.reduce((acc: any, item: any) => {
     const country = item.country || 'Unknown'
@@ -100,7 +102,7 @@ export async function getInternshipsByCountry() {
     return acc
   }, {})
 
-  return { data: grouped, error }
+  return toPlainResponse(grouped, error)
 }
 
 // Internships by duration
@@ -109,7 +111,7 @@ export async function getInternshipsByDuration() {
     .from('internships')
     .select('duration_months')
 
-  if (!data) return { data: null, error }
+  if (!data) return toPlainResponse(null, error)
 
   const grouped = data.reduce((acc: any, item: any) => {
     const duration = item.duration_months
@@ -119,7 +121,7 @@ export async function getInternshipsByDuration() {
     return acc
   }, {})
 
-  return { data: grouped, error }
+  return toPlainResponse(grouped, error)
 }
 
 // ─────────────────────────────────────────
@@ -167,14 +169,14 @@ export async function getApplicationsByStatus() {
     .from('applications')
     .select('status')
 
-  if (!data) return { data: null, error }
+  if (!data) return toPlainResponse(null, error)
 
   const grouped = data.reduce((acc: any, item: any) => {
     acc[item.status] = (acc[item.status] || 0) + 1
     return acc
   }, {})
 
-  return { data: grouped, error }
+  return toPlainResponse(grouped, error)
 }
 
 // Acceptance rate
@@ -184,7 +186,7 @@ export async function getAcceptanceRate() {
     .select('status')
     .in('status', ['submitted', 'under_review', 'approved', 'rejected', 'accepted'])
 
-  if (!data) return { rate: 0, error }
+  if (!data) return toPlainResponse({ rate: 0 }, error)
 
   const total = data.length
   const approved = data.filter((a: any) =>
@@ -193,7 +195,7 @@ export async function getAcceptanceRate() {
 
   const rate = total > 0 ? ((approved / total) * 100).toFixed(1) : 0
 
-  return { rate, total, approved, error }
+  return toPlainResponse({ rate, total, approved }, error)
 }
 
 // Most applied internships
@@ -210,7 +212,7 @@ export async function getMostAppliedInternships() {
       )
     `)
 
-  if (!data) return { data: null, error }
+  if (!data) return toPlainResponse(null, error)
 
   const grouped: any = {}
   data.forEach((item: any) => {
@@ -228,7 +230,7 @@ export async function getMostAppliedInternships() {
     .sort((a: any, b: any) => b.count - a.count)
     .slice(0, 5) // top 5
 
-  return { data: sorted, error }
+  return toPlainResponse(sorted, error)
 }
 
 // ─────────────────────────────────────────
@@ -247,7 +249,7 @@ export async function getStudentGrowth() {
     .gte('created_at', sixMonthsAgo.toISOString())
     .order('created_at', { ascending: true })
 
-  if (!data) return { data: null, error }
+  if (!data) return toPlainResponse(null, error)
 
   const grouped = data.reduce((acc: any, item: any) => {
     const month = new Date(item.created_at)
@@ -256,7 +258,7 @@ export async function getStudentGrowth() {
     return acc
   }, {})
 
-  return { data: grouped, error }
+  return toPlainResponse(grouped, error)
 }
 
 // Applications over last 6 months
@@ -270,7 +272,7 @@ export async function getApplicationGrowth() {
     .gte('started_at', sixMonthsAgo.toISOString())
     .order('started_at', { ascending: true })
 
-  if (!data) return { data: null, error }
+  if (!data) return toPlainResponse(null, error)
 
   const grouped = data.reduce((acc: any, item: any) => {
     const month = new Date(item.started_at)
@@ -279,7 +281,7 @@ export async function getApplicationGrowth() {
     return acc
   }, {})
 
-  return { data: grouped, error }
+  return toPlainResponse(grouped, error)
 }
 
 // ─────────────────────────────────────────
@@ -302,7 +304,7 @@ export async function getRecentStudents() {
     .order('updated_at', { ascending: false })
     .limit(5)
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // Recently submitted applications
@@ -368,7 +370,7 @@ export async function getMonthlyBillingReport() {
     .lte('submitted_at', monthEnd)
     .order('submitted_at', { ascending: false })
 
-  if (!data) return { data: null, error }
+  if (!data) return toPlainResponse(null, error)
 
   const totalSubmitted = data.length
 
@@ -393,26 +395,23 @@ export async function getMonthlyBillingReport() {
 
   const totalPayable = baseRetainer + volumeFee
 
-  return {
-    data: {
-      // Billing period
-      billing_period: `${now.toLocaleString('default', { month: 'long' })} ${now.getFullYear()}`,
+  return toPlainResponse({
+    // Billing period
+    billing_period: `${now.toLocaleString('default', { month: 'long' })} ${now.getFullYear()}`,
 
-      // Application details
-      total_submitted: totalSubmitted,
-      applications: data,
+    // Application details
+    total_submitted: totalSubmitted,
+    applications: data,
 
-      // Fee breakdown
-      base_retainer: baseRetainer,
-      volume_fee: volumeFee,
-      tier,
-      total_payable: totalPayable,
+    // Fee breakdown
+    base_retainer: baseRetainer,
+    volume_fee: volumeFee,
+    tier,
+    total_payable: totalPayable,
 
-      // Formatted for display
-      summary: `${totalSubmitted} applications submitted in ${now.toLocaleString('default', { month: 'long' })} ${now.getFullYear()}. Total payable: ₹${totalPayable.toLocaleString()}`
-    },
-    error
-  }
+    // Formatted for display
+    summary: `${totalSubmitted} applications submitted in ${now.toLocaleString('default', { month: 'long' })} ${now.getFullYear()}. Total payable: ₹${totalPayable.toLocaleString()}`
+  }, error)
 }
 
 // ─────────────────────────────────────────
@@ -464,5 +463,5 @@ export async function getBillingHistory(monthsBack: number = 6) {
     })
   }
 
-  return { data: reports, error: null }
+  return toPlainResponse(reports, null)
 }

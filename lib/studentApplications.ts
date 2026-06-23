@@ -1,13 +1,15 @@
+"use server"
+
 import { supabase } from './supabase'
 import { checkProfileCompletion } from './studentProfiles'
-import { getPostHogClient } from './posthog-server'
+import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // ─────────────────────────────────────────
 // START A NEW APPLICATION
 // ─────────────────────────────────────────
 export async function startApplication(internshipId: string) {
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { data: null, error: 'Not logged in' }
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
   // Check if student profile is complete
   const { data: profile } = await supabase
@@ -16,12 +18,11 @@ export async function startApplication(internshipId: string) {
     .eq('id', user.id)
     .single()
 
-    const { isComplete, missingFields } = await checkProfileCompletion()
-    if (!isComplete) {
-      return {
-        data: null,
-        error: `Please complete your profile before applying. Missing: ${missingFields.join(', ')}`
-      }
+    const profileCompletion = await checkProfileCompletion()
+    if (profileCompletion.data && !profileCompletion.data.isComplete) {
+      return toPlainResponse(null, {
+        message: `Please complete your profile before applying. Missing: ${profileCompletion.data.missingFields.join(', ')}`
+      })
     }
 
   // Check if already applied
@@ -32,7 +33,7 @@ export async function startApplication(internshipId: string) {
     .eq('internship_id', internshipId)
     .single()
 
-  if (existing) return { data: null, error: 'Already applied to this internship' }
+  if (existing) return toPlainResponse(null, { message: 'Already applied to this internship' })
 
   // Create new application
   const { data, error } = await supabase
@@ -46,19 +47,7 @@ export async function startApplication(internshipId: string) {
     .select()
     .single()
 
-  if (!error && data) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: user.id,
-      event: 'application_started',
-      properties: {
-        internship_id: internshipId,
-        application_id: data.id,
-      },
-    })
-  }
-
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -66,7 +55,7 @@ export async function startApplication(internshipId: string) {
 // ─────────────────────────────────────────
 export async function getMyApplications() {
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { data: null, error: 'Not logged in' }
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
   const { data, error } = await supabase
     .from('applications')
@@ -84,7 +73,7 @@ export async function getMyApplications() {
     .eq('student_id', user.id)
     .order('started_at', { ascending: false })
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -92,7 +81,7 @@ export async function getMyApplications() {
 // ─────────────────────────────────────────
 export async function getMyApplicationById(applicationId: string) {
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { data: null, error: 'Not logged in' }
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
   const { data, error } = await supabase
     .from('applications')
@@ -112,7 +101,7 @@ export async function getMyApplicationById(applicationId: string) {
     .eq('student_id', user.id)
     .single()
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -134,7 +123,7 @@ export async function saveTextAnswer(
       updated_at: new Date().toISOString()
     }, { onConflict: 'application_id,field_key' })
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -147,11 +136,11 @@ export async function uploadFileAnswer(
   file: File
 ) {
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { data: null, error: 'Not logged in' }
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
   // Check file size (max 1MB)
   if (file.size > 1024 * 1024) {
-    return { data: null, error: 'File size must be under 1MB' }
+    return toPlainResponse(null, { message: 'File size must be under 1MB' })
   }
 
   // Upload file to storage
@@ -161,7 +150,7 @@ export async function uploadFileAnswer(
     .from('application-documents')
     .upload(filePath, file)
 
-  if (uploadError) return { data: null, error: uploadError }
+  if (uploadError) return toPlainResponse(null, uploadError)
 
   // Save file url in answers table
   const { data, error } = await supabase
@@ -176,22 +165,7 @@ export async function uploadFileAnswer(
       updated_at: new Date().toISOString()
     }, { onConflict: 'application_id,field_key' })
 
-  if (!error) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: user.id,
-      event: 'document_uploaded',
-      properties: {
-        application_id: applicationId,
-        step_number: stepNumber,
-        field_key: fieldKey,
-        file_type: file.type.includes('pdf') ? 'pdf' : 'image',
-        file_size_kb: Math.round(file.size / 1024),
-      },
-    })
-  }
-
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -203,14 +177,13 @@ export async function updateCurrentStep(applicationId: string, stepNumber: numbe
     .update({ current_step: stepNumber })
     .eq('id', applicationId)
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
 // SUBMIT APPLICATION
 // ─────────────────────────────────────────
 export async function submitApplication(applicationId: string) {
-  const { data: { user } } = await supabase.auth.getUser()
   const { data, error } = await supabase
     .from('applications')
     .update({
@@ -220,16 +193,7 @@ export async function submitApplication(applicationId: string) {
     })
     .eq('id', applicationId)
 
-  if (!error && user) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: user.id,
-      event: 'application_submitted',
-      properties: { application_id: applicationId },
-    })
-  }
-
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -238,7 +202,7 @@ export async function submitApplication(applicationId: string) {
 // ─────────────────────────────────────────
 export async function acceptOffer(applicationId: string) {
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { data: null, error: 'Not logged in' }
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
   // Accept this application
   const { error: acceptError } = await supabase
@@ -249,7 +213,7 @@ export async function acceptOffer(applicationId: string) {
     })
     .eq('id', applicationId)
 
-  if (acceptError) return { data: null, error: acceptError }
+  if (acceptError) return toPlainResponse(null, acceptError)
 
   // Auto withdraw all other applications
   const { error: withdrawError } = await supabase
@@ -258,38 +222,19 @@ export async function acceptOffer(applicationId: string) {
     .eq('student_id', user.id)
     .neq('id', applicationId)
 
-  if (!withdrawError) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: user.id,
-      event: 'offer_accepted',
-      properties: { application_id: applicationId },
-    })
-  }
-
-  return { data: 'Offer accepted successfully', error: withdrawError }
+  return toPlainResponse('Offer accepted successfully', withdrawError)
 }
 
 // ─────────────────────────────────────────
 // WITHDRAW APPLICATION
 // ─────────────────────────────────────────
 export async function withdrawApplication(applicationId: string) {
-  const { data: { user } } = await supabase.auth.getUser()
   const { data, error } = await supabase
     .from('applications')
     .update({ status: 'withdrawn' })
     .eq('id', applicationId)
 
-  if (!error && user) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: user.id,
-      event: 'application_withdrawn',
-      properties: { application_id: applicationId },
-    })
-  }
-
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -298,7 +243,7 @@ export async function withdrawApplication(applicationId: string) {
 // ─────────────────────────────────────────
 export async function getApprovedApplications() {
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { data: null, error: 'Not logged in' }
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
   const { data, error } = await supabase
     .from('applications')
@@ -319,7 +264,7 @@ export async function getApprovedApplications() {
     .eq('status', 'approved')
     .order('decided_at', { ascending: false })
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -330,7 +275,7 @@ export async function getMyOfferLetter(filePath: string) {
     .from('application-documents')
     .createSignedUrl(filePath, 60 * 60)
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -339,7 +284,7 @@ export async function getMyOfferLetter(filePath: string) {
 // ─────────────────────────────────────────
 export async function confirmOffer(applicationId: string) {
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { data: null, error: 'Not logged in' }
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
   // Accept this application
   const { error: acceptError } = await supabase
@@ -350,7 +295,7 @@ export async function confirmOffer(applicationId: string) {
     })
     .eq('id', applicationId)
 
-  if (acceptError) return { data: null, error: acceptError }
+  if (acceptError) return toPlainResponse(null, acceptError)
 
   // Auto close ALL other applications
   // (draft, submitted, under_review, approved)
@@ -361,7 +306,7 @@ export async function confirmOffer(applicationId: string) {
     .neq('id', applicationId)
     .in('status', ['draft', 'submitted', 'under_review', 'approved'])
 
-  return { data: 'Offer confirmed successfully', error: closeError }
+  return toPlainResponse('Offer confirmed successfully', closeError)
 }
 
 // ─────────────────────────────────────────
@@ -373,5 +318,5 @@ export async function declineOffer(applicationId: string) {
     .update({ status: 'closed' })
     .eq('id', applicationId)
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }

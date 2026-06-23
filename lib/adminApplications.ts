@@ -1,5 +1,7 @@
+"use server"
+
 import { supabase } from './supabase'
-import { getPostHogClient } from './posthog-server'
+import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // ─────────────────────────────────────────
 // GET ALL APPLICATIONS (with filters)
@@ -44,10 +46,10 @@ export async function getAllApplications(filters?: {
       app.student_profiles?.last_name?.toLowerCase().includes(search) ||
       app.student_profiles?.email?.toLowerCase().includes(search)
     )
-    return { data: filtered, error }
+    return toPlainResponse(filtered, error)
   }
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -65,7 +67,7 @@ export async function getApplicationById(applicationId: string) {
     .eq('id', applicationId)
     .single()
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -80,14 +82,13 @@ export async function markUnderReview(applicationId: string) {
     })
     .eq('id', applicationId)
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
 // APPROVE APPLICATION
 // ─────────────────────────────────────────
 export async function approveApplication(applicationId: string, remarks?: string) {
-  const { data: { user } } = await supabase.auth.getUser()
   const { data, error } = await supabase
     .from('applications')
     .update({
@@ -97,26 +98,13 @@ export async function approveApplication(applicationId: string, remarks?: string
     })
     .eq('id', applicationId)
 
-  if (!error && user) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: user.id,
-      event: 'application_approved',
-      properties: {
-        application_id: applicationId,
-        has_remarks: !!remarks,
-      },
-    })
-  }
-
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
 // REJECT APPLICATION
 // ─────────────────────────────────────────
 export async function rejectApplication(applicationId: string, remarks: string) {
-  const { data: { user } } = await supabase.auth.getUser()
   const { data, error } = await supabase
     .from('applications')
     .update({
@@ -126,18 +114,7 @@ export async function rejectApplication(applicationId: string, remarks: string) 
     })
     .eq('id', applicationId)
 
-  if (!error && user) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: user.id,
-      event: 'application_rejected',
-      properties: {
-        application_id: applicationId,
-      },
-    })
-  }
-
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -148,7 +125,7 @@ export async function getApplicationFile(filePath: string) {
     .from('application-documents')
     .createSignedUrl(filePath, 60 * 60) // valid for 1 hour
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -171,7 +148,7 @@ export async function getApplicationsByInternship(internshipId: string) {
     .eq('internship_id', internshipId)
     .order('submitted_at', { ascending: false })
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -192,7 +169,7 @@ export async function getApplicationsByStudent(studentId: string) {
     .eq('student_id', studentId)
     .order('started_at', { ascending: false })
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -203,11 +180,11 @@ export async function uploadOfferLetter(
   file: File
 ) {
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { data: null, error: 'Not logged in' }
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
   // Check file size (max 1MB)
   if (file.size > 1024 * 1024) {
-    return { data: null, error: 'File size must be under 1MB' }
+    return toPlainResponse(null, { message: 'File size must be under 1MB' })
   }
 
   // Upload to storage
@@ -217,7 +194,7 @@ export async function uploadOfferLetter(
     .from('application-documents')
     .upload(filePath, file, { upsert: true })
 
-  if (uploadError) return { data: null, error: uploadError }
+  if (uploadError) return toPlainResponse(null, uploadError)
 
   // Save path to application
   const { data, error } = await supabase
@@ -225,7 +202,7 @@ export async function uploadOfferLetter(
     .update({ offer_letter_url: filePath })
     .eq('id', applicationId)
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -236,5 +213,5 @@ export async function getOfferLetterUrl(filePath: string) {
     .from('application-documents')
     .createSignedUrl(filePath, 60 * 60)
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }

@@ -1,10 +1,12 @@
+"use server"
+
 import { supabase } from './supabase'
-import { getPostHogClient } from './posthog-server'
+import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // Get my student profile
 export async function getMyStudentProfile() {
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
+  if (!user) return toPlainResponse(null, null)
 
   const { data, error } = await supabase
     .from('student_profiles')
@@ -12,7 +14,7 @@ export async function getMyStudentProfile() {
     .eq('id', user.id)
     .single()
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // Create my student profile (first time)
@@ -38,26 +40,13 @@ export async function createStudentProfile(profileData: {
   passport_number?: string
 }) {
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
+  if (!user) return toPlainResponse(null, null)
 
   const { data, error } = await supabase
     .from('student_profiles')
     .insert({ id: user.id, ...profileData })
 
-  if (!error) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: user.id,
-      event: 'student_profile_created',
-      properties: {
-        university_name: profileData.university_name,
-        degree: profileData.degree,
-        course_status: profileData.course_status,
-      },
-    })
-  }
-
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // Update my student profile
@@ -83,25 +72,14 @@ export async function updateStudentProfile(profileData: {
   passport_number?: string
 }) {
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
+  if (!user) return toPlainResponse(null, null)
 
   const { data, error } = await supabase
     .from('student_profiles')
     .update({ ...profileData, updated_at: new Date().toISOString() })
     .eq('id', user.id)
 
-  if (!error) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: user.id,
-      event: 'student_profile_updated',
-      properties: {
-        updated_fields: Object.keys(profileData),
-      },
-    })
-  }
-
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -109,7 +87,7 @@ export async function updateStudentProfile(profileData: {
 // ─────────────────────────────────────────
 export async function checkProfileCompletion() {
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { isComplete: false, missingFields: [], error: 'Not logged in' }
+  if (!user) return toPlainResponse({ isComplete: false, missingFields: [] }, { message: 'Not logged in' })
 
   const { data, error } = await supabase
     .from('student_profiles')
@@ -117,11 +95,10 @@ export async function checkProfileCompletion() {
     .eq('id', user.id)
     .single()
 
-  if (!data) return {
+  if (!data) return toPlainResponse({
     isComplete: false,
-    missingFields: ['Profile not created yet'],
-    error
-  }
+    missingFields: ['Profile not created yet']
+  }, error)
 
   // Check each required field
   const missingFields: string[] = []
@@ -150,9 +127,8 @@ export async function checkProfileCompletion() {
   if (!data.aadhar_number)   missingFields.push('Aadhar Number')
   if (!data.passport_number) missingFields.push('Passport Number')
 
-  return {
+  return toPlainResponse({
     isComplete: missingFields.length === 0,
-    missingFields,
-    error: null
-  }
+    missingFields
+  }, null)
 }
