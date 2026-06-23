@@ -291,3 +291,87 @@ export async function withdrawApplication(applicationId: string) {
 
   return { data, error }
 }
+
+// ─────────────────────────────────────────
+// GET ALL APPROVED APPLICATIONS
+// (with offer letters)
+// ─────────────────────────────────────────
+export async function getApprovedApplications() {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { data: null, error: 'Not logged in' }
+
+  const { data, error } = await supabase
+    .from('applications')
+    .select(`
+      *,
+      internships (
+        title,
+        subtitle,
+        city,
+        country,
+        image_url,
+        badge,
+        duration_months,
+        stipend_monthly
+      )
+    `)
+    .eq('student_id', user.id)
+    .eq('status', 'approved')
+    .order('decided_at', { ascending: false })
+
+  return { data, error }
+}
+
+// ─────────────────────────────────────────
+// GET OFFER LETTER (student)
+// ─────────────────────────────────────────
+export async function getMyOfferLetter(filePath: string) {
+  const { data, error } = await supabase.storage
+    .from('application-documents')
+    .createSignedUrl(filePath, 60 * 60)
+
+  return { data, error }
+}
+
+// ─────────────────────────────────────────
+// CONFIRM OFFER (student accepts one)
+// auto closes all other applications
+// ─────────────────────────────────────────
+export async function confirmOffer(applicationId: string) {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { data: null, error: 'Not logged in' }
+
+  // Accept this application
+  const { error: acceptError } = await supabase
+    .from('applications')
+    .update({
+      status: 'accepted',
+      accepted_at: new Date().toISOString()
+    })
+    .eq('id', applicationId)
+
+  if (acceptError) return { data: null, error: acceptError }
+
+  // Auto close ALL other applications
+  // (draft, submitted, under_review, approved)
+  const { error: closeError } = await supabase
+    .from('applications')
+    .update({ status: 'closed' })
+    .eq('student_id', user.id)
+    .neq('id', applicationId)
+    .in('status', ['draft', 'submitted', 'under_review', 'approved'])
+
+  return { data: 'Offer confirmed successfully', error: closeError }
+}
+
+// ─────────────────────────────────────────
+// DECLINE OFFER (student declines one)
+// ─────────────────────────────────────────
+export async function declineOffer(applicationId: string) {
+  const { data, error } = await supabase
+    .from('applications')
+    .update({ status: 'closed' })
+    .eq('id', applicationId)
+
+  return { data, error }
+}
