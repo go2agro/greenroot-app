@@ -1,6 +1,6 @@
 "use server"
 
-import { supabase } from './supabase'
+import { createClient } from './supabase'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // ─────────────────────────────────────────
@@ -16,6 +16,7 @@ export async function getAllInternships(filters?: {
   min_stipend?: number
   max_stipend?: number
 }) {
+  const supabase = await createClient()
   let query = supabase
     .from('internships')
     .select('*')
@@ -45,6 +46,7 @@ export async function getAllInternships(filters?: {
 // GET SINGLE INTERNSHIP (by id)
 // ─────────────────────────────────────────
 export async function getInternshipById(internshipId: string) {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('internships')
     .select('*')
@@ -70,6 +72,7 @@ export async function createInternship(internshipData: {
   stipend_yearly?: number
   image_url?: string
 }) {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('internships')
     .insert(internshipData)
@@ -93,6 +96,7 @@ export async function updateInternship(internshipId: string, internshipData: {
   stipend_yearly?: number
   image_url?: string
 }) {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('internships')
     .update({ ...internshipData, updated_at: new Date().toISOString() })
@@ -105,6 +109,7 @@ export async function updateInternship(internshipId: string, internshipData: {
 // DELETE INTERNSHIP (admin only)
 // ─────────────────────────────────────────
 export async function deleteInternship(internshipId: string) {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('internships')
     .delete()

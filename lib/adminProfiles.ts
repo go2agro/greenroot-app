@@ -1,10 +1,11 @@
 "use server"
 
-import { supabase } from './supabase'
+import { createClient } from './supabase'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // Get my admin profile
 export async function getMyAdminProfile() {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return toPlainResponse(null, null)
 
@@ -35,6 +36,7 @@ export async function createAdminProfile(profileData: {
   aadhar_number?: string
   pan_number?: string
 }) {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return toPlainResponse(null, null)
 
@@ -63,6 +65,7 @@ export async function updateAdminProfile(profileData: {
   aadhar_number?: string
   pan_number?: string
 }) {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return toPlainResponse(null, null)
 

@@ -144,7 +144,6 @@ export async function deleteVideo(videoId: string) {
 export async function reorderVideos(
   videos: { id: string; order_number: number }[]
 ) {
-  const supabase = await createClient()
   const updates = videos.map(video =>
     supabase
       .from('playlist_videos')

@@ -1,10 +1,11 @@
 "use server"
 
-import { supabase } from './supabase'
+import { createClient } from './supabase'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // Get profile of current logged-in user
 export async function getMyProfile() {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return toPlainResponse(null, null)
 
@@ -19,6 +20,7 @@ export async function getMyProfile() {
 
 // Get profile by user ID
 export async function getProfileById(userId: string) {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
@@ -30,6 +32,7 @@ export async function getProfileById(userId: string) {
 
 // Update role (admin use only) [DO NOT USE THIS FUNCTION. ASK FOR PERMISSION BEFORE USING IT.]
 export async function updateRole(userId: string, role: 'student' | 'admin') {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('profiles')
     .update({ role })
@@ -40,6 +43,7 @@ export async function updateRole(userId: string, role: 'student' | 'admin') {
 
 // Update unique ID (admin use only) [DO NOT USE THIS FUNCTION. ASK FOR PERMISSION BEFORE USING IT.]
 export async function updateUniqueId(userId: string, uniqueId: string) {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('profiles')
     .update({ unique_id: uniqueId })

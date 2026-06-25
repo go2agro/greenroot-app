@@ -1,6 +1,6 @@
 "use server"
 
-import { supabase } from './supabase'
+import { createClient } from './supabase'
 import { checkProfileCompletion } from './studentProfiles'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 
@@ -8,6 +8,7 @@ import { toPlainResponse } from '@/lib/utils/serverResponse'
 // START A NEW APPLICATION
 // ─────────────────────────────────────────
 export async function startApplication(internshipId: string) {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
@@ -54,6 +55,7 @@ export async function startApplication(internshipId: string) {
 // GET ALL MY APPLICATIONS
 // ─────────────────────────────────────────
 export async function getMyApplications() {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
@@ -80,6 +82,7 @@ export async function getMyApplications() {
 // GET SINGLE APPLICATION (with all answers)
 // ─────────────────────────────────────────
 export async function getMyApplicationById(applicationId: string) {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
@@ -113,6 +116,7 @@ export async function saveTextAnswer(
   fieldKey: string,
   answerText: string
 ) {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('application_answers')
     .upsert({
@@ -135,6 +139,7 @@ export async function uploadFileAnswer(
   fieldKey: string,
   file: File
 ) {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
@@ -172,6 +177,7 @@ export async function uploadFileAnswer(
 // UPDATE CURRENT STEP
 // ─────────────────────────────────────────
 export async function updateCurrentStep(applicationId: string, stepNumber: number) {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('applications')
     .update({ current_step: stepNumber })
@@ -184,6 +190,7 @@ export async function updateCurrentStep(applicationId: string, stepNumber: numbe
 // SUBMIT APPLICATION
 // ─────────────────────────────────────────
 export async function submitApplication(applicationId: string) {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('applications')
     .update({
@@ -201,6 +208,7 @@ export async function submitApplication(applicationId: string) {
 // auto withdraws all other applications
 // ─────────────────────────────────────────
 export async function acceptOffer(applicationId: string) {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
@@ -229,6 +237,7 @@ export async function acceptOffer(applicationId: string) {
 // WITHDRAW APPLICATION
 // ─────────────────────────────────────────
 export async function withdrawApplication(applicationId: string) {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('applications')
     .update({ status: 'withdrawn' })
@@ -242,6 +251,7 @@ export async function withdrawApplication(applicationId: string) {
 // (with offer letters)
 // ─────────────────────────────────────────
 export async function getApprovedApplications() {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
@@ -271,6 +281,7 @@ export async function getApprovedApplications() {
 // GET OFFER LETTER (student)
 // ─────────────────────────────────────────
 export async function getMyOfferLetter(filePath: string) {
+  const supabase = await createClient()
   const { data, error } = await supabase.storage
     .from('application-documents')
     .createSignedUrl(filePath, 60 * 60)
@@ -283,6 +294,7 @@ export async function getMyOfferLetter(filePath: string) {
 // auto closes all other applications
 // ─────────────────────────────────────────
 export async function confirmOffer(applicationId: string) {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
@@ -313,6 +325,7 @@ export async function confirmOffer(applicationId: string) {
 // DECLINE OFFER (student declines one)
 // ─────────────────────────────────────────
 export async function declineOffer(applicationId: string) {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('applications')
     .update({ status: 'closed' })
