@@ -19,7 +19,6 @@ export default function Signup() {
   const [passwordError, setPasswordError] = useState('')
   const [confirmPasswordError, setConfirmPasswordError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [successMessage, setSuccessMessage] = useState('')
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -32,7 +31,6 @@ export default function Signup() {
     setEmailError('')
     setPasswordError('')
     setConfirmPasswordError('')
-    setSuccessMessage('')
 
     let hasError = false
 
@@ -65,11 +63,7 @@ export default function Signup() {
       }
 
       if (data) {
-        setSuccessMessage('Account created! Please check your email to verify your account before logging in.')
-        
-        setTimeout(() => {
-          router.push('/login')
-        }, 3000)
+        router.push('/student/dashboard')
       }
     } catch (error) {
       setPasswordError('An error occurred. Please try again.')
@@ -101,13 +95,6 @@ export default function Signup() {
             Start your journey in international paid internship today.
           </p>
 
-          {/* Success Message */}
-          {successMessage && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-sm text-green-700">{successMessage}</p>
-            </div>
-          )}
-
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email Input */}
@@ -126,7 +113,7 @@ export default function Signup() {
                     if (emailError) setEmailError('')
                   }}
                   placeholder="example@email.com"
-                  disabled={isLoading || !!successMessage}
+                  disabled={isLoading}
                   className={`w-full bg-[#F5F5F5] rounded-lg py-3 pl-12 pr-4 text-sm sm:text-base outline-none transition-all ${
                     emailError ? 'border-2 border-red-500' : 'border-0'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
@@ -158,7 +145,7 @@ export default function Signup() {
                     if (passwordError) setPasswordError('')
                   }}
                   placeholder="••••••••"
-                  disabled={isLoading || !!successMessage}
+                  disabled={isLoading}
                   className={`w-full bg-[#F5F5F5] rounded-lg py-3 pl-12 pr-12 text-sm sm:text-base outline-none transition-all ${
                     passwordError ? 'border-2 border-red-500' : 'border-0'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
@@ -166,7 +153,7 @@ export default function Signup() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  disabled={isLoading || !!successMessage}
+                  disabled={isLoading}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 disabled:opacity-50"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -193,7 +180,7 @@ export default function Signup() {
                     if (confirmPasswordError) setConfirmPasswordError('')
                   }}
                   placeholder="••••••••"
-                  disabled={isLoading || !!successMessage}
+                  disabled={isLoading}
                   className={`w-full bg-[#F5F5F5] rounded-lg py-3 pl-12 pr-12 text-sm sm:text-base outline-none transition-all ${
                     confirmPasswordError ? 'border-2 border-red-500' : 'border-0'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
@@ -201,7 +188,7 @@ export default function Signup() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  disabled={isLoading || !!successMessage}
+                  disabled={isLoading}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 disabled:opacity-50"
                 >
                   {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -215,7 +202,7 @@ export default function Signup() {
             {/* Create Account Button */}
             <button
               type="submit"
-              disabled={isLoading || !!successMessage}
+              disabled={isLoading}
               className="w-full bg-[#8DC63F] text-white rounded-lg py-3 text-base font-semibold hover:bg-[#7DB62F] transition-colors disabled:opacity-80 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {isLoading ? (

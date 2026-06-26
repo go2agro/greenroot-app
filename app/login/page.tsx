@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { AtSign, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { signIn } from '@/lib/auth'
@@ -11,13 +11,26 @@ import AuthLeftPanel from '@/components/AuthLeftPanel'
 
 export default function Login() {
   const router = useRouter()
-  const [selectedRole, setSelectedRole] = useState<'student' | 'admin'>('admin')
+  const [selectedRole, setSelectedRole] = useState<'student' | 'admin'>('student')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
+  const [generalError, setGeneralError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    async function checkSession() {
+      const { data } = await getMyProfile()
+      if (data?.role === 'admin') {
+        router.push('/admin/dashboard')
+      } else if (data?.role === 'student') {
+        router.push('/student/dashboard')
+      }
+    }
+    checkSession()
+  }, [])
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -29,6 +42,7 @@ export default function Login() {
     
     setEmailError('')
     setPasswordError('')
+    setGeneralError('')
 
     let hasError = false
 
@@ -50,7 +64,7 @@ export default function Login() {
       const { data, error } = await signIn(email, password)
       
       if (error) {
-        setPasswordError('Invalid email or password')
+        setGeneralError('Invalid email or password. Please try again.')
         setIsLoading(false)
         return
       }
@@ -60,7 +74,7 @@ export default function Login() {
         
         // Check if profile exists
         if (!profileResponse?.data) {
-          setPasswordError('Account setup incomplete. Please contact support.')
+          setGeneralError('Account setup incomplete. Please contact support.')
           setIsLoading(false)
           return
         }
@@ -71,12 +85,12 @@ export default function Login() {
         } else if (profileResponse.data.role === 'student') {
           router.push('/student/dashboard')
         } else {
-          setPasswordError('Account setup incomplete. Please contact support.')
+          setGeneralError('Account setup incomplete. Please contact support.')
           setIsLoading(false)
         }
       }
     } catch (error) {
-      setPasswordError('An error occurred. Please try again.')
+      setGeneralError('An error occurred. Please try again.')
       setIsLoading(false)
     }
   }
@@ -219,6 +233,13 @@ export default function Login() {
               )}
             </button>
           </form>
+
+          {/* General Error Message */}
+          {generalError && (
+            <p className="text-[#DC2626] text-sm text-center mt-2">
+              {generalError}
+            </p>
+          )}
 
           {/* Sign Up Link */}
           <p className="text-center mt-6 text-sm">
