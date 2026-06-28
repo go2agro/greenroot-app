@@ -117,3 +117,17 @@ export async function deleteInternship(internshipId: string) {
 
   return toPlainResponse(data, error)
 }
+
+// ─────────────────────────────────────────
+// GET RECENT INTERNSHIPS
+// ─────────────────────────────────────────
+export async function getRecentInternships(limit: number = 6) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('internships')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(limit)
+
+  return toPlainResponse(data, error)
+}

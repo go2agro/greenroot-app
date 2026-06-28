@@ -17,6 +17,13 @@ export const metadata: Metadata = {
   title: "GreenRoot Internship Platform",
   description: "GreenRoot Internship Platform",
   icons: { icon: '/greenroot-logo.svg' },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+    viewportFit: 'cover',
+  },
 };
 
 export default function RootLayout({

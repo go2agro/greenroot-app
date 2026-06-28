@@ -333,3 +333,96 @@ export async function declineOffer(applicationId: string) {
 
   return toPlainResponse(data, error)
 }
+
+// ─────────────────────────────────────────
+// GET APPLICATION COUNTS BY STATUS
+// ─────────────────────────────────────────
+export async function getApplicationCounts() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+
+  const { data, error } = await supabase
+    .from('applications')
+    .select('status')
+    .eq('student_id', user.id)
+
+  if (error) return toPlainResponse(null, error)
+
+  const counts = {
+    submitted: 0,
+    approved: 0,
+    pending: 0
+  }
+
+  data?.forEach((app) => {
+    if (app.status === 'submitted' || app.status === 'under_review') {
+      counts.submitted++
+    }
+    if (app.status === 'approved') {
+      counts.approved++
+    }
+    if (app.status === 'draft') {
+      counts.pending++
+    }
+  })
+
+  return toPlainResponse(counts, null)
+}
+
+// ─────────────────────────────────────────
+// GET ACTIVE APPLICATIONS (not rejected)
+// ─────────────────────────────────────────
+export async function getActiveApplications() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+
+  const { data, error } = await supabase
+    .from('applications')
+    .select(`
+      *,
+      internships (
+        title,
+        subtitle,
+        city,
+        country,
+        image_url,
+        badge
+      )
+    `)
+    .eq('student_id', user.id)
+    .neq('status', 'rejected')
+    .order('updated_at', { ascending: false })
+    .limit(10)
+
+  return toPlainResponse(data, error)
+}
+
+// ─────────────────────────────────────────
+// GET DRAFT APPLICATIONS
+// ─────────────────────────────────────────
+export async function getDraftApplications() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+
+  const { data, error } = await supabase
+    .from('applications')
+    .select(`
+      *,
+      internships (
+        title,
+        subtitle,
+        city,
+        country,
+        image_url,
+        badge
+      )
+    `)
+    .eq('student_id', user.id)
+    .eq('status', 'draft')
+    .order('started_at', { ascending: false })
+
+  return toPlainResponse(data, error)
+}
