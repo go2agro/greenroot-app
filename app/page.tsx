@@ -1,40 +1,721 @@
-import Image from "next/image";
+'use client';
+
+import Link from 'next/link';
+import Image from 'next/image';
+import { 
+  Menu, 
+  X, 
+  Globe, 
+  Settings, 
+  Briefcase, 
+  UserCheck, 
+  User, 
+  CheckCircle, 
+  Leaf
+} from 'lucide-react';
+import { useState } from 'react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
 export default function Home() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            Welcome to GreenRoot
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Your gateway to international internship opportunities.
-          </p>
+    <div className="min-h-screen bg-white">
+      {/* NAVBAR */}
+      <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2">
+              <Image 
+                src="/greenroot-logo.svg" 
+                alt="GreenRoot" 
+                width={32} 
+                height={32}
+                priority
+              />
+              <span className="text-xl font-bold text-gray-900">GreenRoot</span>
+            </Link>
+
+            {/* Desktop Nav Links */}
+            <div className="hidden md:flex items-center gap-8">
+              <Link href="#about" className="text-gray-700 hover:text-[#A3D32F] transition-colors">
+                About
+              </Link>
+              <Link href="#opportunities" className="text-gray-700 hover:text-[#A3D32F] transition-colors">
+                Opportunities
+              </Link>
+              <Link href="#learning" className="text-gray-700 hover:text-[#A3D32F] transition-colors">
+                Learning
+              </Link>
+              <Link href="#contact" className="text-gray-700 hover:text-[#A3D32F] transition-colors">
+                Contact
+              </Link>
+            </div>
+
+            {/* Desktop Auth Buttons */}
+            <div className="hidden md:flex items-center gap-3">
+              <Link 
+                href="/login" 
+                className="bg-[#A3D32F] text-white rounded-lg px-4 py-2 hover:bg-[#92C120] transition-colors font-semibold"
+              >
+                Login
+              </Link>
+              <Link 
+                href="/signup" 
+                className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 hover:border-[#A3D32F] transition-colors"
+              >
+                Signup
+              </Link>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-gray-700 hover:text-[#A3D32F]"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden py-4 border-t border-gray-100">
+              <div className="flex flex-col gap-4">
+                <Link 
+                  href="#about" 
+                  className="text-gray-700 hover:text-[#A3D32F] py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  About
+                </Link>
+                <Link 
+                  href="#opportunities" 
+                  className="text-gray-700 hover:text-[#A3D32F] py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Opportunities
+                </Link>
+                <Link 
+                  href="#learning" 
+                  className="text-gray-700 hover:text-[#A3D32F] py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Learning
+                </Link>
+                <Link 
+                  href="#contact" 
+                  className="text-gray-700 hover:text-[#A3D32F] py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Contact
+                </Link>
+                <div className="flex flex-col gap-2 pt-4">
+                  <Link 
+                    href="/login" 
+                    className="bg-[#A3D32F] text-white rounded-lg px-4 py-2 text-center font-semibold"
+                  >
+                    Login
+                  </Link>
+                  <Link 
+                    href="/signup" 
+                    className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 text-center"
+                  >
+                    Signup
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="/internships"
-          >
-            Browse Internships
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="/about"
-          >
-            Learn More
-          </a>
+      </nav>
+
+      {/* HERO SECTION */}
+      <section className="w-full py-12 md:py-20 lg:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+            {/* Left Column */}
+            <div className="flex flex-col gap-6">
+              <h1 className="font-bold text-3xl md:text-4xl lg:text-5xl text-[#1A1A1A] leading-tight">
+                Empowering the Next Generation of{' '}
+                <span className="text-[#A3D32F]">Agricultural Leaders</span>
+              </h1>
+              <p className="text-sm md:text-base text-gray-600 leading-relaxed font-semibold">
+                Gain hands-on experience with world-class farms and agricultural 
+                organizations across the globe.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link 
+                  href="/internships" 
+                  className="bg-[#A3D32F] text-white rounded-lg px-6 py-3 font-semibold hover:bg-[#92C120] transition-colors text-center"
+                >
+                  Browse Internships
+                </Link>
+                <Link 
+                  href="/internships" 
+                  className="border border-gray-300 text-gray-700 rounded-lg px-6 py-3 font-medium hover:border-[#A3D32F] transition-colors text-center"
+                >
+                  Learn More
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Column - Image Collage */}
+            <div className="relative h-[400px] md:h-[500px]">
+              <div className="absolute top-0 right-0 w-[45%] h-[45%] rounded-xl overflow-hidden shadow-lg z-10">
+                <Image 
+                  src="https://picsum.photos/300/200?random=1" 
+                  alt="Agricultural work" 
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="absolute bottom-0 left-0 w-[45%] h-[45%] rounded-xl overflow-hidden shadow-lg z-10">
+                <Image 
+                  src="https://picsum.photos/300/200?random=2" 
+                  alt="Farm landscape" 
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50%] h-[50%] rounded-xl overflow-hidden shadow-xl z-20">
+                <Image 
+                  src="https://picsum.photos/300/200?random=3" 
+                  alt="Students learning" 
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              {/* Decorative Elements */}
+              <div className="absolute top-[10%] left-[5%] w-3 h-3 bg-[#A3D32F] rounded-full"></div>
+              <div className="absolute bottom-[15%] right-[10%] w-3 h-3 bg-[#A3D32F] rounded-full"></div>
+              <div className="absolute top-[60%] right-[5%] w-4 h-4 border-2 border-[#A3D32F]"></div>
+            </div>
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* STATS BAR */}
+      <section className="w-full bg-white border-t border-b border-gray-100 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+            <div className="flex flex-col items-center justify-center gap-2 pt-8 md:pt-0">
+              <div className="font-bold text-3xl text-[#549FE3]">300+</div>
+              <div className="text-sm text-gray-600 font-semibold">Total students</div>
+            </div>
+            <div className="flex flex-col items-center justify-center gap-2 pt-8 md:pt-0">
+              <div className="font-bold text-3xl text-[#549FE3]">05+</div>
+              <div className="text-sm text-gray-600 font-semibold">Total countries</div>
+            </div>
+            <div className="flex flex-col items-center justify-center gap-2 pt-8 md:pt-0">
+              <div className="font-bold text-3xl text-[#549FE3]">08+</div>
+              <div className="text-sm text-gray-600 font-semibold">Total Internships</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* WHY CHOOSE GREENROOT */}
+      <section id="about" className="w-full py-12 md:py-20 lg:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+            {/* Left - Image */}
+            <div className="relative h-[500px] md:h-[600px] rounded-xl overflow-hidden">
+              <Image 
+                src="https://picsum.photos/400/600?random=4" 
+                alt="Agriculture" 
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            {/* Right - Content */}
+            <div className="flex flex-col gap-6">
+              <h2 className="font-bold text-2xl md:text-3xl text-[#1A1A1A]">
+                Why Choose <span className="text-[#A3D32F]">GreenRoot?</span>
+              </h2>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Card 1 */}
+                <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                  <Globe className="w-8 h-8 text-[#A3D32F] mb-3" />
+                  <h3 className="font-bold text-gray-900 mb-1">International Experience</h3>
+                  <p className="text-sm text-gray-600">Work with global agricultural organizations.</p>
+                </div>
+
+                {/* Card 2 */}
+                <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                  <Settings className="w-8 h-8 text-[#A3D32F] mb-3" />
+                  <h3 className="font-bold text-gray-900 mb-1">Modern Agriculture</h3>
+                  <p className="text-sm text-gray-600">Learn advanced farming technologies.</p>
+                </div>
+
+                {/* Card 3 */}
+                <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                  <Briefcase className="w-8 h-8 text-[#A3D32F] mb-3" />
+                  <h3 className="font-bold text-gray-900 mb-1">Career Growth</h3>
+                  <p className="text-sm text-gray-600">Build valuable industry experience.</p>
+                </div>
+
+                {/* Card 4 */}
+                <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                  <UserCheck className="w-8 h-8 text-[#A3D32F] mb-3" />
+                  <h3 className="font-bold text-gray-900 mb-1">Expert Guidance</h3>
+                  <p className="text-sm text-gray-600">Support throughout the process.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FEATURED COUNTRIES */}
+      <section className="w-full py-12 md:py-20 lg:py-24 bg-[#A3D32F]/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="font-bold text-2xl md:text-3xl text-[#1A1A1A] mb-12">
+            Featured Countries
+          </h2>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              { flag: '🇩🇰', name: 'Denmark' },
+              { flag: '🇩🇪', name: 'Germany' },
+              { flag: '🇺🇸', name: 'USA' },
+              { flag: '🇮🇱', name: 'Israel' },
+              { flag: '🇦🇺', name: 'Australia' },
+              { flag: '🇨🇦', name: 'Canada' },
+              { flag: '🇮🇹', name: 'Italy' },
+              { flag: '🇵🇹', name: 'Portugal' },
+              { flag: '🇵🇪', name: 'Peru' },
+            ].map((country) => (
+              <div 
+                key={country.name}
+                className="bg-white rounded-xl p-4 shadow-sm flex items-center gap-3 hover:shadow-md hover:border hover:border-[#A3D32F] transition-all cursor-pointer border border-gray-100"
+              >
+                <span className="text-4xl">{country.flag}</span>
+                <span className="text-gray-700 font-medium">{country.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS */}
+      <section className="w-full py-12 md:py-20 lg:py-24 bg-[#F8F9FA]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="font-bold text-2xl md:text-3xl text-[#1A1A1A] mb-12">
+            How It <span className="text-[#A3D32F]">Works?</span>
+          </h2>
+          
+          <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-8 md:gap-4">
+            {/* Step 1 */}
+            <div className="flex flex-col items-center gap-3 flex-1">
+              <div className="w-16 h-16 rounded-full bg-[#A3D32F] flex items-center justify-center text-white">
+                <User className="w-8 h-8" />
+              </div>
+              <p className="font-medium text-gray-900 text-center">Create Profile</p>
+            </div>
+
+            {/* Connector */}
+            <div className="hidden md:block flex-1 border-t-2 border-dashed border-[#A3D32F] opacity-40 mt-8"></div>
+
+            {/* Step 2 */}
+            <div className="flex flex-col items-center gap-3 flex-1">
+              <div className="w-16 h-16 rounded-full bg-[#A3D32F] flex items-center justify-center text-white">
+                <Globe className="w-8 h-8" />
+              </div>
+              <p className="font-medium text-gray-900 text-center">Browse Internships</p>
+            </div>
+
+            {/* Connector */}
+            <div className="hidden md:block flex-1 border-t-2 border-dashed border-[#A3D32F] opacity-40 mt-8"></div>
+
+            {/* Step 3 */}
+            <div className="flex flex-col items-center gap-3 flex-1">
+              <div className="w-16 h-16 rounded-full bg-[#A3D32F] flex items-center justify-center text-white">
+                <Briefcase className="w-8 h-8" />
+              </div>
+              <p className="font-medium text-gray-900 text-center">Submit Application</p>
+            </div>
+
+            {/* Connector */}
+            <div className="hidden md:block flex-1 border-t-2 border-dashed border-[#A3D32F] opacity-40 mt-8"></div>
+
+            {/* Step 4 */}
+            <div className="flex flex-col items-center gap-3 flex-1">
+              <div className="w-16 h-16 rounded-full bg-[#A3D32F] flex items-center justify-center text-white">
+                <CheckCircle className="w-8 h-8" />
+              </div>
+              <p className="font-medium text-gray-900 text-center">Start your Journey!</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FEATURED OPPORTUNITIES */}
+      <section id="opportunities" className="w-full py-12 md:py-20 lg:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="font-bold text-2xl md:text-3xl text-[#1A1A1A] mb-12">
+            Featured Opportunities
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Card 1 */}
+            <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden">
+              <div className="relative h-48 w-full">
+                <Image 
+                  src="https://picsum.photos/400/250?random=5" 
+                  alt="Poultry farming" 
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="p-4">
+                <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+                  <span className="text-base">🇩🇪</span>
+                  <span>Germany</span>
+                </p>
+                <h3 className="font-bold text-lg text-gray-900 mb-2">Poultry farming</h3>
+                <p className="text-sm text-gray-500 mb-4">2 months - Paid Internship</p>
+                <Link 
+                  href="/internships"
+                  className="w-full block text-center bg-[#A3D32F] text-white rounded-lg py-2 hover:bg-[#92C120] transition-colors font-semibold"
+                >
+                  Apply Now
+                </Link>
+              </div>
+            </div>
+
+            {/* Card 2 */}
+            <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden">
+              <div className="relative h-48 w-full">
+                <Image 
+                  src="https://picsum.photos/400/250?random=6" 
+                  alt="Dairy farming" 
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="p-4">
+                <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+                  <span className="text-base">🇮🇱</span>
+                  <span>Israel</span>
+                </p>
+                <h3 className="font-bold text-lg text-gray-900 mb-2">Dairy farming</h3>
+                <p className="text-sm text-gray-500 mb-4">3 months - Paid Internship</p>
+                <Link 
+                  href="/internships"
+                  className="w-full block text-center bg-[#A3D32F] text-white rounded-lg py-2 hover:bg-[#92C120] transition-colors font-semibold"
+                >
+                  Apply Now
+                </Link>
+              </div>
+            </div>
+
+            {/* Card 3 */}
+            <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden">
+              <div className="relative h-48 w-full">
+                <Image 
+                  src="https://picsum.photos/400/250?random=7" 
+                  alt="Greenhouse initiative" 
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="p-4">
+                <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+                  <span className="text-base">🇺🇸</span>
+                  <span>USA</span>
+                </p>
+                <h3 className="font-bold text-lg text-gray-900 mb-2">Greenhouse initiative</h3>
+                <p className="text-sm text-gray-500 mb-4">4 months - Paid Internship</p>
+                <Link 
+                  href="/internships"
+                  className="w-full block text-center bg-[#A3D32F] text-white rounded-lg py-2 hover:bg-[#92C120] transition-colors font-semibold"
+                >
+                  Apply Now
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SUCCESS STORIES */}
+      <section className="w-full py-12 md:py-20 lg:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="font-bold text-2xl md:text-3xl text-[#1A1A1A] mb-12">
+            Success Stories
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Testimonial 1 */}
+            <div className="bg-[#A3D32F]/10 rounded-xl p-6 shadow-sm border-l-4 border-[#A3D32F]">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                  <span className="font-bold text-gray-600">SJ</span>
+                </div>
+                <div>
+                  <p className="font-bold text-gray-900">Sarah J.</p>
+                  <p className="text-sm text-gray-500">Intern in Denmark</p>
+                </div>
+              </div>
+              <p className="text-sm text-gray-600 italic">
+                &quot;GreenRoot didn&apos;t just find me an internship; they found me a career. 
+                The mentorship I received in Denmark changed my entire perspective on 
+                sustainable dairy farming.&quot;
+              </p>
+            </div>
+
+            {/* Testimonial 2 */}
+            <div className="bg-[#A3D32F]/10 rounded-xl p-6 shadow-sm border-l-4 border-[#A3D32F]">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                  <span className="font-bold text-gray-600">MT</span>
+                </div>
+                <div>
+                  <p className="font-bold text-gray-900">Marcus T.</p>
+                  <p className="text-sm text-gray-500">Intern in Singapore</p>
+                </div>
+              </div>
+              <p className="text-sm text-gray-600 italic">
+                &quot;The application process was seamless. Within weeks, I was working on a 
+                rooftop hydroponics project that combined my love for tech and plants.&quot;
+              </p>
+            </div>
+
+            {/* Testimonial 3 */}
+            <div className="bg-[#A3D32F]/10 rounded-xl p-6 shadow-sm border-l-4 border-[#A3D32F]">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                  <span className="font-bold text-gray-600">ER</span>
+                </div>
+                <div>
+                  <p className="font-bold text-gray-900">Elena R.</p>
+                  <p className="text-sm text-gray-500">Intern in Portugal</p>
+                </div>
+              </div>
+              <p className="text-sm text-gray-600 italic">
+                &quot;I gained hands-on experience that no textbook could ever provide. 
+                GreenRoot is truly bridging the gap for the next generation of ag-leaders.&quot;
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="w-full py-12 md:py-20 lg:py-24 bg-[#F8F9FA]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-5 gap-8 md:gap-12">
+            {/* Left Column */}
+            <div className="md:col-span-2 flex flex-col gap-4">
+              <Leaf className="w-12 h-12 text-[#A3D32F]" />
+              <h2 className="font-bold text-2xl md:text-3xl text-[#1A1A1A]">
+                Frequently Asked <span className="text-[#A3D32F]">Questions</span>
+              </h2>
+              <p className="text-sm text-gray-600">
+                Find answers to the most common questions about GreenRoot internships.
+              </p>
+            </div>
+
+            {/* Right Column - Accordion */}
+            <div className="md:col-span-3 flex flex-col gap-4">
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="item-1" className="border-none">
+                    <AccordionTrigger className="text-left hover:no-underline text-base font-semibold">
+                      Who can apply for GreenRoot internships?
+                    </AccordionTrigger>
+                    <AccordionContent className="text-gray-600 text-sm">
+                      Any agriculture student or recent graduate can apply. We welcome students 
+                      from all agricultural disciplines across India.
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
+
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="item-2" className="border-none">
+                    <AccordionTrigger className="text-left hover:no-underline text-base font-semibold">
+                      Which countries offer internship opportunities?
+                    </AccordionTrigger>
+                    <AccordionContent className="text-gray-600 text-sm">
+                      We currently offer internships in Denmark, Germany, USA, Israel, Australia, 
+                      Canada, Italy, Portugal, and Peru.
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
+
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="item-3" className="border-none">
+                    <AccordionTrigger className="text-left hover:no-underline text-base font-semibold">
+                      How do I apply for an internship?
+                    </AccordionTrigger>
+                    <AccordionContent className="text-gray-600 text-sm">
+                      Create your profile, browse available internships, and submit your application 
+                      through our simple 10-step process.
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
+
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="item-4" className="border-none">
+                    <AccordionTrigger className="text-left hover:no-underline text-base font-semibold">
+                      What documents are required to apply?
+                    </AccordionTrigger>
+                    <AccordionContent className="text-gray-600 text-sm">
+                      You will need your resume, passport copy, academic transcripts, recommendation 
+                      letters, and a statement of purpose.
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA BANNER */}
+      <section className="w-full py-12 md:py-20 lg:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+            {/* Left Content */}
+            <div className="flex flex-col gap-6">
+              <h2 className="font-bold text-3xl md:text-4xl text-[#1A1A1A] leading-tight">
+                Ready to Start Your{' '}
+                <span className="text-[#A3D32F]">Global Agriculture Journey?</span>
+              </h2>
+              <p className="text-sm md:text-base text-gray-600">
+                Join thousands of students and companies growing the future of agriculture.
+              </p>
+              <div>
+                <Link 
+                  href="/internships"
+                  className="inline-block bg-[#A3D32F] text-white rounded-lg px-6 py-3 font-semibold hover:bg-[#92C120] transition-colors"
+                >
+                  Browse Internships
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Image - Hidden on mobile */}
+            <div className="hidden md:block relative h-[300px] rounded-xl overflow-hidden">
+              <Image 
+                src="https://picsum.photos/400/300?random=8" 
+                alt="Students in agriculture" 
+                fill
+                className="object-cover"
+              />
+              <div className="absolute -top-4 -left-4 w-3 h-3 bg-[#A3D32F] rounded-full"></div>
+              <div className="absolute -bottom-4 -right-4 w-3 h-3 bg-[#A3D32F] rounded-full"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer id="contact" className="w-full bg-white border-t border-gray-100 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
+            {/* Column 1 - Brand */}
+            <div className="lg:col-span-2 flex flex-col gap-4">
+              <Link href="/" className="flex items-center gap-2">
+                <Image 
+                  src="/greenroot-logo.svg" 
+                  alt="GreenRoot" 
+                  width={32} 
+                  height={32}
+                />
+                <span className="text-xl font-bold text-gray-900">GreenRoot</span>
+              </Link>
+              <p className="text-sm text-gray-600">
+                Cultivating the next generation of agricultural leaders through 
+                immersive learning and technology.
+              </p>
+            </div>
+
+            {/* Column 2 - About Us */}
+            <div className="flex flex-col gap-3">
+              <h3 className="font-bold text-gray-900">About Us</h3>
+              <Link href="#about" className="text-sm text-gray-600 hover:text-[#A3D32F]">
+                Our Mission
+              </Link>
+              <Link href="#about" className="text-sm text-gray-600 hover:text-[#A3D32F]">
+                Team
+              </Link>
+              <Link href="#about" className="text-sm text-gray-600 hover:text-[#A3D32F]">
+                Impact Reports
+              </Link>
+            </div>
+
+            {/* Column 3 - Quick Links */}
+            <div className="flex flex-col gap-3">
+              <h3 className="font-bold text-gray-900">Quick Links</h3>
+              <Link href="/internships" className="text-sm text-gray-600 hover:text-[#A3D32F]">
+                Find Internships
+              </Link>
+              <Link href="/student/library" className="text-sm text-gray-600 hover:text-[#A3D32F]">
+                Learning Hub
+              </Link>
+              <Link href="#contact" className="text-sm text-gray-600 hover:text-[#A3D32F]">
+                For Employers
+              </Link>
+            </div>
+
+            {/* Column 4 - Resources */}
+            <div className="flex flex-col gap-3">
+              <h3 className="font-bold text-gray-900">Resources</h3>
+              <Link href="#learning" className="text-sm text-gray-600 hover:text-[#A3D32F]">
+                Student Guide
+              </Link>
+              <Link href="#learning" className="text-sm text-gray-600 hover:text-[#A3D32F]">
+                Career Blog
+              </Link>
+              <Link href="#contact" className="text-sm text-gray-600 hover:text-[#A3D32F]">
+                Support
+              </Link>
+              <div className="flex items-center gap-3 mt-2">
+                <Link href="#" className="w-8 h-8 rounded-full bg-gray-200 hover:bg-[#A3D32F] hover:text-white flex items-center justify-center text-xs font-bold text-gray-600 transition-colors">
+                  in
+                </Link>
+                <Link href="#" className="w-8 h-8 rounded-full bg-gray-200 hover:bg-[#A3D32F] hover:text-white flex items-center justify-center text-xs font-bold text-gray-600 transition-colors">
+                  𝕏
+                </Link>
+                <Link href="#" className="w-8 h-8 rounded-full bg-gray-200 hover:bg-[#A3D32F] hover:text-white flex items-center justify-center text-xs font-bold text-gray-600 transition-colors">
+                  IG
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="border-t border-gray-100 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-xs text-gray-400 text-center sm:text-left">
+              © 2024 GreenRoot Platform. All rights reserved.
+            </p>
+            <div className="flex items-center gap-4">
+              <Link href="#" className="text-xs text-gray-400 hover:text-[#A3D32F]">
+                Privacy Policy
+              </Link>
+              <span className="text-gray-400">|</span>
+              <Link href="#" className="text-xs text-gray-400 hover:text-[#A3D32F]">
+                Terms of Service
+              </Link>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
