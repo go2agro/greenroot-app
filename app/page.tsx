@@ -11,7 +11,7 @@ import {
   UserCheck, 
   User, 
   CheckCircle, 
-  Leaf
+  CircleHelp
 } from 'lucide-react';
 import { useState } from 'react';
 import {
@@ -225,7 +225,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
             {/* Left - Image */}
-            <div className="relative h-[500px] md:h-[600px] rounded-xl overflow-hidden">
+            <div className="relative h-[300px] md:h-[400px] rounded-xl overflow-hidden">
               <Image 
                 src="https://picsum.photos/400/600?random=4" 
                 alt="Agriculture" 
@@ -278,7 +278,7 @@ export default function Home() {
       <section className="w-full py-12 md:py-20 lg:py-24 bg-[#A3D32F]/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="font-bold text-2xl md:text-3xl text-[#1A1A1A] mb-12">
-            Featured Countries
+            Featured <span className="text-[#A3D32F]">Countries</span>
           </h2>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -306,7 +306,7 @@ export default function Home() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="w-full py-12 md:py-20 lg:py-24 bg-[#F8F9FA]">
+      <section className="w-full py-12 md:py-20 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="font-bold text-2xl md:text-3xl text-[#1A1A1A] mb-12">
             How It <span className="text-[#A3D32F]">Works?</span>
@@ -361,7 +361,7 @@ export default function Home() {
       <section id="opportunities" className="w-full py-12 md:py-20 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="font-bold text-2xl md:text-3xl text-[#1A1A1A] mb-12">
-            Featured Opportunities
+            Featured <span className="text-[#A3D32F]">Opportunities</span>
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -450,7 +450,7 @@ export default function Home() {
       <section className="w-full py-12 md:py-20 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="font-bold text-2xl md:text-3xl text-[#1A1A1A] mb-12">
-            Success Stories
+            Success <span className="text-[#A3D32F]">Stories</span>
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -515,7 +515,7 @@ export default function Home() {
           <div className="grid md:grid-cols-5 gap-8 md:gap-12">
             {/* Left Column */}
             <div className="md:col-span-2 flex flex-col gap-4">
-              <Leaf className="w-12 h-12 text-[#A3D32F]" />
+              <CircleHelp className="w-12 h-12 text-[#A3D32F]" />
               <h2 className="font-bold text-2xl md:text-3xl text-[#1A1A1A]">
                 Frequently Asked <span className="text-[#A3D32F]">Questions</span>
               </h2>
@@ -625,7 +625,7 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
-      <footer id="contact" className="w-full bg-white border-t border-gray-100 py-12">
+      <footer id="contact" className="w-full bg-[#A3D32F]/5 border-t border-gray-100 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
             {/* Column 1 - Brand */}
@@ -702,7 +702,7 @@ export default function Home() {
           {/* Bottom Bar */}
           <div className="border-t border-gray-100 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-xs text-gray-400 text-center sm:text-left">
-              © 2024 GreenRoot Platform. All rights reserved.
+              © 2026 GreenRoot Platform. All rights reserved.
             </p>
             <div className="flex items-center gap-4">
               <Link href="#" className="text-xs text-gray-400 hover:text-[#A3D32F]">
