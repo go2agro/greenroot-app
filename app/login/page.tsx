@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { AtSign, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { motion } from 'framer-motion'
 import { signIn } from '@/lib/auth'
 import { getMyProfile } from '@/lib/profiles'
 import Image from 'next/image'
@@ -126,24 +127,38 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => setSelectedRole('student')}
-                className={`py-2.5 rounded-md text-sm sm:text-base transition-all ${
+                className={`relative py-2.5 rounded-md text-sm sm:text-base transition-colors duration-200 ${
                   selectedRole === 'student'
-                    ? 'bg-[#8DC63F] text-white font-semibold'
-                    : 'bg-transparent text-gray-500 font-normal'
+                    ? 'text-white font-semibold'
+                    : 'text-gray-500 font-normal'
                 }`}
               >
-                Student
+                {selectedRole === 'student' && (
+                  <motion.div
+                    layoutId="role-bg"
+                    className="absolute inset-0 bg-[#8DC63F] rounded-md z-0"
+                    transition={{ type: "spring", stiffness: 400, damping: 35 }}
+                  />
+                )}
+                <span className="relative z-10">Student</span>
               </button>
               <button
                 type="button"
                 onClick={() => setSelectedRole('admin')}
-                className={`py-2.5 rounded-md text-sm sm:text-base transition-all ${
+                className={`relative py-2.5 rounded-md text-sm sm:text-base transition-colors duration-200 ${
                   selectedRole === 'admin'
-                    ? 'bg-[#8DC63F] text-white font-semibold'
-                    : 'bg-transparent text-gray-500 font-normal'
+                    ? 'text-white font-semibold'
+                    : 'text-gray-500 font-normal'
                 }`}
               >
-                Admin
+                {selectedRole === 'admin' && (
+                  <motion.div
+                    layoutId="role-bg"
+                    className="absolute inset-0 bg-[#8DC63F] rounded-md z-0"
+                    transition={{ type: "spring", stiffness: 400, damping: 35 }}
+                  />
+                )}
+                <span className="relative z-10">Admin</span>
               </button>
             </div>
           </div>
