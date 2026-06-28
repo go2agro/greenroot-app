@@ -14,6 +14,7 @@ import { getMyProfile } from '@/lib/profiles'
 import { getMyStudentProfile, checkProfileCompletion } from '@/lib/studentProfiles'
 import { getApplicationCounts, getActiveApplications, getDraftApplications } from '@/lib/studentApplications'
 import { getRecentInternships } from '@/lib/internships'
+import recentInternshipsData from '@/config/recentInternships.json'
 
 interface ProfileData {
   first_name: string
@@ -47,6 +48,7 @@ interface Internship {
   country?: string
   image_url?: string
   badge?: string
+  flag?: string
 }
 
 // SWR fetcher functions
@@ -135,7 +137,9 @@ export default function StudentDashboard() {
   const counts = applicationCounts || { submitted: 0, approved: 0, pending: 0 }
   const activeApps = activeApplications || []
   const drafts = draftApplications || []
-  const internships = recentInternships || []
+  
+  // Use real data if available, otherwise use dummy data from config file
+  const internships = recentInternships?.length > 0 ? recentInternships : (recentInternshipsData as Internship[])
 
   // Get display name - show email if first name is empty
   const displayName = profileData?.first_name || profileData?.email || profile?.email || 'Student'
@@ -298,7 +302,7 @@ export default function StudentDashboard() {
               </div>
               <div className="space-y-3">
                 {activeApps.length > 0 ? (
-                  activeApps.slice(0, 2).map((app) => (
+                  activeApps.slice(0, 2).map((app: Application) => (
                     <ApplicationCard
                       key={app.id}
                       id={app.id}
@@ -330,7 +334,7 @@ export default function StudentDashboard() {
               </div>
               <div className="space-y-3">
                 {drafts.length > 0 ? (
-                  drafts.slice(0, 2).map((app) => (
+                  drafts.slice(0, 2).map((app: Application) => (
                     <div key={app.id} className="bg-white rounded-lg border border-gray-200 p-4">
                       <div className="flex items-center gap-4 mb-3">
                         <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
@@ -382,19 +386,18 @@ export default function StudentDashboard() {
           {/* Recently Added Internships */}
           <div className="mb-6 sm:mb-8">
             <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Recently added Internships</h2>
-            <div className="relative">
-              <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                {internships.map((internship) => (
-                  <InternshipCard
-                    key={internship.id}
-                    id={internship.id}
-                    title={internship.title}
-                    location={`${internship.city || ''}, ${internship.country || ''}`}
-                    imageUrl={internship.image_url || ''}
-                    badge={internship.badge}
-                  />
-                ))}
-              </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {internships.slice(0, 4).map((internship: Internship) => (
+                <InternshipCard
+                  key={internship.id}
+                  id={internship.id}
+                  title={internship.title}
+                  location={`${internship.city || ''}${internship.city && internship.country ? ', ' : ''}${internship.country || ''}`}
+                  imageUrl={internship.image_url || ''}
+                  badge={internship.badge}
+                  flag={internship.flag}
+                />
+              ))}
             </div>
           </div>
 
