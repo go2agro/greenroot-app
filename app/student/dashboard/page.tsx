@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import useSWR from 'swr'
-import { ArrowRight, ChevronLeft, ChevronRight, Send, Search } from 'lucide-react'
+import { ArrowRight, ChevronLeft, ChevronRight, Send, Search, RefreshCw } from 'lucide-react'
 import StudentSidebar from '@/components/StudentSidebar'
 import BottomNavigation from '@/components/BottomNavigation'
 import ApplicationCard from '@/components/ApplicationCard'
@@ -57,6 +57,7 @@ const fetcher = (fn: () => Promise<any>) => fn().then(res => res.data)
 export default function StudentDashboard() {
   const router = useRouter()
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
+  const [isRefreshingInternships, setIsRefreshingInternships] = useState(false)
 
   // Use SWR for data fetching with smart caching (NO auto-refresh)
   // Data only refreshes on:
@@ -100,10 +101,10 @@ export default function StudentDashboard() {
     dedupingInterval: 3600000, // 1 hour - manually invalidate after draft actions
   })
 
-  const { data: recentInternships } = useSWR('recentInternships', () => fetcher(() => getRecentInternships(6)), {
+  const { data: recentInternships, mutate: refreshInternships } = useSWR('recentInternships', () => fetcher(() => getRecentInternships(6)), {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
-    dedupingInterval: 86400000, // 24 hours - internships rarely change
+    dedupingInterval: 300000, // 5 minutes
   })
 
   // Check auth and redirect if needed
@@ -148,6 +149,12 @@ export default function StudentDashboard() {
   const avatarInitial = profileData?.first_name 
     ? profileData.first_name.charAt(0).toUpperCase()
     : (profileData?.email?.charAt(0).toUpperCase() || profile?.email?.charAt(0).toUpperCase() || 'S')
+
+  const handleRefreshInternships = async () => {
+    setIsRefreshingInternships(true)
+    await refreshInternships()
+    setTimeout(() => setIsRefreshingInternships(false), 500)
+  }
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
@@ -385,7 +392,17 @@ export default function StudentDashboard() {
 
           {/* Recently Added Internships */}
           <div className="mb-6 sm:mb-8">
-            <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Recently added Internships</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900">Recently added Internships</h2>
+              <button
+                onClick={handleRefreshInternships}
+                disabled={isRefreshingInternships}
+                className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                title="Refresh internships"
+              >
+                <RefreshCw className={`w-4 h-4 text-gray-600 ${isRefreshingInternships ? 'animate-spin' : ''}`} />
+              </button>
+            </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {internships.slice(0, 4).map((internship: Internship) => (
                 <InternshipCard

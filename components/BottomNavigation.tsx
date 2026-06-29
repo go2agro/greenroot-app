@@ -2,13 +2,13 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Briefcase, FileText, User, Bell } from 'lucide-react'
+import { LayoutDashboard, Briefcase, FileText, User, Bell } from 'lucide-react'
 
 export default function BottomNavigation() {
   const pathname = usePathname()
 
   const navItems = [
-    { icon: Home, label: 'Dashboard', href: '/student/dashboard' },
+    { icon: LayoutDashboard, label: 'Dashboard', href: '/student/dashboard' },
     { icon: Briefcase, label: 'Internships', href: '/student/internships' },
     { icon: FileText, label: 'Applications', href: '/student/applications' },
     { icon: User, label: 'Profile', href: '/student/profile' },

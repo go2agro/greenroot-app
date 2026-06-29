@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, FileText, User, Bell, HelpCircle, Mail, Phone, ChevronLeft, ChevronRight, Briefcase } from 'lucide-react'
+import { LayoutDashboard, FileText, User, Bell, HelpCircle, Mail, Phone, ChevronLeft, ChevronRight, Briefcase } from 'lucide-react'
 
 interface StudentSidebarProps {
   isCollapsed?: boolean
@@ -15,7 +15,7 @@ export default function StudentSidebar({ isCollapsed = false, onToggle }: Studen
   const pathname = usePathname()
 
   const navItems = [
-    { icon: Home, label: 'Dashboard', href: '/student/dashboard' },
+    { icon: LayoutDashboard, label: 'Dashboard', href: '/student/dashboard' },
     { icon: Briefcase, label: 'Internships', href: '/student/internships' },
     { icon: FileText, label: 'Applications', href: '/student/applications' },
     { icon: User, label: 'Profile', href: '/student/profile' },
@@ -24,14 +24,14 @@ export default function StudentSidebar({ isCollapsed = false, onToggle }: Studen
 
   return (
     <div 
-      className={`h-screen bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ${
-        isCollapsed ? 'w-20' : 'w-64'
+      className={`h-screen bg-white border-r border-[#EEEEEE] flex flex-col transition-all duration-300 ${
+        isCollapsed ? 'w-20' : 'w-[220px]'
       }`}
     >
       {/* Logo and Toggle */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="p-4 border-b border-[#EEEEEE]">
         <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
+          <Link href="/student/dashboard" className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
             <Image 
               src="/greenroot-logo.svg" 
               alt="GreenRoot" 
@@ -41,7 +41,7 @@ export default function StudentSidebar({ isCollapsed = false, onToggle }: Studen
             {!isCollapsed && (
               <span className="text-xl font-bold text-[#8DC63F]">GreenRoot</span>
             )}
-          </div>
+          </Link>
           {onToggle && (
             <button
               onClick={onToggle}
@@ -71,8 +71,8 @@ export default function StudentSidebar({ isCollapsed = false, onToggle }: Studen
               title={isCollapsed ? item.label : undefined}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                 isActive 
-                  ? 'bg-[#8DC63F] text-white' 
-                  : 'text-gray-700 hover:bg-gray-100'
+                  ? 'bg-[#8DC63F] text-white font-medium' 
+                  : 'text-[#555555] hover:bg-gray-100'
               } ${isCollapsed ? 'justify-center' : ''}`}
             >
               <Icon className="w-5 h-5 flex-shrink-0" />
@@ -86,23 +86,20 @@ export default function StudentSidebar({ isCollapsed = false, onToggle }: Studen
 
       {/* Help Section */}
       {!isCollapsed && (
-        <div className="p-4 border-t border-gray-200">
-          <div className="bg-gray-50 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <HelpCircle className="w-5 h-5 text-gray-600" />
-              <h3 className="text-sm font-semibold text-gray-900">Need help?</h3>
-            </div>
-            <p className="text-xs text-gray-600 mb-3">
-              Here's our contact number and email address
+        <div className="p-3">
+          <div className="bg-gray-50 rounded-xl p-4 mx-3 mb-4">
+            <h3 className="text-sm font-semibold text-gray-900 mb-1">Need help?</h3>
+            <p className="text-xs text-gray-500 mb-3">
+              Here&apos;s our contact number and email address
             </p>
             <div className="space-y-2">
-              <div className="flex items-center gap-2 text-xs text-gray-700">
+              <div className="flex items-center gap-2 text-sm">
                 <Phone className="w-4 h-4 text-[#8DC63F]" />
-                <span>1234567890</span>
+                <span className="text-[#8DC63F]">1234567890</span>
               </div>
-              <div className="flex items-center gap-2 text-xs text-gray-700">
+              <div className="flex items-center gap-2 text-sm">
                 <Mail className="w-4 h-4 text-[#8DC63F]" />
-                <span>greenroot@gmail.com</span>
+                <span className="text-[#8DC63F]">greenroot@gmail.com</span>
               </div>
             </div>
           </div>
@@ -111,7 +108,7 @@ export default function StudentSidebar({ isCollapsed = false, onToggle }: Studen
 
       {/* Help Icon for Collapsed */}
       {isCollapsed && (
-        <div className="p-4 border-t border-gray-200 flex justify-center">
+        <div className="p-4 border-t border-[#EEEEEE] flex justify-center">
           <button className="text-gray-600 hover:text-[#8DC63F] transition-colors">
             <HelpCircle className="w-5 h-5" />
           </button>
