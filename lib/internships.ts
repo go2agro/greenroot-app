@@ -71,6 +71,14 @@ export async function createInternship(internshipData: {
   stipend_monthly?: number
   stipend_yearly?: number
   image_url?: string
+  start_date?: string
+  work_mode?: string
+  key_responsibilities?: string
+  skills_learned?: string
+  eligibility_requirements?: string
+  stipend_benefits?: string
+  secondary_image_url?: string
+  flag_emoji?: string
 }) {
   const supabase = await createClient()
   const { data, error } = await supabase
@@ -95,6 +103,14 @@ export async function updateInternship(internshipId: string, internshipData: {
   stipend_monthly?: number
   stipend_yearly?: number
   image_url?: string
+  start_date?: string
+  work_mode?: string
+  key_responsibilities?: string
+  skills_learned?: string
+  eligibility_requirements?: string
+  stipend_benefits?: string
+  secondary_image_url?: string
+  flag_emoji?: string
 }) {
   const supabase = await createClient()
   const { data, error } = await supabase

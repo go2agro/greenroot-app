@@ -10,6 +10,7 @@ interface InternshipCardProps {
   imageUrl: string
   badge?: string
   flag?: string
+  basePath?: string
 }
 
 export default function InternshipCard({ 
@@ -18,14 +19,14 @@ export default function InternshipCard({
   location, 
   imageUrl,
   badge,
-  flag
+  flag,
+  basePath = '/student/internships'
 }: InternshipCardProps) {
-  // Use dummy images as requested
   const displayImage = imageUrl || `https://picsum.photos/seed/${id}/400/300`
 
   return (
     <Link 
-      href={`/student/internships/${id}`}
+      href={`${basePath}/${id}`}
       className="block relative aspect-[4/3] rounded-xl overflow-hidden group w-full"
     >
       {/* Image */}

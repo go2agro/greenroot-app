@@ -3,8 +3,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { 
-  Menu, 
-  X, 
   Globe, 
   Settings, 
   Briefcase, 
@@ -13,127 +11,19 @@ import {
   CheckCircle, 
   CircleHelp
 } from 'lucide-react';
-import { useState } from 'react';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export default function Home() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   return (
     <div className="min-h-screen bg-white">
-      {/* NAVBAR */}
-      <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2">
-              <Image 
-                src="/greenroot-logo.svg" 
-                alt="GreenRoot" 
-                width={32} 
-                height={32}
-                priority
-              />
-              <span className="text-xl font-bold text-gray-900">GreenRoot</span>
-            </Link>
-
-            {/* Desktop Nav Links */}
-            <div className="hidden md:flex items-center gap-8">
-              <Link href="#about" className="text-gray-700 hover:text-[#A3D32F] transition-colors">
-                About
-              </Link>
-              <Link href="#opportunities" className="text-gray-700 hover:text-[#A3D32F] transition-colors">
-                Opportunities
-              </Link>
-              <Link href="#learning" className="text-gray-700 hover:text-[#A3D32F] transition-colors">
-                Learning
-              </Link>
-              <Link href="#contact" className="text-gray-700 hover:text-[#A3D32F] transition-colors">
-                Contact
-              </Link>
-            </div>
-
-            {/* Desktop Auth Buttons */}
-            <div className="hidden md:flex items-center gap-3">
-              <Link 
-                href="/login" 
-                className="bg-[#A3D32F] text-white rounded-lg px-4 py-2 hover:bg-[#92C120] transition-colors font-semibold"
-              >
-                Login
-              </Link>
-              <Link 
-                href="/signup" 
-                className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 hover:border-[#A3D32F] transition-colors"
-              >
-                Signup
-              </Link>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-gray-700 hover:text-[#A3D32F]"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-
-          {/* Mobile Menu */}
-          {mobileMenuOpen && (
-            <div className="md:hidden py-4 border-t border-gray-100">
-              <div className="flex flex-col gap-4">
-                <Link 
-                  href="#about" 
-                  className="text-gray-700 hover:text-[#A3D32F] py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  About
-                </Link>
-                <Link 
-                  href="#opportunities" 
-                  className="text-gray-700 hover:text-[#A3D32F] py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Opportunities
-                </Link>
-                <Link 
-                  href="#learning" 
-                  className="text-gray-700 hover:text-[#A3D32F] py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Learning
-                </Link>
-                <Link 
-                  href="#contact" 
-                  className="text-gray-700 hover:text-[#A3D32F] py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Contact
-                </Link>
-                <div className="flex flex-col gap-2 pt-4">
-                  <Link 
-                    href="/login" 
-                    className="bg-[#A3D32F] text-white rounded-lg px-4 py-2 text-center font-semibold"
-                  >
-                    Login
-                  </Link>
-                  <Link 
-                    href="/signup" 
-                    className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 text-center"
-                  >
-                    Signup
-                  </Link>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </nav>
+      <Navbar />
 
       {/* HERO SECTION */}
       <section className="w-full py-12 md:py-20 lg:py-24">
@@ -624,98 +514,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer id="contact" className="w-full bg-[#A3D32F]/5 border-t border-gray-100 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
-            {/* Column 1 - Brand */}
-            <div className="lg:col-span-2 flex flex-col gap-4">
-              <Link href="/" className="flex items-center gap-2">
-                <Image 
-                  src="/greenroot-logo.svg" 
-                  alt="GreenRoot" 
-                  width={32} 
-                  height={32}
-                />
-                <span className="text-xl font-bold text-gray-900">GreenRoot</span>
-              </Link>
-              <p className="text-sm text-gray-600">
-                Cultivating the next generation of agricultural leaders through 
-                immersive learning and technology.
-              </p>
-            </div>
-
-            {/* Column 2 - About Us */}
-            <div className="flex flex-col gap-3">
-              <h3 className="font-bold text-gray-900">About Us</h3>
-              <Link href="#about" className="text-sm text-gray-600 hover:text-[#A3D32F]">
-                Our Mission
-              </Link>
-              <Link href="#about" className="text-sm text-gray-600 hover:text-[#A3D32F]">
-                Team
-              </Link>
-              <Link href="#about" className="text-sm text-gray-600 hover:text-[#A3D32F]">
-                Impact Reports
-              </Link>
-            </div>
-
-            {/* Column 3 - Quick Links */}
-            <div className="flex flex-col gap-3">
-              <h3 className="font-bold text-gray-900">Quick Links</h3>
-              <Link href="/internships" className="text-sm text-gray-600 hover:text-[#A3D32F]">
-                Find Internships
-              </Link>
-              <Link href="/student/library" className="text-sm text-gray-600 hover:text-[#A3D32F]">
-                Learning Hub
-              </Link>
-              <Link href="#contact" className="text-sm text-gray-600 hover:text-[#A3D32F]">
-                For Employers
-              </Link>
-            </div>
-
-            {/* Column 4 - Resources */}
-            <div className="flex flex-col gap-3">
-              <h3 className="font-bold text-gray-900">Resources</h3>
-              <Link href="#learning" className="text-sm text-gray-600 hover:text-[#A3D32F]">
-                Student Guide
-              </Link>
-              <Link href="#learning" className="text-sm text-gray-600 hover:text-[#A3D32F]">
-                Career Blog
-              </Link>
-              <Link href="#contact" className="text-sm text-gray-600 hover:text-[#A3D32F]">
-                Support
-              </Link>
-              <div className="flex items-center gap-3 mt-2">
-                <Link href="#" className="w-8 h-8 rounded-full bg-gray-200 hover:bg-[#A3D32F] hover:text-white flex items-center justify-center text-xs font-bold text-gray-600 transition-colors">
-                  in
-                </Link>
-                <Link href="#" className="w-8 h-8 rounded-full bg-gray-200 hover:bg-[#A3D32F] hover:text-white flex items-center justify-center text-xs font-bold text-gray-600 transition-colors">
-                  𝕏
-                </Link>
-                <Link href="#" className="w-8 h-8 rounded-full bg-gray-200 hover:bg-[#A3D32F] hover:text-white flex items-center justify-center text-xs font-bold text-gray-600 transition-colors">
-                  IG
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Bar */}
-          <div className="border-t border-gray-100 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-gray-400 text-center sm:text-left">
-              © 2026 GreenRoot Platform. All rights reserved.
-            </p>
-            <div className="flex items-center gap-4">
-              <Link href="#" className="text-xs text-gray-400 hover:text-[#A3D32F]">
-                Privacy Policy
-              </Link>
-              <span className="text-gray-400">|</span>
-              <Link href="#" className="text-xs text-gray-400 hover:text-[#A3D32F]">
-                Terms of Service
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
