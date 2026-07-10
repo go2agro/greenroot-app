@@ -39,6 +39,20 @@ export async function createStudentProfile(profileData: {
   aadhar_number?: string
   pan_number?: string
   passport_number?: string
+  short_bio?: string
+  profile_photo_url?: string
+  cgpa?: number
+  graduation_date?: string
+  university_roll_number?: string
+  passport_expiry_date?: string
+  passport_issue_date?: string
+  passport_country_of_issue?: string
+  current_residential_address?: string
+  country?: string
+  passport_scan_url?: string
+  passport_photo_url?: string
+  student_id_card_url?: string
+  bonafide_certificate_url?: string
 }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -72,6 +86,20 @@ export async function updateStudentProfile(profileData: {
   aadhar_number?: string
   pan_number?: string
   passport_number?: string
+  short_bio?: string
+  profile_photo_url?: string
+  cgpa?: number
+  graduation_date?: string
+  university_roll_number?: string
+  passport_expiry_date?: string
+  passport_issue_date?: string
+  passport_country_of_issue?: string
+  current_residential_address?: string
+  country?: string
+  passport_scan_url?: string
+  passport_photo_url?: string
+  student_id_card_url?: string
+  bonafide_certificate_url?: string
 }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -80,6 +108,35 @@ export async function updateStudentProfile(profileData: {
   const { data, error } = await supabase
     .from('student_profiles')
     .update({ ...profileData, updated_at: new Date().toISOString() })
+    .eq('id', user.id)
+
+  return toPlainResponse(data, error)
+}
+
+// ─────────────────────────────────────────
+// UPLOAD STUDENT DOCUMENT
+// ─────────────────────────────────────────
+export async function uploadStudentDocument(
+  file: File,
+  documentType: 'passport_scan' | 'passport_photo' | 
+                'student_id_card' | 'bonafide_certificate'
+) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+
+  const fileExt = file.name.split('.').pop()
+  const filePath = `${user.id}/${documentType}.${fileExt}`
+
+  const { error: uploadError } = await supabase.storage
+    .from('student-documents')
+    .upload(filePath, file, { upsert: true })
+
+  if (uploadError) return toPlainResponse(null, uploadError)
+
+  const { data, error } = await supabase
+    .from('student_profiles')
+    .update({ [`${documentType}_url`]: filePath })
     .eq('id', user.id)
 
   return toPlainResponse(data, error)
