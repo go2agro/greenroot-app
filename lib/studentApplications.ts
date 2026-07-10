@@ -1,13 +1,16 @@
-import { supabase } from './supabase'
+"use server"
+
+import { createClient } from './supabase'
 import { checkProfileCompletion } from './studentProfiles'
-import { getPostHogClient } from './posthog-server'
+import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // ─────────────────────────────────────────
 // START A NEW APPLICATION
 // ─────────────────────────────────────────
 export async function startApplication(internshipId: string) {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { data: null, error: 'Not logged in' }
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
   // Check if student profile is complete
   const { data: profile } = await supabase
@@ -16,12 +19,11 @@ export async function startApplication(internshipId: string) {
     .eq('id', user.id)
     .single()
 
-    const { isComplete, missingFields } = await checkProfileCompletion()
-    if (!isComplete) {
-      return {
-        data: null,
-        error: `Please complete your profile before applying. Missing: ${missingFields.join(', ')}`
-      }
+    const profileCompletion = await checkProfileCompletion()
+    if (profileCompletion.data && !profileCompletion.data.isComplete) {
+      return toPlainResponse(null, {
+        message: `Please complete your profile before applying. Missing: ${profileCompletion.data.missingFields.join(', ')}`
+      })
     }
 
   // Check if already applied
@@ -32,7 +34,7 @@ export async function startApplication(internshipId: string) {
     .eq('internship_id', internshipId)
     .single()
 
-  if (existing) return { data: null, error: 'Already applied to this internship' }
+  if (existing) return toPlainResponse(null, { message: 'Already applied to this internship' })
 
   // Create new application
   const { data, error } = await supabase
@@ -46,27 +48,16 @@ export async function startApplication(internshipId: string) {
     .select()
     .single()
 
-  if (!error && data) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: user.id,
-      event: 'application_started',
-      properties: {
-        internship_id: internshipId,
-        application_id: data.id,
-      },
-    })
-  }
-
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
 // GET ALL MY APPLICATIONS
 // ─────────────────────────────────────────
 export async function getMyApplications() {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { data: null, error: 'Not logged in' }
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
   const { data, error } = await supabase
     .from('applications')
@@ -84,15 +75,16 @@ export async function getMyApplications() {
     .eq('student_id', user.id)
     .order('started_at', { ascending: false })
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
 // GET SINGLE APPLICATION (with all answers)
 // ─────────────────────────────────────────
 export async function getMyApplicationById(applicationId: string) {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { data: null, error: 'Not logged in' }
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
   const { data, error } = await supabase
     .from('applications')
@@ -112,7 +104,7 @@ export async function getMyApplicationById(applicationId: string) {
     .eq('student_id', user.id)
     .single()
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -124,6 +116,7 @@ export async function saveTextAnswer(
   fieldKey: string,
   answerText: string
 ) {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('application_answers')
     .upsert({
@@ -134,7 +127,7 @@ export async function saveTextAnswer(
       updated_at: new Date().toISOString()
     }, { onConflict: 'application_id,field_key' })
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -146,12 +139,13 @@ export async function uploadFileAnswer(
   fieldKey: string,
   file: File
 ) {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { data: null, error: 'Not logged in' }
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
   // Check file size (max 1MB)
   if (file.size > 1024 * 1024) {
-    return { data: null, error: 'File size must be under 1MB' }
+    return toPlainResponse(null, { message: 'File size must be under 1MB' })
   }
 
   // Upload file to storage
@@ -161,7 +155,7 @@ export async function uploadFileAnswer(
     .from('application-documents')
     .upload(filePath, file)
 
-  if (uploadError) return { data: null, error: uploadError }
+  if (uploadError) return toPlainResponse(null, uploadError)
 
   // Save file url in answers table
   const { data, error } = await supabase
@@ -176,41 +170,27 @@ export async function uploadFileAnswer(
       updated_at: new Date().toISOString()
     }, { onConflict: 'application_id,field_key' })
 
-  if (!error) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: user.id,
-      event: 'document_uploaded',
-      properties: {
-        application_id: applicationId,
-        step_number: stepNumber,
-        field_key: fieldKey,
-        file_type: file.type.includes('pdf') ? 'pdf' : 'image',
-        file_size_kb: Math.round(file.size / 1024),
-      },
-    })
-  }
-
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
 // UPDATE CURRENT STEP
 // ─────────────────────────────────────────
 export async function updateCurrentStep(applicationId: string, stepNumber: number) {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('applications')
     .update({ current_step: stepNumber })
     .eq('id', applicationId)
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
 // SUBMIT APPLICATION
 // ─────────────────────────────────────────
 export async function submitApplication(applicationId: string) {
-  const { data: { user } } = await supabase.auth.getUser()
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('applications')
     .update({
@@ -220,16 +200,7 @@ export async function submitApplication(applicationId: string) {
     })
     .eq('id', applicationId)
 
-  if (!error && user) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: user.id,
-      event: 'application_submitted',
-      properties: { application_id: applicationId },
-    })
-  }
-
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -237,8 +208,9 @@ export async function submitApplication(applicationId: string) {
 // auto withdraws all other applications
 // ─────────────────────────────────────────
 export async function acceptOffer(applicationId: string) {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { data: null, error: 'Not logged in' }
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
   // Accept this application
   const { error: acceptError } = await supabase
@@ -249,7 +221,7 @@ export async function acceptOffer(applicationId: string) {
     })
     .eq('id', applicationId)
 
-  if (acceptError) return { data: null, error: acceptError }
+  if (acceptError) return toPlainResponse(null, acceptError)
 
   // Auto withdraw all other applications
   const { error: withdrawError } = await supabase
@@ -258,38 +230,20 @@ export async function acceptOffer(applicationId: string) {
     .eq('student_id', user.id)
     .neq('id', applicationId)
 
-  if (!withdrawError) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: user.id,
-      event: 'offer_accepted',
-      properties: { application_id: applicationId },
-    })
-  }
-
-  return { data: 'Offer accepted successfully', error: withdrawError }
+  return toPlainResponse('Offer accepted successfully', withdrawError)
 }
 
 // ─────────────────────────────────────────
 // WITHDRAW APPLICATION
 // ─────────────────────────────────────────
 export async function withdrawApplication(applicationId: string) {
-  const { data: { user } } = await supabase.auth.getUser()
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('applications')
     .update({ status: 'withdrawn' })
     .eq('id', applicationId)
 
-  if (!error && user) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: user.id,
-      event: 'application_withdrawn',
-      properties: { application_id: applicationId },
-    })
-  }
-
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -297,8 +251,9 @@ export async function withdrawApplication(applicationId: string) {
 // (with offer letters)
 // ─────────────────────────────────────────
 export async function getApprovedApplications() {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { data: null, error: 'Not logged in' }
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
   const { data, error } = await supabase
     .from('applications')
@@ -319,18 +274,19 @@ export async function getApprovedApplications() {
     .eq('status', 'approved')
     .order('decided_at', { ascending: false })
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
 // GET OFFER LETTER (student)
 // ─────────────────────────────────────────
 export async function getMyOfferLetter(filePath: string) {
+  const supabase = await createClient()
   const { data, error } = await supabase.storage
     .from('application-documents')
     .createSignedUrl(filePath, 60 * 60)
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -338,8 +294,9 @@ export async function getMyOfferLetter(filePath: string) {
 // auto closes all other applications
 // ─────────────────────────────────────────
 export async function confirmOffer(applicationId: string) {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { data: null, error: 'Not logged in' }
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
   // Accept this application
   const { error: acceptError } = await supabase
@@ -350,7 +307,7 @@ export async function confirmOffer(applicationId: string) {
     })
     .eq('id', applicationId)
 
-  if (acceptError) return { data: null, error: acceptError }
+  if (acceptError) return toPlainResponse(null, acceptError)
 
   // Auto close ALL other applications
   // (draft, submitted, under_review, approved)
@@ -361,17 +318,111 @@ export async function confirmOffer(applicationId: string) {
     .neq('id', applicationId)
     .in('status', ['draft', 'submitted', 'under_review', 'approved'])
 
-  return { data: 'Offer confirmed successfully', error: closeError }
+  return toPlainResponse('Offer confirmed successfully', closeError)
 }
 
 // ─────────────────────────────────────────
 // DECLINE OFFER (student declines one)
 // ─────────────────────────────────────────
 export async function declineOffer(applicationId: string) {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('applications')
     .update({ status: 'closed' })
     .eq('id', applicationId)
 
-  return { data, error }
+  return toPlainResponse(data, error)
+}
+
+// ─────────────────────────────────────────
+// GET APPLICATION COUNTS BY STATUS
+// ─────────────────────────────────────────
+export async function getApplicationCounts() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+
+  const { data, error } = await supabase
+    .from('applications')
+    .select('status')
+    .eq('student_id', user.id)
+
+  if (error) return toPlainResponse(null, error)
+
+  const counts = {
+    submitted: 0,
+    approved: 0,
+    pending: 0
+  }
+
+  data?.forEach((app) => {
+    if (app.status === 'submitted' || app.status === 'under_review') {
+      counts.submitted++
+    }
+    if (app.status === 'approved') {
+      counts.approved++
+    }
+    if (app.status === 'draft') {
+      counts.pending++
+    }
+  })
+
+  return toPlainResponse(counts, null)
+}
+
+// ─────────────────────────────────────────
+// GET ACTIVE APPLICATIONS (not rejected)
+// ─────────────────────────────────────────
+export async function getActiveApplications() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+
+  const { data, error } = await supabase
+    .from('applications')
+    .select(`
+      *,
+      internships (
+        title,
+        subtitle,
+        city,
+        country,
+        image_url,
+        badge
+      )
+    `)
+    .eq('student_id', user.id)
+    .neq('status', 'rejected')
+    .order('updated_at', { ascending: false })
+    .limit(10)
+
+  return toPlainResponse(data, error)
+}
+
+// ─────────────────────────────────────────
+// GET DRAFT APPLICATIONS
+// ─────────────────────────────────────────
+export async function getDraftApplications() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+
+  const { data, error } = await supabase
+    .from('applications')
+    .select(`
+      *,
+      internships (
+        title,
+        subtitle,
+        city,
+        country,
+        image_url,
+        badge
+      )
+    `)
+    .eq('student_id', user.id)
+    .eq('status', 'draft')
+    .order('started_at', { ascending: false })
+
+  return toPlainResponse(data, error)
 }

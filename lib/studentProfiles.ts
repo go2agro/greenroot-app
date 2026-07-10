@@ -1,10 +1,13 @@
-import { supabase } from './supabase'
-import { getPostHogClient } from './posthog-server'
+"use server"
+
+import { createClient } from './supabase'
+import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // Get my student profile
 export async function getMyStudentProfile() {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
+  if (!user) return toPlainResponse(null, null)
 
   const { data, error } = await supabase
     .from('student_profiles')
@@ -12,7 +15,7 @@ export async function getMyStudentProfile() {
     .eq('id', user.id)
     .single()
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // Create my student profile (first time)
@@ -36,28 +39,30 @@ export async function createStudentProfile(profileData: {
   aadhar_number?: string
   pan_number?: string
   passport_number?: string
+  short_bio?: string
+  profile_photo_url?: string
+  cgpa?: number
+  graduation_date?: string
+  university_roll_number?: string
+  passport_expiry_date?: string
+  passport_issue_date?: string
+  passport_country_of_issue?: string
+  current_residential_address?: string
+  country?: string
+  passport_scan_url?: string
+  passport_photo_url?: string
+  student_id_card_url?: string
+  bonafide_certificate_url?: string
 }) {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
+  if (!user) return toPlainResponse(null, null)
 
   const { data, error } = await supabase
     .from('student_profiles')
     .insert({ id: user.id, ...profileData })
 
-  if (!error) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: user.id,
-      event: 'student_profile_created',
-      properties: {
-        university_name: profileData.university_name,
-        degree: profileData.degree,
-        course_status: profileData.course_status,
-      },
-    })
-  }
-
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // Update my student profile
@@ -81,35 +86,69 @@ export async function updateStudentProfile(profileData: {
   aadhar_number?: string
   pan_number?: string
   passport_number?: string
+  short_bio?: string
+  profile_photo_url?: string
+  cgpa?: number
+  graduation_date?: string
+  university_roll_number?: string
+  passport_expiry_date?: string
+  passport_issue_date?: string
+  passport_country_of_issue?: string
+  current_residential_address?: string
+  country?: string
+  passport_scan_url?: string
+  passport_photo_url?: string
+  student_id_card_url?: string
+  bonafide_certificate_url?: string
 }) {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
+  if (!user) return toPlainResponse(null, null)
 
   const { data, error } = await supabase
     .from('student_profiles')
     .update({ ...profileData, updated_at: new Date().toISOString() })
     .eq('id', user.id)
 
-  if (!error) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: user.id,
-      event: 'student_profile_updated',
-      properties: {
-        updated_fields: Object.keys(profileData),
-      },
-    })
-  }
+  return toPlainResponse(data, error)
+}
 
-  return { data, error }
+// ─────────────────────────────────────────
+// UPLOAD STUDENT DOCUMENT
+// ─────────────────────────────────────────
+export async function uploadStudentDocument(
+  file: File,
+  documentType: 'passport_scan' | 'passport_photo' | 
+                'student_id_card' | 'bonafide_certificate'
+) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+
+  const fileExt = file.name.split('.').pop()
+  const filePath = `${user.id}/${documentType}.${fileExt}`
+
+  const { error: uploadError } = await supabase.storage
+    .from('student-documents')
+    .upload(filePath, file, { upsert: true })
+
+  if (uploadError) return toPlainResponse(null, uploadError)
+
+  const { data, error } = await supabase
+    .from('student_profiles')
+    .update({ [`${documentType}_url`]: filePath })
+    .eq('id', user.id)
+
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
 // CHECK PROFILE COMPLETION
 // ─────────────────────────────────────────
 export async function checkProfileCompletion() {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { isComplete: false, missingFields: [], error: 'Not logged in' }
+  if (!user) return toPlainResponse({ isComplete: false, missingFields: [] }, { message: 'Not logged in' })
 
   const { data, error } = await supabase
     .from('student_profiles')
@@ -117,11 +156,10 @@ export async function checkProfileCompletion() {
     .eq('id', user.id)
     .single()
 
-  if (!data) return {
+  if (!data) return toPlainResponse({
     isComplete: false,
-    missingFields: ['Profile not created yet'],
-    error
-  }
+    missingFields: ['Profile not created yet']
+  }, error)
 
   // Check each required field
   const missingFields: string[] = []
@@ -150,9 +188,8 @@ export async function checkProfileCompletion() {
   if (!data.aadhar_number)   missingFields.push('Aadhar Number')
   if (!data.passport_number) missingFields.push('Passport Number')
 
-  return {
+  return toPlainResponse({
     isComplete: missingFields.length === 0,
-    missingFields,
-    error: null
-  }
+    missingFields
+  }, null)
 }

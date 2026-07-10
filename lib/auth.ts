@@ -1,8 +1,11 @@
-import { supabase } from './supabase'
-import { getPostHogClient } from './posthog-server'
+"use server"
+
+import { createClient } from './supabase'
+import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // Sign Up
 export async function signUp(email: string, password: string) {
+  const supabase = await createClient()
   const { data, error } = await supabase.auth.signUp({ 
     email, 
     password,
@@ -10,84 +13,50 @@ export async function signUp(email: string, password: string) {
       emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/login`
     }
   })
-  if (!error && data.user) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: data.user.id,
-      event: 'user_signed_up',
-      properties: { email },
-    })
-    posthog.identify({
-      distinctId: data.user.id,
-      properties: { email },
-    })
-  }
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // Sign In
 export async function signIn(email: string, password: string) {
+  const supabase = await createClient()
   const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-  if (!error && data.user) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: data.user.id,
-      event: 'user_signed_in',
-      properties: { email },
-    })
-    posthog.identify({
-      distinctId: data.user.id,
-      properties: { email },
-    })
-  }
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // Sign Out
 export async function signOut() {
-  const { data: { user } } = await supabase.auth.getUser()
+  const supabase = await createClient()
   const { error } = await supabase.auth.signOut()
-  if (!error && user) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: user.id,
-      event: 'user_signed_out',
-    })
-  }
-  return { error }
+  return toPlainResponse(null, error)
 }
 
 // Get current logged-in user
 export async function getUser() {
-  const { data: { user } } = await supabase.auth.getUser()
-  return user
+  const supabase = await createClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
+  return toPlainResponse(user, error)
 }
 
 // Get current session
 export async function getSession() {
-  const { data: { session } } = await supabase.auth.getSession()
-  return session
+  const supabase = await createClient()
+  const { data: { session }, error } = await supabase.auth.getSession()
+  return toPlainResponse(session, error)
 }
 
 // Reset Password (sends email)
 export async function resetPassword(email: string) {
+  const supabase = await createClient()
   const { data, error } = await supabase.auth.resetPasswordForEmail(
     email,
     {redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/reset-password`}
   )
-  if (!error) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: email,
-      event: 'password_reset_requested',
-      properties: { email },
-    })
-  }
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // Update Password (after reset)
 export async function updatePassword(newPassword: string) {
+  const supabase = await createClient()
   const { data, error } = await supabase.auth.updateUser({ password: newPassword })
-  return { data, error }
+  return toPlainResponse(data, error)
 }

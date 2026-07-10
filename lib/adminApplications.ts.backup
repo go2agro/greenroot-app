@@ -7,13 +7,13 @@ import { toPlainResponse } from '@/lib/utils/serverResponse'
 // GET ALL APPLICATIONS (with filters)
 // ─────────────────────────────────────────
 export async function getAllApplications(filters?: {
+  const supabase = await createClient()
 
   search?: string         // search by student name
   status?: 'draft' | 'submitted' | 'under_review' | 'approved' | 'rejected' | 'withdrawn' | 'accepted'
   internship_id?: string
   student_id?: string
 }) {
-  const supabase = await createClient()
   let query = supabase
     .from('applications')
     .select(`

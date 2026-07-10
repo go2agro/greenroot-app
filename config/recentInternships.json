@@ -1,0 +1,30 @@
+[
+  {
+    "id": "1",
+    "title": "Poultry farming",
+    "country": "Germany",
+    "flag": "🇩🇪",
+    "image_url": "https://picsum.photos/seed/poultry/400/300"
+  },
+  {
+    "id": "2",
+    "title": "Dairy farming",
+    "country": "Israel",
+    "flag": "🇮🇱",
+    "image_url": "https://picsum.photos/seed/dairy/400/300"
+  },
+  {
+    "id": "3",
+    "title": "Greenhouse initiative",
+    "country": "USA",
+    "flag": "🇺🇸",
+    "image_url": "https://picsum.photos/seed/greenhouse/400/300"
+  },
+  {
+    "id": "4",
+    "title": "Wine course",
+    "country": "USA",
+    "flag": "🇺🇸",
+    "image_url": "https://picsum.photos/seed/wine/400/300"
+  }
+]

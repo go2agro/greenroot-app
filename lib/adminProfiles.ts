@@ -1,9 +1,13 @@
-import { supabase } from './supabase'
+"use server"
+
+import { createClient } from './supabase'
+import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // Get my admin profile
 export async function getMyAdminProfile() {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
+  if (!user) return toPlainResponse(null, null)
 
   const { data, error } = await supabase
     .from('admin_profiles')
@@ -11,7 +15,7 @@ export async function getMyAdminProfile() {
     .eq('id', user.id)
     .single()
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // Create my admin profile (first time)
@@ -32,14 +36,15 @@ export async function createAdminProfile(profileData: {
   aadhar_number?: string
   pan_number?: string
 }) {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
+  if (!user) return toPlainResponse(null, null)
 
   const { data, error } = await supabase
     .from('admin_profiles')
     .insert({ id: user.id, ...profileData })
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // Update my admin profile
@@ -60,13 +65,14 @@ export async function updateAdminProfile(profileData: {
   aadhar_number?: string
   pan_number?: string
 }) {
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
+  if (!user) return toPlainResponse(null, null)
 
   const { data, error } = await supabase
     .from('admin_profiles')
     .update({ ...profileData, updated_at: new Date().toISOString() })
     .eq('id', user.id)
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
