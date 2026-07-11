@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 import useSWR from 'swr'
 import StudentSidebar from '@/components/StudentSidebar'
 import BottomNavigation from '@/components/BottomNavigation'
@@ -12,14 +13,14 @@ import {
   Clock, 
   Banknote, 
   ChevronRight, 
-  Play, 
+  Send, 
   CheckCircle, 
   Hourglass,
   SlidersHorizontal,
   FileText,
   ChevronLeft
 } from 'lucide-react'
-import { getMyApplications } from '@/lib/studentApplications'
+import { getMyApplications, getApplicationCounts } from '@/lib/studentApplications'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
 
@@ -142,6 +143,16 @@ export default function StudentApplications() {
     }
   )
 
+  const { data: applicationCounts } = useSWR(
+    'applicationCounts',
+    () => fetcher(getApplicationCounts),
+    {
+      dedupingInterval: 300000,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  )
+
   const { data: profile } = useSWR(
     'studentProfile',
     () => fetcher(getMyStudentProfile),
@@ -186,22 +197,9 @@ export default function StudentApplications() {
     setCurrentPage(1)
   }, [searchQuery, filterStatus, applications])
 
-  const submittedCount = applications?.filter(a => 
-    a.status === 'submitted' || 
-    a.status === 'under_review' ||
-    a.status === 'approved' ||
-    a.status === 'accepted'
-  ).length || 0
-
-  const approvedCount = applications?.filter(a => 
-    a.status === 'approved' || 
-    a.status === 'accepted'
-  ).length || 0
-
-  const pendingCount = applications?.filter(a => 
-    a.status === 'draft' || 
-    a.status === 'submitted'
-  ).length || 0
+  const submittedCount = applicationCounts?.submitted ?? 0
+  const pendingCount = applicationCounts?.pending ?? 0
+  const approvedCount = applicationCounts?.approved ?? 0
 
   const totalPages = Math.ceil(filteredApplications.length / ITEMS_PER_PAGE)
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
@@ -259,15 +257,17 @@ export default function StudentApplications() {
           <div className="flex items-center justify-end gap-3">
             <div className="text-right">
               <div className="font-bold text-gray-900">{userName}</div>
-              <div className="text-sm text-gray-500">{myProfile?.role === 'admin' ? 'Admin' : 'Student'}</div>
+              <div className="text-xs text-[#3B82F6] font-medium">ID: {myProfile?.unique_id || 'N/A'}</div>
             </div>
-            <UserAvatar
-              imageUrl={profile?.profile_image_url || profile?.avatar_url}
-              firstName={profile?.first_name}
-              lastName={profile?.last_name}
-              fallbackLetter="S"
-              size={40}
-            />
+            <Link href="/student/profile" className="cursor-pointer hover:opacity-80 transition-opacity">
+              <UserAvatar
+                imageUrl={profile?.profile_image_url || profile?.avatar_url}
+                firstName={profile?.first_name}
+                lastName={profile?.last_name}
+                fallbackLetter="S"
+                size={40}
+              />
+            </Link>
           </div>
         </div>
 
@@ -287,19 +287,7 @@ export default function StudentApplications() {
                       {submittedCount.toString().padStart(2, '0')}
                     </div>
                   </div>
-                  <Play className="w-6 h-6 text-[#8DC63F] fill-[#8DC63F]" />
-                </div>
-              </div>
-
-              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="text-sm text-gray-500 font-medium">Approved</div>
-                    <div className="text-4xl font-bold text-[#3B82F6] mt-2">
-                      {approvedCount.toString().padStart(2, '0')}
-                    </div>
-                  </div>
-                  <CheckCircle className="w-6 h-6 text-[#8DC63F]" />
+                  <Send className="w-6 h-6 text-[#8DC63F]" />
                 </div>
               </div>
 
@@ -312,6 +300,18 @@ export default function StudentApplications() {
                     </div>
                   </div>
                   <Hourglass className="w-6 h-6 text-[#8DC63F]" />
+                </div>
+              </div>
+
+              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="text-sm text-gray-500 font-medium">Approved</div>
+                    <div className="text-4xl font-bold text-[#3B82F6] mt-2">
+                      {approvedCount.toString().padStart(2, '0')}
+                    </div>
+                  </div>
+                  <CheckCircle className="w-6 h-6 text-[#8DC63F]" />
                 </div>
               </div>
             </div>
@@ -403,7 +403,7 @@ export default function StudentApplications() {
                       className="bg-white border border-[#EEEEEE] rounded-2xl p-4 flex items-center gap-4 cursor-pointer hover:shadow-md transition-shadow"
                       onClick={() => router.push(`/student/applications/${application.id}`)}
                     >
-                      <div className="relative w-24 h-20 rounded-xl overflow-hidden flex-shrink-0 hidden sm:block">
+                      <div className="relative w-24 h-20 rounded-xl overflow-hidden flex-shrink-0">
                         <Image
                           src={application.internships?.image_url || `https://picsum.photos/100/80?random=${startIndex + index}`}
                           alt={application.internships?.title || 'Internship'}
@@ -412,31 +412,37 @@ export default function StudentApplications() {
                         />
                       </div>
 
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-gray-900 text-base mb-1 truncate">
-                          {application.internships?.title}
+                      <div className="flex-1 min-w-0 flex flex-col gap-1">
+                        <h3 className="font-bold text-gray-900 text-base truncate">
+                          {application.internships?.title || 'Internship Program'}
                         </h3>
 
-                        {application.internships?.country && (
-                          <div className="flex items-center gap-1 text-sm text-gray-500 mb-1">
-                            <span>{getCountryFlag(application.internships.country)}</span>
-                            <span className="truncate">{application.internships.country}</span>
-                          </div>
-                        )}
+                        <div className="flex items-center gap-1.5 text-sm text-gray-500">
+                          <span className="text-base leading-none">
+                            {getCountryFlag(application.internships?.country || '')}
+                          </span>
+                          <span className="truncate">
+                            {application.internships?.country || 'Country not specified'}
+                          </span>
+                        </div>
 
-                        {application.internships?.duration_months && (
-                          <div className="flex items-center gap-1 text-sm text-gray-500 mb-1">
-                            <Clock className="w-4 h-4 flex-shrink-0" />
-                            <span>{application.internships.duration_months} Months</span>
-                          </div>
-                        )}
+                        <div className="flex items-center gap-1.5 text-sm text-gray-500">
+                          <Clock className="w-4 h-4 flex-shrink-0" />
+                          <span>
+                            {application.internships?.duration_months
+                              ? `${application.internships.duration_months} Months`
+                              : 'Duration not specified'}
+                          </span>
+                        </div>
 
-                        {application.internships?.stipend_monthly && (
-                          <div className="flex items-center gap-1 text-sm text-gray-500">
-                            <Banknote className="w-4 h-4 flex-shrink-0" />
-                            <span>₹{application.internships.stipend_monthly.toLocaleString()} / Month</span>
-                          </div>
-                        )}
+                        <div className="flex items-center gap-1.5 text-sm text-gray-500">
+                          <Banknote className="w-4 h-4 flex-shrink-0" />
+                          <span>
+                            {application.internships?.stipend_monthly
+                              ? `₹${application.internships.stipend_monthly.toLocaleString()} / Month`
+                              : 'Stipend not specified'}
+                          </span>
+                        </div>
                       </div>
 
                       <div className="flex items-center gap-3 flex-shrink-0">

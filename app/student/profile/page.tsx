@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 import useSWR from 'swr'
 import { 
   Mail, 
@@ -21,11 +22,12 @@ import { toast } from 'sonner'
 import StudentSidebar from '@/components/StudentSidebar'
 import BottomNavigation from '@/components/BottomNavigation'
 import { getMyProfile } from '@/lib/profiles'
-import { signOut } from '@/lib/auth'
+import { signOut, deleteAccount } from '@/lib/auth'
 import { 
   getMyStudentProfile, 
   updateStudentProfile,
-  uploadStudentDocument
+  uploadStudentDocument,
+  checkProfileCompletion
 } from '@/lib/studentProfiles'
 
 interface ProfileData {
@@ -138,6 +140,7 @@ export default function StudentProfile() {
   const [sameAsPermanent, setSameAsPermanent] = useState(false)
   const [uploadingDoc, setUploadingDoc] = useState<string | null>(null)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false)
   const [copiedId, setCopiedId] = useState(false)
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({
     personal: false,
@@ -167,6 +170,15 @@ export default function StudentProfile() {
     }
   )
 
+  const { data: profileCompletionData, mutate: refreshCompletion } = useSWR(
+    'profileCompletion',
+    () => fetcher(checkProfileCompletion),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  )
+
   // Initialize form data when profile loads
   useEffect(() => {
     if (studentProfile) {
@@ -184,24 +196,7 @@ export default function StudentProfile() {
     }
   }, [profile, router])
 
-  // Calculate profile completion
-  const calculateCompletion = () => {
-    if (!studentProfile) return 0
-    const requiredFields = [
-      'first_name', 'last_name', 'gender', 'date_of_birth', 'nationality', 'marital_status',
-      'email', 'mobile_number', 'emergency_contact_number',
-      'country', 'state', 'city', 'address_line_1', 'pincode',
-      'passport_number', 'aadhar_number', 'pan_number',
-      'passport_url', 'aadhar_front_url', 'passport_photo_url', 'digital_signature_url',
-      'university_name', 'college_name', 'degree_name', 'branch_specialization'
-    ]
-    const filledFields = requiredFields.filter(field => 
-      studentProfile[field as keyof ProfileData]
-    ).length
-    return Math.round((filledFields / requiredFields.length) * 100)
-  }
-
-  const profileCompletion = calculateCompletion()
+  const profileCompletion = profileCompletionData?.completionPercentage ?? 0
 
   // Handle form input change
   const handleChange = (field: keyof ProfileData, value: any) => {
@@ -234,6 +229,7 @@ export default function StudentProfile() {
       } else {
         toast.success('Photo uploaded successfully')
         await refreshProfile()
+        await refreshCompletion()
       }
     } catch (error) {
       toast.error('Failed to upload photo')
@@ -272,6 +268,7 @@ export default function StudentProfile() {
       } else {
         toast.success('Document uploaded successfully')
         await refreshProfile()
+        await refreshCompletion()
         e.target.value = '' // Reset input after successful upload
       }
     } catch (error) {
@@ -344,6 +341,7 @@ export default function StudentProfile() {
       } else {
         toast.success('Changes saved successfully')
         await refreshProfile()
+        await refreshCompletion()
         // Collapse the section after save
         setCollapsedSections(prev => ({ ...prev, [section]: true }))
         // Scroll to progress bar smoothly
@@ -383,6 +381,7 @@ export default function StudentProfile() {
       } else {
         toast.success('Document deleted successfully')
         await refreshProfile()
+        await refreshCompletion()
       }
     } catch (error) {
       toast.error('Failed to delete document')
@@ -398,6 +397,28 @@ export default function StudentProfile() {
     } catch (error) {
       toast.error('Failed to logout')
       setIsLoggingOut(false)
+    }
+  }
+
+  // Handle delete account
+  const handleDeleteAccount = async () => {
+    if (!window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+      return
+    }
+
+    setIsDeletingAccount(true)
+    try {
+      const result = await deleteAccount()
+      if (result.error) {
+        toast.error('Failed to delete account')
+        setIsDeletingAccount(false)
+        return
+      }
+      toast.success('Account deleted successfully')
+      router.push('/login')
+    } catch (error) {
+      toast.error('Failed to delete account')
+      setIsDeletingAccount(false)
     }
   }
 
@@ -461,15 +482,14 @@ export default function StudentProfile() {
                 <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">
                   {formData.first_name} {formData.last_name}
                 </p>
-                {studentId ? (
-                  <p className="text-xs text-[#3B82F6] font-medium">ID: {studentId}</p>
-                ) : (
-                  <p className="text-xs text-gray-500">Student</p>
-                )}
+                  <p className="text-xs text-[#3B82F6] font-medium">ID: {studentId || 'N/A'}</p>
               </div>
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#8DC63F] flex items-center justify-center text-white font-bold text-sm sm:text-base">
+              <Link
+                href="/student/profile"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#8DC63F] flex items-center justify-center text-white font-bold text-sm sm:text-base cursor-pointer hover:opacity-80 transition-opacity"
+              >
                 {avatarInitials}
-              </div>
+              </Link>
             </div>
           </div>
         </div>
@@ -577,7 +597,7 @@ export default function StudentProfile() {
                 onClick={() => toggleSection('personal')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
-                <h2 className="text-lg font-bold text-gray-900">Section A: Personal Information</h2>
+                <h2 className="text-lg font-bold text-gray-900">Section A: <span className="text-[#3B82F6]">Personal Information</span></h2>
                 {collapsedSections.personal ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
                 ) : (
@@ -685,7 +705,7 @@ export default function StudentProfile() {
                 <button
                   onClick={() => handleSave('personal')}
                   disabled={savingSection === 'personal'}
-                  className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-[#8DC63F] hover:text-white transition-colors disabled:opacity-50 text-sm font-medium"
+                  className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-[#8DC63F] hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
                 >
                   <Save className="w-4 h-4" />
                   {savingSection === 'personal' ? 'Saving...' : 'Save'}
@@ -701,7 +721,7 @@ export default function StudentProfile() {
                 onClick={() => toggleSection('contact')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
-                <h2 className="text-lg font-bold text-gray-900">Section B: Contact Information</h2>
+                <h2 className="text-lg font-bold text-gray-900">Section B: <span className="text-[#3B82F6]">Contact Information</span></h2>
                 {collapsedSections.contact ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
                 ) : (
@@ -792,7 +812,7 @@ export default function StudentProfile() {
                 <button
                   onClick={() => handleSave('contact')}
                   disabled={savingSection === 'contact'}
-                  className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-[#8DC63F] hover:text-white transition-colors disabled:opacity-50 text-sm font-medium"
+                  className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-[#8DC63F] hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
                 >
                   <Save className="w-4 h-4" />
                   {savingSection === 'contact' ? 'Saving...' : 'Save'}
@@ -808,7 +828,7 @@ export default function StudentProfile() {
                 onClick={() => toggleSection('address')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
-                <h2 className="text-lg font-bold text-gray-900">Section C: Address Details</h2>
+                <h2 className="text-lg font-bold text-gray-900">Section C: <span className="text-[#3B82F6]">Address Details</span></h2>
                 {collapsedSections.address ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
                 ) : (
@@ -946,7 +966,7 @@ export default function StudentProfile() {
                 <button
                   onClick={() => handleSave('address')}
                   disabled={savingSection === 'address'}
-                  className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-[#8DC63F] hover:text-white transition-colors disabled:opacity-50 text-sm font-medium"
+                  className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-[#8DC63F] hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
                 >
                   <Save className="w-4 h-4" />
                   {savingSection === 'address' ? 'Saving...' : 'Save'}
@@ -962,7 +982,7 @@ export default function StudentProfile() {
                 onClick={() => toggleSection('identity')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
-                <h2 className="text-lg font-bold text-gray-900">Section D: Identity Documents</h2>
+                <h2 className="text-lg font-bold text-gray-900">Section D: <span className="text-[#3B82F6]">Identity Documents</span></h2>
                 {collapsedSections.identity ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
                 ) : (
@@ -1075,7 +1095,7 @@ export default function StudentProfile() {
                     {/* Passport Document */}
                     <div>
                       <label className="text-sm font-medium text-gray-700 mb-2 block">
-                        Passport Document<span className="text-red-500">*</span>
+                        Passport Document
                       </label>
                       <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
                         studentProfile?.passport_url 
@@ -1119,7 +1139,7 @@ export default function StudentProfile() {
                     {/* Passport Photo */}
                     <div>
                       <label className="text-sm font-medium text-gray-700 mb-2 block">
-                        Passport Photo<span className="text-red-500">*</span>
+                        Passport Photo
                       </label>
                       <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
                         studentProfile?.passport_photo_url 
@@ -1163,7 +1183,7 @@ export default function StudentProfile() {
                     {/* Aadhar Front */}
                     <div>
                       <label className="text-sm font-medium text-gray-700 mb-2 block">
-                        Aadhar Front<span className="text-red-500">*</span>
+                        Aadhar Front
                       </label>
                       <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
                         studentProfile?.aadhar_front_url 
@@ -1295,7 +1315,7 @@ export default function StudentProfile() {
                     {/* Digital Signature */}
                     <div>
                       <label className="text-sm font-medium text-gray-700 mb-2 block">
-                        Digital Signature<span className="text-red-500">*</span>
+                        Digital Signature
                       </label>
                       <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
                         studentProfile?.digital_signature_url 
@@ -1386,7 +1406,7 @@ export default function StudentProfile() {
                 <button
                   onClick={() => handleSave('identity')}
                   disabled={savingSection === 'identity'}
-                  className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-[#8DC63F] hover:text-white transition-colors disabled:opacity-50 text-sm font-medium"
+                  className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-[#8DC63F] hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
                 >
                   <Save className="w-4 h-4" />
                   {savingSection === 'identity' ? 'Saving...' : 'Save'}
@@ -1402,7 +1422,7 @@ export default function StudentProfile() {
                 onClick={() => toggleSection('academic')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
-                <h2 className="text-lg font-bold text-gray-900">Section E: Academic Information</h2>
+                <h2 className="text-lg font-bold text-gray-900">Section E: <span className="text-[#3B82F6]">Academic Information</span></h2>
                 {collapsedSections.academic ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
                 ) : (
@@ -1469,7 +1489,7 @@ export default function StudentProfile() {
                 <button
                   onClick={() => handleSave('academic')}
                   disabled={savingSection === 'academic'}
-                  className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-[#8DC63F] hover:text-white transition-colors disabled:opacity-50 text-sm font-medium"
+                  className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-[#8DC63F] hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
                 >
                   <Save className="w-4 h-4" />
                   {savingSection === 'academic' ? 'Saving...' : 'Save'}
@@ -1493,6 +1513,24 @@ export default function StudentProfile() {
                 >
                   <LogOut className="w-4 h-4" />
                   {isLoggingOut ? 'Logging out...' : 'Logout'}
+                </button>
+              </div>
+            </div>
+
+            {/* Delete Account Section */}
+            <div className="mt-4 bg-white rounded-2xl border border-[#EEEEEE] p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold text-base text-gray-900 mb-1">Delete Account</h3>
+                  <p className="text-sm text-gray-500">Permanently delete your account and all data</p>
+                </div>
+                <button
+                  onClick={handleDeleteAccount}
+                  disabled={isDeletingAccount}
+                  className="border border-red-500 text-red-500 rounded-lg px-6 py-2.5 flex items-center gap-2 hover:bg-red-500 hover:text-white transition-colors disabled:opacity-50"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  {isDeletingAccount ? 'Deleting...' : 'Delete Account'}
                 </button>
               </div>
             </div>

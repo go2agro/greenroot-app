@@ -205,10 +205,6 @@ export async function checkProfileCompletion() {
   if (!data.passport_number)       missingFields.push('Passport Number')
   if (!data.aadhar_number)         missingFields.push('Aadhar Number')
   if (!data.pan_number)            missingFields.push('PAN Number')
-  if (!data.passport_url)          missingFields.push('Passport Document')
-  if (!data.aadhar_front_url)      missingFields.push('Aadhar Front')
-  if (!data.passport_photo_url)    missingFields.push('Passport Photo')
-  if (!data.digital_signature_url) missingFields.push('Digital Signature')
 
   // Academic Details
   if (!data.university_name)        missingFields.push('University Name')
@@ -216,8 +212,14 @@ export async function checkProfileCompletion() {
   if (!data.degree_name)            missingFields.push('Degree Name')
   if (!data.branch_specialization)  missingFields.push('Branch Specialization')
 
+  const totalRequiredFields = 21
+  const completionPercentage = Math.round(
+    ((totalRequiredFields - missingFields.length) / totalRequiredFields) * 100
+  )
+
   return toPlainResponse({
     isComplete: missingFields.length === 0,
-    missingFields
+    missingFields,
+    completionPercentage,
   }, null)
 }

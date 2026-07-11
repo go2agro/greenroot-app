@@ -69,7 +69,9 @@ export async function getMyApplications() {
         city,
         country,
         image_url,
-        badge
+        badge,
+        duration_months,
+        stipend_monthly
       )
     `)
     .eq('student_id', user.id)
@@ -96,7 +98,9 @@ export async function getMyApplicationById(applicationId: string) {
         city,
         country,
         image_url,
-        badge
+        badge,
+        duration_months,
+        stipend_monthly
       ),
       application_answers (*)
     `)
@@ -356,14 +360,16 @@ export async function getApplicationCounts() {
   }
 
   data?.forEach((app) => {
-    if (app.status === 'submitted' || app.status === 'under_review') {
+    // Submitted = any application that left draft (was actually submitted)
+    if (app.status !== 'draft') {
       counts.submitted++
     }
-    if (app.status === 'approved') {
-      counts.approved++
-    }
-    if (app.status === 'draft') {
+    // Pending = submitted but still awaiting a decision
+    if (app.status === 'submitted' || app.status === 'under_review') {
       counts.pending++
+    }
+    if (app.status === 'approved' || app.status === 'accepted') {
+      counts.approved++
     }
   })
 
@@ -388,7 +394,9 @@ export async function getActiveApplications() {
         city,
         country,
         image_url,
-        badge
+        badge,
+        duration_months,
+        stipend_monthly
       )
     `)
     .eq('student_id', user.id)
@@ -417,7 +425,9 @@ export async function getDraftApplications() {
         city,
         country,
         image_url,
-        badge
+        badge,
+        duration_months,
+        stipend_monthly
       )
     `)
     .eq('student_id', user.id)

@@ -60,3 +60,44 @@ export async function updatePassword(newPassword: string) {
   const { data, error } = await supabase.auth.updateUser({ password: newPassword })
   return toPlainResponse(data, error)
 }
+
+// Delete Account — removes user data and signs out
+export async function deleteAccount() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+
+  const { data: applications } = await supabase
+    .from('applications')
+    .select('id')
+    .eq('student_id', user.id)
+
+  if (applications?.length) {
+    const applicationIds = applications.map((app) => app.id)
+    await supabase
+      .from('application_answers')
+      .delete()
+      .in('application_id', applicationIds)
+    await supabase
+      .from('applications')
+      .delete()
+      .eq('student_id', user.id)
+  }
+
+  const { error: studentProfileError } = await supabase
+    .from('student_profiles')
+    .delete()
+    .eq('id', user.id)
+
+  if (studentProfileError) return toPlainResponse(null, studentProfileError)
+
+  const { error: profileError } = await supabase
+    .from('profiles')
+    .delete()
+    .eq('id', user.id)
+
+  if (profileError) return toPlainResponse(null, profileError)
+
+  const { error: signOutError } = await supabase.auth.signOut()
+  return toPlainResponse(null, signOutError)
+}

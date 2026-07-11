@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import useSWR from 'swr'
-import { ArrowRight, ChevronLeft, ChevronRight, Send, Search, RefreshCw, Play, CheckCircle, Hourglass } from 'lucide-react'
+import { ArrowRight, ChevronLeft, ChevronRight, Send, Search, RefreshCw, CheckCircle, Hourglass } from 'lucide-react'
 import StudentSidebar from '@/components/StudentSidebar'
 import BottomNavigation from '@/components/BottomNavigation'
 import ApplicationCard from '@/components/ApplicationCard'
@@ -58,6 +58,7 @@ export default function StudentDashboard() {
   const router = useRouter()
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [isRefreshingInternships, setIsRefreshingInternships] = useState(false)
+  const [isRefreshingApplications, setIsRefreshingApplications] = useState(false)
 
   // Use SWR for data fetching with smart caching (NO auto-refresh)
   // Data only refreshes on:
@@ -83,19 +84,19 @@ export default function StudentDashboard() {
     dedupingInterval: 3600000, // 1 hour - manually invalidate after profile updates
   })
 
-  const { data: applicationCounts } = useSWR('applicationCounts', () => fetcher(getApplicationCounts), {
+  const { data: applicationCounts, mutate: refreshApplicationCounts } = useSWR('applicationCounts', () => fetcher(getApplicationCounts), {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     dedupingInterval: 3600000, // 1 hour - manually invalidate after application actions
   })
 
-  const { data: activeApplications } = useSWR('activeApplications', () => fetcher(getActiveApplications), {
+  const { data: activeApplications, mutate: refreshActiveApplications } = useSWR('activeApplications', () => fetcher(getActiveApplications), {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     dedupingInterval: 3600000, // 1 hour - manually invalidate after application actions
   })
 
-  const { data: draftApplications } = useSWR('draftApplications', () => fetcher(getDraftApplications), {
+  const { data: draftApplications, mutate: refreshDraftApplications } = useSWR('draftApplications', () => fetcher(getDraftApplications), {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     dedupingInterval: 3600000, // 1 hour - manually invalidate after draft actions
@@ -114,12 +115,8 @@ export default function StudentDashboard() {
     }
   }, [profile, router])
 
-  // Calculate profile completion - must match profile page calculation
-  // Total mandatory fields: 25 (Personal: 6, Contact: 3, Address: 5, Identity: 7, Academic: 4)
-  const totalRequiredFields = 25
-  const profileCompletion = profileCompletionData
-    ? Math.round(((totalRequiredFields - profileCompletionData.missingFields.length) / totalRequiredFields) * 100)
-    : 0
+  // Profile completion — shared with profile page via checkProfileCompletion
+  const profileCompletion = profileCompletionData?.completionPercentage ?? 0
 
   // Show loading only on first visit (when nothing is cached)
   const isFirstLoad = !profile && !studentProfile && !applicationCounts
@@ -168,6 +165,16 @@ export default function StudentDashboard() {
   // Get student ID from profiles table (unique user ID)
   const studentId = profile?.unique_id || null
 
+  const handleRefreshApplications = async () => {
+    setIsRefreshingApplications(true)
+    await Promise.all([
+      refreshApplicationCounts(),
+      refreshActiveApplications(),
+      refreshDraftApplications(),
+    ])
+    setTimeout(() => setIsRefreshingApplications(false), 500)
+  }
+
   const handleRefreshInternships = async () => {
     setIsRefreshingInternships(true)
     await refreshInternships()
@@ -203,6 +210,7 @@ export default function StudentDashboard() {
             {/* User Profile */}
             <div className="flex items-center gap-2 sm:gap-4">
               {/* Profile Strength - Hidden on mobile */}
+              {profileCompletion < 100 && (
               <div className="hidden md:flex items-center gap-3 bg-gray-50 rounded-lg px-3 lg:px-4 py-2">
                 <div className="relative w-10 h-10 lg:w-12 lg:h-12">
                   <svg className="w-full h-full transform -rotate-90">
@@ -241,6 +249,7 @@ export default function StudentDashboard() {
                   </Link>
                 </div>
               </div>
+              )}
 
               {/* User Avatar */}
               <div className="flex items-center gap-2 sm:gap-3">
@@ -248,15 +257,14 @@ export default function StudentDashboard() {
                   <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">
                     {profileData?.first_name} {profileData?.last_name}
                   </p>
-                  {studentId ? (
-                    <p className="text-xs text-[#3B82F6] font-medium">ID: {studentId}</p>
-                  ) : (
-                    <p className="text-xs text-gray-500">Student</p>
-                  )}
+                  <p className="text-xs text-[#3B82F6] font-medium">ID: {studentId || 'N/A'}</p>
                 </div>
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#8DC63F] flex items-center justify-center text-white font-bold text-sm sm:text-base">
+                <Link
+                  href="/student/profile"
+                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#8DC63F] flex items-center justify-center text-white font-bold text-sm sm:text-base cursor-pointer hover:opacity-80 transition-opacity"
+                >
                   {avatarInitials}
-                </div>
+                </Link>
               </div>
             </div>
           </div>
@@ -266,7 +274,17 @@ export default function StudentDashboard() {
         <div className="p-4 sm:p-6 lg:p-8">
           {/* Application Stats */}
           <div className="mb-6 sm:mb-8">
-            <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">My Applications</h2>
+            <div className="flex items-center gap-3 mb-4">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900">My Applications</h2>
+              <button
+                onClick={handleRefreshApplications}
+                disabled={isRefreshingApplications}
+                className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                title="Refresh applications"
+              >
+                <RefreshCw className={`w-4 h-4 text-gray-600 ${isRefreshingApplications ? 'animate-spin' : ''}`} />
+              </button>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {/* Submitted */}
               <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
@@ -277,20 +295,7 @@ export default function StudentDashboard() {
                       {counts.submitted.toString().padStart(2, '0')}
                     </div>
                   </div>
-                  <Play className="w-6 h-6 text-[#8DC63F] fill-[#8DC63F]" />
-                </div>
-              </div>
-
-              {/* Approved */}
-              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="text-sm text-gray-500 font-medium">Approved</div>
-                    <div className="text-4xl font-bold text-[#3B82F6] mt-2">
-                      {counts.approved.toString().padStart(2, '0')}
-                    </div>
-                  </div>
-                  <CheckCircle className="w-6 h-6 text-[#8DC63F]" />
+                  <Send className="w-6 h-6 text-[#8DC63F]" />
                 </div>
               </div>
 
@@ -304,6 +309,19 @@ export default function StudentDashboard() {
                     </div>
                   </div>
                   <Hourglass className="w-6 h-6 text-[#8DC63F]" />
+                </div>
+              </div>
+
+              {/* Approved */}
+              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="text-sm text-gray-500 font-medium">Approved</div>
+                    <div className="text-4xl font-bold text-[#3B82F6] mt-2">
+                      {counts.approved.toString().padStart(2, '0')}
+                    </div>
+                  </div>
+                  <CheckCircle className="w-6 h-6 text-[#8DC63F]" />
                 </div>
               </div>
             </div>
@@ -324,7 +342,7 @@ export default function StudentDashboard() {
               </div>
               <div className="space-y-3">
                 {activeApps.length > 0 ? (
-                  activeApps.slice(0, 2).map((app: Application) => (
+                  activeApps.slice(0, 3).map((app: Application) => (
                     <ApplicationCard
                       key={app.id}
                       id={app.id}
@@ -356,7 +374,7 @@ export default function StudentDashboard() {
               </div>
               <div className="space-y-3">
                 {drafts.length > 0 ? (
-                  drafts.slice(0, 2).map((app: Application) => (
+                  drafts.slice(0, 3).map((app: Application) => (
                     <div key={app.id} className="bg-white rounded-lg border border-gray-200 p-4">
                       <div className="flex items-center gap-4 mb-3">
                         <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
