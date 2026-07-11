@@ -30,32 +30,48 @@ export default function StudentSidebar({ isCollapsed = false, onToggle }: Studen
     >
       {/* Logo and Toggle */}
       <div className="p-4 border-b border-[#EEEEEE]">
-        <div className="flex items-center justify-between gap-2">
-          <Link href="/student/dashboard" className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-            <Image 
-              src="/greenroot-logo.svg" 
-              alt="GreenRoot" 
-              width={32} 
-              height={32}
-            />
-            {!isCollapsed && (
-              <span className="text-xl font-bold text-[#8DC63F]">GreenRoot</span>
-            )}
-          </Link>
-          {onToggle && (
-            <button
-              onClick={onToggle}
-              className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-              aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-              {isCollapsed ? (
+        {isCollapsed ? (
+          <div className="flex flex-col items-center gap-3">
+            {onToggle && (
+              <button
+                onClick={onToggle}
+                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                aria-label="Expand sidebar"
+              >
                 <ChevronRight className="w-5 h-5 text-gray-600" />
-              ) : (
+              </button>
+            )}
+            <Link href="/student/dashboard" className="cursor-pointer hover:opacity-80 transition-opacity">
+              <Image 
+                src="/greenroot-logo.svg" 
+                alt="GreenRoot" 
+                width={32} 
+                height={32}
+              />
+            </Link>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between gap-2">
+            <Link href="/student/dashboard" className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+              <Image 
+                src="/greenroot-logo.svg" 
+                alt="GreenRoot" 
+                width={32} 
+                height={32}
+              />
+              <span className="text-xl font-bold text-[#8DC63F]">GreenRoot</span>
+            </Link>
+            {onToggle && (
+              <button
+                onClick={onToggle}
+                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                aria-label="Collapse sidebar"
+              >
                 <ChevronLeft className="w-5 h-5 text-gray-600" />
-              )}
-            </button>
-          )}
-        </div>
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Navigation */}
@@ -94,12 +110,12 @@ export default function StudentSidebar({ isCollapsed = false, onToggle }: Studen
             </p>
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm">
-                <Phone className="w-4 h-4 text-[#8DC63F]" />
-                <span className="text-[#8DC63F]">1234567890</span>
+                <Phone className="w-4 h-4 text-[#8DC63F] flex-shrink-0" />
+                <span className="text-[#8DC63F] break-all">1234567890</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <Mail className="w-4 h-4 text-[#8DC63F]" />
-                <span className="text-[#8DC63F]">greenroot@gmail.com</span>
+                <Mail className="w-4 h-4 text-[#8DC63F] flex-shrink-0" />
+                <span className="text-[#8DC63F] break-all text-xs">greenroot@gmail.com</span>
               </div>
             </div>
           </div>

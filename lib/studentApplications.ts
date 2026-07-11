@@ -15,7 +15,7 @@ export async function startApplication(internshipId: string) {
   // Check if student profile is complete
   const { data: profile } = await supabase
     .from('student_profiles')
-    .select('first_name, last_name, email, phone_number, university_name, degree, passport_number')
+    .select('first_name, last_name, email, mobile_number, university_name, degree_name, passport_number')
     .eq('id', user.id)
     .single()
 
@@ -196,7 +196,7 @@ export async function submitApplication(applicationId: string) {
     .update({
       status: 'submitted',
       submitted_at: new Date().toISOString(),
-      current_step: 10
+      current_step: 5
     })
     .eq('id', applicationId)
 

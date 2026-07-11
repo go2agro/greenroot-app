@@ -24,35 +24,43 @@ export async function createStudentProfile(profileData: {
   middle_name?: string
   last_name?: string
   email?: string
-  phone_number?: string
+  mobile_number?: string
   gender?: 'male' | 'female' | 'other'
   date_of_birth?: string
+  nationality?: string
+  marital_status?: string
+  alternate_email?: string
+  alternate_phone?: string
+  whatsapp_number?: string
+  emergency_contact_number?: string
   address_line_1?: string
   address_line_2?: string
   city?: string
+  district?: string
   state?: string
   pincode?: string
+  country?: string
+  college_name?: string
   university_name?: string
-  branch_major?: string
-  degree?: string
-  course_status?: 'ongoing' | 'completed'
+  degree_name?: string
+  branch_specialization?: string
   aadhar_number?: string
+  aadhar_front_url?: string
+  aadhar_back_url?: string
   pan_number?: string
+  pan_url?: string
   passport_number?: string
-  short_bio?: string
-  profile_photo_url?: string
-  cgpa?: number
-  graduation_date?: string
-  university_roll_number?: string
+  passport_url?: string
+  passport_photo_url?: string
   passport_expiry_date?: string
   passport_issue_date?: string
   passport_country_of_issue?: string
+  driving_license_number?: string
+  driving_license_url?: string
+  digital_signature_url?: string
+  short_bio?: string
+  profile_photo_url?: string
   current_residential_address?: string
-  country?: string
-  passport_scan_url?: string
-  passport_photo_url?: string
-  student_id_card_url?: string
-  bonafide_certificate_url?: string
 }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -71,35 +79,43 @@ export async function updateStudentProfile(profileData: {
   middle_name?: string
   last_name?: string
   email?: string
-  phone_number?: string
+  mobile_number?: string
   gender?: 'male' | 'female' | 'other'
   date_of_birth?: string
+  nationality?: string
+  marital_status?: string
+  alternate_email?: string
+  alternate_phone?: string
+  whatsapp_number?: string
+  emergency_contact_number?: string
   address_line_1?: string
   address_line_2?: string
   city?: string
+  district?: string
   state?: string
   pincode?: string
+  country?: string
+  college_name?: string
   university_name?: string
-  branch_major?: string
-  degree?: string
-  course_status?: 'ongoing' | 'completed'
+  degree_name?: string
+  branch_specialization?: string
   aadhar_number?: string
+  aadhar_front_url?: string
+  aadhar_back_url?: string
   pan_number?: string
+  pan_url?: string
   passport_number?: string
-  short_bio?: string
-  profile_photo_url?: string
-  cgpa?: number
-  graduation_date?: string
-  university_roll_number?: string
+  passport_url?: string
+  passport_photo_url?: string
   passport_expiry_date?: string
   passport_issue_date?: string
   passport_country_of_issue?: string
+  driving_license_number?: string
+  driving_license_url?: string
+  digital_signature_url?: string
+  short_bio?: string
+  profile_photo_url?: string
   current_residential_address?: string
-  country?: string
-  passport_scan_url?: string
-  passport_photo_url?: string
-  student_id_card_url?: string
-  bonafide_certificate_url?: string
 }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -118,8 +134,9 @@ export async function updateStudentProfile(profileData: {
 // ─────────────────────────────────────────
 export async function uploadStudentDocument(
   file: File,
-  documentType: 'passport_scan' | 'passport_photo' | 
-                'student_id_card' | 'bonafide_certificate'
+  documentType: 'passport' | 'passport_photo' | 
+                'aadhar_front' | 'aadhar_back' |
+                'pan' | 'driving_license' | 'digital_signature'
 ) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -165,28 +182,39 @@ export async function checkProfileCompletion() {
   const missingFields: string[] = []
 
   // Personal Details
-  if (!data.first_name)    missingFields.push('First Name')
-  if (!data.last_name)     missingFields.push('Last Name')
-  if (!data.email)         missingFields.push('Email')
-  if (!data.phone_number)  missingFields.push('Phone Number')
-  if (!data.gender)        missingFields.push('Gender')
-  if (!data.date_of_birth) missingFields.push('Date of Birth')
+  if (!data.first_name)      missingFields.push('First Name')
+  if (!data.last_name)       missingFields.push('Last Name')
+  if (!data.gender)          missingFields.push('Gender')
+  if (!data.date_of_birth)   missingFields.push('Date of Birth')
+  if (!data.nationality)     missingFields.push('Nationality')
+  if (!data.marital_status)  missingFields.push('Marital Status')
+
+  // Contact Details
+  if (!data.email)                     missingFields.push('Email')
+  if (!data.mobile_number)             missingFields.push('Mobile Number')
+  if (!data.emergency_contact_number)  missingFields.push('Emergency Contact Number')
 
   // Address Details
-  if (!data.address_line_1) missingFields.push('Address Line 1')
-  if (!data.city)           missingFields.push('City')
+  if (!data.country)        missingFields.push('Country')
   if (!data.state)          missingFields.push('State')
+  if (!data.city)           missingFields.push('City')
+  if (!data.address_line_1) missingFields.push('Address Line 1')
   if (!data.pincode)        missingFields.push('Pincode')
 
-  // Academic Details
-  if (!data.university_name) missingFields.push('University Name')
-  if (!data.degree)          missingFields.push('Degree')
-  if (!data.branch_major)    missingFields.push('Branch / Major')
-  if (!data.course_status)   missingFields.push('Course Status')
+  // Identity Documents
+  if (!data.passport_number)       missingFields.push('Passport Number')
+  if (!data.aadhar_number)         missingFields.push('Aadhar Number')
+  if (!data.pan_number)            missingFields.push('PAN Number')
+  if (!data.passport_url)          missingFields.push('Passport Document')
+  if (!data.aadhar_front_url)      missingFields.push('Aadhar Front')
+  if (!data.passport_photo_url)    missingFields.push('Passport Photo')
+  if (!data.digital_signature_url) missingFields.push('Digital Signature')
 
-  // Identification
-  if (!data.aadhar_number)   missingFields.push('Aadhar Number')
-  if (!data.passport_number) missingFields.push('Passport Number')
+  // Academic Details
+  if (!data.university_name)        missingFields.push('University Name')
+  if (!data.college_name)           missingFields.push('College Name')
+  if (!data.degree_name)            missingFields.push('Degree Name')
+  if (!data.branch_specialization)  missingFields.push('Branch Specialization')
 
   return toPlainResponse({
     isComplete: missingFields.length === 0,

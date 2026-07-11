@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import useSWR from 'swr'
-import { ArrowRight, ChevronLeft, ChevronRight, Send, Search, RefreshCw } from 'lucide-react'
+import { ArrowRight, ChevronLeft, ChevronRight, Send, Search, RefreshCw, Play, CheckCircle, Hourglass } from 'lucide-react'
 import StudentSidebar from '@/components/StudentSidebar'
 import BottomNavigation from '@/components/BottomNavigation'
 import ApplicationCard from '@/components/ApplicationCard'
@@ -114,9 +114,11 @@ export default function StudentDashboard() {
     }
   }, [profile, router])
 
-  // Calculate profile completion
-  const profileCompletion = profileCompletionData 
-    ? Math.round(((16 - profileCompletionData.missingFields.length) / 16) * 100)
+  // Calculate profile completion - must match profile page calculation
+  // Total mandatory fields: 25 (Personal: 6, Contact: 3, Address: 5, Identity: 7, Academic: 4)
+  const totalRequiredFields = 25
+  const profileCompletion = profileCompletionData
+    ? Math.round(((totalRequiredFields - profileCompletionData.missingFields.length) / totalRequiredFields) * 100)
     : 0
 
   // Show loading only on first visit (when nothing is cached)
@@ -145,10 +147,26 @@ export default function StudentDashboard() {
   // Get display name - show email if first name is empty
   const displayName = profileData?.first_name || profileData?.email || profile?.email || 'Student'
   
-  // Get avatar initial - MUST be from email if name is not present
-  const avatarInitial = profileData?.first_name 
-    ? profileData.first_name.charAt(0).toUpperCase()
-    : (profileData?.email?.charAt(0).toUpperCase() || profile?.email?.charAt(0).toUpperCase() || 'S')
+  // Get avatar initials - show first and last name initials if both available
+  const getAvatarInitials = () => {
+    if (profileData?.profile_photo_url) return null // If profile pic exists, return null
+    
+    const firstName = profileData?.first_name?.trim()
+    const lastName = profileData?.last_name?.trim()
+    
+    if (firstName && lastName) {
+      return `${firstName.charAt(0).toUpperCase()}${lastName.charAt(0).toUpperCase()}`
+    } else if (firstName) {
+      return firstName.charAt(0).toUpperCase()
+    } else {
+      return (profileData?.email?.charAt(0).toUpperCase() || profile?.email?.charAt(0).toUpperCase() || 'S')
+    }
+  }
+  
+  const avatarInitials = getAvatarInitials()
+  
+  // Get student ID from profiles table (unique user ID)
+  const studentId = profile?.unique_id || null
 
   const handleRefreshInternships = async () => {
     setIsRefreshingInternships(true)
@@ -227,13 +245,17 @@ export default function StudentDashboard() {
               {/* User Avatar */}
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="hidden sm:block text-right">
-                  <p className="text-sm font-semibold text-gray-900 truncate max-w-[120px]">
+                  <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">
                     {profileData?.first_name} {profileData?.last_name}
                   </p>
-                  <p className="text-xs text-gray-500">Student</p>
+                  {studentId ? (
+                    <p className="text-xs text-[#3B82F6] font-medium">ID: {studentId}</p>
+                  ) : (
+                    <p className="text-xs text-gray-500">Student</p>
+                  )}
                 </div>
                 <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#8DC63F] flex items-center justify-center text-white font-bold text-sm sm:text-base">
-                  {avatarInitial}
+                  {avatarInitials}
                 </div>
               </div>
             </div>
@@ -245,51 +267,44 @@ export default function StudentDashboard() {
           {/* Application Stats */}
           <div className="mb-6 sm:mb-8">
             <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">My Applications</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {/* Submitted */}
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm text-gray-600">Submitted</p>
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <Send className="w-5 h-5 text-green-600" />
+              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="text-sm text-gray-500 font-medium">Submitted</div>
+                    <div className="text-4xl font-bold text-[#3B82F6] mt-2">
+                      {counts.submitted.toString().padStart(2, '0')}
+                    </div>
                   </div>
+                  <Play className="w-6 h-6 text-[#8DC63F] fill-[#8DC63F]" />
                 </div>
-                <p className="text-3xl font-bold text-gray-900">
-                  {counts.submitted.toString().padStart(2, '0')}
-                </p>
               </div>
 
               {/* Approved */}
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm text-gray-600">Approved</p>
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
+              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="text-sm text-gray-500 font-medium">Approved</div>
+                    <div className="text-4xl font-bold text-[#3B82F6] mt-2">
+                      {counts.approved.toString().padStart(2, '0')}
+                    </div>
                   </div>
+                  <CheckCircle className="w-6 h-6 text-[#8DC63F]" />
                 </div>
-                <p className="text-3xl font-bold text-gray-900">
-                  {counts.approved.toString().padStart(2, '0')}
-                </p>
               </div>
 
               {/* Pending */}
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm text-gray-600">Pending</p>
-                  <div className="p-2 bg-yellow-100 rounded-lg">
-                    <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="text-sm text-gray-500 font-medium">Pending</div>
+                    <div className="text-4xl font-bold text-[#3B82F6] mt-2">
+                      {counts.pending.toString().padStart(2, '0')}
+                    </div>
                   </div>
+                  <Hourglass className="w-6 h-6 text-[#8DC63F]" />
                 </div>
-                <p className="text-3xl font-bold text-gray-900">
-                  {counts.pending.toString().padStart(2, '0')}
-                </p>
-                {counts.pending > 0 && (
-                  <p className="text-xs text-red-500 mt-1">Action required for {counts.pending}</p>
-                )}
               </div>
             </div>
           </div>
