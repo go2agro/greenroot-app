@@ -360,15 +360,17 @@ export async function getApplicationCounts() {
   }
 
   data?.forEach((app) => {
-    // Submitted = any application that left draft (was actually submitted)
-    if (app.status !== 'draft') {
+    const isPending = app.status === 'submitted' || app.status === 'under_review'
+    const isApproved = app.status === 'approved' || app.status === 'accepted'
+
+    // Submitted = pending + approved (+ rejected — all apps that were submitted)
+    if (isPending || isApproved || app.status === 'rejected') {
       counts.submitted++
     }
-    // Pending = submitted but still awaiting a decision
-    if (app.status === 'submitted' || app.status === 'under_review') {
+    if (isPending) {
       counts.pending++
     }
-    if (app.status === 'approved' || app.status === 'accepted') {
+    if (isApproved) {
       counts.approved++
     }
   })
