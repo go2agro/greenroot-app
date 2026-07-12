@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import useSWR from 'swr'
 import StudentSidebar from '@/components/StudentSidebar'
+import StudentMobileLogo from '@/components/StudentMobileLogo'
 import BottomNavigation from '@/components/BottomNavigation'
 import UserAvatar from '@/components/UserAvatar'
 import { Search, MapPin, Clock, Banknote, ChevronLeft, ChevronRight, X, RefreshCw } from 'lucide-react'
@@ -241,20 +242,23 @@ export default function StudentInternships() {
 
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-end gap-3">
-            <div className="text-right">
-              <div className="font-bold text-gray-900">{userName}</div>
-              <div className="text-xs text-[#3B82F6] font-medium">ID: {myProfile?.unique_id || 'N/A'}</div>
+          <div className="flex items-center justify-between gap-3">
+            <StudentMobileLogo />
+            <div className="flex items-center gap-3">
+              <div className="text-right">
+                <div className="font-bold text-gray-900">{userName}</div>
+                <div className="text-xs text-[#3B82F6] font-medium">ID: {myProfile?.unique_id || 'N/A'}</div>
+              </div>
+              <Link href="/student/profile" className="cursor-pointer hover:opacity-80 transition-opacity">
+                <UserAvatar
+                  imageUrl={profile?.profile_image_url || profile?.avatar_url}
+                  firstName={profile?.first_name}
+                  lastName={profile?.last_name}
+                  fallbackLetter="S"
+                  size={40}
+                />
+              </Link>
             </div>
-            <Link href="/student/profile" className="cursor-pointer hover:opacity-80 transition-opacity">
-              <UserAvatar
-                imageUrl={profile?.profile_image_url || profile?.avatar_url}
-                firstName={profile?.first_name}
-                lastName={profile?.last_name}
-                fallbackLetter="S"
-                size={40}
-              />
-            </Link>
           </div>
         </div>
 

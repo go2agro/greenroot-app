@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import useSWR from 'swr'
 import StudentSidebar from '@/components/StudentSidebar'
+import StudentMobileLogo from '@/components/StudentMobileLogo'
 import BottomNavigation from '@/components/BottomNavigation'
 import UserAvatar from '@/components/UserAvatar'
 import { 
@@ -15,7 +16,6 @@ import {
   ChevronRight, 
   Send, 
   CheckCircle, 
-  Hourglass,
   SlidersHorizontal,
   FileText,
   ChevronLeft,
@@ -250,8 +250,8 @@ export default function StudentApplications() {
     setCurrentPage(1)
   }, [searchQuery, filterStatus, applications])
 
+  const draftsCount = applicationCounts?.drafts ?? 0
   const submittedCount = applicationCounts?.submitted ?? 0
-  const pendingCount = applicationCounts?.pending ?? 0
   const approvedCount = applicationCounts?.approved ?? 0
 
   const totalPages = Math.ceil(filteredApplications.length / ITEMS_PER_PAGE)
@@ -344,20 +344,23 @@ export default function StudentApplications() {
 
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-end gap-3">
-            <div className="text-right">
-              <div className="font-bold text-gray-900">{userName}</div>
-              <div className="text-xs text-[#3B82F6] font-medium">ID: {myProfile?.unique_id || 'N/A'}</div>
+          <div className="flex items-center justify-between gap-3">
+            <StudentMobileLogo />
+            <div className="flex items-center gap-3">
+              <div className="text-right">
+                <div className="font-bold text-gray-900">{userName}</div>
+                <div className="text-xs text-[#3B82F6] font-medium">ID: {myProfile?.unique_id || 'N/A'}</div>
+              </div>
+              <Link href="/student/profile" className="cursor-pointer hover:opacity-80 transition-opacity">
+                <UserAvatar
+                  imageUrl={profile?.profile_image_url || profile?.avatar_url}
+                  firstName={profile?.first_name}
+                  lastName={profile?.last_name}
+                  fallbackLetter="S"
+                  size={40}
+                />
+              </Link>
             </div>
-            <Link href="/student/profile" className="cursor-pointer hover:opacity-80 transition-opacity">
-              <UserAvatar
-                imageUrl={profile?.profile_image_url || profile?.avatar_url}
-                firstName={profile?.first_name}
-                lastName={profile?.last_name}
-                fallbackLetter="S"
-                size={40}
-              />
-            </Link>
           </div>
         </div>
 
@@ -372,24 +375,24 @@ export default function StudentApplications() {
               <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
                 <div className="flex justify-between items-start">
                   <div>
-                    <div className="text-sm text-gray-500 font-medium">Submitted</div>
+                    <div className="text-sm text-gray-500 font-medium">Drafts</div>
                     <div className="text-4xl font-bold text-[#3B82F6] mt-2">
-                      {submittedCount.toString().padStart(2, '0')}
+                      {draftsCount.toString().padStart(2, '0')}
                     </div>
                   </div>
-                  <Send className="w-6 h-6 text-[#8DC63F]" />
+                  <FileText className="w-6 h-6 text-[#8DC63F]" />
                 </div>
               </div>
 
               <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
                 <div className="flex justify-between items-start">
                   <div>
-                    <div className="text-sm text-gray-500 font-medium">Pending</div>
+                    <div className="text-sm text-gray-500 font-medium">Submitted</div>
                     <div className="text-4xl font-bold text-[#3B82F6] mt-2">
-                      {pendingCount.toString().padStart(2, '0')}
+                      {submittedCount.toString().padStart(2, '0')}
                     </div>
                   </div>
-                  <Hourglass className="w-6 h-6 text-[#8DC63F]" />
+                  <Send className="w-6 h-6 text-[#8DC63F]" />
                 </div>
               </div>
 

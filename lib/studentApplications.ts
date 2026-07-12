@@ -430,23 +430,19 @@ export async function getApplicationCounts() {
   if (error) return toPlainResponse(null, error)
 
   const counts = {
+    drafts: 0,
     submitted: 0,
     approved: 0,
-    pending: 0
   }
 
   data?.forEach((app) => {
-    const isPending = app.status === 'submitted' || app.status === 'under_review'
-    const isApproved = app.status === 'approved' || app.status === 'accepted'
-
-    // Submitted = pending + approved (+ rejected — all apps that were submitted)
-    if (isPending || isApproved || app.status === 'rejected') {
+    if (app.status === 'draft') {
+      counts.drafts++
+    }
+    if (app.status === 'submitted' || app.status === 'under_review') {
       counts.submitted++
     }
-    if (isPending) {
-      counts.pending++
-    }
-    if (isApproved) {
+    if (app.status === 'approved' || app.status === 'accepted') {
       counts.approved++
     }
   })
@@ -478,9 +474,9 @@ export async function getActiveApplications() {
       )
     `)
     .eq('student_id', user.id)
-    .neq('status', 'rejected')
+    .in('status', ['submitted', 'under_review'])
     .order('updated_at', { ascending: false })
-    .limit(10)
+    .limit(3)
 
   return toPlainResponse(data, error)
 }

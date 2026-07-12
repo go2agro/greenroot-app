@@ -258,17 +258,17 @@ export default function StudentInternshipDetail({ params }: { params: Promise<{ 
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
         
-        <div className="absolute inset-x-0 bottom-0 flex justify-center px-8 pb-8">
-          <div className="flex flex-col items-center text-center gap-4 max-w-3xl">
+        <div className="absolute inset-x-0 bottom-0 px-4 sm:px-8 lg:px-12 pb-8">
+          <div className="max-w-7xl mx-auto flex flex-col items-start text-left gap-4">
             <div className="flex items-center gap-2 text-white text-sm">
-              <MapPin className="w-4 h-4" />
+              <MapPin className="w-4 h-4 flex-shrink-0" />
               <span className="flex items-center gap-2">
-                {internship.flag_emoji && <span className="text-3xl">{internship.flag_emoji}</span>}
-                <span className="text-base">{internship.country}</span>
+                {internship.flag_emoji && <span className="text-2xl">{internship.flag_emoji}</span>}
+                <span className="text-base font-medium">{internship.country}</span>
               </span>
             </div>
             
-            <h1 className="text-2xl md:text-4xl font-bold text-white">
+            <h1 className="text-2xl md:text-4xl font-bold text-white leading-tight">
               {internship.title}
             </h1>
             

@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import StudentSidebar from '@/components/StudentSidebar'
+import StudentMobileLogo from '@/components/StudentMobileLogo'
 import BottomNavigation from '@/components/BottomNavigation'
 import { getMyProfile } from '@/lib/profiles'
 import { signOut, deleteAccount } from '@/lib/auth'
@@ -440,10 +441,13 @@ export default function StudentProfile() {
         {/* Header */}
         <div className="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex-shrink-0">
           <div className="flex items-center justify-between gap-4">
-            <div className="flex-1 min-w-0">
-              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
-                Profile Settings
-              </h1>
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <StudentMobileLogo />
+              <div className="flex-1 min-w-0">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
+                  Profile Settings
+                </h1>
+              </div>
             </div>
             
             <div className="flex items-center gap-2 sm:gap-3">
@@ -470,9 +474,13 @@ export default function StudentProfile() {
             <div ref={progressBarRef} className="bg-white rounded-2xl border border-[#EEEEEE] p-6 mb-6">
               <div className="flex items-center justify-between gap-6">
                 <div className="flex-1">
-                  <h2 className="font-bold text-xl mb-1">Complete Your Profile</h2>
+                  <h2 className="font-bold text-xl mb-1">
+                    {profileCompletion === 100 ? 'Profile Complete' : 'Complete Your Profile'}
+                  </h2>
                   <p className="text-sm text-gray-500">
-                    Finish your profile to increase your chances of getting matched with top agricultural internships! Just {100 - profileCompletion}% more to go!
+                    {profileCompletion === 100
+                      ? 'Your profile is fully complete! You\'re all set to apply for top agricultural internships.'
+                      : `Finish your profile to increase your chances of getting matched with top agricultural internships! Just ${100 - profileCompletion}% more to go!`}
                   </p>
                   <div className="mt-4 h-3 bg-gray-200 rounded-full overflow-hidden">
                     <div 

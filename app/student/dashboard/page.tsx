@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import useSWR from 'swr'
-import { ArrowRight, ChevronLeft, ChevronRight, Send, Search, RefreshCw, CheckCircle, Hourglass } from 'lucide-react'
+import { ArrowRight, ChevronLeft, ChevronRight, Send, Search, RefreshCw, CheckCircle, FileText } from 'lucide-react'
 import StudentSidebar from '@/components/StudentSidebar'
+import StudentMobileLogo from '@/components/StudentMobileLogo'
 import BottomNavigation from '@/components/BottomNavigation'
 import ApplicationCard from '@/components/ApplicationCard'
 import InternshipCard from '@/components/InternshipCard'
@@ -23,9 +24,9 @@ interface ProfileData {
 }
 
 interface ApplicationCounts {
+  drafts: number
   submitted: number
   approved: number
-  pending: number
 }
 
 interface Application {
@@ -134,7 +135,7 @@ export default function StudentDashboard() {
 
   // If data is still loading but we have cached data, show the cached data
   const profileData = studentProfile || null
-  const counts = applicationCounts || { submitted: 0, approved: 0, pending: 0 }
+  const counts = applicationCounts || { drafts: 0, submitted: 0, approved: 0 }
   const activeApps = activeApplications || []
   const drafts = draftApplications || []
   
@@ -197,6 +198,7 @@ export default function StudentDashboard() {
         <div className="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 flex-1 min-w-0">
+              <StudentMobileLogo />
               <div className="flex-1 min-w-0">
                 <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">
                   Welcome back, {displayName}!
@@ -286,6 +288,19 @@ export default function StudentDashboard() {
               </button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {/* Drafts */}
+              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="text-sm text-gray-500 font-medium">Drafts</div>
+                    <div className="text-4xl font-bold text-[#3B82F6] mt-2">
+                      {counts.drafts.toString().padStart(2, '0')}
+                    </div>
+                  </div>
+                  <FileText className="w-6 h-6 text-[#8DC63F]" />
+                </div>
+              </div>
+
               {/* Submitted */}
               <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
                 <div className="flex justify-between items-start">
@@ -296,19 +311,6 @@ export default function StudentDashboard() {
                     </div>
                   </div>
                   <Send className="w-6 h-6 text-[#8DC63F]" />
-                </div>
-              </div>
-
-              {/* Pending */}
-              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="text-sm text-gray-500 font-medium">Pending</div>
-                    <div className="text-4xl font-bold text-[#3B82F6] mt-2">
-                      {counts.pending.toString().padStart(2, '0')}
-                    </div>
-                  </div>
-                  <Hourglass className="w-6 h-6 text-[#8DC63F]" />
                 </div>
               </div>
 
