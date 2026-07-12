@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { 
-  ChevronLeft,
-  Check,
   User,
   GraduationCap,
   Languages,
@@ -20,7 +18,6 @@ import {
   ArrowLeft
 } from 'lucide-react'
 import { toast } from 'sonner'
-import StudentSidebar from '@/components/StudentSidebar'
 import UserAvatar from '@/components/UserAvatar'
 import { 
   getMyApplicationById,
@@ -146,6 +143,8 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
   
   const [isDragging, setIsDragging] = useState(false)
 
+  const isReadOnly = application?.status !== 'draft'
+
   useEffect(() => {
     loadData()
   }, [id])
@@ -212,6 +211,13 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
   const handleNext = async () => {
     if (!application) return
+
+    if (isReadOnly) {
+      if (currentStep < 5) {
+        setCurrentStep(currentStep + 1)
+      }
+      return
+    }
     
     if (currentStep === 2) {
       if (!validateStep2()) return
@@ -239,7 +245,9 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
     if (currentStep > 1) {
       const prevStep = currentStep - 1
       setCurrentStep(prevStep)
-      await updateCurrentStep(application.id, prevStep)
+      if (!isReadOnly) {
+        await updateCurrentStep(application.id, prevStep)
+      }
     }
   }
 
@@ -448,11 +456,9 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
       
       const result = await submitApplication(application.id)
       
-      if (result.data) {
+      if (!result.error) {
         toast.success('Application submitted successfully!')
-        setTimeout(() => {
-          router.push('/student/applications')
-        }, 1500)
+        router.push('/student/applications')
       } else {
         toast.error(result.error?.message || 'Failed to submit application')
       }
@@ -482,33 +488,23 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
   if (isLoading) {
     return (
-      <div className="flex h-screen bg-[#F9F9F9]">
-        <div className="hidden lg:block">
-          <StudentSidebar />
-        </div>
-        <div className="flex-1 flex items-center justify-center">
-          <Loader2 className="w-8 h-8 text-[#8DC63F] animate-spin" />
-        </div>
+      <div className="flex h-screen bg-[#F9F9F9] items-center justify-center">
+        <Loader2 className="w-8 h-8 text-[#8DC63F] animate-spin" />
       </div>
     )
   }
 
   if (!application || !profile) {
     return (
-      <div className="flex h-screen bg-[#F9F9F9]">
-        <div className="hidden lg:block">
-          <StudentSidebar />
-        </div>
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-gray-500 mb-4">Application not found</p>
-            <Link
-              href="/student/applications"
-              className="text-[#8DC63F] hover:underline"
-            >
-              Back to Applications
-            </Link>
-          </div>
+      <div className="flex h-screen bg-[#F9F9F9] items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-500 mb-4">Application not found</p>
+          <Link
+            href="/student/applications"
+            className="text-[#8DC63F] hover:underline"
+          >
+            Back to Applications
+          </Link>
         </div>
       </div>
     )
@@ -516,40 +512,56 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
   const userName = profile ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() : 'Student'
 
+  const handleStepClick = (stepNumber: number) => {
+    if (isReadOnly) {
+      setCurrentStep(stepNumber)
+    }
+  }
+
   return (
     <div className="flex h-screen bg-[#F9F9F9]">
-      <div className="hidden lg:block">
-        <StudentSidebar />
-      </div>
-
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-end gap-3">
-            <div className="text-right">
-              <div className="font-bold text-gray-900">{userName}</div>
-              <div className="text-xs text-[#3B82F6] font-medium">ID: {myProfile?.unique_id || 'N/A'}</div>
-            </div>
-            <Link href="/student/profile" className="cursor-pointer hover:opacity-80 transition-opacity">
-              <UserAvatar
-                imageUrl={profile?.profile_image_url || profile?.avatar_url}
-                firstName={profile?.first_name}
-                lastName={profile?.last_name}
-                fallbackLetter="S"
-                size={40}
-              />
+          <div className="relative flex items-center justify-center">
+            <Link
+              href="/student/applications"
+              className="absolute left-0 flex items-center gap-2 text-gray-600 hover:text-[#8DC63F] transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span className="font-medium">Back</span>
             </Link>
+            
+            <Link href="/student/dashboard" className="flex items-center gap-2">
+              <Image 
+                src="/greenroot-logo.svg" 
+                alt="GreenRoot" 
+                width={32} 
+                height={32}
+                priority
+              />
+              <span className="text-xl font-bold text-gray-900">GreenRoot</span>
+            </Link>
+
+            <div className="absolute right-0 flex items-center gap-2 sm:gap-3">
+              <div className="hidden sm:block text-right">
+                <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">{userName}</p>
+                <p className="text-xs text-[#3B82F6] font-medium">ID: {myProfile?.unique_id || 'N/A'}</p>
+              </div>
+              <Link href="/student/profile" className="cursor-pointer hover:opacity-80 transition-opacity">
+                <UserAvatar
+                  imageUrl={profile?.profile_image_url || profile?.avatar_url}
+                  firstName={profile?.first_name}
+                  lastName={profile?.last_name}
+                  fallbackLetter="S"
+                  size={40}
+                />
+              </Link>
+            </div>
           </div>
         </div>
 
         <div className="flex-1 overflow-y-auto pb-24">
           <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
-            <Link
-              href="/student/applications"
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-[#8DC63F] mb-6 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span className="text-sm font-medium">Back to Applications</span>
-            </Link>
 
             <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5 mb-6">
               <div className="flex items-center gap-4">
@@ -584,40 +596,60 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
               </div>
             </div>
 
+            {isReadOnly && (
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 flex items-start gap-3">
+                <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-blue-800">Application Submitted</p>
+                  <p className="text-xs text-blue-600 mt-1">This application has been submitted and is now view-only.</p>
+                </div>
+              </div>
+            )}
+
             <div className="bg-white border border-[#EEEEEE] rounded-2xl p-6 mb-6">
-              <div className="flex items-center justify-between mb-8">
+              <div className="grid grid-cols-5 mb-8">
                 {STEP_NAMES.map((name, index) => {
                   const stepNumber = index + 1
-                  const isCompleted = stepNumber < currentStep
                   const isActive = stepNumber === currentStep
-                  
+                  const isReached = stepNumber <= currentStep
+
                   return (
-                    <div key={stepNumber} className="flex items-center flex-1">
-                      <div className="flex flex-col items-center">
-                        <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-colors ${
-                            isCompleted || isActive
+                    <div key={stepNumber} className="flex flex-col items-center">
+                      <div className="relative flex items-center justify-center w-full h-10">
+                        {index > 0 && (
+                          <div
+                            className={`absolute right-1/2 left-0 top-1/2 -translate-y-1/2 h-[3px] transition-colors ${
+                              currentStep > index ? 'bg-[#8DC63F]' : 'bg-gray-200'
+                            }`}
+                          />
+                        )}
+                        {index < STEP_NAMES.length - 1 && (
+                          <div
+                            className={`absolute left-1/2 right-0 top-1/2 -translate-y-1/2 h-[3px] transition-colors ${
+                              currentStep > stepNumber ? 'bg-[#8DC63F]' : 'bg-gray-200'
+                            }`}
+                          />
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleStepClick(stepNumber)}
+                          disabled={!isReadOnly}
+                          className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-colors ${
+                            isReached
                               ? 'bg-[#8DC63F] text-white'
                               : 'bg-gray-200 text-gray-400'
-                          }`}
+                          } ${isReadOnly ? 'cursor-pointer hover:opacity-90' : 'cursor-default'}`}
                         >
-                          {isCompleted ? <Check className="w-5 h-5" /> : stepNumber}
-                        </div>
-                        <span
-                          className={`text-xs mt-2 font-medium text-center ${
-                            isActive ? 'text-[#8DC63F]' : 'text-gray-500'
-                          }`}
-                        >
-                          {name}
-                        </span>
+                          {stepNumber}
+                        </button>
                       </div>
-                      {index < STEP_NAMES.length - 1 && (
-                        <div
-                          className={`h-0.5 flex-1 mx-2 transition-colors ${
-                            isCompleted ? 'bg-[#8DC63F]' : 'bg-gray-200'
-                          }`}
-                        />
-                      )}
+                      <span
+                        className={`text-[10px] sm:text-xs mt-2 font-medium text-center leading-tight max-w-[72px] sm:max-w-none ${
+                          isActive ? 'text-[#8DC63F]' : 'text-gray-500'
+                        }`}
+                      >
+                        {name}
+                      </span>
                     </div>
                   )
                 })}
@@ -767,7 +799,8 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                         <select
                           value={formData.academic_current_status || ''}
                           onChange={(e) => setFormData({ ...formData, academic_current_status: e.target.value })}
-                          className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+                          disabled={isReadOnly}
+                          className={`w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                         >
                           <option value="">Select status</option>
                           <option value="Studying">Studying</option>
@@ -783,7 +816,8 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                           placeholder="e.g. 2025"
                           value={formData.academic_graduation_year || ''}
                           onChange={(e) => setFormData({ ...formData, academic_graduation_year: e.target.value })}
-                          className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+                          disabled={isReadOnly}
+                          className={`w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                         />
                       </div>
                     </div>
@@ -798,6 +832,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                   <div className="mb-8">
                     <div className="flex items-center justify-between mb-4">
                       <h4 className="font-semibold text-gray-900">Language Proficiency</h4>
+                      {!isReadOnly && (
                       <button
                         onClick={addLanguage}
                         className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-4 py-2 text-sm font-medium hover:bg-green-50 transition-colors flex items-center gap-2"
@@ -805,12 +840,13 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                         <Plus className="w-4 h-4" />
                         Add Language
                       </button>
+                      )}
                     </div>
 
                     <div className="space-y-4">
                       {languages.map((lang, index) => (
                         <div key={index} className="relative border border-[#EEEEEE] rounded-xl p-4">
-                          {languages.length > 1 && (
+                          {languages.length > 1 && !isReadOnly && (
                             <button
                               onClick={() => removeLanguage(index)}
                               className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
@@ -824,7 +860,8 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                               <select
                                 value={lang.language}
                                 onChange={(e) => updateLanguage(index, 'language', e.target.value)}
-                                className="w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+                                disabled={isReadOnly}
+                                className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                               >
                                 <option value="">Select language</option>
                                 <option value="English">English</option>
@@ -844,7 +881,8 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                               <select
                                 value={lang.read}
                                 onChange={(e) => updateLanguage(index, 'read', e.target.value)}
-                                className="w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+                                disabled={isReadOnly}
+                                className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                               >
                                 <option value="">Read level</option>
                                 <option value="Beginner">Beginner</option>
@@ -856,7 +894,8 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                               <select
                                 value={lang.write}
                                 onChange={(e) => updateLanguage(index, 'write', e.target.value)}
-                                className="w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+                                disabled={isReadOnly}
+                                className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                               >
                                 <option value="">Write level</option>
                                 <option value="Beginner">Beginner</option>
@@ -868,7 +907,8 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                               <select
                                 value={lang.speak}
                                 onChange={(e) => updateLanguage(index, 'speak', e.target.value)}
-                                className="w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+                                disabled={isReadOnly}
+                                className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                               >
                                 <option value="">Speak level</option>
                                 <option value="Beginner">Beginner</option>
@@ -895,7 +935,8 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                           placeholder="List any known medical conditions, or type 'None'"
                           value={formData.health_medical_conditions || ''}
                           onChange={(e) => setFormData({ ...formData, health_medical_conditions: e.target.value })}
-                          className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+                          disabled={isReadOnly}
+                          className={`w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                         />
                       </div>
 
@@ -906,7 +947,8 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                           placeholder="List any allergies, or type 'None'"
                           value={formData.health_allergies || ''}
                           onChange={(e) => setFormData({ ...formData, health_allergies: e.target.value })}
-                          className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+                          disabled={isReadOnly}
+                          className={`w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                         />
                       </div>
 
@@ -917,7 +959,8 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                           placeholder="List any disabilities, or type 'None'"
                           value={formData.health_disabilities || ''}
                           onChange={(e) => setFormData({ ...formData, health_disabilities: e.target.value })}
-                          className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+                          disabled={isReadOnly}
+                          className={`w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                         />
                       </div>
                     </div>
@@ -930,6 +973,8 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                   <h3 className="font-bold text-xl text-gray-900 mb-2">Supporting Documents</h3>
                   <p className="text-sm text-gray-500 mb-6">Upload your documents below. Maximum 5 files, 1MB each.</p>
 
+                  {!isReadOnly && (
+                  <>
                   <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
                     <ul className="text-sm text-amber-800 space-y-1 list-disc list-inside">
                       <li>Maximum 5 files total</li>
@@ -961,6 +1006,12 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                       <p className="text-xs text-gray-400 mt-1">PDF, JPG, PNG • Max 1MB per file • Max 5 files</p>
                     </div>
                   </div>
+                  </>
+                  )}
+
+                  {isReadOnly && existingFiles.length === 0 && (
+                    <p className="text-sm text-gray-500">No documents uploaded</p>
+                  )}
 
                   <p className={`text-sm text-center mt-3 ${
                     uploadedFiles.length + existingFiles.length >= 5 ? 'text-red-500' : 'text-[#8DC63F]'
@@ -1007,6 +1058,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                             <p className="text-sm font-medium text-gray-800 truncate">{file.file.name}</p>
                             <p className="text-xs text-gray-400">{(file.file.size / 1024).toFixed(1)} KB</p>
                           </div>
+                          {!isReadOnly && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation()
@@ -1016,6 +1068,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                           >
                             <X className="w-5 h-5" />
                           </button>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -1026,7 +1079,9 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
               {currentStep === 5 && (
                 <div>
                   <h3 className="font-bold text-xl text-gray-900 mb-2">Review & Submit</h3>
-                  <p className="text-sm text-gray-500 mb-6">Please review your information before submitting.</p>
+                  <p className="text-sm text-gray-500 mb-6">
+                    {isReadOnly ? 'Review your submitted application details below.' : 'Please review your information before submitting.'}
+                  </p>
 
                   <div className="space-y-4">
                     <div className="bg-gray-50 rounded-2xl p-5">
@@ -1156,6 +1211,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                     </div>
                   </div>
 
+                  {!isReadOnly && (
                   <div className="mt-8 border-t pt-6 space-y-4">
                     <label className="flex items-start gap-3 cursor-pointer">
                       <input
@@ -1196,13 +1252,14 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                       )}
                     </button>
                   </div>
+                  )}
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        <div className="fixed bottom-0 left-0 right-0 lg:left-[220px] bg-white border-t border-[#EEEEEE] px-8 py-4 flex justify-between items-center z-10">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#EEEEEE] px-8 py-4 flex justify-between items-center z-10">
           {currentStep > 1 && (
             <button
               onClick={handlePrevious}
@@ -1216,7 +1273,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
           {currentStep === 1 && <div />}
 
           <div className="flex gap-3">
-            {currentStep >= 2 && currentStep <= 4 && (
+            {!isReadOnly && currentStep >= 2 && currentStep <= 4 && (
               <button
                 onClick={handleSaveDraft}
                 disabled={isSaving}
@@ -1244,6 +1301,8 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                     <Loader2 className="w-4 h-4 animate-spin" />
                     Processing...
                   </>
+                ) : isReadOnly ? (
+                  'View Next'
                 ) : (
                   'Next'
                 )}

@@ -100,6 +100,7 @@ const fetcher = (fn: () => Promise<any>) => fn().then(res => res.data)
 
 export default function StudentInternships() {
   const router = useRouter()
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<SortOption>('most_recent')
   const [currentPage, setCurrentPage] = useState(1)
@@ -232,7 +233,10 @@ export default function StudentInternships() {
   return (
     <div className="flex h-screen bg-[#F9F9F9]">
       <div className="hidden lg:block">
-        <StudentSidebar />
+        <StudentSidebar
+          isCollapsed={isSidebarCollapsed}
+          onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        />
       </div>
 
       <div className="flex-1 flex flex-col overflow-hidden">

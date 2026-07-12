@@ -8,7 +8,6 @@ import useSWR from 'swr'
 import { 
   Mail, 
   Phone, 
-  Pencil, 
   Save, 
   Upload, 
   LogOut,
@@ -149,7 +148,6 @@ export default function StudentProfile() {
     identity: false,
     academic: false,
   })
-  const photoInputRef = useRef<HTMLInputElement>(null)
   const progressBarRef = useRef<HTMLDivElement>(null)
 
   // Form data
@@ -208,33 +206,6 @@ export default function StudentProfile() {
     setSameAsPermanent(checked)
     if (checked) {
       handleChange('current_residential_address', formData.address_line_1 || '')
-    }
-  }
-
-  // Handle photo upload
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    if (file.size > 50 * 1024 * 1024) {
-      toast.error('File size must be less than 50MB')
-      return
-    }
-
-    setUploadingDoc('profile_photo')
-    try {
-      const result = await uploadStudentDocument(file, 'passport_photo')
-      if (result.error) {
-        toast.error('Failed to upload photo')
-      } else {
-        toast.success('Photo uploaded successfully')
-        await refreshProfile()
-        await refreshCompletion()
-      }
-    } catch (error) {
-      toast.error('Failed to upload photo')
-    } finally {
-      setUploadingDoc(null)
     }
   }
 
@@ -426,8 +397,6 @@ export default function StudentProfile() {
   
   // Get avatar initials - show first and last name initials if both available
   const getAvatarInitials = () => {
-    if (formData.profile_photo_url) return null // If profile pic exists, return null
-    
     const firstName = formData.first_name?.trim()
     const lastName = formData.last_name?.trim()
     
@@ -523,35 +492,10 @@ export default function StudentProfile() {
             <div className="bg-white rounded-2xl border border-[#EEEEEE] p-6 mb-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
                 {/* Avatar */}
-                <div className="relative">
-                  <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200">
-                    {formData.profile_photo_url ? (
-                      <Image
-                        src={formData.profile_photo_url}
-                        alt="Profile"
-                        width={96}
-                        height={96}
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-3xl font-bold text-gray-400">
-                        {avatarInitials}
-                      </div>
-                    )}
-                  </div>
-                  <button
-                    onClick={() => photoInputRef.current?.click()}
-                    className="absolute bottom-0 right-0 w-8 h-8 bg-[#8DC63F] rounded-full flex items-center justify-center hover:bg-[#7DB62F] transition-colors"
-                  >
-                    <Pencil className="w-4 h-4 text-white" />
-                  </button>
-                  <input
-                    ref={photoInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handlePhotoUpload}
-                    className="hidden"
-                  />
+                <div className="w-24 h-24 rounded-full overflow-hidden bg-[#8DC63F] flex items-center justify-center">
+                  <span className="text-3xl font-bold text-white">
+                    {avatarInitials}
+                  </span>
                 </div>
 
                 {/* Profile Info */}

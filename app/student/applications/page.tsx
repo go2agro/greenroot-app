@@ -18,9 +18,11 @@ import {
   Hourglass,
   SlidersHorizontal,
   FileText,
-  ChevronLeft
+  ChevronLeft,
+  Loader2
 } from 'lucide-react'
-import { getMyApplications, getApplicationCounts } from '@/lib/studentApplications'
+import { toast } from 'sonner'
+import { getMyApplications, getApplicationCounts, deleteStudentApplication } from '@/lib/studentApplications'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
 
@@ -33,6 +35,9 @@ type Application = {
   status: ApplicationStatus
   started_at: string
   submitted_at?: string
+  updated_at?: string
+  decided_at?: string
+  accepted_at?: string
   internships: {
     title: string
     subtitle?: string
@@ -44,25 +49,29 @@ type Application = {
   }
 }
 
-const getStatusColor = (status: ApplicationStatus) => {
+const getStatusBadgeColor = (status: ApplicationStatus) => {
   switch (status) {
     case 'draft':
-      return 'bg-gray-100 text-gray-600'
+      return 'bg-gray-100 text-gray-700 border-gray-200'
     case 'submitted':
-      return 'bg-blue-100 text-blue-600'
+      return 'bg-blue-50 text-blue-700 border-blue-200'
     case 'under_review':
-      return 'bg-amber-100 text-amber-600'
+      return 'bg-amber-50 text-amber-700 border-amber-200'
     case 'approved':
-      return 'bg-green-100 text-green-600'
+      return 'bg-green-50 text-green-700 border-green-200'
     case 'rejected':
-      return 'bg-red-100 text-red-600'
+      return 'bg-red-50 text-red-700 border-red-200'
     case 'accepted':
-      return 'bg-purple-100 text-purple-600'
+      return 'bg-purple-50 text-purple-700 border-purple-200'
     case 'closed':
-      return 'bg-gray-100 text-gray-500'
+      return 'bg-gray-50 text-gray-500 border-gray-200'
     default:
-      return 'bg-gray-100 text-gray-600'
+      return 'bg-gray-100 text-gray-700 border-gray-200'
   }
+}
+
+const canDeleteApplication = (status: ApplicationStatus) => {
+  return status === 'draft' || status === 'submitted'
 }
 
 const formatStatusText = (status: ApplicationStatus) => {
@@ -123,17 +132,61 @@ const getCountryFlag = (country: string) => {
   return String.fromCodePoint(...[...code].map(c => c.charCodeAt(0) + 127397))
 }
 
+const getStatusTimestamp = (application: Application) => {
+  let timestamp: string | undefined
+  
+  switch (application.status) {
+    case 'draft':
+      timestamp = application.started_at
+      break
+    case 'submitted':
+    case 'under_review':
+      timestamp = application.submitted_at
+      break
+    case 'approved':
+    case 'rejected':
+      timestamp = application.decided_at
+      break
+    case 'accepted':
+      timestamp = application.accepted_at
+      break
+    case 'closed':
+      timestamp = application.updated_at
+      break
+    default:
+      timestamp = application.updated_at
+  }
+  
+  if (!timestamp) return 'N/A'
+  
+  const date = new Date(timestamp)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMins = Math.floor(diffMs / 60000)
+  const diffHours = Math.floor(diffMs / 3600000)
+  const diffDays = Math.floor(diffMs / 86400000)
+  
+  if (diffMins < 1) return 'Just now'
+  if (diffMins < 60) return `${diffMins}m ago`
+  if (diffHours < 24) return `${diffHours}h ago`
+  if (diffDays < 7) return `${diffDays}d ago`
+  
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+}
+
 const fetcher = (fn: () => Promise<any>) => fn().then(res => res.data)
 
 export default function StudentApplications() {
   const router = useRouter()
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [showFilterDropdown, setShowFilterDropdown] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [filteredApplications, setFilteredApplications] = useState<Application[]>([])
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  const { data: applications, isLoading: applicationsLoading } = useSWR(
+  const { data: applications, isLoading: applicationsLoading, mutate: refreshApplications } = useSWR(
     'myApplications',
     () => fetcher(getMyApplications),
     {
@@ -143,7 +196,7 @@ export default function StudentApplications() {
     }
   )
 
-  const { data: applicationCounts } = useSWR(
+  const { data: applicationCounts, mutate: refreshApplicationCounts } = useSWR(
     'applicationCounts',
     () => fetcher(getApplicationCounts),
     {
@@ -212,6 +265,40 @@ export default function StudentApplications() {
     }
   }
 
+  const handleDeleteApplication = async (applicationId: string, status: ApplicationStatus, event: React.MouseEvent) => {
+    event.stopPropagation()
+
+    const message = status === 'submitted'
+      ? 'Are you sure you want to delete this submitted application? You can reapply to this internship afterwards.'
+      : 'Are you sure you want to delete this draft application?'
+
+    if (!window.confirm(message)) {
+      return
+    }
+
+    setDeletingId(applicationId)
+
+    try {
+      const result = await deleteStudentApplication(applicationId)
+
+      if (result.error) {
+        toast.error(result.error.message || 'Failed to delete application')
+        return
+      }
+
+      toast.success('Application deleted successfully')
+      await Promise.all([
+        refreshApplications(),
+        refreshApplicationCounts(),
+      ])
+    } catch (error) {
+      console.error('Error deleting application:', error)
+      toast.error('Failed to delete application')
+    } finally {
+      setDeletingId(null)
+    }
+  }
+
   const renderPaginationNumbers = () => {
     const pages = []
     const maxVisiblePages = 5
@@ -249,7 +336,10 @@ export default function StudentApplications() {
   return (
     <div className="flex h-screen bg-[#F9F9F9]">
       <div className="hidden lg:block">
-        <StudentSidebar />
+        <StudentSidebar
+          isCollapsed={isSidebarCollapsed}
+          onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        />
       </div>
 
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -400,56 +490,86 @@ export default function StudentApplications() {
                   {paginatedApplications.map((application, index) => (
                     <div
                       key={application.id}
-                      className="bg-white border border-[#EEEEEE] rounded-2xl p-4 flex items-center gap-4 cursor-pointer hover:shadow-md transition-shadow"
-                      onClick={() => router.push(`/student/applications/${application.id}`)}
+                      className="bg-white border border-[#EEEEEE] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 hover:shadow-md transition-shadow"
                     >
-                      <div className="relative w-24 h-20 rounded-xl overflow-hidden flex-shrink-0">
-                        <Image
-                          src={application.internships?.image_url || `https://picsum.photos/100/80?random=${startIndex + index}`}
-                          alt={application.internships?.title || 'Internship'}
-                          fill
-                          className="object-cover"
-                        />
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="relative w-24 h-20 rounded-xl overflow-hidden flex-shrink-0">
+                          <Image
+                            src={application.internships?.image_url || `https://picsum.photos/100/80?random=${startIndex + index}`}
+                            alt={application.internships?.title || 'Internship'}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+
+                        <div className="flex-1 min-w-0 flex flex-col gap-2">
+                          <h3 className="font-bold text-gray-900 text-base truncate">
+                            {application.internships?.title || 'Internship Program'}
+                          </h3>
+
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusBadgeColor(application.status)}`}>
+                              {formatStatusText(application.status)}
+                            </span>
+                            <span className="px-2.5 py-1 rounded-full text-xs font-medium border bg-slate-50 text-slate-600 border-slate-200">
+                              {getStatusTimestamp(application)}
+                            </span>
+                          </div>
+
+                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-base leading-none">
+                                {getCountryFlag(application.internships?.country || '')}
+                              </span>
+                              <span className="truncate">
+                                {application.internships?.country || 'Country not specified'}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="w-4 h-4 flex-shrink-0" />
+                              <span>
+                                {application.internships?.duration_months
+                                  ? `${application.internships.duration_months} Months`
+                                  : 'Duration not specified'}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center gap-1.5">
+                              <Banknote className="w-4 h-4 flex-shrink-0" />
+                              <span>
+                                {application.internships?.stipend_monthly
+                                  ? `₹${application.internships.stipend_monthly.toLocaleString()} / Month`
+                                  : 'Stipend not specified'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
 
-                      <div className="flex-1 min-w-0 flex flex-col gap-1">
-                        <h3 className="font-bold text-gray-900 text-base truncate">
-                          {application.internships?.title || 'Internship Program'}
-                        </h3>
-
-                        <div className="flex items-center gap-1.5 text-sm text-gray-500">
-                          <span className="text-base leading-none">
-                            {getCountryFlag(application.internships?.country || '')}
-                          </span>
-                          <span className="truncate">
-                            {application.internships?.country || 'Country not specified'}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-1.5 text-sm text-gray-500">
-                          <Clock className="w-4 h-4 flex-shrink-0" />
-                          <span>
-                            {application.internships?.duration_months
-                              ? `${application.internships.duration_months} Months`
-                              : 'Duration not specified'}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-1.5 text-sm text-gray-500">
-                          <Banknote className="w-4 h-4 flex-shrink-0" />
-                          <span>
-                            {application.internships?.stipend_monthly
-                              ? `₹${application.internships.stipend_monthly.toLocaleString()} / Month`
-                              : 'Stipend not specified'}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-3 flex-shrink-0">
-                        <span className={`px-3 py-1.5 rounded-lg text-xs font-medium ${getStatusColor(application.status)}`}>
-                          {formatStatusText(application.status)}
-                        </span>
-                        <ChevronRight className="w-5 h-5 text-gray-400" />
+                      <div className="flex items-center gap-2 flex-shrink-0 sm:flex-col sm:items-stretch sm:min-w-[100px]">
+                        <button
+                          onClick={() => router.push(`/student/applications/${application.id}`)}
+                          className="flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-medium bg-green-50 text-[#5A9A2E] border border-green-200 hover:bg-green-100 transition-colors"
+                        >
+                          View
+                        </button>
+                        {canDeleteApplication(application.status) && (
+                          <button
+                            onClick={(event) => handleDeleteApplication(application.id, application.status, event)}
+                            disabled={deletingId === application.id}
+                            className="flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-medium bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                          >
+                            {deletingId === application.id ? (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                Deleting...
+                              </>
+                            ) : (
+                              'Delete'
+                            )}
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))}
