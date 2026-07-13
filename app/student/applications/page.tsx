@@ -23,8 +23,10 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { getMyApplications, getApplicationCounts, deleteStudentApplication } from '@/lib/studentApplications'
+import { invalidateAllApplicationData } from '@/lib/cache'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
+import { getApplicationStatusTimestamp } from '@/lib/utils'
 
 const ITEMS_PER_PAGE = 8
 
@@ -132,48 +134,6 @@ const getCountryFlag = (country: string) => {
   return String.fromCodePoint(...[...code].map(c => c.charCodeAt(0) + 127397))
 }
 
-const getStatusTimestamp = (application: Application) => {
-  let timestamp: string | undefined
-  
-  switch (application.status) {
-    case 'draft':
-      timestamp = application.started_at
-      break
-    case 'submitted':
-    case 'under_review':
-      timestamp = application.submitted_at
-      break
-    case 'approved':
-    case 'rejected':
-      timestamp = application.decided_at
-      break
-    case 'accepted':
-      timestamp = application.accepted_at
-      break
-    case 'closed':
-      timestamp = application.updated_at
-      break
-    default:
-      timestamp = application.updated_at
-  }
-  
-  if (!timestamp) return 'N/A'
-  
-  const date = new Date(timestamp)
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffMins = Math.floor(diffMs / 60000)
-  const diffHours = Math.floor(diffMs / 3600000)
-  const diffDays = Math.floor(diffMs / 86400000)
-  
-  if (diffMins < 1) return 'Just now'
-  if (diffMins < 60) return `${diffMins}m ago`
-  if (diffHours < 24) return `${diffHours}h ago`
-  if (diffDays < 7) return `${diffDays}d ago`
-  
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-}
-
 const fetcher = (fn: () => Promise<any>) => fn().then(res => res.data)
 
 export default function StudentApplications() {
@@ -196,7 +156,7 @@ export default function StudentApplications() {
     }
   )
 
-  const { data: applicationCounts, mutate: refreshApplicationCounts } = useSWR(
+  const { data: applicationCounts } = useSWR(
     'applicationCounts',
     () => fetcher(getApplicationCounts),
     {
@@ -287,10 +247,11 @@ export default function StudentApplications() {
       }
 
       toast.success('Application deleted successfully')
-      await Promise.all([
-        refreshApplications(),
-        refreshApplicationCounts(),
-      ])
+      await refreshApplications(
+        (applications ?? []).filter((app) => app.id !== applicationId),
+        { revalidate: true }
+      )
+      invalidateAllApplicationData()
     } catch (error) {
       console.error('Error deleting application:', error)
       toast.error('Failed to delete application')
@@ -344,9 +305,9 @@ export default function StudentApplications() {
 
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
             <StudentMobileLogo />
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 ml-auto">
               <div className="text-right">
                 <div className="font-bold text-gray-900">{userName}</div>
                 <div className="text-xs text-[#3B82F6] font-medium">ID: {myProfile?.unique_id || 'N/A'}</div>
@@ -387,7 +348,7 @@ export default function StudentApplications() {
               <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
                 <div className="flex justify-between items-start">
                   <div>
-                    <div className="text-sm text-gray-500 font-medium">Submitted</div>
+                    <div className="text-sm text-gray-500 font-medium">In Review</div>
                     <div className="text-4xl font-bold text-[#3B82F6] mt-2">
                       {submittedCount.toString().padStart(2, '0')}
                     </div>
@@ -515,7 +476,7 @@ export default function StudentApplications() {
                               {formatStatusText(application.status)}
                             </span>
                             <span className="px-2.5 py-1 rounded-full text-xs font-medium border bg-slate-50 text-slate-600 border-slate-200">
-                              {getStatusTimestamp(application)}
+                              {getApplicationStatusTimestamp(application)}
                             </span>
                           </div>
 

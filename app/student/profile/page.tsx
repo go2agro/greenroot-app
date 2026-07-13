@@ -450,7 +450,7 @@ export default function StudentProfile() {
               </div>
             </div>
             
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 ml-auto flex-shrink-0">
               <div className="hidden sm:block text-right">
                 <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">
                   {formData.first_name} {formData.last_name}

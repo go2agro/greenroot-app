@@ -9,12 +9,12 @@ import { ArrowRight, ChevronLeft, ChevronRight, Send, Search, RefreshCw, CheckCi
 import StudentSidebar from '@/components/StudentSidebar'
 import StudentMobileLogo from '@/components/StudentMobileLogo'
 import BottomNavigation from '@/components/BottomNavigation'
-import ApplicationCard from '@/components/ApplicationCard'
 import InternshipCard from '@/components/InternshipCard'
 import { getMyProfile } from '@/lib/profiles'
 import { getMyStudentProfile, checkProfileCompletion } from '@/lib/studentProfiles'
 import { getApplicationCounts, getActiveApplications, getDraftApplications } from '@/lib/studentApplications'
 import { getRecentInternships } from '@/lib/internships'
+import { getApplicationStatusTimestamp } from '@/lib/utils'
 import recentInternshipsData from '@/config/recentInternships.json'
 
 interface ProfileData {
@@ -27,11 +27,17 @@ interface ApplicationCounts {
   drafts: number
   submitted: number
   approved: number
+  active: number
 }
 
 interface Application {
   id: string
   status: string
+  started_at?: string
+  submitted_at?: string
+  decided_at?: string
+  accepted_at?: string
+  updated_at?: string
   internships: {
     title: string
     subtitle?: string
@@ -135,9 +141,10 @@ export default function StudentDashboard() {
 
   // If data is still loading but we have cached data, show the cached data
   const profileData = studentProfile || null
-  const counts = applicationCounts || { drafts: 0, submitted: 0, approved: 0 }
+  const counts = applicationCounts || { drafts: 0, submitted: 0, approved: 0, active: 0 }
   const activeApps = activeApplications || []
   const drafts = draftApplications || []
+  const activeCount = counts.active ?? (counts.submitted + counts.approved)
   
   // Use real data if available, otherwise use dummy data from config file
   const internships = recentInternships?.length > 0 ? recentInternships : (recentInternshipsData as Internship[])
@@ -210,7 +217,7 @@ export default function StudentDashboard() {
             </div>
             
             {/* User Profile */}
-            <div className="flex items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-4 ml-auto flex-shrink-0">
               {/* Profile Strength - Hidden on mobile */}
               {profileCompletion < 100 && (
               <div className="hidden md:flex items-center gap-3 bg-gray-50 rounded-lg px-3 lg:px-4 py-2">
@@ -305,7 +312,7 @@ export default function StudentDashboard() {
               <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
                 <div className="flex justify-between items-start">
                   <div>
-                    <div className="text-sm text-gray-500 font-medium">Submitted</div>
+                    <div className="text-sm text-gray-500 font-medium">In Review</div>
                     <div className="text-4xl font-bold text-[#3B82F6] mt-2">
                       {counts.submitted.toString().padStart(2, '0')}
                     </div>
@@ -334,7 +341,12 @@ export default function StudentDashboard() {
             {/* Active Applications */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg sm:text-xl font-bold text-gray-900">Active Applications</h2>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900">Active Applications</h2>
+                  <span className="inline-flex items-center justify-center min-w-[2rem] h-7 px-2 rounded-full bg-[#8DC63F]/10 text-[#8DC63F] text-sm font-bold">
+                    {activeCount.toString().padStart(2, '0')}
+                  </span>
+                </div>
                 <Link 
                   href="/student/applications"
                   className="text-sm text-[#8DC63F] font-semibold hover:underline"
@@ -345,15 +357,41 @@ export default function StudentDashboard() {
               <div className="space-y-3">
                 {activeApps.length > 0 ? (
                   activeApps.slice(0, 3).map((app: Application) => (
-                    <ApplicationCard
-                      key={app.id}
-                      id={app.id}
-                      title={app.internships.title}
-                      location={`${app.internships.city || ''}, ${app.internships.country || ''}`}
-                      imageUrl={app.internships.image_url || ''}
-                      status={app.status}
-                      onClick={() => {}}
-                    />
+                    <div key={app.id} className="bg-white rounded-lg border border-gray-200 p-4">
+                      <div className="flex items-center gap-4">
+                        <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                          <Image
+                            src={app.internships?.image_url || '/images/placeholder.jpg'}
+                            alt={app.internships?.title || 'Internship'}
+                            fill
+                            className="object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement
+                              target.src = '/images/placeholder.jpg'
+                            }}
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
+                          <div className="min-w-0">
+                            <h3 className="text-base font-semibold text-gray-900 truncate">
+                              {app.internships?.title || 'Internship'}
+                            </h3>
+                            <p className="text-sm text-gray-500 truncate">
+                              {app.internships?.city || ''}{app.internships?.city && app.internships?.country ? ', ' : ''}{app.internships?.country || ''}
+                            </p>
+                            <span className="inline-block mt-1 px-2.5 py-1 rounded-full text-xs font-medium border bg-slate-50 text-slate-600 border-slate-200">
+                              {getApplicationStatusTimestamp(app)}
+                            </span>
+                          </div>
+                          <button
+                            onClick={() => router.push(`/student/applications/${app.id}`)}
+                            className="min-w-[6.5rem] px-4 py-2 text-sm text-white bg-[#8DC63F] rounded-lg hover:bg-[#7DB62F] transition-colors font-semibold whitespace-nowrap flex-shrink-0 text-center"
+                          >
+                            View
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   ))
                 ) : (
                   <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
@@ -366,7 +404,12 @@ export default function StudentDashboard() {
             {/* Saved Drafts */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg sm:text-xl font-bold text-gray-900">Saved drafts</h2>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900">Saved drafts</h2>
+                  <span className="inline-flex items-center justify-center min-w-[2rem] h-7 px-2 rounded-full bg-[#3B82F6]/10 text-[#3B82F6] text-sm font-bold">
+                    {counts.drafts.toString().padStart(2, '0')}
+                  </span>
+                </div>
                 <Link 
                   href="/student/applications"
                   className="text-sm text-[#8DC63F] font-semibold hover:underline"
@@ -378,7 +421,7 @@ export default function StudentDashboard() {
                 {drafts.length > 0 ? (
                   drafts.slice(0, 3).map((app: Application) => (
                     <div key={app.id} className="bg-white rounded-lg border border-gray-200 p-4">
-                      <div className="flex items-center gap-4 mb-3">
+                      <div className="flex items-center gap-4">
                         <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                           <Image
                             src={app.internships.image_url || '/images/placeholder.jpg'}
@@ -391,28 +434,25 @@ export default function StudentDashboard() {
                             }}
                           />
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-base font-semibold text-gray-900 truncate">
-                            {app.internships.title}
-                          </h3>
-                          <p className="text-sm text-gray-500 truncate">
-                            {app.internships.city || ''}, {app.internships.country || ''}
-                          </p>
+                        <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
+                          <div className="min-w-0">
+                            <h3 className="text-base font-semibold text-gray-900 truncate">
+                              {app.internships.title}
+                            </h3>
+                            <p className="text-sm text-gray-500 truncate">
+                              {app.internships.city || ''}, {app.internships.country || ''}
+                            </p>
+                            <span className="inline-block mt-1 px-2.5 py-1 rounded-full text-xs font-medium border bg-slate-50 text-slate-600 border-slate-200">
+                              {getApplicationStatusTimestamp(app)}
+                            </span>
+                          </div>
+                          <button 
+                            onClick={() => router.push(`/student/applications/${app.id}`)}
+                            className="min-w-[6.5rem] px-4 py-2 text-sm text-white bg-[#8DC63F] rounded-lg hover:bg-[#7DB62F] transition-colors font-semibold whitespace-nowrap flex-shrink-0 text-center"
+                          >
+                            Resume
+                          </button>
                         </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <button 
-                          className="flex-1 px-4 py-2 text-sm text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors opacity-50 cursor-not-allowed"
-                          disabled
-                        >
-                          Discard
-                        </button>
-                        <button 
-                          onClick={() => router.push(`/student/applications/${app.id}`)}
-                          className="flex-1 px-4 py-2 text-sm text-white bg-[#8DC63F] rounded-lg hover:bg-[#7DB62F] transition-colors font-semibold"
-                        >
-                          Resume
-                        </button>
                       </div>
                     </div>
                   ))

@@ -13,6 +13,8 @@ interface StudentSidebarProps {
 
 export default function StudentSidebar({ isCollapsed = false, onToggle }: StudentSidebarProps) {
   const pathname = usePathname()
+  const supportEmail = 'greenroot@gmail.com'
+  const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(supportEmail)}&su=${encodeURIComponent('GreenRoot Support')}`
 
   const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', href: '/student/dashboard' },
@@ -115,7 +117,14 @@ export default function StudentSidebar({ isCollapsed = false, onToggle }: Studen
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <Mail className="w-4 h-4 text-[#8DC63F] flex-shrink-0" />
-                <span className="text-[#8DC63F] break-all text-xs">greenroot@gmail.com</span>
+                <a
+                  href={gmailComposeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#8DC63F] break-all text-xs hover:underline"
+                >
+                  {supportEmail}
+                </a>
               </div>
             </div>
           </div>

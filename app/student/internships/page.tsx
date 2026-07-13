@@ -242,9 +242,9 @@ export default function StudentInternships() {
 
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
             <StudentMobileLogo />
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 ml-auto">
               <div className="text-right">
                 <div className="font-bold text-gray-900">{userName}</div>
                 <div className="text-xs text-[#3B82F6] font-medium">ID: {myProfile?.unique_id || 'N/A'}</div>

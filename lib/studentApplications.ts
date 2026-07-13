@@ -1,6 +1,7 @@
 "use server"
 
 import { createClient } from './supabase'
+import { createAdminClient } from './supabase-admin'
 import { checkProfileCompletion } from './studentProfiles'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 
@@ -94,30 +95,59 @@ export async function deleteStudentApplication(applicationId: string) {
     return toPlainResponse(null, { message: 'Only draft or submitted applications can be deleted' })
   }
 
-  const { data: answers } = await supabase
+  let admin
+  try {
+    admin = createAdminClient()
+  } catch {
+    return toPlainResponse(null, { message: 'Delete is not configured. Contact support.' })
+  }
+
+  const { data: answers, error: answersFetchError } = await admin
     .from('application_answers')
     .select('file_url')
     .eq('application_id', applicationId)
+
+  if (answersFetchError) {
+    return toPlainResponse(null, answersFetchError)
+  }
 
   const filePaths = answers
     ?.map((answer) => answer.file_url)
     .filter((path): path is string => Boolean(path)) ?? []
 
   if (filePaths.length > 0) {
-    await supabase.storage.from('application-documents').remove(filePaths)
+    const { error: storageError } = await admin.storage.from('application-documents').remove(filePaths)
+    if (storageError) {
+      return toPlainResponse(null, storageError)
+    }
   }
 
-  await supabase
+  const { error: deleteAnswersError } = await admin
     .from('application_answers')
     .delete()
     .eq('application_id', applicationId)
 
-  const { error } = await supabase
+  if (deleteAnswersError) {
+    return toPlainResponse(null, deleteAnswersError)
+  }
+
+  const { data: deleted, error: deleteAppError } = await admin
     .from('applications')
     .delete()
     .eq('id', applicationId)
+    .eq('student_id', user.id)
+    .select('id')
+    .single()
 
-  return toPlainResponse({ id: applicationId }, error)
+  if (deleteAppError) {
+    return toPlainResponse(null, deleteAppError)
+  }
+
+  if (!deleted) {
+    return toPlainResponse(null, { message: 'Failed to delete application' })
+  }
+
+  return toPlainResponse({ id: applicationId }, null)
 }
 
 /** @deprecated Use deleteStudentApplication */
@@ -433,17 +463,25 @@ export async function getApplicationCounts() {
     drafts: 0,
     submitted: 0,
     approved: 0,
+    active: 0,
   }
 
   data?.forEach((app) => {
+    const isInReview = app.status === 'submitted' || app.status === 'under_review'
+    const isApproved = app.status === 'approved' || app.status === 'accepted'
+
     if (app.status === 'draft') {
       counts.drafts++
     }
-    if (app.status === 'submitted' || app.status === 'under_review') {
+    if (isInReview) {
       counts.submitted++
     }
-    if (app.status === 'approved' || app.status === 'accepted') {
+    if (isApproved) {
       counts.approved++
+    }
+    // Active = in pipeline (awaiting admin decision or student offer response)
+    if (isInReview || app.status === 'approved') {
+      counts.active++
     }
   })
 
@@ -451,7 +489,7 @@ export async function getApplicationCounts() {
 }
 
 // ─────────────────────────────────────────
-// GET ACTIVE APPLICATIONS (not rejected)
+// GET ACTIVE APPLICATIONS (in pipeline — not draft, rejected, withdrawn, or closed)
 // ─────────────────────────────────────────
 export async function getActiveApplications() {
   const supabase = await createClient()
@@ -474,9 +512,8 @@ export async function getActiveApplications() {
       )
     `)
     .eq('student_id', user.id)
-    .in('status', ['submitted', 'under_review'])
-    .order('updated_at', { ascending: false })
-    .limit(3)
+    .in('status', ['submitted', 'under_review', 'approved'])
+    .order('submitted_at', { ascending: false })
 
   return toPlainResponse(data, error)
 }
