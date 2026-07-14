@@ -3,13 +3,16 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 import useSWR from 'swr'
 import StudentSidebar from '@/components/StudentSidebar'
+import StudentMobileLogo from '@/components/StudentMobileLogo'
 import BottomNavigation from '@/components/BottomNavigation'
 import UserAvatar from '@/components/UserAvatar'
 import { Search, MapPin, Clock, Banknote, ChevronLeft, ChevronRight, X, RefreshCw } from 'lucide-react'
 import { getAllInternships } from '@/lib/internships'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
+import { getMyProfile } from '@/lib/profiles'
 
 const ITEMS_PER_PAGE = 9
 
@@ -98,6 +101,7 @@ const fetcher = (fn: () => Promise<any>) => fn().then(res => res.data)
 
 export default function StudentInternships() {
   const router = useRouter()
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<SortOption>('most_recent')
   const [currentPage, setCurrentPage] = useState(1)
@@ -117,6 +121,16 @@ export default function StudentInternships() {
   const { data: profile } = useSWR(
     'studentProfile',
     () => fetcher(getMyStudentProfile),
+    {
+      dedupingInterval: 300000,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  )
+
+  const { data: myProfile } = useSWR(
+    'myProfile',
+    () => fetcher(getMyProfile),
     {
       dedupingInterval: 300000,
       revalidateOnFocus: false,
@@ -220,23 +234,31 @@ export default function StudentInternships() {
   return (
     <div className="flex h-screen bg-[#F9F9F9]">
       <div className="hidden lg:block">
-        <StudentSidebar />
+        <StudentSidebar
+          isCollapsed={isSidebarCollapsed}
+          onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        />
       </div>
 
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-end gap-3">
-            <div className="text-right">
-              <div className="font-bold text-gray-900">{userName}</div>
-              <div className="text-sm text-gray-500">Student</div>
+          <div className="flex items-center gap-3">
+            <StudentMobileLogo />
+            <div className="flex items-center gap-3 ml-auto">
+              <div className="text-right">
+                <div className="font-bold text-gray-900">{userName}</div>
+                <div className="text-xs text-[#3B82F6] font-medium">ID: {myProfile?.unique_id || 'N/A'}</div>
+              </div>
+              <Link href="/student/profile" className="cursor-pointer hover:opacity-80 transition-opacity">
+                <UserAvatar
+                  imageUrl={profile?.profile_image_url || profile?.avatar_url}
+                  firstName={profile?.first_name}
+                  lastName={profile?.last_name}
+                  fallbackLetter="S"
+                  size={40}
+                />
+              </Link>
             </div>
-            <UserAvatar
-              imageUrl={profile?.profile_image_url || profile?.avatar_url}
-              firstName={profile?.first_name}
-              lastName={profile?.last_name}
-              fallbackLetter="S"
-              size={40}
-            />
           </div>
         </div>
 

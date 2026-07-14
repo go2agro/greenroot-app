@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -18,10 +18,16 @@ import {
   FlaskConical,
   Droplet,
   Wheat,
-  ArrowLeft
+  ArrowLeft,
+  Info,
+  X
 } from 'lucide-react'
+import UserAvatar from '@/components/UserAvatar'
 import { getInternshipById } from '@/lib/internships'
 import { startApplication } from '@/lib/studentApplications'
+import { getMyStudentProfile } from '@/lib/studentProfiles'
+import { getMyProfile } from '@/lib/profiles'
+import { toast } from 'sonner'
 
 interface Internship {
   id: string
@@ -55,43 +61,39 @@ const iconMap = {
   Wheat
 }
 
-export default function StudentInternshipDetail({ params }: { params: { id: string } | Promise<{ id: string }> }) {
+export default function StudentInternshipDetail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const router = useRouter()
   const [internship, setInternship] = useState<Internship | null>(null)
   const [loading, setLoading] = useState(true)
   const [applying, setApplying] = useState(false)
-  const [internshipId, setInternshipId] = useState<string | null>(null)
+  const [showAlreadyAppliedAlert, setShowAlreadyAppliedAlert] = useState(false)
+  const [profile, setProfile] = useState<any>(null)
+  const [myProfile, setMyProfile] = useState<any>(null)
 
   useEffect(() => {
-    async function resolveParams() {
-      const resolvedParams = await Promise.resolve(params)
-      setInternshipId(resolvedParams.id)
-    }
-    resolveParams()
-  }, [params])
-
-  useEffect(() => {
-    if (!internshipId) return
-    
     async function fetchData() {
-      console.log('Fetching internship with ID:', internshipId)
-      const { data: internshipData, error: internshipError } = await getInternshipById(internshipId)
-      
-      if (internshipError) {
-        console.error('Error fetching internship:', internshipError)
+      const [internshipResult, profileResult, myProfileResult] = await Promise.all([
+        getInternshipById(id),
+        getMyStudentProfile(),
+        getMyProfile(),
+      ])
+
+      if (internshipResult.error) {
+        console.error('Error fetching internship:', internshipResult.error)
       }
-      
-      console.log('Internship data:', internshipData)
-      
-      if (internshipData) {
-        setInternship(internshipData)
+
+      if (internshipResult.data) {
+        setInternship(internshipResult.data)
       }
-      
+
+      setProfile(profileResult.data)
+      setMyProfile(myProfileResult.data)
       setLoading(false)
     }
     
     fetchData()
-  }, [internshipId])
+  }, [id])
 
   const handleApply = async () => {
     if (!internship || applying) return
@@ -100,12 +102,26 @@ export default function StudentInternshipDetail({ params }: { params: { id: stri
     const result = await startApplication(internship.id)
     
     if (result.error) {
-      alert(result.error.message)
+      const errorMessage = result.error.message || 'Failed to start application'
+      
+      if (errorMessage.includes('Already applied')) {
+        setShowAlreadyAppliedAlert(true)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } else {
+        toast.error(errorMessage)
+      }
       setApplying(false)
     } else {
-      router.push('/student/applications')
+      const applicationId = result.data?.id
+      if (applicationId) {
+        router.push(`/student/applications/${applicationId}`)
+      }
     }
   }
+
+  const userName = profile
+    ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.email || 'Student'
+    : 'Student'
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'TBA'
@@ -185,9 +201,53 @@ export default function StudentInternshipDetail({ params }: { params: { id: stri
               />
               <span className="text-xl font-bold text-gray-900">GreenRoot</span>
             </Link>
+
+            <div className="absolute right-0 flex items-center gap-2 sm:gap-3">
+              <div className="hidden sm:block text-right">
+                <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">{userName}</p>
+                <p className="text-xs text-[#3B82F6] font-medium">ID: {myProfile?.unique_id || 'N/A'}</p>
+              </div>
+              <Link href="/student/profile" className="cursor-pointer hover:opacity-80 transition-opacity">
+                <UserAvatar
+                  imageUrl={profile?.profile_image_url || profile?.avatar_url}
+                  firstName={profile?.first_name}
+                  lastName={profile?.last_name}
+                  fallbackLetter="S"
+                  size={40}
+                />
+              </Link>
+            </div>
           </div>
         </div>
       </div>
+
+      {showAlreadyAppliedAlert && (
+        <div className="bg-amber-50 border-b border-amber-200 px-4 sm:px-6 lg:px-8 py-3">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <Info className="w-5 h-5 text-amber-600 flex-shrink-0" />
+              <p className="text-sm font-medium text-amber-800">
+                You&apos;ve already applied for this internship. Check your applications to view or continue your existing application.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Link
+                href="/student/applications"
+                className="text-sm font-semibold text-amber-800 hover:text-amber-900 underline whitespace-nowrap"
+              >
+                View Applications
+              </Link>
+              <button
+                onClick={() => setShowAlreadyAppliedAlert(false)}
+                className="text-amber-600 hover:text-amber-800 transition-colors"
+                aria-label="Dismiss alert"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="relative w-full h-[300px] md:h-[450px]">
         <Image
@@ -198,17 +258,17 @@ export default function StudentInternshipDetail({ params }: { params: { id: stri
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
         
-        <div className="absolute inset-x-0 bottom-0 flex justify-center px-8 pb-8">
-          <div className="flex flex-col items-center text-center gap-4 max-w-3xl">
+        <div className="absolute inset-x-0 bottom-0 px-4 sm:px-8 lg:px-12 pb-8">
+          <div className="max-w-7xl mx-auto flex flex-col items-start text-left gap-4">
             <div className="flex items-center gap-2 text-white text-sm">
-              <MapPin className="w-4 h-4" />
+              <MapPin className="w-4 h-4 flex-shrink-0" />
               <span className="flex items-center gap-2">
-                {internship.flag_emoji && <span className="text-3xl">{internship.flag_emoji}</span>}
-                <span className="text-base">{internship.country}</span>
+                {internship.flag_emoji && <span className="text-2xl">{internship.flag_emoji}</span>}
+                <span className="text-base font-medium">{internship.country}</span>
               </span>
             </div>
             
-            <h1 className="text-2xl md:text-4xl font-bold text-white">
+            <h1 className="text-2xl md:text-4xl font-bold text-white leading-tight">
               {internship.title}
             </h1>
             

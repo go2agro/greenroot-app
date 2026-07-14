@@ -13,6 +13,7 @@ export function invalidateProfile() {
 
 // Invalidate application-related cache
 export function invalidateApplications() {
+  mutate('myApplications')
   mutate('applicationCounts')
   mutate('activeApplications')
 }
@@ -25,6 +26,7 @@ export function invalidateDrafts() {
 
 // Invalidate all application data (use after major actions)
 export function invalidateAllApplicationData() {
+  mutate('myApplications')
   mutate('applicationCounts')
   mutate('activeApplications')
   mutate('draftApplications')

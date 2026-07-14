@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { 
@@ -55,26 +55,16 @@ const iconMap = {
   Wheat
 }
 
-export default function PublicInternshipDetail({ params }: { params: { id: string } | Promise<{ id: string }> }) {
+export default function PublicInternshipDetail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const router = useRouter()
   const [internship, setInternship] = useState<Internship | null>(null)
   const [loading, setLoading] = useState(true)
-  const [internshipId, setInternshipId] = useState<string | null>(null)
 
   useEffect(() => {
-    async function resolveParams() {
-      const resolvedParams = await Promise.resolve(params)
-      setInternshipId(resolvedParams.id)
-    }
-    resolveParams()
-  }, [params])
-
-  useEffect(() => {
-    if (!internshipId) return
-    
     async function fetchData() {
-      console.log('Fetching internship with ID:', internshipId)
-      const { data: internshipData, error: internshipError } = await getInternshipById(internshipId)
+      console.log('Fetching internship with ID:', id)
+      const { data: internshipData, error: internshipError } = await getInternshipById(id)
       
       if (internshipError) {
         console.error('Error fetching internship:', internshipError)
@@ -90,7 +80,7 @@ export default function PublicInternshipDetail({ params }: { params: { id: strin
     }
     
     fetchData()
-  }, [internshipId])
+  }, [id])
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'TBA'
