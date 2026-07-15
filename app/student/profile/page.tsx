@@ -21,6 +21,7 @@ import { toast } from 'sonner'
 import StudentSidebar from '@/components/StudentSidebar'
 import StudentMobileLogo from '@/components/StudentMobileLogo'
 import BottomNavigation from '@/components/BottomNavigation'
+import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { getMyProfile } from '@/lib/profiles'
 import { signOut, deleteAccount } from '@/lib/auth'
 import { 
@@ -141,6 +142,8 @@ export default function StudentProfile() {
   const [uploadingDoc, setUploadingDoc] = useState<string | null>(null)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [isDeletingAccount, setIsDeletingAccount] = useState(false)
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [copiedId, setCopiedId] = useState(false)
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({
     personal: false,
@@ -374,10 +377,6 @@ export default function StudentProfile() {
 
   // Handle delete account
   const handleDeleteAccount = async () => {
-    if (!window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-      return
-    }
-
     setIsDeletingAccount(true)
     try {
       const result = await deleteAccount()
@@ -1459,7 +1458,7 @@ export default function StudentProfile() {
                   <p className="text-sm text-gray-500">Sign out of your account</p>
                 </div>
                 <button
-                  onClick={handleLogout}
+                  onClick={() => setShowLogoutDialog(true)}
                   disabled={isLoggingOut}
                   className="border border-red-500 text-red-500 rounded-lg px-6 py-2.5 flex items-center gap-2 hover:bg-red-500 hover:text-white transition-colors disabled:opacity-50"
                 >
@@ -1477,7 +1476,7 @@ export default function StudentProfile() {
                   <p className="text-sm text-gray-500">Permanently delete your account and all data</p>
                 </div>
                 <button
-                  onClick={handleDeleteAccount}
+                  onClick={() => setShowDeleteDialog(true)}
                   disabled={isDeletingAccount}
                   className="border border-red-500 text-red-500 rounded-lg px-6 py-2.5 flex items-center gap-2 hover:bg-red-500 hover:text-white transition-colors disabled:opacity-50"
                 >
@@ -1492,6 +1491,30 @@ export default function StudentProfile() {
       </div>
 
       <BottomNavigation />
+
+      <ConfirmationDialog
+        open={showLogoutDialog}
+        onOpenChange={setShowLogoutDialog}
+        icon={<LogOut strokeWidth={1.5} />}
+        title="Logout Account?"
+        description="Are you sure you want to log out from your account? You can always log back in."
+        confirmText="Log out"
+        onConfirm={handleLogout}
+        isLoading={isLoggingOut}
+        loadingText="Logging out..."
+      />
+
+      <ConfirmationDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        icon={<Trash2 strokeWidth={1.5} />}
+        title="Delete Account?"
+        description="Are you sure you want to delete your account? You can lose all your saved data."
+        confirmText="Delete"
+        onConfirm={handleDeleteAccount}
+        isLoading={isDeletingAccount}
+        loadingText="Deleting..."
+      />
     </div>
   )
 }

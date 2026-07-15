@@ -4,11 +4,13 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { signOut } from '@/lib/auth'
 import { Button } from '@/components/ui/button'
-import { LogOut, Loader2 } from 'lucide-react'
+import { ConfirmationDialog } from '@/components/ConfirmationDialog'
+import { LogOut } from 'lucide-react'
 
 export default function AdminSettings() {
   const router = useRouter()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false)
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
@@ -29,26 +31,29 @@ export default function AdminSettings() {
           
           <div className="mt-8">
             <Button
-              onClick={handleLogout}
+              onClick={() => setShowLogoutDialog(true)}
               disabled={isLoggingOut}
               variant="destructive"
               className="flex items-center gap-2"
             >
-              {isLoggingOut ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Logging out...
-                </>
-              ) : (
-                <>
-                  <LogOut className="w-4 h-4" />
-                  Logout
-                </>
-              )}
+              <LogOut className="w-4 h-4" />
+              Logout
             </Button>
           </div>
         </div>
       </div>
+
+      <ConfirmationDialog
+        open={showLogoutDialog}
+        onOpenChange={setShowLogoutDialog}
+        icon={<LogOut strokeWidth={1.5} />}
+        title="Logout Account?"
+        description="Are you sure you want to log out from your account? You can always log back in."
+        confirmText="Log out"
+        onConfirm={handleLogout}
+        isLoading={isLoggingOut}
+        loadingText="Logging out..."
+      />
     </div>
   )
 }
