@@ -55,3 +55,37 @@ export function getApplicationStatusTimestamp(application: ApplicationTimestampF
 
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
+
+export function formatApplicationReferenceId(applicationId: string, submittedAt?: string) {
+  const year = submittedAt
+    ? new Date(submittedAt).getFullYear()
+    : new Date().getFullYear()
+  const numericPart = parseInt(applicationId.replace(/-/g, '').slice(0, 8), 16) % 100000
+
+  return `GR-${year}-${String(numericPart).padStart(5, '0')}`
+}
+
+export function formatSubmittedDateTime(dateString: string) {
+  const date = new Date(dateString)
+  const datePart = date.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+  const timePart = date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  })
+
+  return `${datePart} · ${timePart}`
+}
+
+export function formatApplicationStatusLabel(status: string) {
+  if (status === 'submitted') return 'Under Review'
+
+  return status
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+}

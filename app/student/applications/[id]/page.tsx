@@ -19,6 +19,8 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import UserAvatar from '@/components/UserAvatar'
+import { ApplicationSubmittedDialog } from '@/components/ApplicationSubmittedDialog'
+import { invalidateApplications } from '@/lib/cache'
 import { 
   getMyApplicationById,
   saveTextAnswer,
@@ -35,6 +37,7 @@ type ApplicationData = {
   status: string
   current_step: number
   internship_id: string
+  submitted_at?: string
   internships?: {
     title: string
     subtitle?: string
@@ -142,6 +145,8 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
   })
   
   const [isDragging, setIsDragging] = useState(false)
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false)
+  const [submittedAt, setSubmittedAt] = useState<string | null>(null)
 
   const isReadOnly = application?.status !== 'draft'
 
@@ -457,8 +462,27 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
       const result = await submitApplication(application.id)
       
       if (!result.error) {
-        toast.success('Application submitted successfully!')
-        router.push('/student/applications')
+        const submissionTime =
+          result.data &&
+          typeof result.data === 'object' &&
+          'submitted_at' in result.data &&
+          typeof result.data.submitted_at === 'string'
+            ? result.data.submitted_at
+            : new Date().toISOString()
+
+        setApplication((prev) =>
+          prev
+            ? {
+                ...prev,
+                status: 'submitted',
+                submitted_at: submissionTime,
+                current_step: 5,
+              }
+            : prev
+        )
+        setSubmittedAt(submissionTime)
+        setShowSuccessDialog(true)
+        invalidateApplications()
       } else {
         toast.error(result.error?.message || 'Failed to submit application')
       }
@@ -1311,6 +1335,18 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
           </div>
         </div>
       </div>
+
+      {application && submittedAt && (
+        <ApplicationSubmittedDialog
+          open={showSuccessDialog}
+          onOpenChange={setShowSuccessDialog}
+          applicationId={application.id}
+          internshipTitle={application.internships?.title ?? 'Internship'}
+          internshipCountry={application.internships?.country}
+          submittedAt={submittedAt}
+          status="submitted"
+        />
+      )}
     </div>
   )
 }
