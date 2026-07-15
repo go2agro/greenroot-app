@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { AtSign, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { signIn } from '@/lib/auth'
+import { loginUser, signOut } from '@/lib/auth'
 import { getMyProfile } from '@/lib/profiles'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -62,35 +62,44 @@ export default function Login() {
     setIsLoading(true)
 
     try {
-      const { data, error } = await signIn(email, password)
-      
+      const { data, error } = await loginUser(email, password)
+
       if (error) {
-        setGeneralError('Invalid email or password. Please try again.')
+        const message = error.message || 'Invalid email or password. Please try again.'
+        setGeneralError(
+          message.toLowerCase().includes('invalid login credentials')
+            ? 'Invalid email or password. Please try again.'
+            : message
+        )
         setIsLoading(false)
         return
       }
 
-      if (data?.user) {
-        const profileResponse = await getMyProfile()
-        
-        // Check if profile exists
-        if (!profileResponse?.data) {
-          setGeneralError('Account setup incomplete. Please contact support.')
-          setIsLoading(false)
-          return
-        }
-        
-        // Redirect based on role from profiles table
-        if (profileResponse.data.role === 'admin') {
-          router.push('/admin/dashboard')
-        } else if (profileResponse.data.role === 'student') {
-          router.push('/student/dashboard')
-        } else {
-          setGeneralError('Account setup incomplete. Please contact support.')
-          setIsLoading(false)
-        }
+      if (!data?.profile) {
+        setGeneralError('Account setup incomplete. Please contact support.')
+        setIsLoading(false)
+        return
       }
+
+      if (selectedRole === 'admin' && data.profile.role !== 'admin') {
+        await signOut()
+        setGeneralError('This account does not have admin access.')
+        setIsLoading(false)
+        return
+      }
+
+      if (selectedRole === 'student' && data.profile.role !== 'student') {
+        await signOut()
+        setGeneralError('This account is not a student account.')
+        setIsLoading(false)
+        return
+      }
+
+      router.push(
+        data.profile.role === 'admin' ? '/admin/dashboard' : '/student/dashboard'
+      )
     } catch (error) {
+      console.error('Login error:', error)
       setGeneralError('An error occurred. Please try again.')
       setIsLoading(false)
     }

@@ -248,7 +248,7 @@ export default function StudentApplications() {
 
       toast.success('Application deleted successfully')
       await refreshApplications(
-        (applications ?? []).filter((app) => app.id !== applicationId),
+        (applications ?? []).filter((app: Application) => app.id !== applicationId),
         { revalidate: true }
       )
       invalidateAllApplicationData()

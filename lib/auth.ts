@@ -21,7 +21,55 @@ export async function signUp(email: string, password: string) {
 export async function signIn(email: string, password: string) {
   const supabase = await createClient()
   const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-  return toPlainResponse(data, error)
+
+  if (error || !data.user) {
+    return toPlainResponse(null, error)
+  }
+
+  return toPlainResponse(
+    { user: { id: data.user.id, email: data.user.email } },
+    null
+  )
+}
+
+// Sign in and fetch profile in one request so the session is available immediately
+export async function loginUser(email: string, password: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+
+  if (error) {
+    return toPlainResponse(null, error)
+  }
+
+  if (!data.user) {
+    return toPlainResponse(null, { message: 'Login failed' })
+  }
+
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('id, role, unique_id')
+    .eq('id', data.user.id)
+    .maybeSingle()
+
+  if (profileError) {
+    return toPlainResponse(null, profileError)
+  }
+
+  if (!profile) {
+    return toPlainResponse(null, { message: 'Account setup incomplete. Please contact support.' })
+  }
+
+  return toPlainResponse(
+    {
+      user: { id: data.user.id, email: data.user.email },
+      profile: {
+        id: profile.id,
+        role: profile.role,
+        unique_id: profile.unique_id,
+      },
+    },
+    null
+  )
 }
 
 // Sign Out
