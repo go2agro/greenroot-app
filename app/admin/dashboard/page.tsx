@@ -28,15 +28,9 @@ import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
 import {
+  getAdminDashboardData,
   getDashboardKpisByDateRange,
-  getApplicationsByStatus,
-  getApplicationGrowth,
-  getMostAppliedInternships,
-  getRecentApplications,
-  getProfileCompletionStats,
 } from '@/lib/adminDashboard'
-import { getMyAdminProfile } from '@/lib/adminProfiles'
-import { getMyProfile } from '@/lib/profiles'
 
 type TimeFilter = 'this_week' | 'this_month' | 'last_3_months'
 type ApplicationStatus =
@@ -317,39 +311,23 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     async function loadData() {
-      const [
-        kpiResult,
-        statusResult,
-        growthResult,
-        topInternshipsResult,
-        recentApplicationsResult,
-        profileCompletionResult,
-        adminProfileResult,
-        myProfileResult,
-      ] = await Promise.all([
-        getDashboardKpisByDateRange(),
-        getApplicationsByStatus(),
-        getApplicationGrowth(),
-        getMostAppliedInternships(),
-        getRecentApplications(),
-        getProfileCompletionStats(),
-        getMyAdminProfile(),
-        getMyProfile(),
-      ])
+      const result = await getAdminDashboardData()
+      const data = result.data
 
-      setStudentsCount(kpiResult.data?.studentsCount ?? 0)
-      setApplicationsCount(kpiResult.data?.applicationsCount ?? 0)
-      setAcceptanceRate(kpiResult.data?.acceptanceRate ?? 0)
-      setInternshipsCount(kpiResult.data?.internshipsCount ?? 0)
-      setStatusCounts(statusResult.data ?? {})
-      setGrowthDates(growthResult.data ?? [])
-      setTopInternships((topInternshipsResult.data as TopInternship[]) ?? [])
-      setRecentApplications((recentApplicationsResult.data as RecentApplication[]) ?? [])
-      setProfileCompletionStats(
-        profileCompletionResult.data ?? { totalStudents: 0, complete: 0, incomplete: 0 }
-      )
-      setAdminProfile(adminProfileResult.data)
-      setMyProfile(myProfileResult.data)
+      if (data) {
+        setStudentsCount(data.studentsCount)
+        setApplicationsCount(data.applicationsCount)
+        setAcceptanceRate(data.acceptanceRate)
+        setInternshipsCount(data.internshipsCount)
+        setStatusCounts(data.statusCounts)
+        setGrowthDates(data.growthDates)
+        setTopInternships(data.topInternships as TopInternship[])
+        setRecentApplications(data.recentApplications as RecentApplication[])
+        setProfileCompletionStats(data.profileCompletion)
+        setAdminProfile(data.adminProfile as AdminProfile | null)
+        setMyProfile(data.myProfile as Profile | null)
+      }
+
       setLoading(false)
     }
 

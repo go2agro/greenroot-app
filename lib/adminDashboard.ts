@@ -20,6 +20,267 @@ const EMPTY_DASHBOARD_KPIS = {
   acceptanceRate: 0,
 }
 
+const PROFILE_COMPLETION_FIELDS = [
+  'first_name',
+  'last_name',
+  'gender',
+  'date_of_birth',
+  'nationality',
+  'marital_status',
+  'email',
+  'mobile_number',
+  'emergency_contact_number',
+  'country',
+  'state',
+  'city',
+  'address_line_1',
+  'pincode',
+  'passport_number',
+  'aadhar_number',
+  'pan_number',
+  'university_name',
+  'college_name',
+  'degree_name',
+  'branch_specialization',
+] as const
+
+const ACCEPTANCE_STATUSES = [
+  'submitted',
+  'under_review',
+  'approved',
+  'rejected',
+  'accepted',
+] as const
+
+const STUDENT_PROFILE_COMPLETION_SELECT = `
+  first_name,
+  last_name,
+  gender,
+  date_of_birth,
+  nationality,
+  marital_status,
+  email,
+  mobile_number,
+  emergency_contact_number,
+  country,
+  state,
+  city,
+  address_line_1,
+  pincode,
+  passport_number,
+  aadhar_number,
+  pan_number,
+  university_name,
+  college_name,
+  degree_name,
+  branch_specialization
+`
+
+function isProfileComplete(profile: Record<string, unknown>) {
+  return PROFILE_COMPLETION_FIELDS.every((field) => Boolean(profile[field]))
+}
+
+function groupApplicationStatuses(statuses: { status: string }[]) {
+  return statuses.reduce<Record<string, number>>((acc, item) => {
+    acc[item.status] = (acc[item.status] || 0) + 1
+    return acc
+  }, {})
+}
+
+function calculateAcceptanceRate(statuses: { status: string }[]) {
+  const relevant = statuses.filter((item) =>
+    ACCEPTANCE_STATUSES.includes(item.status as (typeof ACCEPTANCE_STATUSES)[number])
+  )
+  const total = relevant.length
+  const approved = relevant.filter(
+    (item) => item.status === 'approved' || item.status === 'accepted'
+  ).length
+
+  return total > 0 ? Number(((approved / total) * 100).toFixed(1)) : 0
+}
+
+function buildTopInternships(
+  applications: Array<{
+    internship_id: string
+    internships:
+      | {
+          title?: string
+          country?: string
+          city?: string
+          badge?: string
+        }
+      | {
+          title?: string
+          country?: string
+          city?: string
+          badge?: string
+        }[]
+      | null
+  }>
+) {
+  const grouped: Record<
+    string,
+    {
+      internship: {
+        title?: string
+        country?: string
+        city?: string
+        badge?: string
+      } | null
+      count: number
+    }
+  > = {}
+
+  applications.forEach((item) => {
+    const id = item.internship_id
+    const internship = Array.isArray(item.internships)
+      ? item.internships[0] ?? null
+      : item.internships
+
+    if (!grouped[id]) {
+      grouped[id] = { internship, count: 0 }
+    }
+    grouped[id].count += 1
+  })
+
+  return Object.values(grouped)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5)
+}
+
+export type AdminDashboardData = {
+  studentsCount: number
+  applicationsCount: number
+  acceptanceRate: number
+  internshipsCount: number
+  statusCounts: Record<string, number>
+  growthDates: string[]
+  topInternships: Array<{
+    internship: {
+      title?: string
+      country?: string
+      city?: string
+      badge?: string
+    } | null
+    count: number
+  }>
+  recentApplications: unknown[]
+  profileCompletion: {
+    totalStudents: number
+    complete: number
+    incomplete: number
+  }
+  adminProfile: Record<string, unknown> | null
+  myProfile: Record<string, unknown> | null
+}
+
+// Single bundled fetch for admin dashboard — one auth check, parallel DB queries
+export async function getAdminDashboardData() {
+  const { client: supabase, userId, error: authError } = await getAdminDbClient()
+  if (!supabase || !userId) {
+    return toPlainResponse(null, authError)
+  }
+
+  const sixMonthsAgo = new Date()
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
+
+  const [
+    { count: studentsCount, error: studentsError },
+    { count: applicationsCount, error: applicationsError },
+    { count: internshipsCount, error: internshipsError },
+    { data: applicationStatuses, error: statusesError },
+    { data: growthRows, error: growthError },
+    { data: allApplications, error: topInternshipsError },
+    { data: recentApplications, error: recentApplicationsError },
+    { data: studentProfiles, error: studentProfilesError },
+    { data: adminProfile, error: adminProfileError },
+    { data: myProfile, error: myProfileError },
+  ] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select('*', { count: 'exact', head: true })
+      .eq('role', 'student'),
+    supabase.from('applications').select('*', { count: 'exact', head: true }),
+    supabase.from('internships').select('*', { count: 'exact', head: true }),
+    supabase.from('applications').select('status'),
+    supabase
+      .from('applications')
+      .select('submitted_at')
+      .not('submitted_at', 'is', null)
+      .gte('submitted_at', sixMonthsAgo.toISOString())
+      .order('submitted_at', { ascending: true }),
+    supabase.from('applications').select(`
+      internship_id,
+      internships (
+        title,
+        country,
+        city,
+        badge
+      )
+    `),
+    supabase
+      .from('applications')
+      .select(`
+        id,
+        status,
+        submitted_at,
+        internships (
+          title,
+          country
+        ),
+        student_profiles (
+          first_name,
+          last_name
+        )
+      `)
+      .not('submitted_at', 'is', null)
+      .order('submitted_at', { ascending: false })
+      .limit(5),
+    supabase.from('student_profiles').select(STUDENT_PROFILE_COMPLETION_SELECT),
+    supabase.from('admin_profiles').select('*').eq('id', userId).single(),
+    supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
+  ])
+
+  const statuses = applicationStatuses ?? []
+  const profiles = studentProfiles ?? []
+  const totalStudents = studentsCount ?? 0
+  const complete = profiles.filter(isProfileComplete).length
+
+  const error =
+    studentsError ||
+    applicationsError ||
+    internshipsError ||
+    statusesError ||
+    growthError ||
+    topInternshipsError ||
+    recentApplicationsError ||
+    studentProfilesError ||
+    adminProfileError ||
+    myProfileError
+
+  const data: AdminDashboardData = {
+    studentsCount: totalStudents,
+    applicationsCount: applicationsCount ?? 0,
+    acceptanceRate: calculateAcceptanceRate(statuses),
+    internshipsCount: internshipsCount ?? 0,
+    statusCounts: groupApplicationStatuses(statuses),
+    growthDates: (growthRows ?? []).map(
+      (row: { submitted_at: string }) => row.submitted_at
+    ),
+    topInternships: buildTopInternships(allApplications ?? []),
+    recentApplications: recentApplications ?? [],
+    profileCompletion: {
+      totalStudents,
+      complete,
+      incomplete: Math.max(0, totalStudents - complete),
+    },
+    adminProfile: adminProfile ?? null,
+    myProfile: myProfile ?? null,
+  }
+
+  return toPlainResponse(data, error)
+}
+
 // ─────────────────────────────────────────
 // USERS KPIs
 // ─────────────────────────────────────────

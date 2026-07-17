@@ -204,7 +204,8 @@ export async function getMyApplicationById(applicationId: string) {
         image_url,
         badge,
         duration_months,
-        stipend_monthly
+        stipend_monthly,
+        long_description
       ),
       application_answers (*)
     `)

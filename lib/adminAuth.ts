@@ -12,6 +12,7 @@ type AdminAuthError = {
 
 export async function getAdminDbClient(): Promise<{
   client: SupabaseClient | null
+  userId: string | null
   error: AdminAuthError | null
 }> {
   const supabase = await createClient()
@@ -20,7 +21,7 @@ export async function getAdminDbClient(): Promise<{
   } = await supabase.auth.getUser()
 
   if (!user) {
-    return { client: null, error: { message: 'Not logged in' } }
+    return { client: null, userId: null, error: { message: 'Not logged in' } }
   }
 
   const { data: profile, error: profileError } = await supabase
@@ -32,6 +33,7 @@ export async function getAdminDbClient(): Promise<{
   if (profileError) {
     return {
       client: null,
+      userId: null,
       error: {
         message: profileError.message || 'Failed to verify admin access',
         code: profileError.code ?? null,
@@ -40,12 +42,16 @@ export async function getAdminDbClient(): Promise<{
   }
 
   if (profile?.role !== 'admin') {
-    return { client: null, error: { message: 'Unauthorized' } }
+    return { client: null, userId: null, error: { message: 'Unauthorized' } }
   }
 
   try {
-    return { client: createAdminClient(), error: null }
+    return { client: createAdminClient(), userId: user.id, error: null }
   } catch {
-    return { client: null, error: { message: 'Admin configuration missing' } }
+    return {
+      client: null,
+      userId: null,
+      error: { message: 'Admin configuration missing' },
+    }
   }
 }

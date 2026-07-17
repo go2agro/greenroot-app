@@ -22,6 +22,7 @@ import {
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { getInternshipById } from '@/lib/internships'
+import { stripRequiredDocumentsBlock } from '@/lib/internshipContent'
 
 interface Internship {
   id: string
@@ -239,7 +240,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
       <div className="max-w-7xl mx-auto px-8 py-10">
         <h2 className="font-bold text-xl mb-4 text-[#1A1A1A]">About this Internship</h2>
         <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">
-          {internship.long_description || 'No description available.'}
+          {stripRequiredDocumentsBlock(internship.long_description) || 'No description available.'}
         </p>
       </div>
 

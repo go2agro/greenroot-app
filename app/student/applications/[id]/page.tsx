@@ -21,6 +21,7 @@ import { toast } from 'sonner'
 import UserAvatar from '@/components/UserAvatar'
 import { ApplicationSubmittedDialog } from '@/components/ApplicationSubmittedDialog'
 import { invalidateApplications } from '@/lib/cache'
+import { extractRequiredDocuments } from '@/lib/internshipContent'
 import { 
   getMyApplicationById,
   saveTextAnswer,
@@ -29,7 +30,6 @@ import {
   submitApplication
 } from '@/lib/studentApplications'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
-import { getInternshipById } from '@/lib/internships'
 import { getMyProfile } from '@/lib/profiles'
 
 type ApplicationData = {
@@ -46,6 +46,7 @@ type ApplicationData = {
     image_url?: string
     duration_months?: number
     stipend_monthly?: number
+    long_description?: string
   }
   application_answers?: Array<{
     field_key: string
@@ -93,6 +94,8 @@ const STEP_NAMES = [
   'Documents',
   'Review & Submit'
 ]
+
+const MAX_DOCUMENT_UPLOADS = 10
 
 const getCountryFlag = (country: string) => {
   const countryToCode: { [key: string]: string } = {
@@ -149,6 +152,9 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
   const [submittedAt, setSubmittedAt] = useState<string | null>(null)
 
   const isReadOnly = application?.status !== 'draft'
+  const requiredDocumentsText = extractRequiredDocuments(
+    application?.internships?.long_description
+  ).requiredDocuments
 
   useEffect(() => {
     loadData()
@@ -388,10 +394,10 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
     if (!files) return
     
     const totalFiles = uploadedFiles.length + existingFiles.length
-    const remainingSlots = 5 - totalFiles
+    const remainingSlots = MAX_DOCUMENT_UPLOADS - totalFiles
     
     if (remainingSlots === 0) {
-      toast.error('Maximum 5 files allowed')
+      toast.error(`Maximum ${MAX_DOCUMENT_UPLOADS} files allowed`)
       return
     }
     
@@ -995,13 +1001,33 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
               {currentStep === 4 && (
                 <div>
                   <h3 className="font-bold text-xl text-gray-900 mb-2">Supporting Documents</h3>
-                  <p className="text-sm text-gray-500 mb-6">Upload your documents below. Maximum 5 files, 1MB each.</p>
+                  <p className="text-sm text-gray-500 mb-6">
+                    {requiredDocumentsText
+                      ? 'Read the required documents list below, then upload your files.'
+                      : `Upload your documents below. Maximum ${MAX_DOCUMENT_UPLOADS} files, 1MB each.`}
+                  </p>
+
+                  {requiredDocumentsText && (
+                    <div className="bg-[#F0F7E6] border border-[#8DC63F]/30 rounded-xl p-5 mb-6">
+                      <div className="flex items-start gap-3">
+                        <Info className="w-5 h-5 text-[#8DC63F] flex-shrink-0 mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-2">
+                            Documents Required for This Internship
+                          </h4>
+                          <p className="text-sm text-gray-800 whitespace-pre-line leading-relaxed">
+                            {requiredDocumentsText}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {!isReadOnly && (
                   <>
                   <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
                     <ul className="text-sm text-amber-800 space-y-1 list-disc list-inside">
-                      <li>Maximum 5 files total</li>
+                      <li>Maximum {MAX_DOCUMENT_UPLOADS} files total</li>
                       <li>Each file must be under 1MB</li>
                       <li>Accepted formats: PDF, JPG, JPEG, PNG</li>
                     </ul>
@@ -1027,7 +1053,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                     <div className="text-center">
                       <CloudUpload className="w-12 h-12 text-gray-400 mx-auto mb-3" />
                       <p className="font-medium text-gray-600">Click to upload or drag and drop</p>
-                      <p className="text-xs text-gray-400 mt-1">PDF, JPG, PNG • Max 1MB per file • Max 5 files</p>
+                      <p className="text-xs text-gray-400 mt-1">PDF, JPG, PNG • Max 1MB per file • Max {MAX_DOCUMENT_UPLOADS} files</p>
                     </div>
                   </div>
                   </>
@@ -1038,9 +1064,9 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                   )}
 
                   <p className={`text-sm text-center mt-3 ${
-                    uploadedFiles.length + existingFiles.length >= 5 ? 'text-red-500' : 'text-[#8DC63F]'
+                    uploadedFiles.length + existingFiles.length >= MAX_DOCUMENT_UPLOADS ? 'text-red-500' : 'text-[#8DC63F]'
                   }`}>
-                    {uploadedFiles.length + existingFiles.length} / 5 files uploaded
+                    {uploadedFiles.length + existingFiles.length} / {MAX_DOCUMENT_UPLOADS} files uploaded
                   </p>
 
                   {(existingFiles.length > 0 || uploadedFiles.length > 0) && (

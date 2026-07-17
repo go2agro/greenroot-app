@@ -24,6 +24,7 @@ import {
 } from 'lucide-react'
 import UserAvatar from '@/components/UserAvatar'
 import { getInternshipById } from '@/lib/internships'
+import { stripRequiredDocumentsBlock } from '@/lib/internshipContent'
 import { startApplication } from '@/lib/studentApplications'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
@@ -336,7 +337,7 @@ export default function StudentInternshipDetail({ params }: { params: Promise<{ 
       <div className="max-w-7xl mx-auto px-8 py-10">
         <h2 className="font-bold text-xl mb-4 text-[#1A1A1A]">About this Internship</h2>
         <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">
-          {internship.long_description || 'No description available.'}
+          {stripRequiredDocumentsBlock(internship.long_description) || 'No description available.'}
         </p>
       </div>
 
