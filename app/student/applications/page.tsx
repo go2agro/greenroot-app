@@ -19,9 +19,11 @@ import {
   SlidersHorizontal,
   FileText,
   ChevronLeft,
-  Loader2
+  Loader2,
+  Trash2,
 } from 'lucide-react'
 import { toast } from 'sonner'
+import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { getMyApplications, getApplicationCounts, deleteStudentApplication } from '@/lib/studentApplications'
 import { invalidateAllApplicationData } from '@/lib/cache'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
@@ -145,6 +147,11 @@ export default function StudentApplications() {
   const [currentPage, setCurrentPage] = useState(1)
   const [filteredApplications, setFilteredApplications] = useState<Application[]>([])
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [pendingDelete, setPendingDelete] = useState<{
+    id: string
+    status: ApplicationStatus
+  } | null>(null)
 
   const { data: applications, isLoading: applicationsLoading, mutate: refreshApplications } = useSWR(
     'myApplications',
@@ -225,21 +232,23 @@ export default function StudentApplications() {
     }
   }
 
-  const handleDeleteApplication = async (applicationId: string, status: ApplicationStatus, event: React.MouseEvent) => {
+  const handleDeleteApplication = (
+    applicationId: string,
+    status: ApplicationStatus,
+    event: React.MouseEvent
+  ) => {
     event.stopPropagation()
+    setPendingDelete({ id: applicationId, status })
+    setShowDeleteDialog(true)
+  }
 
-    const message = status === 'submitted'
-      ? 'Are you sure you want to delete this submitted application? You can reapply to this internship afterwards.'
-      : 'Are you sure you want to delete this draft application?'
+  const confirmDeleteApplication = async () => {
+    if (!pendingDelete) return
 
-    if (!window.confirm(message)) {
-      return
-    }
-
-    setDeletingId(applicationId)
+    setDeletingId(pendingDelete.id)
 
     try {
-      const result = await deleteStudentApplication(applicationId)
+      const result = await deleteStudentApplication(pendingDelete.id)
 
       if (result.error) {
         toast.error(result.error.message || 'Failed to delete application')
@@ -248,10 +257,12 @@ export default function StudentApplications() {
 
       toast.success('Application deleted successfully')
       await refreshApplications(
-        (applications ?? []).filter((app: Application) => app.id !== applicationId),
+        (applications ?? []).filter((app: Application) => app.id !== pendingDelete.id),
         { revalidate: true }
       )
       invalidateAllApplicationData()
+      setShowDeleteDialog(false)
+      setPendingDelete(null)
     } catch (error) {
       console.error('Error deleting application:', error)
       toast.error('Failed to delete application')
@@ -259,6 +270,11 @@ export default function StudentApplications() {
       setDeletingId(null)
     }
   }
+
+  const deleteDialogDescription =
+    pendingDelete?.status === 'submitted'
+      ? 'Are you sure you want to delete this submitted application? You can reapply to this internship afterwards.'
+      : 'Are you sure you want to delete this draft application?'
 
   const renderPaginationNumbers = () => {
     const pages = []
@@ -585,6 +601,25 @@ export default function StudentApplications() {
       </div>
 
       <BottomNavigation />
+
+      <ConfirmationDialog
+        open={showDeleteDialog}
+        onOpenChange={(open) => {
+          if (!deletingId) {
+            setShowDeleteDialog(open)
+            if (!open) {
+              setPendingDelete(null)
+            }
+          }
+        }}
+        icon={<Trash2 strokeWidth={1.5} />}
+        title="Delete Application?"
+        description={deleteDialogDescription}
+        confirmText="Delete"
+        onConfirm={confirmDeleteApplication}
+        isLoading={Boolean(deletingId)}
+        loadingText="Deleting..."
+      />
     </div>
   )
 }

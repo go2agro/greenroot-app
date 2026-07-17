@@ -1,7 +1,24 @@
 "use server"
 
-import { createClient } from './supabase'
+import { getAdminDbClient } from './adminAuth'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
+
+async function requireAdminSupabase() {
+  return getAdminDbClient()
+}
+
+const EMPTY_PROFILE_COMPLETION = {
+  totalStudents: 0,
+  complete: 0,
+  incomplete: 0,
+}
+
+const EMPTY_DASHBOARD_KPIS = {
+  studentsCount: 0,
+  applicationsCount: 0,
+  internshipsCount: 0,
+  acceptanceRate: 0,
+}
 
 // ─────────────────────────────────────────
 // USERS KPIs
@@ -9,7 +26,8 @@ import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // Total students registered
 export async function getTotalStudents() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return toPlainResponse({ count: 0 }, authError)
 
   const { count, error } = await supabase
     .from('profiles')
@@ -21,7 +39,8 @@ export async function getTotalStudents() {
 
 // New students this week
 export async function getNewStudentsThisWeek() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return { count: 0, error: authError }
 
   const oneWeekAgo = new Date()
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
@@ -37,7 +56,8 @@ export async function getNewStudentsThisWeek() {
 
 // New students this month
 export async function getNewStudentsThisMonth() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return { count: 0, error: authError }
 
   const oneMonthAgo = new Date()
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1)
@@ -53,7 +73,8 @@ export async function getNewStudentsThisMonth() {
 
 // Total admins
 export async function getTotalAdmins() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return { count: 0, error: authError }
 
   const { count, error } = await supabase
     .from('profiles')
@@ -65,24 +86,82 @@ export async function getTotalAdmins() {
 
 // Students with complete vs incomplete profiles
 export async function getProfileCompletionStats() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return toPlainResponse(EMPTY_PROFILE_COMPLETION, authError)
 
-  const { data, error } = await supabase
-    .from('student_profiles')
-    .select('first_name, last_name, email, phone_number, university_name, degree, passport_number')
+  const [
+    { count: totalStudents, error: studentsError },
+    { data: studentProfiles, error: profilesError },
+  ] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select('*', { count: 'exact', head: true })
+      .eq('role', 'student'),
+    supabase.from('student_profiles').select(`
+      first_name,
+      last_name,
+      gender,
+      date_of_birth,
+      nationality,
+      marital_status,
+      email,
+      mobile_number,
+      emergency_contact_number,
+      country,
+      state,
+      city,
+      address_line_1,
+      pincode,
+      passport_number,
+      aadhar_number,
+      pan_number,
+      university_name,
+      college_name,
+      degree_name,
+      branch_specialization
+    `),
+  ])
 
-  if (!data) return toPlainResponse({ complete: 0, incomplete: 0 }, error)
+  const requiredFields = [
+    'first_name',
+    'last_name',
+    'gender',
+    'date_of_birth',
+    'nationality',
+    'marital_status',
+    'email',
+    'mobile_number',
+    'emergency_contact_number',
+    'country',
+    'state',
+    'city',
+    'address_line_1',
+    'pincode',
+    'passport_number',
+    'aadhar_number',
+    'pan_number',
+    'university_name',
+    'college_name',
+    'degree_name',
+    'branch_specialization',
+  ] as const
 
-  const complete = data.filter((p: any) =>
-    p.first_name && p.last_name && p.email &&
-    p.phone_number && p.university_name &&
-    p.degree && p.passport_number
-  ).length
+  const isProfileComplete = (profile: Record<string, unknown>) =>
+    requiredFields.every((field) => Boolean(profile[field]))
 
-  return toPlainResponse({
-    complete,
-    incomplete: data.length - complete
-  }, error)
+  const profiles = studentProfiles ?? []
+  const complete = profiles.filter(isProfileComplete).length
+  const total = totalStudents ?? 0
+  const incomplete = Math.max(0, total - complete)
+
+  return toPlainResponse(
+    {
+      totalStudents: total,
+      complete,
+      incomplete,
+    },
+    studentsError || profilesError
+  )
 }
 
 // ─────────────────────────────────────────
@@ -91,7 +170,8 @@ export async function getProfileCompletionStats() {
 
 // Total internships listed
 export async function getTotalInternships() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return { count: 0, error: authError }
 
   const { count, error } = await supabase
     .from('internships')
@@ -102,7 +182,8 @@ export async function getTotalInternships() {
 
 // Internships by country
 export async function getInternshipsByCountry() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return toPlainResponse(null, authError)
 
   const { data, error } = await supabase
     .from('internships')
@@ -121,7 +202,8 @@ export async function getInternshipsByCountry() {
 
 // Internships by duration
 export async function getInternshipsByDuration() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return toPlainResponse(null, authError)
 
   const { data, error } = await supabase
     .from('internships')
@@ -146,7 +228,8 @@ export async function getInternshipsByDuration() {
 
 // Total applications
 export async function getTotalApplications() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return { count: 0, error: authError }
 
   const { count, error } = await supabase
     .from('applications')
@@ -157,7 +240,8 @@ export async function getTotalApplications() {
 
 // Applications this week
 export async function getApplicationsThisWeek() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return { count: 0, error: authError }
 
   const oneWeekAgo = new Date()
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
@@ -172,7 +256,8 @@ export async function getApplicationsThisWeek() {
 
 // Applications this month
 export async function getApplicationsThisMonth() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return { count: 0, error: authError }
 
   const oneMonthAgo = new Date()
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1)
@@ -187,7 +272,8 @@ export async function getApplicationsThisMonth() {
 
 // Applications by status
 export async function getApplicationsByStatus() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return toPlainResponse(null, authError)
 
   const { data, error } = await supabase
     .from('applications')
@@ -205,7 +291,8 @@ export async function getApplicationsByStatus() {
 
 // Acceptance rate
 export async function getAcceptanceRate() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return toPlainResponse({ rate: 0 }, authError)
 
   const { data, error } = await supabase
     .from('applications')
@@ -224,9 +311,103 @@ export async function getAcceptanceRate() {
   return toPlainResponse({ rate, total, approved }, error)
 }
 
+function toEndOfDayIso(dateStr: string): string {
+  const end = new Date(dateStr)
+  end.setHours(23, 59, 59, 999)
+  return end.toISOString()
+}
+
+// Dashboard KPIs with optional date range (lifetime when no range provided)
+export async function getDashboardKpisByDateRange(
+  startDate?: string | null,
+  endDate?: string | null
+) {
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return toPlainResponse(EMPTY_DASHBOARD_KPIS, authError)
+
+  const hasRange = Boolean(startDate && endDate)
+  const startIso = hasRange ? new Date(startDate!).toISOString() : null
+  const endIso = hasRange ? toEndOfDayIso(endDate!) : null
+
+  let studentsQuery = supabase
+    .from('profiles')
+    .select('*', { count: 'exact', head: true })
+    .eq('role', 'student')
+
+  if (hasRange) {
+    studentsQuery = studentsQuery
+      .gte('created_at', startIso!)
+      .lte('created_at', endIso!)
+  }
+
+  let applicationsQuery = supabase
+    .from('applications')
+    .select('*', { count: 'exact', head: true })
+
+  if (hasRange) {
+    applicationsQuery = applicationsQuery
+      .gte('started_at', startIso!)
+      .lte('started_at', endIso!)
+  }
+
+  let internshipsQuery = supabase
+    .from('internships')
+    .select('*', { count: 'exact', head: true })
+
+  if (hasRange) {
+    internshipsQuery = internshipsQuery
+      .gte('created_at', startIso!)
+      .lte('created_at', endIso!)
+  }
+
+  let acceptanceQuery = supabase
+    .from('applications')
+    .select('status')
+    .in('status', ['submitted', 'under_review', 'approved', 'rejected', 'accepted'])
+
+  if (hasRange) {
+    acceptanceQuery = acceptanceQuery
+      .gte('started_at', startIso!)
+      .lte('started_at', endIso!)
+  }
+
+  const [
+    { count: studentsCount, error: studentsError },
+    { count: applicationsCount, error: applicationsError },
+    { count: internshipsCount, error: internshipsError },
+    { data: acceptanceData, error: acceptanceError },
+  ] = await Promise.all([
+    studentsQuery,
+    applicationsQuery,
+    internshipsQuery,
+    acceptanceQuery,
+  ])
+
+  const total = acceptanceData?.length ?? 0
+  const approved =
+    acceptanceData?.filter(
+      (application: { status: string }) =>
+        application.status === 'approved' || application.status === 'accepted'
+    ).length ?? 0
+  const rate = total > 0 ? Number(((approved / total) * 100).toFixed(1)) : 0
+
+  const error = studentsError || applicationsError || internshipsError || acceptanceError
+
+  return toPlainResponse(
+    {
+      studentsCount: studentsCount ?? 0,
+      applicationsCount: applicationsCount ?? 0,
+      internshipsCount: internshipsCount ?? 0,
+      acceptanceRate: rate,
+    },
+    error
+  )
+}
+
 // Most applied internships
 export async function getMostAppliedInternships() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return toPlainResponse(null, authError)
 
   const { data, error } = await supabase
     .from('applications')
@@ -267,7 +448,8 @@ export async function getMostAppliedInternships() {
 
 // Student registrations over last 6 months
 export async function getStudentGrowth() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return toPlainResponse(null, authError)
 
   const sixMonthsAgo = new Date()
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
@@ -291,29 +473,27 @@ export async function getStudentGrowth() {
   return toPlainResponse(grouped, error)
 }
 
-// Applications over last 6 months
+// Applications submitted over last 6 months
 export async function getApplicationGrowth() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return toPlainResponse([], authError)
 
   const sixMonthsAgo = new Date()
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
 
   const { data, error } = await supabase
     .from('applications')
-    .select('started_at')
-    .gte('started_at', sixMonthsAgo.toISOString())
-    .order('started_at', { ascending: true })
+    .select('submitted_at')
+    .not('submitted_at', 'is', null)
+    .gte('submitted_at', sixMonthsAgo.toISOString())
+    .order('submitted_at', { ascending: true })
 
-  if (!data) return toPlainResponse(null, error)
+  if (!data) return toPlainResponse([], error)
 
-  const grouped = data.reduce((acc: any, item: any) => {
-    const month = new Date(item.started_at)
-      .toLocaleString('default', { month: 'short', year: 'numeric' })
-    acc[month] = (acc[month] || 0) + 1
-    return acc
-  }, {})
-
-  return toPlainResponse(grouped, error)
+  return toPlainResponse(
+    data.map((item: { submitted_at: string }) => item.submitted_at),
+    error
+  )
 }
 
 // ─────────────────────────────────────────
@@ -322,14 +502,16 @@ export async function getApplicationGrowth() {
 
 // Recently registered students
 export async function getRecentStudents() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return toPlainResponse(null, authError)
 
   const { data, error } = await supabase
     .from('student_profiles')
     .select(`
+      id,
       first_name,
       last_name,
-      email,
+      university_name,
       profiles (
         unique_id,
         created_at
@@ -343,12 +525,15 @@ export async function getRecentStudents() {
 
 // Recently submitted applications
 export async function getRecentApplications() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return toPlainResponse(null, authError)
 
   const { data, error } = await supabase
     .from('applications')
     .select(`
-      *,
+      id,
+      status,
+      submitted_at,
       internships (
         title,
         country
@@ -358,16 +543,17 @@ export async function getRecentApplications() {
         last_name
       )
     `)
-    .eq('status', 'submitted')
+    .not('submitted_at', 'is', null)
     .order('submitted_at', { ascending: false })
     .limit(5)
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // Recently added internships
 export async function getRecentInternships() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return { data: null, error: authError }
 
   const { data, error } = await supabase
     .from('internships')
@@ -382,7 +568,8 @@ export async function getRecentInternships() {
 // BILLING CALCULATOR
 // ─────────────────────────────────────────
 export async function getMonthlyBillingReport() {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return toPlainResponse(null, authError)
 
   // Get current month's start and end
   const now = new Date()
@@ -458,7 +645,8 @@ export async function getMonthlyBillingReport() {
 // BILLING HISTORY (past months)
 // ─────────────────────────────────────────
 export async function getBillingHistory(monthsBack: number = 6) {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await requireAdminSupabase()
+  if (!supabase) return toPlainResponse([], authError)
 
   const reports = []
 
