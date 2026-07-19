@@ -1,6 +1,7 @@
 "use server"
 
 import { createClient } from './supabase'
+import { getAdminDbClient } from './adminAuth'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // ─────────────────────────────────────────
@@ -13,7 +14,9 @@ export async function getAllApplications(filters?: {
   internship_id?: string
   student_id?: string
 }) {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
+
   let query = supabase
     .from('applications')
     .select(`
@@ -22,14 +25,11 @@ export async function getAllApplications(filters?: {
         title,
         city,
         country,
-        badge
+        badge,
+        flag_emoji
       ),
-      student_profiles (
-        first_name,
-        last_name,
-        email,
-        university_name,
-        degree
+      profiles (
+        unique_id
       )
     `)
     .order('started_at', { ascending: false })
@@ -38,20 +38,55 @@ export async function getAllApplications(filters?: {
   if (filters?.internship_id) query = query.eq('internship_id', filters.internship_id)
   if (filters?.student_id)    query = query.eq('student_id', filters.student_id)
 
-  const { data, error } = await query
+  const { data: applications, error } = await query
+  if (error) return toPlainResponse(null, error)
+  if (!applications?.length) return toPlainResponse([], null)
 
-  // Filter by student name search (client side)
-  if (filters?.search && data) {
+  const studentIds = [
+    ...new Set(
+      applications
+        .map((app: { student_id?: string }) => app.student_id)
+        .filter(Boolean) as string[]
+    ),
+  ]
+
+  const { data: studentProfiles, error: studentProfilesError } = await supabase
+    .from('student_profiles')
+    .select('id, first_name, last_name, email, university_name, degree')
+    .in('id', studentIds)
+
+  if (studentProfilesError) return toPlainResponse(null, studentProfilesError)
+
+  const studentProfileMap = new Map(
+    (studentProfiles ?? []).map((profile) => [profile.id, profile])
+  )
+
+  let merged = applications.map((app: any) => {
+    const studentProfile = studentProfileMap.get(app.student_id)
+    const profile = Array.isArray(app.profiles) ? app.profiles[0] : app.profiles
+
+    return {
+      ...app,
+      profiles: undefined,
+      student_profiles: studentProfile
+        ? {
+            ...studentProfile,
+            profiles: profile ? { unique_id: profile.unique_id } : null,
+          }
+        : null,
+    }
+  })
+
+  if (filters?.search) {
     const search = filters.search.toLowerCase()
-    const filtered = data.filter((app: any) =>
+    merged = merged.filter((app: any) =>
       app.student_profiles?.first_name?.toLowerCase().includes(search) ||
       app.student_profiles?.last_name?.toLowerCase().includes(search) ||
       app.student_profiles?.email?.toLowerCase().includes(search)
     )
-    return toPlainResponse(filtered, error)
   }
 
-  return toPlainResponse(data, error)
+  return toPlainResponse(merged, null)
 }
 
 // ─────────────────────────────────────────
