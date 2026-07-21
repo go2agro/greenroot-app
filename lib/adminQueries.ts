@@ -117,22 +117,38 @@ export async function getAllAdmins(filters?: {
 // GET SINGLE STUDENT (by user ID)
 // ─────────────────────────────────────────
 export async function getStudentById(userId: string) {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
 
   const { data, error } = await supabase
     .from('student_profiles')
     .select(`
       *,
-      profiles (
+      profiles!inner (
         unique_id,
         role,
         created_at
       )
     `)
     .eq('id', userId)
+    .eq('profiles.role', 'student')
     .single()
 
-  return { data, error }
+  return toPlainResponse(data, error)
+}
+
+// ─────────────────────────────────────────
+// GET STUDENT DOCUMENT (signed url)
+// ─────────────────────────────────────────
+export async function getStudentDocumentUrl(filePath: string) {
+  const { client: supabase, error: authError } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
+
+  const { data, error } = await supabase.storage
+    .from('student-documents')
+    .createSignedUrl(filePath, 60 * 60)
+
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
