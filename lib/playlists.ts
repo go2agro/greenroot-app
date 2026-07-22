@@ -11,8 +11,12 @@ export async function getAllPlaylists() {
 
   const { data, error } = await supabase
     .from('playlists')
-    .select('*')
+    .select(`
+      *,
+      playlist_videos (*)
+    `)
     .order('created_at', { ascending: false })
+    .order('order_number', { referencedTable: 'playlist_videos', ascending: true })
 
   return toPlainResponse(data, error)
 }
