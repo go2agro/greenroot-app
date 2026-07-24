@@ -42,9 +42,6 @@ export default function Footer() {
             <Link href="/internships" className="text-sm text-gray-600 hover:text-[#8DC63F]">
               Find Internships
             </Link>
-            <Link href="/student/library" className="text-sm text-gray-600 hover:text-[#8DC63F]">
-              Learning Hub
-            </Link>
             <Link href="/#contact" className="text-sm text-gray-600 hover:text-[#8DC63F]">
               For Employers
             </Link>

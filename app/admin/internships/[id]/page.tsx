@@ -437,7 +437,7 @@ export default function AdminInternshipDetails({ params }: { params: Promise<{ i
             </div>
             <Link
               href="/admin/profile"
-              className="w-10 h-10 rounded-full bg-[#8DC63F] flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity flex-shrink-0"
+              className="w-10 h-10 rounded-full bg-[#3B82F6] flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity flex-shrink-0"
             >
               {getAvatarInitials()}
             </Link>

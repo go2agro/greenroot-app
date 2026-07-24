@@ -12,12 +12,13 @@ import {
   ChevronUp,
   Copy,
   CheckCircle2,
+  Save,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import AdminSidebar from '@/components/AdminSidebar'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { getMyProfile } from '@/lib/profiles'
-import { getMyAdminProfile } from '@/lib/adminProfiles'
+import { getMyAdminProfile, updateAdminProfile } from '@/lib/adminProfiles'
 import { signOut } from '@/lib/auth'
 
 interface AdminProfileData {
@@ -27,16 +28,31 @@ interface AdminProfileData {
   personal_email?: string
   official_email?: string
   phone_number?: string
+  alternate_phone_number?: string
+  gender?: 'male' | 'female' | 'other'
+  date_of_birth?: string
+  address_line_1?: string
+  address_line_2?: string
+  city?: string
+  state?: string
+  pincode?: string
+  aadhar_number?: string
+  pan_number?: string
 }
 
-const fetcher = (fn: () => Promise<{ data: unknown }>) => fn().then((res) => res.data)
+const fetcher = (fn: () => Promise<{ data: unknown; error?: unknown }>) =>
+  fn().then((res) => res.data)
 
-const PLACEHOLDER_SECTIONS = [
-  { id: 'personal', title: 'Personal Information' },
-  { id: 'contact', title: 'Contact Information' },
-  { id: 'address', title: 'Address Details' },
-  { id: 'identity', title: 'Identity & Documents' },
-] as const
+const indianStates = [
+  'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
+  'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka',
+  'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram',
+  'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
+  'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
+]
+
+const inputClass = 'bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm'
+const labelClass = 'text-sm font-medium text-gray-700 mb-2 block'
 
 export default function AdminProfilePage() {
   const router = useRouter()
@@ -44,6 +60,8 @@ export default function AdminProfilePage() {
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [showLogoutDialog, setShowLogoutDialog] = useState(false)
   const [copiedId, setCopiedId] = useState(false)
+  const [savingSection, setSavingSection] = useState<string | null>(null)
+  const [formData, setFormData] = useState<AdminProfileData>({})
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({
     personal: false,
     contact: true,
@@ -56,10 +74,20 @@ export default function AdminProfilePage() {
     revalidateOnReconnect: false,
   })
 
-  const { data: adminProfile } = useSWR('adminProfile', () => fetcher(getMyAdminProfile), {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  })
+  const { data: adminProfile, mutate: refreshAdminProfile } = useSWR(
+    'adminProfile',
+    () => fetcher(getMyAdminProfile),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  )
+
+  useEffect(() => {
+    if (adminProfile) {
+      setFormData(adminProfile as AdminProfileData)
+    }
+  }, [adminProfile])
 
   useEffect(() => {
     if (profile !== undefined && (!profile || (profile as { role?: string }).role !== 'admin')) {
@@ -67,20 +95,72 @@ export default function AdminProfilePage() {
     }
   }, [profile, router])
 
-  const adminData = (adminProfile as AdminProfileData | null) ?? {}
   const profileData = (profile as { unique_id?: string; email?: string; role?: string } | null) ?? {}
 
   const displayName =
-    [adminData.first_name, adminData.last_name].filter(Boolean).join(' ') ||
+    [formData.first_name, formData.last_name].filter(Boolean).join(' ') ||
     profileData.email ||
     'Admin'
 
   const getAvatarInitials = () => {
-    const first = adminData.first_name?.trim()
-    const last = adminData.last_name?.trim()
+    const first = formData.first_name?.trim()
+    const last = formData.last_name?.trim()
     if (first && last) return `${first.charAt(0)}${last.charAt(0)}`.toUpperCase()
     if (first) return first.charAt(0).toUpperCase()
     return profileData.email?.charAt(0).toUpperCase() || 'A'
+  }
+
+  const handleChange = (field: keyof AdminProfileData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const handleSave = async (section: string) => {
+    setSavingSection(section)
+    try {
+      let dataToSave: Partial<AdminProfileData> = {}
+
+      if (section === 'personal') {
+        dataToSave = {
+          first_name: formData.first_name,
+          middle_name: formData.middle_name,
+          last_name: formData.last_name,
+          gender: formData.gender,
+          date_of_birth: formData.date_of_birth,
+        }
+      } else if (section === 'contact') {
+        dataToSave = {
+          personal_email: formData.personal_email,
+          phone_number: formData.phone_number,
+          alternate_phone_number: formData.alternate_phone_number,
+        }
+      } else if (section === 'address') {
+        dataToSave = {
+          address_line_1: formData.address_line_1,
+          address_line_2: formData.address_line_2,
+          city: formData.city,
+          state: formData.state,
+          pincode: formData.pincode,
+        }
+      } else if (section === 'identity') {
+        dataToSave = {
+          aadhar_number: formData.aadhar_number,
+          pan_number: formData.pan_number,
+        }
+      }
+
+      const result = await updateAdminProfile(dataToSave)
+      if (result.error) {
+        toast.error('Failed to save')
+      } else {
+        toast.success('Saved successfully')
+        await refreshAdminProfile()
+        setCollapsedSections((prev) => ({ ...prev, [section]: true }))
+      }
+    } catch {
+      toast.error('Failed to save changes')
+    } finally {
+      setSavingSection(null)
+    }
   }
 
   const copyAdminId = () => {
@@ -111,6 +191,20 @@ export default function AdminProfilePage() {
   }
 
   const isFirstLoad = profile === undefined && adminProfile === undefined
+
+  const SaveButton = ({ section }: { section: string }) => (
+    <div className="flex justify-center mt-6">
+      <button
+        type="button"
+        onClick={() => handleSave(section)}
+        disabled={savingSection === section}
+        className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-[#8DC63F] hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
+      >
+        <Save className="w-4 h-4" />
+        {savingSection === section ? 'Saving...' : 'Save'}
+      </button>
+    </div>
+  )
 
   if (isFirstLoad) {
     return (
@@ -156,7 +250,7 @@ export default function AdminProfilePage() {
               </div>
               <Link
                 href="/admin/profile"
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#8DC63F] flex items-center justify-center text-white font-bold text-sm sm:text-base hover:opacity-80 transition-opacity"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#3B82F6] flex items-center justify-center text-white font-bold text-sm sm:text-base hover:opacity-80 transition-opacity"
               >
                 {getAvatarInitials()}
               </Link>
@@ -168,7 +262,7 @@ export default function AdminProfilePage() {
           <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto">
             <div className="bg-white rounded-2xl border border-[#EEEEEE] p-6 mb-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                <div className="w-24 h-24 rounded-full overflow-hidden bg-[#8DC63F] flex items-center justify-center flex-shrink-0">
+                <div className="w-24 h-24 rounded-full overflow-hidden bg-[#3B82F6] flex items-center justify-center flex-shrink-0">
                   <span className="text-3xl font-bold text-white">{getAvatarInitials()}</span>
                 </div>
 
@@ -179,15 +273,15 @@ export default function AdminProfilePage() {
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Mail className="w-4 h-4 flex-shrink-0" />
                       <span className="truncate">
-                        {adminData.official_email ||
-                          adminData.personal_email ||
+                        {formData.official_email ||
+                          formData.personal_email ||
                           profileData.email ||
                           'Not provided'}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Phone className="w-4 h-4 flex-shrink-0" />
-                      <span>{adminData.phone_number || 'Not provided'}</span>
+                      <span>{formData.phone_number || 'Not provided'}</span>
                     </div>
                   </div>
                 </div>
@@ -207,47 +301,291 @@ export default function AdminProfilePage() {
               </div>
             </div>
 
-            {PLACEHOLDER_SECTIONS.map((section, index) => (
-              <div
-                key={section.id}
-                className="bg-white rounded-2xl border border-[#EEEEEE] mb-6 overflow-hidden"
+            {/* Section A: Personal Information */}
+            <div className="bg-white rounded-2xl border border-[#EEEEEE] mb-6 overflow-hidden">
+              <button
+                type="button"
+                onClick={() => toggleSection('personal')}
+                className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
-                <button
-                  type="button"
-                  onClick={() => toggleSection(section.id)}
-                  className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
-                >
-                  <h2 className="text-lg font-bold text-gray-900">
-                    Section {String.fromCharCode(65 + index)}:{' '}
-                    <span className="text-[#3B82F6]">{section.title}</span>
-                  </h2>
-                  {collapsedSections[section.id] ? (
-                    <ChevronDown className="w-5 h-5 text-gray-500" />
-                  ) : (
-                    <ChevronUp className="w-5 h-5 text-gray-500" />
-                  )}
-                </button>
-
-                <div
-                  className={`transition-all duration-300 ease-in-out ${
-                    collapsedSections[section.id]
-                      ? 'max-h-0 opacity-0'
-                      : 'max-h-[400px] opacity-100'
-                  } overflow-hidden`}
-                >
-                  <div className="px-6 pb-6">
-                    <div className="rounded-xl border border-dashed border-[#EEEEEE] bg-[#F9F9F9] p-6 text-center">
-                      <p className="text-sm font-medium text-gray-700">
-                        {section.title} fields coming soon
-                      </p>
-                      <p className="text-xs text-gray-500 mt-2">
-                        This section will be configured with admin-specific profile fields.
-                      </p>
+                <h2 className="text-lg font-bold text-gray-900">
+                  Section A: <span className="text-[#3B82F6]">Personal Information</span>
+                </h2>
+                {collapsedSections.personal ? (
+                  <ChevronDown className="w-5 h-5 text-gray-500" />
+                ) : (
+                  <ChevronUp className="w-5 h-5 text-gray-500" />
+                )}
+              </button>
+              <div
+                className={`transition-all duration-300 ease-in-out ${
+                  collapsedSections.personal ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100'
+                } overflow-hidden`}
+              >
+                <div className="px-6 pb-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className={labelClass}>First Name</label>
+                      <input
+                        type="text"
+                        value={formData.first_name || ''}
+                        onChange={(e) => handleChange('first_name', e.target.value)}
+                        className={inputClass}
+                        placeholder="John"
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Middle Name</label>
+                      <input
+                        type="text"
+                        value={formData.middle_name || ''}
+                        onChange={(e) => handleChange('middle_name', e.target.value)}
+                        className={inputClass}
+                        placeholder="William"
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Last Name</label>
+                      <input
+                        type="text"
+                        value={formData.last_name || ''}
+                        onChange={(e) => handleChange('last_name', e.target.value)}
+                        className={inputClass}
+                        placeholder="Doe"
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Gender</label>
+                      <select
+                        value={formData.gender || ''}
+                        onChange={(e) =>
+                          handleChange('gender', e.target.value as 'male' | 'female' | 'other')
+                        }
+                        className={inputClass}
+                      >
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className={labelClass}>Date of Birth</label>
+                      <input
+                        type="date"
+                        value={formData.date_of_birth || ''}
+                        onChange={(e) => handleChange('date_of_birth', e.target.value)}
+                        className={inputClass}
+                      />
                     </div>
                   </div>
+                  <SaveButton section="personal" />
                 </div>
               </div>
-            ))}
+            </div>
+
+            {/* Section B: Contact Information */}
+            <div className="bg-white rounded-2xl border border-[#EEEEEE] mb-6 overflow-hidden">
+              <button
+                type="button"
+                onClick={() => toggleSection('contact')}
+                className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
+              >
+                <h2 className="text-lg font-bold text-gray-900">
+                  Section B: <span className="text-[#3B82F6]">Contact Information</span>
+                </h2>
+                {collapsedSections.contact ? (
+                  <ChevronDown className="w-5 h-5 text-gray-500" />
+                ) : (
+                  <ChevronUp className="w-5 h-5 text-gray-500" />
+                )}
+              </button>
+              <div
+                className={`transition-all duration-300 ease-in-out ${
+                  collapsedSections.contact ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100'
+                } overflow-hidden`}
+              >
+                <div className="px-6 pb-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className={labelClass}>Office Email</label>
+                      <input
+                        type="email"
+                        value={formData.official_email || profileData.email || ''}
+                        readOnly
+                        className={`${inputClass} opacity-60 cursor-not-allowed`}
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Personal Email</label>
+                      <input
+                        type="email"
+                        value={formData.personal_email || ''}
+                        onChange={(e) => handleChange('personal_email', e.target.value)}
+                        className={inputClass}
+                        placeholder="personal@example.com"
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Phone Number</label>
+                      <input
+                        type="tel"
+                        value={formData.phone_number || ''}
+                        onChange={(e) => handleChange('phone_number', e.target.value)}
+                        className={inputClass}
+                        placeholder="+91 9876543210"
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Alternate Number</label>
+                      <input
+                        type="tel"
+                        value={formData.alternate_phone_number || ''}
+                        onChange={(e) => handleChange('alternate_phone_number', e.target.value)}
+                        className={inputClass}
+                        placeholder="+91 9876543211"
+                      />
+                    </div>
+                  </div>
+                  <SaveButton section="contact" />
+                </div>
+              </div>
+            </div>
+
+            {/* Section C: Address Details */}
+            <div className="bg-white rounded-2xl border border-[#EEEEEE] mb-6 overflow-hidden">
+              <button
+                type="button"
+                onClick={() => toggleSection('address')}
+                className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
+              >
+                <h2 className="text-lg font-bold text-gray-900">
+                  Section C: <span className="text-[#3B82F6]">Address Details</span>
+                </h2>
+                {collapsedSections.address ? (
+                  <ChevronDown className="w-5 h-5 text-gray-500" />
+                ) : (
+                  <ChevronUp className="w-5 h-5 text-gray-500" />
+                )}
+              </button>
+              <div
+                className={`transition-all duration-300 ease-in-out ${
+                  collapsedSections.address ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100'
+                } overflow-hidden`}
+              >
+                <div className="px-6 pb-6">
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className={labelClass}>State</label>
+                        <select
+                          value={formData.state || ''}
+                          onChange={(e) => handleChange('state', e.target.value)}
+                          className={inputClass}
+                        >
+                          <option value="">Select State</option>
+                          {indianStates.map((state) => (
+                            <option key={state} value={state}>
+                              {state}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className={labelClass}>City</label>
+                        <input
+                          type="text"
+                          value={formData.city || ''}
+                          onChange={(e) => handleChange('city', e.target.value)}
+                          className={inputClass}
+                          placeholder="Mumbai"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className={labelClass}>Address Line 1</label>
+                      <input
+                        type="text"
+                        value={formData.address_line_1 || ''}
+                        onChange={(e) => handleChange('address_line_1', e.target.value)}
+                        className={inputClass}
+                        placeholder="123, Green Valley Road"
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Address Line 2</label>
+                      <input
+                        type="text"
+                        value={formData.address_line_2 || ''}
+                        onChange={(e) => handleChange('address_line_2', e.target.value)}
+                        className={inputClass}
+                        placeholder="Near City Center"
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Pincode</label>
+                      <input
+                        type="text"
+                        value={formData.pincode || ''}
+                        onChange={(e) => handleChange('pincode', e.target.value)}
+                        className={inputClass}
+                        placeholder="400001"
+                      />
+                    </div>
+                  </div>
+                  <SaveButton section="address" />
+                </div>
+              </div>
+            </div>
+
+            {/* Section D: Identity & Documents */}
+            <div className="bg-white rounded-2xl border border-[#EEEEEE] mb-6 overflow-hidden">
+              <button
+                type="button"
+                onClick={() => toggleSection('identity')}
+                className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
+              >
+                <h2 className="text-lg font-bold text-gray-900">
+                  Section D: <span className="text-[#3B82F6]">Identity & Documents</span>
+                </h2>
+                {collapsedSections.identity ? (
+                  <ChevronDown className="w-5 h-5 text-gray-500" />
+                ) : (
+                  <ChevronUp className="w-5 h-5 text-gray-500" />
+                )}
+              </button>
+              <div
+                className={`transition-all duration-300 ease-in-out ${
+                  collapsedSections.identity ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100'
+                } overflow-hidden`}
+              >
+                <div className="px-6 pb-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className={labelClass}>Aadhar Number</label>
+                      <input
+                        type="text"
+                        value={formData.aadhar_number || ''}
+                        onChange={(e) => handleChange('aadhar_number', e.target.value)}
+                        className={inputClass}
+                        placeholder="1234 5678 9012"
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>PAN Number</label>
+                      <input
+                        type="text"
+                        value={formData.pan_number || ''}
+                        onChange={(e) => handleChange('pan_number', e.target.value)}
+                        className={inputClass}
+                        placeholder="ABCDE1234F"
+                      />
+                    </div>
+                  </div>
+                  <SaveButton section="identity" />
+                </div>
+              </div>
+            </div>
 
             <div className="bg-white rounded-2xl border border-[#EEEEEE] p-6">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

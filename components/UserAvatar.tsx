@@ -9,7 +9,13 @@ interface UserAvatarProps {
   fallbackLetter?: string
   size?: number
   className?: string
+  role?: 'admin' | 'student'
 }
+
+const avatarBgByRole = {
+  admin: 'bg-[#3B82F6]',
+  student: 'bg-[#8DC63F]',
+} as const
 
 export default function UserAvatar({ 
   imageUrl, 
@@ -17,7 +23,8 @@ export default function UserAvatar({
   lastName, 
   fallbackLetter = 'S',
   size = 40,
-  className = ''
+  className = '',
+  role = 'student',
 }: UserAvatarProps) {
   const getInitials = () => {
     if (firstName && lastName) {
@@ -47,7 +54,7 @@ export default function UserAvatar({
 
   return (
     <div 
-      className={`rounded-full bg-[#8DC63F] text-white font-bold flex items-center justify-center ${className}`}
+      className={`rounded-full ${avatarBgByRole[role]} text-white font-bold flex items-center justify-center ${className}`}
       style={{ width: size, height: size, fontSize: size * 0.4 }}
     >
       {getInitials()}

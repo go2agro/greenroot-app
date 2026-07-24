@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, FileText, User, Bell, HelpCircle, Mail, Phone, ChevronLeft, ChevronRight, Briefcase, Settings, PlaySquare } from 'lucide-react'
+import { LayoutDashboard, FileText, User, Bell, HelpCircle, Mail, Phone, ChevronLeft, ChevronRight, Briefcase, Settings } from 'lucide-react'
 
 interface StudentSidebarProps {
   isCollapsed?: boolean
@@ -23,7 +23,6 @@ export default function StudentSidebar({ isCollapsed = false, onToggle }: Studen
     { icon: User, label: 'Profile', href: '/student/profile' },
     { icon: Bell, label: 'Notifications', href: '/student/notifications' },
     { icon: Settings, label: 'Settings', href: '/student/settings' },
-    { icon: PlaySquare, label: 'Playlist', href: '/student/library' },
   ]
 
   return (
@@ -82,9 +81,7 @@ export default function StudentSidebar({ isCollapsed = false, onToggle }: Studen
       <nav className="flex-1 p-4 space-y-2">
         {navItems.map((item) => {
           const Icon = item.icon
-          const isActive =
-            pathname === item.href ||
-            (item.href === '/student/library' && pathname.startsWith('/student/library'))
+          const isActive = pathname === item.href
           
           return (
             <Link

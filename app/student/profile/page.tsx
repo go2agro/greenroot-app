@@ -314,7 +314,7 @@ export default function StudentProfile() {
       if (result.error) {
         toast.error('Failed to save changes')
       } else {
-        toast.success('Changes saved successfully')
+        toast.success('Saved successfully')
         await refreshProfile()
         await refreshCompletion()
         // Collapse the section after save

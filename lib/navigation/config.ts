@@ -114,23 +114,6 @@ export const NAVIGATION_CONFIG: Record<string, NavigationRoute> = {
     roles: ['student'],
     category: 'student'
   },
-  studentLibrary: {
-    id: 'studentLibrary',
-    label: 'Library',
-    route: '/student/library',
-    roles: ['student'],
-    minVersion: '1.1.0',
-    category: 'student',
-    description: 'Access learning resources and videos'
-  },
-  studentLibraryDetail: {
-    id: 'studentLibraryDetail',
-    label: 'Library Content',
-    route: '/student/library/[id]',
-    roles: ['student'],
-    minVersion: '1.1.0',
-    category: 'student'
-  },
   studentSettings: {
     id: 'studentSettings',
     label: 'Settings',
@@ -229,27 +212,6 @@ export const NAVIGATION_CONFIG: Record<string, NavigationRoute> = {
     id: 'adminApplicationDetail',
     label: 'Application Details',
     route: '/admin/applications/[id]',
-    roles: ['admin'],
-    category: 'admin'
-  },
-  adminLibrary: {
-    id: 'adminLibrary',
-    label: 'Library Management',
-    route: '/admin/library',
-    roles: ['admin'],
-    category: 'admin'
-  },
-  adminLibraryDetail: {
-    id: 'adminLibraryDetail',
-    label: 'Library Content',
-    route: '/admin/library/[id]',
-    roles: ['admin'],
-    category: 'admin'
-  },
-  adminLibraryNew: {
-    id: 'adminLibraryNew',
-    label: 'Add Library Content',
-    route: '/admin/library/new',
     roles: ['admin'],
     category: 'admin'
   },
