@@ -7,7 +7,6 @@ import {
   FileText,
   Briefcase,
   Users,
-  BarChart2,
   User,
   Bell,
 } from 'lucide-react'
@@ -17,7 +16,6 @@ const navItems = [
   { id: 'applications', icon: FileText, label: 'Applications', href: '/admin/applications' },
   { id: 'internships', icon: Briefcase, label: 'Internships', href: '/admin/internships' },
   { id: 'students', icon: Users, label: 'Students', href: '/admin/students' },
-  { id: 'analytics', icon: BarChart2, label: 'Analytics', href: '/admin/analytics' },
   { id: 'profile', icon: User, label: 'Profile', href: '/admin/profile' },
   { id: 'notifications', icon: Bell, label: 'Alerts', href: '/admin/notifications' },
 ]

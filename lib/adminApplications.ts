@@ -2,6 +2,7 @@
 
 import { createClient } from './supabase'
 import { getAdminDbClient } from './adminAuth'
+import { createNotification } from '@/lib/notifications'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // ─────────────────────────────────────────
@@ -167,6 +168,27 @@ export async function markUnderReview(applicationId: string, remarks: string) {
     .select()
     .single()
 
+  if (!error) {
+    const { data: app } = await supabase
+      .from('applications')
+      .select('student_id')
+      .eq('id', applicationId)
+      .single()
+    const studentId = app?.student_id
+
+    if (studentId) {
+      await createNotification({
+        userId: studentId,
+        type: 'application_under_review',
+        title: 'Application Under Review',
+        message: 'Your application is now being reviewed by our team.',
+        relatedId: applicationId,
+        relatedType: 'application',
+        category: 'application',
+      })
+    }
+  }
+
   return toPlainResponse(data, error)
 }
 
@@ -193,6 +215,27 @@ export async function approveApplication(applicationId: string, remarks: string)
     .select()
     .single()
 
+  if (!error) {
+    const { data: app } = await supabase
+      .from('applications')
+      .select('student_id')
+      .eq('id', applicationId)
+      .single()
+    const studentId = app?.student_id
+
+    if (studentId) {
+      await createNotification({
+        userId: studentId,
+        type: 'application_approved',
+        title: 'Application Approved! 🎉',
+        message: 'Congratulations! Your application has been approved.',
+        relatedId: applicationId,
+        relatedType: 'application',
+        category: 'application',
+      })
+    }
+  }
+
   return toPlainResponse(data, error)
 }
 
@@ -218,6 +261,27 @@ export async function rejectApplication(applicationId: string, remarks: string) 
     .in('status', ['submitted', 'under_review'])
     .select()
     .single()
+
+  if (!error) {
+    const { data: app } = await supabase
+      .from('applications')
+      .select('student_id')
+      .eq('id', applicationId)
+      .single()
+    const studentId = app?.student_id
+
+    if (studentId) {
+      await createNotification({
+        userId: studentId,
+        type: 'application_rejected',
+        title: 'Application Update',
+        message: 'Your application was not selected at this time.',
+        relatedId: applicationId,
+        relatedType: 'application',
+        category: 'application',
+      })
+    }
+  }
 
   return toPlainResponse(data, error)
 }
@@ -315,6 +379,27 @@ export async function uploadOfferLetter(
     .eq('id', applicationId)
     .select()
     .single()
+
+  if (!error) {
+    const { data: app } = await supabase
+      .from('applications')
+      .select('student_id')
+      .eq('id', applicationId)
+      .single()
+    const studentId = app?.student_id
+
+    if (studentId) {
+      await createNotification({
+        userId: studentId,
+        type: 'offer_letter_uploaded',
+        title: 'Offer Letter Available',
+        message: 'Your offer letter is ready. Please review and respond.',
+        relatedId: applicationId,
+        relatedType: 'application',
+        category: 'application',
+      })
+    }
+  }
 
   return toPlainResponse(data, error)
 }

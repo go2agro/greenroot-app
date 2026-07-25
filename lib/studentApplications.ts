@@ -3,6 +3,7 @@
 import { createClient } from './supabase'
 import { createAdminClient } from './supabase-admin'
 import { checkProfileCompletion } from './studentProfiles'
+import { createNotification } from '@/lib/notifications'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 const ACTIVE_APPLICATION_STATUSES = [
@@ -401,6 +402,26 @@ export async function submitApplication(applicationId: string) {
     .eq('status', 'draft')
     .select('id, status, submitted_at')
     .single()
+
+  if (!error) {
+    const adminClient = createAdminClient()
+    const { data: admins } = await adminClient
+      .from('profiles')
+      .select('id')
+      .eq('role', 'admin')
+
+    for (const admin of admins ?? []) {
+      await createNotification({
+        userId: admin.id,
+        type: 'new_application_received',
+        title: 'New Application Received',
+        message: 'A student has submitted a new internship application.',
+        relatedId: applicationId,
+        relatedType: 'application',
+        category: 'application',
+      })
+    }
+  }
 
   return toPlainResponse(data ?? { id: applicationId, status: 'submitted' }, error)
 }

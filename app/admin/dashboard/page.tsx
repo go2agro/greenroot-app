@@ -33,14 +33,6 @@ import {
 } from '@/lib/adminDashboard'
 
 type TimeFilter = 'this_week' | 'this_month' | 'last_3_months'
-type ApplicationStatus =
-  | 'draft'
-  | 'submitted'
-  | 'under_review'
-  | 'approved'
-  | 'rejected'
-  | 'accepted'
-  | 'closed'
 
 interface StatusCounts {
   draft?: number
@@ -68,14 +60,6 @@ interface TopInternship {
   count: number
 }
 
-interface RecentApplication {
-  id: string
-  status: ApplicationStatus
-  submitted_at?: string
-  internships?: { title?: string; country?: string } | null
-  student_profiles?: { first_name?: string; last_name?: string } | null
-}
-
 interface ProfileCompletionStats {
   totalStudents: number
   complete: number
@@ -98,41 +82,6 @@ function formatDateLabel(date: Date): string {
     day: 'numeric',
     year: 'numeric',
   })
-}
-
-function formatShortDate(dateStr?: string): string {
-  if (!dateStr) return '—'
-  return new Date(dateStr).toLocaleDateString('default', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
-}
-
-function formatStatusText(status: string): string {
-  return status
-    .split('_')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ')
-}
-
-function getStatusBadgeClass(status: ApplicationStatus): string {
-  switch (status) {
-    case 'draft':
-      return 'bg-gray-100 text-gray-700 border-gray-200'
-    case 'submitted':
-      return 'bg-blue-50 text-blue-700 border-blue-200'
-    case 'under_review':
-      return 'bg-amber-50 text-amber-700 border-amber-200'
-    case 'approved':
-      return 'bg-green-50 text-green-700 border-green-200'
-    case 'rejected':
-      return 'bg-red-50 text-red-700 border-red-200'
-    case 'accepted':
-      return 'bg-purple-50 text-purple-700 border-purple-200'
-    default:
-      return 'bg-gray-100 text-gray-700 border-gray-200'
-  }
 }
 
 function getStartOfWeek(date: Date): Date {
@@ -286,7 +235,6 @@ export default function AdminDashboard() {
   const [statusCounts, setStatusCounts] = useState<StatusCounts>({})
   const [growthDates, setGrowthDates] = useState<string[]>([])
   const [topInternships, setTopInternships] = useState<TopInternship[]>([])
-  const [recentApplications, setRecentApplications] = useState<RecentApplication[]>([])
   const [profileCompletionStats, setProfileCompletionStats] = useState<ProfileCompletionStats>({
     totalStudents: 0,
     complete: 0,
@@ -322,7 +270,6 @@ export default function AdminDashboard() {
         setStatusCounts(data.statusCounts)
         setGrowthDates(data.growthDates)
         setTopInternships(data.topInternships as TopInternship[])
-        setRecentApplications(data.recentApplications as RecentApplication[])
         setProfileCompletionStats(data.profileCompletion)
         setAdminProfile(data.adminProfile as AdminProfile | null)
         setMyProfile(data.myProfile as Profile | null)
@@ -371,8 +318,6 @@ export default function AdminDashboard() {
     { label: 'Draft', count: statusCounts.draft ?? 0 },
     { label: 'Submitted', count: statusCounts.submitted ?? 0 },
     { label: 'Under Review', count: statusCounts.under_review ?? 0 },
-    { label: 'Approved', count: statusCounts.approved ?? 0 },
-    { label: 'Rejected', count: statusCounts.rejected ?? 0 },
     { label: 'Accepted', count: statusCounts.accepted ?? 0 },
   ]
 
@@ -538,7 +483,7 @@ export default function AdminDashboard() {
             <div className={CARD_CLASS}>
               <h2 className="font-semibold text-base mb-6">Application pipeline</h2>
               <div className="overflow-x-auto pb-2">
-                <div className="grid grid-cols-5 min-w-[640px]">
+                <div className="grid grid-cols-4 min-w-[520px]">
                   {pipelineStages.map((stage, index) => (
                     <div key={stage.label} className="flex flex-col items-center">
                       <div className="relative flex items-center justify-center w-full h-12">
@@ -700,51 +645,6 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Recent Applications */}
-            <div className={CARD_CLASS}>
-                <h2 className="font-semibold text-base mb-6">Recent applications</h2>
-                {recentApplications.length > 0 ? (
-                  <div className="space-y-3">
-                    {recentApplications.map((application) => {
-                      const studentName = [
-                        application.student_profiles?.first_name,
-                        application.student_profiles?.last_name,
-                      ]
-                        .filter(Boolean)
-                        .join(' ')
-
-                      return (
-                        <Link
-                          key={application.id}
-                          href={`/admin/applications/${application.id}`}
-                          className="block rounded-xl border border-[#EEEEEE] p-4 hover:border-[#8DC63F] transition-colors"
-                        >
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="min-w-0 flex-1">
-                              <p className="text-sm font-medium text-gray-900 truncate">
-                                {studentName || 'Unknown student'}
-                              </p>
-                              <p className="text-xs text-gray-500 mt-0.5 truncate">
-                                {application.internships?.title || 'Internship'}
-                              </p>
-                              <p className="text-xs text-gray-400 mt-1">
-                                {formatShortDate(application.submitted_at)}
-                              </p>
-                            </div>
-                            <span
-                              className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium border flex-shrink-0 ${getStatusBadgeClass(application.status)}`}
-                            >
-                              {formatStatusText(application.status)}
-                            </span>
-                          </div>
-                        </Link>
-                      )
-                    })}
-                  </div>
-                ) : (
-                  <EmptyState message="No submitted applications yet." />
-                )}
-            </div>
           </div>
         )}
       </div>

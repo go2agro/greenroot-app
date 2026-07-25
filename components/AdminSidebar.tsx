@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {
@@ -7,7 +8,6 @@ import {
   FileText,
   Briefcase,
   Users,
-  BarChart2,
   User,
   Bell,
   HelpCircle,
@@ -16,11 +16,14 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
+import NotificationBadge from '@/components/NotificationBadge'
+import { getUnreadCount } from '@/lib/notifications'
 
 interface AdminSidebarProps {
   activePage?: string
   isCollapsed?: boolean
   onToggle?: () => void
+  unreadRefreshKey?: number
 }
 
 const navItems = [
@@ -28,7 +31,6 @@ const navItems = [
   { id: 'applications', icon: FileText, label: 'Applications', href: '/admin/applications' },
   { id: 'internships', icon: Briefcase, label: 'Internships', href: '/admin/internships' },
   { id: 'students', icon: Users, label: 'Students', href: '/admin/students' },
-  { id: 'analytics', icon: BarChart2, label: 'Analytics', href: '/admin/analytics' },
   { id: 'profile', icon: User, label: 'Profile', href: '/admin/profile' },
   { id: 'notifications', icon: Bell, label: 'Notifications', href: '/admin/notifications' },
 ]
@@ -37,9 +39,26 @@ export default function AdminSidebar({
   activePage,
   isCollapsed = false,
   onToggle,
+  unreadRefreshKey = 0,
 }: AdminSidebarProps) {
+  const [unreadCount, setUnreadCount] = useState(0)
   const supportEmail = 'greenroot@gmail.com'
   const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(supportEmail)}&su=${encodeURIComponent('GreenRoot Support')}`
+
+  useEffect(() => {
+    let isActive = true
+
+    async function loadUnreadCount() {
+      const { data } = await getUnreadCount()
+      if (isActive) setUnreadCount(data?.count || 0)
+    }
+
+    loadUnreadCount()
+
+    return () => {
+      isActive = false
+    }
+  }, [unreadRefreshKey])
 
   return (
     <div
@@ -89,6 +108,7 @@ export default function AdminSidebar({
         {navItems.map((item) => {
           const Icon = item.icon
           const isActive = activePage === item.id
+          const isNotifications = item.id === 'notifications'
 
           return (
             <Link
@@ -101,7 +121,10 @@ export default function AdminSidebar({
                   : 'text-[#555555] hover:bg-gray-100'
               } ${isCollapsed ? 'justify-center' : ''}`}
             >
-              <Icon className="w-5 h-5 flex-shrink-0" />
+              <span className="relative flex-shrink-0">
+                <Icon className="w-5 h-5" />
+                {isNotifications && <NotificationBadge count={unreadCount} />}
+              </span>
               {!isCollapsed && <span className="text-sm font-medium">{item.label}</span>}
             </Link>
           )

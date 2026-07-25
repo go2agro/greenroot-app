@@ -1,28 +1,53 @@
 "use client"
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, FileText, User, Bell, HelpCircle, Mail, Phone, ChevronLeft, ChevronRight, Briefcase } from 'lucide-react'
+import NotificationBadge from '@/components/NotificationBadge'
+import { getUnreadCount } from '@/lib/notifications'
 
 interface StudentSidebarProps {
   isCollapsed?: boolean
   onToggle?: () => void
+  activePage?: string
+  unreadRefreshKey?: number
 }
 
-export default function StudentSidebar({ isCollapsed = false, onToggle }: StudentSidebarProps) {
+export default function StudentSidebar({
+  isCollapsed = false,
+  onToggle,
+  activePage,
+  unreadRefreshKey = 0,
+}: StudentSidebarProps) {
   const pathname = usePathname()
+  const [unreadCount, setUnreadCount] = useState(0)
   const supportEmail = 'greenroot@gmail.com'
   const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(supportEmail)}&su=${encodeURIComponent('GreenRoot Support')}`
 
   const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', href: '/student/dashboard' },
-    { icon: Briefcase, label: 'Internships', href: '/student/internships' },
-    { icon: FileText, label: 'Applications', href: '/student/applications' },
-    { icon: User, label: 'Profile', href: '/student/profile' },
-    { icon: Bell, label: 'Notifications', href: '/student/notifications' },
+    { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', href: '/student/dashboard' },
+    { id: 'internships', icon: Briefcase, label: 'Internships', href: '/student/internships' },
+    { id: 'applications', icon: FileText, label: 'Applications', href: '/student/applications' },
+    { id: 'profile', icon: User, label: 'Profile', href: '/student/profile' },
+    { id: 'notifications', icon: Bell, label: 'Notifications', href: '/student/notifications' },
   ]
+
+  useEffect(() => {
+    let isActive = true
+
+    async function loadUnreadCount() {
+      const { data } = await getUnreadCount()
+      if (isActive) setUnreadCount(data?.count || 0)
+    }
+
+    loadUnreadCount()
+
+    return () => {
+      isActive = false
+    }
+  }, [unreadRefreshKey])
 
   return (
     <div 
@@ -80,8 +105,9 @@ export default function StudentSidebar({ isCollapsed = false, onToggle }: Studen
       <nav className="flex-1 p-4 space-y-2">
         {navItems.map((item) => {
           const Icon = item.icon
-          const isActive = pathname === item.href
-          
+          const isActive = activePage ? activePage === item.id : pathname === item.href
+          const isNotifications = item.id === 'notifications'
+
           return (
             <Link
               key={item.href}
@@ -93,7 +119,10 @@ export default function StudentSidebar({ isCollapsed = false, onToggle }: Studen
                   : 'text-[#555555] hover:bg-gray-100'
               } ${isCollapsed ? 'justify-center' : ''}`}
             >
-              <Icon className="w-5 h-5 flex-shrink-0" />
+              <span className="relative flex-shrink-0">
+                <Icon className="w-5 h-5" />
+                {isNotifications && <NotificationBadge count={unreadCount} />}
+              </span>
               {!isCollapsed && (
                 <span className="text-sm font-medium">{item.label}</span>
               )}

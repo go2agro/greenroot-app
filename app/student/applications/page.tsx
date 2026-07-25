@@ -364,7 +364,7 @@ export default function StudentApplications() {
               <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
                 <div className="flex justify-between items-start">
                   <div>
-                    <div className="text-sm text-gray-500 font-medium">In Review</div>
+                    <div className="text-sm text-gray-500 font-medium">Submitted</div>
                     <div className="text-4xl font-bold text-[#3B82F6] mt-2">
                       {submittedCount.toString().padStart(2, '0')}
                     </div>
