@@ -93,35 +93,79 @@ export async function getAllApplications(filters?: {
 // GET SINGLE APPLICATION (full details)
 // ─────────────────────────────────────────
 export async function getApplicationById(applicationId: string) {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
 
   const { data, error } = await supabase
     .from('applications')
     .select(`
       *,
       internships (*),
-      student_profiles (*),
-      application_answers (*)
+      application_answers (*),
+      profiles (
+        unique_id,
+        created_at,
+        role
+      )
     `)
     .eq('id', applicationId)
     .single()
 
-  return toPlainResponse(data, error)
+  if (error || !data) return toPlainResponse(null, error)
+
+  const { data: studentProfile, error: studentError } = await supabase
+    .from('student_profiles')
+    .select('*')
+    .eq('id', data.student_id)
+    .maybeSingle()
+
+  if (studentError) return toPlainResponse(null, studentError)
+
+  const profile = Array.isArray(data.profiles) ? data.profiles[0] : data.profiles
+
+  return toPlainResponse(
+    {
+      ...data,
+      profiles: undefined,
+      student_profiles: studentProfile
+        ? {
+            ...studentProfile,
+            profiles: profile
+              ? {
+                  unique_id: profile.unique_id,
+                  created_at: profile.created_at,
+                  role: profile.role,
+                }
+              : null,
+          }
+        : null,
+    },
+    null
+  )
 }
 
 // ─────────────────────────────────────────
 // MARK APPLICATION UNDER REVIEW
 // ─────────────────────────────────────────
-export async function markUnderReview(applicationId: string) {
-  const supabase = await createClient()
+export async function markUnderReview(applicationId: string, remarks: string) {
+  const { client: supabase, error: authError } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
+
+  if (!remarks.trim()) {
+    return toPlainResponse(null, { message: 'Administrative remarks are required' })
+  }
 
   const { data, error } = await supabase
     .from('applications')
     .update({
       status: 'under_review',
-      reviewed_at: new Date().toISOString()
+      reviewed_at: new Date().toISOString(),
+      admin_remarks: remarks.trim()
     })
     .eq('id', applicationId)
+    .in('status', ['draft', 'submitted'])
+    .select()
+    .single()
 
   return toPlainResponse(data, error)
 }
@@ -129,17 +173,25 @@ export async function markUnderReview(applicationId: string) {
 // ─────────────────────────────────────────
 // APPROVE APPLICATION
 // ─────────────────────────────────────────
-export async function approveApplication(applicationId: string, remarks?: string) {
-  const supabase = await createClient()
+export async function approveApplication(applicationId: string, remarks: string) {
+  const { client: supabase, error: authError } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
+
+  if (!remarks.trim()) {
+    return toPlainResponse(null, { message: 'Administrative remarks are required' })
+  }
 
   const { data, error } = await supabase
     .from('applications')
     .update({
       status: 'approved',
       decided_at: new Date().toISOString(),
-      admin_remarks: remarks || null
+      admin_remarks: remarks.trim()
     })
     .eq('id', applicationId)
+    .in('status', ['submitted', 'under_review'])
+    .select()
+    .single()
 
   return toPlainResponse(data, error)
 }
@@ -148,16 +200,24 @@ export async function approveApplication(applicationId: string, remarks?: string
 // REJECT APPLICATION
 // ─────────────────────────────────────────
 export async function rejectApplication(applicationId: string, remarks: string) {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
+
+  if (!remarks.trim()) {
+    return toPlainResponse(null, { message: 'Administrative remarks are required' })
+  }
 
   const { data, error } = await supabase
     .from('applications')
     .update({
       status: 'rejected',
       decided_at: new Date().toISOString(),
-      admin_remarks: remarks
+      admin_remarks: remarks.trim()
     })
     .eq('id', applicationId)
+    .in('status', ['submitted', 'under_review'])
+    .select()
+    .single()
 
   return toPlainResponse(data, error)
 }
@@ -166,7 +226,8 @@ export async function rejectApplication(applicationId: string, remarks: string) 
 // GET APPLICATION FILE (signed url)
 // ─────────────────────────────────────────
 export async function getApplicationFile(filePath: string) {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
 
   const { data, error } = await supabase.storage
     .from('application-documents')
@@ -224,16 +285,14 @@ export async function getApplicationsByStudent(studentId: string) {
 }
 
 // ─────────────────────────────────────────
-// UPLOAD OFFER LETTER (admin only)
+// UPLOAD OFFER LETTER (admin only) — UI: Acceptance Letter
 // ─────────────────────────────────────────
 export async function uploadOfferLetter(
   applicationId: string,
   file: File
 ) {
-  const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+  const { client: supabase, error: authError } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
 
   // Check file size (max 1MB)
   if (file.size > 1024 * 1024) {
@@ -254,6 +313,8 @@ export async function uploadOfferLetter(
     .from('applications')
     .update({ offer_letter_url: filePath })
     .eq('id', applicationId)
+    .select()
+    .single()
 
   return toPlainResponse(data, error)
 }
@@ -262,7 +323,8 @@ export async function uploadOfferLetter(
 // GET OFFER LETTER SIGNED URL (admin only)
 // ─────────────────────────────────────────
 export async function getOfferLetterUrl(filePath: string) {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
 
   const { data, error } = await supabase.storage
     .from('application-documents')

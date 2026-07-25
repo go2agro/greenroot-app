@@ -147,3 +147,17 @@ export async function getRecentInternships(limit: number = 6) {
 
   return toPlainResponse(data, error)
 }
+
+// ─────────────────────────────────────────
+// GET TOP PAID INTERNSHIPS
+// ─────────────────────────────────────────
+export async function getTopPaidInternships(limit: number = 3) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('internships')
+    .select('*')
+    .order('stipend_monthly', { ascending: false })
+    .limit(limit)
+
+  return toPlainResponse(data, error)
+}

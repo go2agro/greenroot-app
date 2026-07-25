@@ -160,6 +160,18 @@ export async function uploadStudentDocument(
 }
 
 // ─────────────────────────────────────────
+// GET STUDENT DOCUMENT URL (signed)
+// ─────────────────────────────────────────
+export async function getMyStudentDocumentUrl(filePath: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase.storage
+    .from('student-documents')
+    .createSignedUrl(filePath, 60 * 60)
+
+  return toPlainResponse(data, error)
+}
+
+// ─────────────────────────────────────────
 // CHECK PROFILE COMPLETION
 // ─────────────────────────────────────────
 export async function checkProfileCompletion() {

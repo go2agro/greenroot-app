@@ -15,61 +15,41 @@ import {
   X,
   CloudUpload,
   Loader2,
-  ArrowLeft
+  ArrowLeft,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import UserAvatar from '@/components/UserAvatar'
 import { ApplicationSubmittedDialog } from '@/components/ApplicationSubmittedDialog'
+import {
+  ApplicationPaperForm,
+  type ApplicationPaperData,
+  type ApplicationPaperInternship,
+  type ApplicationPaperStudentProfile,
+} from '@/components/ApplicationPaperForm'
+import { PAGE_CLASS } from '@/components/detailLayout'
 import { invalidateApplications } from '@/lib/cache'
 import { extractRequiredDocuments } from '@/lib/internshipContent'
 import { 
   getMyApplicationById,
+  getMyApplicationFile,
+  getMyOfferLetter,
   saveTextAnswer,
   uploadFileAnswer,
   updateCurrentStep,
   submitApplication
 } from '@/lib/studentApplications'
-import { getMyStudentProfile } from '@/lib/studentProfiles'
+import { getMyStudentProfile, getMyStudentDocumentUrl } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
+import { formatApplicationStatusLabel, formatApplicationReferenceId } from '@/lib/utils'
 
-type ApplicationData = {
-  id: string
-  status: string
-  current_step: number
-  internship_id: string
-  submitted_at?: string
-  internships?: {
-    title: string
-    subtitle?: string
-    city?: string
-    country?: string
+type ApplicationData = ApplicationPaperData & {
+  internships?: ApplicationPaperInternship & {
     image_url?: string
-    duration_months?: number
-    stipend_monthly?: number
     long_description?: string
   }
-  application_answers?: Array<{
-    field_key: string
-    answer_text?: string
-    file_url?: string
-    file_name?: string
-    file_type?: string
-    step_number: number
-  }>
 }
 
-type StudentProfile = {
-  first_name?: string
-  middle_name?: string
-  last_name?: string
-  gender?: string
-  date_of_birth?: string
-  nationality?: string
-  marital_status?: string
-  university_name?: string
-  college_name?: string
-  degree_name?: string
-  branch_specialization?: string
+type StudentProfile = ApplicationPaperStudentProfile & {
   profile_image_url?: string
   avatar_url?: string
 }
@@ -96,6 +76,27 @@ const STEP_NAMES = [
 ]
 
 const MAX_DOCUMENT_UPLOADS = 10
+
+function getStudentStatusBadgeClass(status: string) {
+  switch (status) {
+    case 'draft':
+      return 'bg-gray-100 text-gray-600'
+    case 'submitted':
+      return 'bg-blue-100 text-blue-600'
+    case 'under_review':
+      return 'bg-amber-100 text-amber-700'
+    case 'approved':
+      return 'bg-green-100 text-green-700'
+    case 'rejected':
+      return 'bg-red-100 text-red-700'
+    case 'accepted':
+      return 'bg-purple-100 text-purple-700'
+    case 'closed':
+      return 'bg-gray-100 text-gray-500'
+    default:
+      return 'bg-gray-100 text-gray-600'
+  }
+}
 
 const getCountryFlag = (country: string) => {
   const countryToCode: { [key: string]: string } = {
@@ -542,6 +543,104 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
   const userName = profile ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() : 'Student'
 
+  const paperStudent: ApplicationPaperStudentProfile = {
+    ...profile,
+    profile_photo_url:
+      profile.profile_photo_url ||
+      profile.profile_image_url ||
+      profile.avatar_url,
+  }
+
+  const studentHeader = (
+    <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4 flex-shrink-0">
+      <div className="relative flex items-center justify-center">
+        <Link
+          href="/student/applications"
+          className="absolute left-0 flex items-center gap-2 text-gray-600 hover:text-[#8DC63F] transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span className="font-medium">Back</span>
+        </Link>
+
+        <Link href="/student/dashboard" className="flex items-center gap-2">
+          <Image
+            src="/greenroot-logo.svg"
+            alt="GreenRoot"
+            width={32}
+            height={32}
+            priority
+          />
+          <span className="text-xl font-bold text-gray-900">GreenRoot</span>
+        </Link>
+
+        <div className="absolute right-0 flex items-center gap-2 sm:gap-3">
+          <div className="hidden sm:block text-right">
+            <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">
+              {userName}
+            </p>
+            <p className="text-xs text-[#3B82F6] font-medium">
+              ID: {myProfile?.unique_id || 'N/A'}
+            </p>
+          </div>
+          <Link
+            href="/student/profile"
+            className="cursor-pointer hover:opacity-80 transition-opacity"
+          >
+            <UserAvatar
+              imageUrl={
+                profile.profile_photo_url ||
+                profile.profile_image_url ||
+                profile.avatar_url
+              }
+              firstName={profile.first_name}
+              lastName={profile.last_name}
+              fallbackLetter="S"
+              size={40}
+            />
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
+
+  // Submitted (and later statuses): paper form matching admin, without Decision Desk
+  if (application.status !== 'draft') {
+    return (
+      <div className="min-h-screen bg-[#EFEDE8] flex flex-col">
+        {studentHeader}
+        <div className="flex-1 overflow-y-auto">
+          <div className={`${PAGE_CLASS} p-4 sm:p-6 lg:p-8 space-y-5`}>
+            {application.status === 'rejected' && application.internship_id && (
+              <div className="rounded-sm border border-red-200 bg-red-50 px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <p className="text-sm text-red-800">
+                  This application was rejected and is closed. You can start a
+                  fresh application for the same internship.
+                </p>
+                <Link
+                  href={`/student/internships/${application.internship_id}`}
+                  className="inline-flex items-center justify-center rounded-lg bg-[#8DC63F] px-4 py-2 text-sm font-semibold text-white hover:bg-[#7DB62F] transition-colors flex-shrink-0"
+                >
+                  Apply Again
+                </Link>
+              </div>
+            )}
+            <ApplicationPaperForm
+              application={application}
+              student={paperStudent}
+              internship={application.internships}
+              uniqueId={myProfile?.unique_id}
+              registeredAt={myProfile?.created_at}
+              mode="student"
+              getStudentDocUrl={getMyStudentDocumentUrl}
+              getApplicationDocUrl={getMyApplicationFile}
+              getOfferLetterUrl={getMyOfferLetter}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   const handleStepClick = (stepNumber: number) => {
     if (isReadOnly) {
       setCurrentStep(stepNumber)
@@ -551,44 +650,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
   return (
     <div className="flex h-screen bg-[#F9F9F9]">
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4">
-          <div className="relative flex items-center justify-center">
-            <Link
-              href="/student/applications"
-              className="absolute left-0 flex items-center gap-2 text-gray-600 hover:text-[#8DC63F] transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span className="font-medium">Back</span>
-            </Link>
-            
-            <Link href="/student/dashboard" className="flex items-center gap-2">
-              <Image 
-                src="/greenroot-logo.svg" 
-                alt="GreenRoot" 
-                width={32} 
-                height={32}
-                priority
-              />
-              <span className="text-xl font-bold text-gray-900">GreenRoot</span>
-            </Link>
-
-            <div className="absolute right-0 flex items-center gap-2 sm:gap-3">
-              <div className="hidden sm:block text-right">
-                <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">{userName}</p>
-                <p className="text-xs text-[#3B82F6] font-medium">ID: {myProfile?.unique_id || 'N/A'}</p>
-              </div>
-              <Link href="/student/profile" className="cursor-pointer hover:opacity-80 transition-opacity">
-                <UserAvatar
-                  imageUrl={profile?.profile_image_url || profile?.avatar_url}
-                  firstName={profile?.first_name}
-                  lastName={profile?.last_name}
-                  fallbackLetter="S"
-                  size={40}
-                />
-              </Link>
-            </div>
-          </div>
-        </div>
+        {studentHeader}
 
         <div className="flex-1 overflow-y-auto pb-24">
           <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
@@ -599,13 +661,18 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                   <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
                     <Image
                       src={application.internships.image_url}
-                      alt={application.internships.title}
+                      alt={application.internships.title || 'Internship'}
                       fill
                       className="object-cover"
                     />
                   </div>
                 )}
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2 mb-1">
+                    <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#F0F9E8] text-[#5A9A2E]">
+                      {formatApplicationReferenceId(application.id, application.submitted_at)}
+                    </span>
+                  </div>
                   <h2 className="font-bold text-lg text-gray-900">{application.internships?.title}</h2>
                   <div className="flex items-center gap-3 mt-1 text-sm text-gray-500">
                     <span className="flex items-center gap-1">
@@ -619,22 +686,12 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                   </div>
                 </div>
                 <div className="flex-shrink-0">
-                  <span className="px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-100 text-blue-600">
-                    {application.status.charAt(0).toUpperCase() + application.status.slice(1)}
+                  <span className={`px-3 py-1.5 rounded-lg text-xs font-medium ${getStudentStatusBadgeClass(application.status)}`}>
+                    {formatApplicationStatusLabel(application.status)}
                   </span>
                 </div>
               </div>
             </div>
-
-            {isReadOnly && (
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 flex items-start gap-3">
-                <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-sm font-medium text-blue-800">Application Submitted</p>
-                  <p className="text-xs text-blue-600 mt-1">This application has been submitted and is now view-only.</p>
-                </div>
-              </div>
-            )}
 
             <div className="bg-white border border-[#EEEEEE] rounded-2xl p-6 mb-6">
               <div className="grid grid-cols-5 mb-8">

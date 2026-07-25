@@ -114,13 +114,6 @@ export const NAVIGATION_CONFIG: Record<string, NavigationRoute> = {
     roles: ['student'],
     category: 'student'
   },
-  studentSettings: {
-    id: 'studentSettings',
-    label: 'Settings',
-    route: '/student/settings',
-    roles: ['student'],
-    category: 'student'
-  },
   studentNotifications: {
     id: 'studentNotifications',
     label: 'Notifications',
@@ -212,13 +205,6 @@ export const NAVIGATION_CONFIG: Record<string, NavigationRoute> = {
     id: 'adminApplicationDetail',
     label: 'Application Details',
     route: '/admin/applications/[id]',
-    roles: ['admin'],
-    category: 'admin'
-  },
-  adminSettings: {
-    id: 'adminSettings',
-    label: 'Settings',
-    route: '/admin/settings',
     roles: ['admin'],
     category: 'admin'
   },

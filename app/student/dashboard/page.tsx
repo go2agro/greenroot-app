@@ -92,21 +92,21 @@ export default function StudentDashboard() {
   })
 
   const { data: applicationCounts, mutate: refreshApplicationCounts } = useSWR('applicationCounts', () => fetcher(getApplicationCounts), {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    dedupingInterval: 3600000, // 1 hour - manually invalidate after application actions
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+    dedupingInterval: 30000,
   })
 
   const { data: activeApplications, mutate: refreshActiveApplications } = useSWR('activeApplications', () => fetcher(getActiveApplications), {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    dedupingInterval: 3600000, // 1 hour - manually invalidate after application actions
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+    dedupingInterval: 30000,
   })
 
   const { data: draftApplications, mutate: refreshDraftApplications } = useSWR('draftApplications', () => fetcher(getDraftApplications), {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    dedupingInterval: 3600000, // 1 hour - manually invalidate after draft actions
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+    dedupingInterval: 30000,
   })
 
   const { data: recentInternships, mutate: refreshInternships } = useSWR('recentInternships', () => fetcher(() => getRecentInternships(6)), {

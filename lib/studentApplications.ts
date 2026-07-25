@@ -5,6 +5,73 @@ import { createAdminClient } from './supabase-admin'
 import { checkProfileCompletion } from './studentProfiles'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 
+const ACTIVE_APPLICATION_STATUSES = [
+  'draft',
+  'submitted',
+  'under_review',
+  'approved',
+  'accepted',
+] as const
+
+async function assertOwnedDraftApplication(applicationId: string) {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return {
+      supabase: null as Awaited<ReturnType<typeof createClient>> | null,
+      user: null,
+      application: null,
+      error: { message: 'Not logged in' },
+    }
+  }
+
+  const { data: application, error } = await supabase
+    .from('applications')
+    .select('id, status, student_id, internship_id')
+    .eq('id', applicationId)
+    .eq('student_id', user.id)
+    .single()
+
+  if (error || !application) {
+    return {
+      supabase,
+      user,
+      application: null,
+      error: error || { message: 'Application not found' },
+    }
+  }
+
+  if (application.status === 'rejected') {
+    return {
+      supabase,
+      user,
+      application,
+      error: {
+        message:
+          'This application was rejected and cannot be modified. Please apply again to start a new application.',
+        code: 'APPLICATION_REJECTED',
+      },
+    }
+  }
+
+  if (application.status !== 'draft') {
+    return {
+      supabase,
+      user,
+      application,
+      error: {
+        message: 'This application can no longer be edited.',
+        code: 'APPLICATION_LOCKED',
+      },
+    }
+  }
+
+  return { supabase, user, application, error: null }
+}
+
 // ─────────────────────────────────────────
 // START A NEW APPLICATION
 // ─────────────────────────────────────────
@@ -14,29 +81,30 @@ export async function startApplication(internshipId: string) {
   if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
   // Check if student profile is complete
-  const { data: profile } = await supabase
-    .from('student_profiles')
-    .select('first_name, last_name, email, mobile_number, university_name, degree_name, passport_number')
-    .eq('id', user.id)
-    .single()
+  const profileCompletion = await checkProfileCompletion()
+  if (profileCompletion.data && !profileCompletion.data.isComplete) {
+    return toPlainResponse(null, {
+      message: `Please complete your profile before applying. Missing: ${profileCompletion.data.missingFields.join(', ')}`
+    })
+  }
 
-    const profileCompletion = await checkProfileCompletion()
-    if (profileCompletion.data && !profileCompletion.data.isComplete) {
-      return toPlainResponse(null, {
-        message: `Please complete your profile before applying. Missing: ${profileCompletion.data.missingFields.join(', ')}`
-      })
-    }
-
-  // Check if already applied
+  // Block only if student still has an active application for this internship.
+  // Rejected / withdrawn / closed applications are historical and do not block a fresh apply.
   const { data: existing } = await supabase
     .from('applications')
-    .select('id')
+    .select('id, status')
     .eq('student_id', user.id)
     .eq('internship_id', internshipId)
-    .single()
+    .in('status', [...ACTIVE_APPLICATION_STATUSES])
+    .order('started_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
 
   if (existing) {
-    return toPlainResponse(null, { message: 'Already applied to this internship', code: 'ALREADY_APPLIED' })
+    return toPlainResponse(null, {
+      message: 'Already applied to this internship',
+      code: 'ALREADY_APPLIED',
+    })
   }
 
   // Create new application
@@ -50,6 +118,13 @@ export async function startApplication(internshipId: string) {
     })
     .select()
     .single()
+
+  if (error?.code === '23505') {
+    return toPlainResponse(null, {
+      message: 'Already applied to this internship',
+      code: 'ALREADY_APPLIED',
+    })
+  }
 
   return toPlainResponse(data, error)
 }
@@ -67,6 +142,9 @@ export async function getMyApplicationByInternshipId(internshipId: string) {
     .select('id, status, submitted_at, started_at')
     .eq('student_id', user.id)
     .eq('internship_id', internshipId)
+    .in('status', [...ACTIVE_APPLICATION_STATUSES])
+    .order('started_at', { ascending: false })
+    .limit(1)
     .maybeSingle()
 
   return toPlainResponse(data, error)
@@ -197,6 +275,7 @@ export async function getMyApplicationById(applicationId: string) {
     .select(`
       *,
       internships (
+        id,
         title,
         subtitle,
         city,
@@ -205,7 +284,12 @@ export async function getMyApplicationById(applicationId: string) {
         badge,
         duration_months,
         stipend_monthly,
-        long_description
+        stipend_yearly,
+        work_mode,
+        start_date,
+        short_description,
+        long_description,
+        flag_emoji
       ),
       application_answers (*)
     `)
@@ -225,7 +309,9 @@ export async function saveTextAnswer(
   fieldKey: string,
   answerText: string
 ) {
-  const supabase = await createClient()
+  const { supabase, error: accessError } = await assertOwnedDraftApplication(applicationId)
+  if (!supabase || accessError) return toPlainResponse(null, accessError)
+
   const { data, error } = await supabase
     .from('application_answers')
     .upsert({
@@ -248,9 +334,8 @@ export async function uploadFileAnswer(
   fieldKey: string,
   file: File
 ) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+  const { supabase, user, error: accessError } = await assertOwnedDraftApplication(applicationId)
+  if (!supabase || !user || accessError) return toPlainResponse(null, accessError)
 
   // Check file size (max 1MB)
   if (file.size > 1024 * 1024) {
@@ -286,11 +371,14 @@ export async function uploadFileAnswer(
 // UPDATE CURRENT STEP
 // ─────────────────────────────────────────
 export async function updateCurrentStep(applicationId: string, stepNumber: number) {
-  const supabase = await createClient()
+  const { supabase, error: accessError } = await assertOwnedDraftApplication(applicationId)
+  if (!supabase || accessError) return toPlainResponse(null, accessError)
+
   const { data, error } = await supabase
     .from('applications')
     .update({ current_step: stepNumber })
     .eq('id', applicationId)
+    .eq('status', 'draft')
 
   return toPlainResponse(data, error)
 }
@@ -299,7 +387,9 @@ export async function updateCurrentStep(applicationId: string, stepNumber: numbe
 // SUBMIT APPLICATION
 // ─────────────────────────────────────────
 export async function submitApplication(applicationId: string) {
-  const supabase = await createClient()
+  const { supabase, error: accessError } = await assertOwnedDraftApplication(applicationId)
+  if (!supabase || accessError) return toPlainResponse(null, accessError)
+
   const { data, error } = await supabase
     .from('applications')
     .update({
@@ -308,6 +398,7 @@ export async function submitApplication(applicationId: string) {
       current_step: 5
     })
     .eq('id', applicationId)
+    .eq('status', 'draft')
     .select('id, status, submitted_at')
     .single()
 
@@ -324,22 +415,32 @@ export async function acceptOffer(applicationId: string) {
   if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
   // Accept this application
-  const { error: acceptError } = await supabase
+  const { data: accepted, error: acceptError } = await supabase
     .from('applications')
     .update({
       status: 'accepted',
       accepted_at: new Date().toISOString()
     })
     .eq('id', applicationId)
+    .eq('student_id', user.id)
+    .eq('status', 'approved')
+    .select('id')
+    .single()
 
-  if (acceptError) return toPlainResponse(null, acceptError)
+  if (acceptError || !accepted) {
+    return toPlainResponse(
+      null,
+      acceptError || { message: 'Only an approved application can be accepted' }
+    )
+  }
 
-  // Auto withdraw all other applications
+  // Auto withdraw other active applications only (keep rejected/closed history intact)
   const { error: withdrawError } = await supabase
     .from('applications')
     .update({ status: 'withdrawn' })
     .eq('student_id', user.id)
     .neq('id', applicationId)
+    .in('status', ['draft', 'submitted', 'under_review', 'approved'])
 
   return toPlainResponse('Offer accepted successfully', withdrawError)
 }
@@ -349,10 +450,17 @@ export async function acceptOffer(applicationId: string) {
 // ─────────────────────────────────────────
 export async function withdrawApplication(applicationId: string) {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+
   const { data, error } = await supabase
     .from('applications')
     .update({ status: 'withdrawn' })
     .eq('id', applicationId)
+    .eq('student_id', user.id)
+    .in('status', ['draft', 'submitted', 'under_review', 'approved'])
+    .select()
+    .single()
 
   return toPlainResponse(data, error)
 }
@@ -392,6 +500,18 @@ export async function getApprovedApplications() {
 // GET OFFER LETTER (student)
 // ─────────────────────────────────────────
 export async function getMyOfferLetter(filePath: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase.storage
+    .from('application-documents')
+    .createSignedUrl(filePath, 60 * 60)
+
+  return toPlainResponse(data, error)
+}
+
+// ─────────────────────────────────────────
+// GET APPLICATION FILE (student)
+// ─────────────────────────────────────────
+export async function getMyApplicationFile(filePath: string) {
   const supabase = await createClient()
   const { data, error } = await supabase.storage
     .from('application-documents')

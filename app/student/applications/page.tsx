@@ -28,7 +28,7 @@ import { getMyApplications, getApplicationCounts, deleteStudentApplication } fro
 import { invalidateAllApplicationData } from '@/lib/cache'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
-import { getApplicationStatusTimestamp } from '@/lib/utils'
+import { getApplicationStatusTimestamp, formatApplicationReferenceId } from '@/lib/utils'
 
 const ITEMS_PER_PAGE = 8
 
@@ -157,9 +157,9 @@ export default function StudentApplications() {
     'myApplications',
     () => fetcher(getMyApplications),
     {
-      dedupingInterval: 300000,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
+      dedupingInterval: 30000,
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
     }
   )
 
@@ -167,9 +167,9 @@ export default function StudentApplications() {
     'applicationCounts',
     () => fetcher(getApplicationCounts),
     {
-      dedupingInterval: 300000,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
+      dedupingInterval: 30000,
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
     }
   )
 
@@ -483,18 +483,18 @@ export default function StudentApplications() {
                         </div>
 
                         <div className="flex-1 min-w-0 flex flex-col gap-2">
-                          <h3 className="font-bold text-gray-900 text-base truncate">
-                            {application.internships?.title || 'Internship Program'}
-                          </h3>
-
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusBadgeColor(application.status)}`}>
-                              {formatStatusText(application.status)}
+                            <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#F0F9E8] text-[#5A9A2E] border border-green-200">
+                              {formatApplicationReferenceId(application.id, application.submitted_at)}
                             </span>
                             <span className="px-2.5 py-1 rounded-full text-xs font-medium border bg-slate-50 text-slate-600 border-slate-200">
                               {getApplicationStatusTimestamp(application)}
                             </span>
                           </div>
+
+                          <h3 className="font-bold text-gray-900 text-base truncate">
+                            {application.internships?.title || 'Internship Program'}
+                          </h3>
 
                           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
                             <div className="flex items-center gap-1.5">
@@ -527,29 +527,37 @@ export default function StudentApplications() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 flex-shrink-0 sm:flex-col sm:items-stretch sm:min-w-[100px]">
-                        <button
-                          onClick={() => router.push(`/student/applications/${application.id}`)}
-                          className="flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-medium bg-green-50 text-[#5A9A2E] border border-green-200 hover:bg-green-100 transition-colors"
+                      <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
+                        <span
+                          className={`px-2.5 py-1 rounded-full text-xs font-medium border whitespace-nowrap ${getStatusBadgeColor(application.status)}`}
                         >
-                          View
-                        </button>
-                        {canDeleteApplication(application.status) && (
+                          {formatStatusText(application.status)}
+                        </span>
+
+                        <div className="flex items-center gap-2 sm:flex-col sm:items-stretch sm:min-w-[100px]">
                           <button
-                            onClick={(event) => handleDeleteApplication(application.id, application.status, event)}
-                            disabled={deletingId === application.id}
-                            className="flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-medium bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                            onClick={() => router.push(`/student/applications/${application.id}`)}
+                            className="flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-medium bg-green-50 text-[#5A9A2E] border border-green-200 hover:bg-green-100 transition-colors"
                           >
-                            {deletingId === application.id ? (
-                              <>
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                                Deleting...
-                              </>
-                            ) : (
-                              'Delete'
-                            )}
+                            View
                           </button>
-                        )}
+                          {canDeleteApplication(application.status) && (
+                            <button
+                              onClick={(event) => handleDeleteApplication(application.id, application.status, event)}
+                              disabled={deletingId === application.id}
+                              className="flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-medium bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                            >
+                              {deletingId === application.id ? (
+                                <>
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                  Deleting...
+                                </>
+                              ) : (
+                                'Delete'
+                              )}
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}

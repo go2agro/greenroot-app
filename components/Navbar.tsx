@@ -6,7 +6,7 @@ import { Menu, X } from 'lucide-react'
 import { useState } from 'react'
 
 interface NavbarProps {
-  activeLink?: 'about' | 'opportunities' | 'learning' | 'contact'
+  activeLink?: 'about' | 'opportunities'
 }
 
 export default function Navbar({ activeLink }: NavbarProps) {
@@ -33,17 +33,11 @@ export default function Navbar({ activeLink }: NavbarProps) {
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
-            <Link href="/#about" className={linkStyle('about')}>
-              About
-            </Link>
             <Link href="/internships" className={linkStyle('opportunities')}>
               Opportunities
             </Link>
-            <Link href="/#learning" className={linkStyle('learning')}>
-              Learning
-            </Link>
-            <Link href="/#contact" className={linkStyle('contact')}>
-              Contact
+            <Link href="/about" className={linkStyle('about')}>
+              About Us
             </Link>
           </div>
 
@@ -74,13 +68,6 @@ export default function Navbar({ activeLink }: NavbarProps) {
           <div className="md:hidden py-4 border-t border-gray-100">
             <div className="flex flex-col gap-4">
               <Link 
-                href="/#about" 
-                className="text-gray-700 hover:text-[#8DC63F] py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                About
-              </Link>
-              <Link 
                 href="/internships" 
                 className="text-gray-700 hover:text-[#8DC63F] py-2"
                 onClick={() => setMobileMenuOpen(false)}
@@ -88,18 +75,11 @@ export default function Navbar({ activeLink }: NavbarProps) {
                 Opportunities
               </Link>
               <Link 
-                href="/#learning" 
+                href="/about" 
                 className="text-gray-700 hover:text-[#8DC63F] py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Learning
-              </Link>
-              <Link 
-                href="/#contact" 
-                className="text-gray-700 hover:text-[#8DC63F] py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Contact
+                About Us
               </Link>
               <div className="flex flex-col gap-2 pt-4">
                 <Link 

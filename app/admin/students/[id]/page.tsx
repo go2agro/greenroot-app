@@ -4,11 +4,9 @@ import { use, useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import useSWR from 'swr'
-import { toast } from 'sonner'
 import {
   ArrowLeft,
   User,
-  Mail,
   Phone,
   MapPin,
   GraduationCap,
@@ -18,8 +16,6 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  ExternalLink,
-  Loader2,
   Briefcase,
   ChevronRight,
 } from 'lucide-react'
@@ -27,6 +23,10 @@ import { getStudentById, getStudentDocumentUrl } from '@/lib/adminQueries'
 import { getAllApplications } from '@/lib/adminApplications'
 import { getMyAdminProfile } from '@/lib/adminProfiles'
 import { getMyProfile } from '@/lib/profiles'
+import { DetailSection } from '@/components/DetailSection'
+import { DetailGrid } from '@/components/DetailGrid'
+import { DocumentCard } from '@/components/DocumentCard'
+import { CARD_CLASS, PAGE_CLASS, DetailSkeleton } from '@/components/detailLayout'
 
 type Gender = 'male' | 'female' | 'other'
 
@@ -134,9 +134,6 @@ const DOCUMENT_FIELDS: { key: keyof StudentProfile; label: string }[] = [
   { key: 'digital_signature_url', label: 'Digital Signature' },
 ]
 
-const CARD_CLASS = 'bg-white border border-[#EEEEEE] rounded-2xl p-6'
-const PAGE_CLASS = 'w-full max-w-5xl mx-auto'
-
 const fetcher = async (fn: () => Promise<{ data: unknown; error: unknown }>) => {
   const res = await fn()
   if (res.error) {
@@ -232,119 +229,6 @@ function getStatusBadgeClass(status: string) {
   }
 }
 
-function DetailSection({
-  title,
-  description,
-  icon: Icon,
-  children,
-}: {
-  title: string
-  description?: string
-  icon: React.ComponentType<{ className?: string }>
-  children: React.ReactNode
-}) {
-  return (
-    <section className={CARD_CLASS}>
-      <div className="flex items-start gap-3 mb-5">
-        <div className="w-10 h-10 rounded-xl bg-[#F0F9E8] flex items-center justify-center flex-shrink-0">
-          <Icon className="w-5 h-5 text-[#8DC63F]" />
-        </div>
-        <div>
-          <h2 className="font-bold text-lg text-gray-900">{title}</h2>
-          {description && <p className="text-sm text-gray-500 mt-0.5">{description}</p>}
-        </div>
-      </div>
-      {children}
-    </section>
-  )
-}
-
-function DetailField({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="space-y-1">
-      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{label}</p>
-      <p className="text-sm text-gray-900 break-words">{value}</p>
-    </div>
-  )
-}
-
-function DetailGrid({ fields }: { fields: { label: string; value: string }[] }) {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-      {fields.map((field) => (
-        <DetailField key={field.label} label={field.label} value={field.value} />
-      ))}
-    </div>
-  )
-}
-
-function DocumentCard({
-  label,
-  filePath,
-}: {
-  label: string
-  filePath?: string
-}) {
-  const [loading, setLoading] = useState(false)
-  const uploaded = Boolean(filePath?.trim())
-
-  const handleView = async () => {
-    if (!filePath?.trim()) return
-
-    setLoading(true)
-    const result = await getStudentDocumentUrl(filePath)
-    setLoading(false)
-
-    if (result.error || !result.data?.signedUrl) {
-      toast.error(result.error?.message || 'Failed to open document')
-      return
-    }
-
-    window.open(result.data.signedUrl, '_blank', 'noopener,noreferrer')
-  }
-
-  return (
-    <div
-      className={`rounded-xl border p-4 flex items-center justify-between gap-3 ${
-        uploaded ? 'border-green-200 bg-green-50' : 'border-[#EEEEEE] bg-[#FAFAFA]'
-      }`}
-    >
-      <div className="min-w-0">
-        <p className="text-sm font-semibold text-gray-900">{label}</p>
-        <p className={`text-xs mt-0.5 ${uploaded ? 'text-green-700' : 'text-gray-400'}`}>
-          {uploaded ? 'Uploaded' : 'Not uploaded'}
-        </p>
-      </div>
-      {uploaded && (
-        <button
-          type="button"
-          onClick={handleView}
-          disabled={loading}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#8DC63F] hover:text-[#7DB62F] disabled:opacity-50 flex-shrink-0"
-        >
-          {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ExternalLink className="w-3.5 h-3.5" />}
-          View
-        </button>
-      )}
-    </div>
-  )
-}
-
-function DetailSkeleton() {
-  return (
-    <div className={`${PAGE_CLASS} p-4 sm:p-6 lg:p-8 space-y-6 animate-pulse`}>
-      <div className="h-48 bg-gray-200 rounded-2xl" />
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="h-20 bg-gray-200 rounded-xl" />
-        ))}
-      </div>
-      <div className={`${CARD_CLASS} h-56`} />
-      <div className={`${CARD_CLASS} h-56`} />
-    </div>
-  )
-}
-
 export default function AdminStudentDetails({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
   const [student, setStudent] = useState<StudentProfile | null>(null)
@@ -362,7 +246,7 @@ export default function AdminStudentDetails({ params }: { params: Promise<{ id: 
   const { data: applications } = useSWR(
     student ? ['adminStudentApplications', id] : null,
     () => fetcher(() => getAllApplications({ student_id: id })),
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: true, revalidateOnReconnect: true }
   )
 
   useEffect(() => {
@@ -661,6 +545,7 @@ export default function AdminStudentDetails({ params }: { params: Promise<{ id: 
                     key={key}
                     label={label}
                     filePath={student[key] as string | undefined}
+                    getSignedUrl={getStudentDocumentUrl}
                   />
                 ))}
               </div>

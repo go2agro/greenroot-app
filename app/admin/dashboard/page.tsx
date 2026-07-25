@@ -372,6 +372,7 @@ export default function AdminDashboard() {
     { label: 'Submitted', count: statusCounts.submitted ?? 0 },
     { label: 'Under Review', count: statusCounts.under_review ?? 0 },
     { label: 'Approved', count: statusCounts.approved ?? 0 },
+    { label: 'Rejected', count: statusCounts.rejected ?? 0 },
     { label: 'Accepted', count: statusCounts.accepted ?? 0 },
   ]
 

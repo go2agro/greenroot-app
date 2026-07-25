@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { 
@@ -19,8 +20,56 @@ import {
 } from '@/components/ui/accordion';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import AnimatedCounter from '@/components/AnimatedCounter';
+import { getTopPaidInternships } from '@/lib/internships';
+
+type FeaturedInternship = {
+  id: string
+  title: string
+  country?: string
+  duration_months?: number
+  stipend_monthly?: number
+  image_url?: string
+  flag_emoji?: string
+}
+
+const getCountryFlag = (country?: string, emoji?: string) => {
+  if (emoji) return emoji
+  if (!country) return '🌍'
+
+  const countryToCode: { [key: string]: string } = {
+    'USA': 'US',
+    'United States': 'US',
+    'UK': 'GB',
+    'United Kingdom': 'GB',
+    'Canada': 'CA',
+    'Australia': 'AU',
+    'India': 'IN',
+    'Germany': 'DE',
+    'France': 'FR',
+    'Italy': 'IT',
+    'Spain': 'ES',
+    'Netherlands': 'NL',
+    'Denmark': 'DK',
+    'Portugal': 'PT',
+    'Israel': 'IL',
+    'Peru': 'PE',
+  }
+
+  const code = countryToCode[country] || countryToCode[country.split(',')[0]?.trim()]
+  if (!code) return '🌍'
+  return String.fromCodePoint(...[...code].map(c => c.charCodeAt(0) + 127397))
+}
 
 export default function Home() {
+  const [featured, setFeatured] = useState<FeaturedInternship[]>([])
+
+  useEffect(() => {
+    getTopPaidInternships(3).then((result) => {
+      if (result.data) setFeatured(result.data as FeaturedInternship[])
+    })
+  }, [])
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -47,7 +96,7 @@ export default function Home() {
                   Browse Internships
                 </Link>
                 <Link 
-                  href="/internships" 
+                  href="/about" 
                   className="border border-gray-300 text-gray-700 rounded-lg px-6 py-3 font-medium hover:border-[#A3D32F] transition-colors text-center"
                 >
                   Learn More
@@ -95,15 +144,29 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-gray-100">
             <div className="flex flex-col items-center justify-center gap-2 pt-8 md:pt-0">
-              <div className="font-bold text-3xl text-[#549FE3]">300+</div>
+              <AnimatedCounter
+                target={300}
+                suffix="+"
+                className="font-bold text-3xl text-[#549FE3]"
+              />
               <div className="text-sm text-gray-600 font-semibold">Total students</div>
             </div>
             <div className="flex flex-col items-center justify-center gap-2 pt-8 md:pt-0">
-              <div className="font-bold text-3xl text-[#549FE3]">05+</div>
+              <AnimatedCounter
+                target={5}
+                suffix="+"
+                padStart={2}
+                className="font-bold text-3xl text-[#549FE3]"
+              />
               <div className="text-sm text-gray-600 font-semibold">Total countries</div>
             </div>
             <div className="flex flex-col items-center justify-center gap-2 pt-8 md:pt-0">
-              <div className="font-bold text-3xl text-[#549FE3]">08+</div>
+              <AnimatedCounter
+                target={8}
+                suffix="+"
+                padStart={2}
+                className="font-bold text-3xl text-[#549FE3]"
+              />
               <div className="text-sm text-gray-600 font-semibold">Total Internships</div>
             </div>
           </div>
@@ -208,6 +271,7 @@ export default function Home() {
               <div className="w-16 h-16 rounded-full bg-[#A3D32F] flex items-center justify-center text-white">
                 <User className="w-8 h-8" />
               </div>
+              <p className="text-xs font-semibold text-[#A3D32F] uppercase tracking-wide">Step 1</p>
               <p className="font-medium text-gray-900 text-center">Create Profile</p>
             </div>
 
@@ -219,6 +283,7 @@ export default function Home() {
               <div className="w-16 h-16 rounded-full bg-[#A3D32F] flex items-center justify-center text-white">
                 <Globe className="w-8 h-8" />
               </div>
+              <p className="text-xs font-semibold text-[#A3D32F] uppercase tracking-wide">Step 2</p>
               <p className="font-medium text-gray-900 text-center">Browse Internships</p>
             </div>
 
@@ -230,6 +295,7 @@ export default function Home() {
               <div className="w-16 h-16 rounded-full bg-[#A3D32F] flex items-center justify-center text-white">
                 <Briefcase className="w-8 h-8" />
               </div>
+              <p className="text-xs font-semibold text-[#A3D32F] uppercase tracking-wide">Step 3</p>
               <p className="font-medium text-gray-900 text-center">Submit Application</p>
             </div>
 
@@ -241,6 +307,7 @@ export default function Home() {
               <div className="w-16 h-16 rounded-full bg-[#A3D32F] flex items-center justify-center text-white">
                 <CheckCircle className="w-8 h-8" />
               </div>
+              <p className="text-xs font-semibold text-[#A3D32F] uppercase tracking-wide">Step 4</p>
               <p className="font-medium text-gray-900 text-center">Start your Journey!</p>
             </div>
           </div>
@@ -255,83 +322,44 @@ export default function Home() {
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Card 1 */}
-            <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden">
-              <div className="relative h-48 w-full">
-                <Image 
-                  src="https://picsum.photos/400/250?random=5" 
-                  alt="Poultry farming" 
-                  fill
-                  className="object-cover"
-                />
+            {featured.map((internship) => (
+              <div
+                key={internship.id}
+                className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden"
+              >
+                <div className="relative h-48 w-full">
+                  <Image 
+                    src={internship.image_url || `https://picsum.photos/seed/${internship.id}/400/250`}
+                    alt={internship.title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="p-4">
+                  <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+                    <span className="text-base">
+                      {getCountryFlag(internship.country, internship.flag_emoji)}
+                    </span>
+                    <span>{internship.country || 'Global'}</span>
+                  </p>
+                  <h3 className="font-bold text-lg text-gray-900 mb-2">{internship.title}</h3>
+                  <p className="text-sm text-gray-500 mb-4">
+                    {internship.duration_months
+                      ? `${internship.duration_months} months`
+                      : 'Flexible'}
+                    {internship.stipend_monthly
+                      ? ` - $ ${internship.stipend_monthly.toLocaleString()} / Month`
+                      : ' - Paid Internship'}
+                  </p>
+                  <Link 
+                    href={`/internships/${internship.id}`}
+                    className="w-full block text-center bg-[#A3D32F] text-white rounded-lg py-2 hover:bg-[#92C120] transition-colors font-semibold"
+                  >
+                    Apply Now
+                  </Link>
+                </div>
               </div>
-              <div className="p-4">
-                <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
-                  <span className="text-base">🇩🇪</span>
-                  <span>Germany</span>
-                </p>
-                <h3 className="font-bold text-lg text-gray-900 mb-2">Poultry farming</h3>
-                <p className="text-sm text-gray-500 mb-4">2 months - Paid Internship</p>
-                <Link 
-                  href="/internships"
-                  className="w-full block text-center bg-[#A3D32F] text-white rounded-lg py-2 hover:bg-[#92C120] transition-colors font-semibold"
-                >
-                  Apply Now
-                </Link>
-              </div>
-            </div>
-
-            {/* Card 2 */}
-            <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden">
-              <div className="relative h-48 w-full">
-                <Image 
-                  src="https://picsum.photos/400/250?random=6" 
-                  alt="Dairy farming" 
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="p-4">
-                <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
-                  <span className="text-base">🇮🇱</span>
-                  <span>Israel</span>
-                </p>
-                <h3 className="font-bold text-lg text-gray-900 mb-2">Dairy farming</h3>
-                <p className="text-sm text-gray-500 mb-4">3 months - Paid Internship</p>
-                <Link 
-                  href="/internships"
-                  className="w-full block text-center bg-[#A3D32F] text-white rounded-lg py-2 hover:bg-[#92C120] transition-colors font-semibold"
-                >
-                  Apply Now
-                </Link>
-              </div>
-            </div>
-
-            {/* Card 3 */}
-            <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden">
-              <div className="relative h-48 w-full">
-                <Image 
-                  src="https://picsum.photos/400/250?random=7" 
-                  alt="Greenhouse initiative" 
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="p-4">
-                <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
-                  <span className="text-base">🇺🇸</span>
-                  <span>USA</span>
-                </p>
-                <h3 className="font-bold text-lg text-gray-900 mb-2">Greenhouse initiative</h3>
-                <p className="text-sm text-gray-500 mb-4">4 months - Paid Internship</p>
-                <Link 
-                  href="/internships"
-                  className="w-full block text-center bg-[#A3D32F] text-white rounded-lg py-2 hover:bg-[#92C120] transition-colors font-semibold"
-                >
-                  Apply Now
-                </Link>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>

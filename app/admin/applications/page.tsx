@@ -284,9 +284,9 @@ export default function AdminApplications() {
     'adminAllApplications',
     () => fetcher(getAllApplications),
     {
-      dedupingInterval: 300000,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
+      dedupingInterval: 30000,
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
     }
   )
 
