@@ -6,7 +6,7 @@ import { Menu, X } from 'lucide-react'
 import { useState } from 'react'
 
 interface NavbarProps {
-  activeLink?: 'about' | 'opportunities'
+  activeLink?: 'about' | 'opportunities' | 'contact'
 }
 
 export default function Navbar({ activeLink }: NavbarProps) {
@@ -38,6 +38,9 @@ export default function Navbar({ activeLink }: NavbarProps) {
             </Link>
             <Link href="/about" className={linkStyle('about')}>
               About Us
+            </Link>
+            <Link href="/contact" className={linkStyle('contact')}>
+              Contact
             </Link>
           </div>
 
@@ -80,6 +83,13 @@ export default function Navbar({ activeLink }: NavbarProps) {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 About Us
+              </Link>
+              <Link 
+                href="/contact" 
+                className="text-gray-700 hover:text-[#8DC63F] py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Contact
               </Link>
               <div className="flex flex-col gap-2 pt-4">
                 <Link 

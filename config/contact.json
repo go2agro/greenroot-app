@@ -1,0 +1,72 @@
+{
+  "pageTitle": "Contact Us",
+  "pageSubtitle": "Call, email, WhatsApp, or visit — we'll help with internships, applications, and partnerships.",
+  "responseNote": "Prefer messaging? Reach out on any channel — we reply within 1–2 business days.",
+  "officeName": "GreenRoot Head Office",
+  "addressLines": [
+    "42 Agro Business Park, Baner Road",
+    "Baner, Pune, Maharashtra 411045",
+    "India"
+  ],
+  "mapEmbedUrl": "https://www.google.com/maps?q=18.5597,73.7769&hl=en&z=16&output=embed",
+  "mapDirectionsUrl": "https://www.google.com/maps/dir/?api=1&destination=18.5597,73.7769",
+  "whatsapp": {
+    "label": "WhatsApp",
+    "display": "+91 98765 43210",
+    "url": "https://wa.me/919876543210"
+  },
+  "phones": [
+    {
+      "label": "General enquiries",
+      "display": "+91 98765 43210",
+      "tel": "+919876543210"
+    },
+    {
+      "label": "Admissions & internships",
+      "display": "+91 98765 43211",
+      "tel": "+919876543211"
+    }
+  ],
+  "emails": [
+    {
+      "label": "Support",
+      "email": "support@greenroot.in"
+    },
+    {
+      "label": "General",
+      "email": "info@greenroot.in"
+    }
+  ],
+  "officeHours": [
+    {
+      "days": "Weekdays",
+      "hours": "10:00 AM – 6:00 PM IST"
+    },
+    {
+      "days": "Weekends",
+      "hours": "10:00 AM – 2:00 PM IST"
+    }
+  ],
+  "socials": [
+    {
+      "id": "facebook",
+      "label": "Facebook",
+      "href": "https://facebook.com/greenroot"
+    },
+    {
+      "id": "instagram",
+      "label": "Instagram",
+      "href": "https://instagram.com/greenroot"
+    },
+    {
+      "id": "x",
+      "label": "X",
+      "href": "https://x.com/greenroot"
+    },
+    {
+      "id": "linkedin",
+      "label": "LinkedIn",
+      "href": "https://linkedin.com/company/greenroot"
+    }
+  ]
+}
