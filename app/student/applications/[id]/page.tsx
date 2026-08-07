@@ -16,6 +16,7 @@ import {
   CloudUpload,
   Loader2,
   ArrowLeft,
+  Image as ImageIcon,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import UserAvatar from '@/components/UserAvatar'
@@ -76,6 +77,12 @@ const STEP_NAMES = [
 ]
 
 const MAX_DOCUMENT_UPLOADS = 10
+const MAX_LANGUAGES = 8
+
+const isLanguageComplete = (lang: Language) =>
+  Boolean(lang.language && lang.read && lang.write && lang.speak)
+
+const isPdfFile = (fileType: string) => fileType.toLowerCase().includes('pdf')
 
 function getStudentStatusBadgeClass(status: string) {
   switch (status) {
@@ -196,10 +203,14 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
               console.error('Error parsing languages', e)
             }
           } else if (answer.field_key?.startsWith('doc_upload_') && answer.file_url) {
+            const storedType = answer.file_type || ''
+            const inferredType = storedType.toLowerCase().includes('pdf') || answer.file_name?.toLowerCase().endsWith('.pdf')
+              ? 'pdf'
+              : 'image'
             files.push({
               fieldKey: answer.field_key,
               fileName: answer.file_name || 'Document',
-              fileType: answer.file_type || 'pdf',
+              fileType: inferredType,
               fileUrl: answer.file_url
             })
           } else if (answer.answer_text) {
@@ -281,6 +292,10 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
     )
     if (validLanguages.length === 0) {
       toast.error('Please add at least one language with all proficiency levels')
+      return false
+    }
+    if (validLanguages.length > MAX_LANGUAGES) {
+      toast.error(`Maximum ${MAX_LANGUAGES} languages allowed`)
       return false
     }
     return true
@@ -502,6 +517,14 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
   }
 
   const addLanguage = () => {
+    if (!languages.some(isLanguageComplete)) {
+      toast.error('Please complete at least one language before adding another')
+      return
+    }
+    if (languages.length >= MAX_LANGUAGES) {
+      toast.error(`Maximum ${MAX_LANGUAGES} languages allowed`)
+      return
+    }
     setLanguages([...languages, { language: '', read: '', write: '', speak: '' }])
   }
 
@@ -922,7 +945,8 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                       {!isReadOnly && (
                       <button
                         onClick={addLanguage}
-                        className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-4 py-2 text-sm font-medium hover:bg-green-50 transition-colors flex items-center gap-2"
+                        disabled={languages.length >= MAX_LANGUAGES}
+                        className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-4 py-2 text-sm font-medium hover:bg-green-50 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Plus className="w-4 h-4" />
                         Add Language
@@ -1130,16 +1154,10 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                     <div className="mt-4 grid grid-cols-1 gap-3">
                       {existingFiles.map((file, index) => (
                         <div key={`existing-${index}`} className="bg-white border border-[#EEEEEE] rounded-xl p-3 flex items-center gap-3">
-                          {file.fileType === 'pdf' ? (
+                          {isPdfFile(file.fileType) ? (
                             <FileText className="w-8 h-8 text-red-500 flex-shrink-0" />
                           ) : (
-                            <Image
-                              src="/placeholder.svg"
-                              alt="file"
-                              width={32}
-                              height={32}
-                              className="text-blue-500 flex-shrink-0"
-                            />
+                            <ImageIcon className="w-8 h-8 text-blue-500 flex-shrink-0" />
                           )}
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-gray-800 truncate">{file.fileName}</p>
@@ -1150,16 +1168,10 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
                       {uploadedFiles.map((file, index) => (
                         <div key={`new-${index}`} className="bg-white border border-[#EEEEEE] rounded-xl p-3 flex items-center gap-3">
-                          {file.file.type.includes('pdf') ? (
+                          {isPdfFile(file.file.type) ? (
                             <FileText className="w-8 h-8 text-red-500 flex-shrink-0" />
                           ) : (
-                            <Image
-                              src="/placeholder.svg"
-                              alt="file"
-                              width={32}
-                              height={32}
-                              className="text-blue-500 flex-shrink-0"
-                            />
+                            <ImageIcon className="w-8 h-8 text-blue-500 flex-shrink-0" />
                           )}
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-gray-800 truncate">{file.file.name}</p>
@@ -1305,13 +1317,28 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                         <h4 className="font-semibold text-gray-900">Documents</h4>
                       </div>
                       <div className="space-y-2 text-sm">
-                        {existingFiles.map((file, index) => (
-                          <div key={index} className="flex items-center gap-2">
-                            <FileText className="w-4 h-4 text-gray-400" />
-                            <span className="text-gray-900">{file.fileName}</span>
+                        {[
+                          ...existingFiles.map((file) => ({
+                            key: `existing-${file.fieldKey}`,
+                            name: file.fileName,
+                            type: file.fileType,
+                          })),
+                          ...uploadedFiles.map((file, index) => ({
+                            key: `uploaded-${index}`,
+                            name: file.file.name,
+                            type: file.file.type,
+                          })),
+                        ].map((file) => (
+                          <div key={file.key} className="flex items-center gap-2">
+                            {isPdfFile(file.type) ? (
+                              <FileText className="w-4 h-4 text-red-500 flex-shrink-0" />
+                            ) : (
+                              <ImageIcon className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                            )}
+                            <span className="text-gray-900">{file.name}</span>
                           </div>
                         ))}
-                        {existingFiles.length === 0 && (
+                        {existingFiles.length === 0 && uploadedFiles.length === 0 && (
                           <p className="text-gray-500">No documents uploaded</p>
                         )}
                       </div>
@@ -1340,7 +1367,27 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                         className="mt-1 w-5 h-5 rounded border-gray-300 text-[#8DC63F] focus:ring-[#8DC63F] accent-[#8DC63F]"
                       />
                       <span className="text-sm text-gray-700">
-                        I agree to the Terms & Conditions and Privacy Policy of GreenRoot. I understand that my information will be shared with the respective internship programme coordinators.
+                        I agree to the{' '}
+                        <Link
+                          href="/terms"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#8DC63F] hover:underline"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Terms & Conditions
+                        </Link>
+                        {' '}and{' '}
+                        <Link
+                          href="/privacy"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#8DC63F] hover:underline"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Privacy Policy
+                        </Link>
+                        {' '}of GreenRoot. I understand that my information will be shared with the respective internship programme coordinators.
                       </span>
                     </label>
 
