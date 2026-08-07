@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -14,8 +14,6 @@ import {
   Clock, 
   Banknote, 
   ChevronRight, 
-  Send, 
-  CheckCircle, 
   SlidersHorizontal,
   FileText,
   ChevronLeft,
@@ -24,7 +22,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
-import { getMyApplications, getApplicationCounts, deleteStudentApplication } from '@/lib/studentApplications'
+import { getMyApplications, deleteStudentApplication } from '@/lib/studentApplications'
 import { invalidateAllApplicationData } from '@/lib/cache'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
@@ -72,10 +70,6 @@ const getStatusBadgeColor = (status: ApplicationStatus) => {
     default:
       return 'bg-gray-100 text-gray-700 border-gray-200'
   }
-}
-
-const canDeleteApplication = (status: ApplicationStatus) => {
-  return status === 'draft' || status === 'submitted'
 }
 
 const formatStatusText = (status: ApplicationStatus) => {
@@ -144,6 +138,7 @@ export default function StudentApplications() {
   const [searchQuery, setSearchQuery] = useState('')
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [showFilterDropdown, setShowFilterDropdown] = useState(false)
+  const filterDropdownRef = useRef<HTMLDivElement>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [filteredApplications, setFilteredApplications] = useState<Application[]>([])
   const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -156,16 +151,6 @@ export default function StudentApplications() {
   const { data: applications, isLoading: applicationsLoading, mutate: refreshApplications } = useSWR(
     'myApplications',
     () => fetcher(getMyApplications),
-    {
-      dedupingInterval: 30000,
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
-    }
-  )
-
-  const { data: applicationCounts } = useSWR(
-    'applicationCounts',
-    () => fetcher(getApplicationCounts),
     {
       dedupingInterval: 30000,
       revalidateOnFocus: true,
@@ -217,9 +202,18 @@ export default function StudentApplications() {
     setCurrentPage(1)
   }, [searchQuery, filterStatus, applications])
 
-  const draftsCount = applicationCounts?.drafts ?? 0
-  const submittedCount = applicationCounts?.submitted ?? 0
-  const approvedCount = applicationCounts?.approved ?? 0
+  useEffect(() => {
+    if (!showFilterDropdown) return
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filterDropdownRef.current && !filterDropdownRef.current.contains(event.target as Node)) {
+        setShowFilterDropdown(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [showFilterDropdown])
 
   const totalPages = Math.ceil(filteredApplications.length / ITEMS_PER_PAGE)
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
@@ -272,9 +266,9 @@ export default function StudentApplications() {
   }
 
   const deleteDialogDescription =
-    pendingDelete?.status === 'submitted'
-      ? 'Are you sure you want to delete this submitted application? You can reapply to this internship afterwards.'
-      : 'Are you sure you want to delete this draft application?'
+    pendingDelete?.status === 'draft'
+      ? 'Are you sure you want to delete this draft application?'
+      : 'Are you sure you want to delete this application? You can reapply to this internship afterwards.'
 
   const renderPaginationNumbers = () => {
     const pages = []
@@ -348,44 +342,6 @@ export default function StudentApplications() {
               <p className="text-sm text-gray-500 mt-1">Track all your internship applications</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="text-sm text-gray-500 font-medium">Drafts</div>
-                    <div className="text-4xl font-bold text-[#3B82F6] mt-2">
-                      {draftsCount.toString().padStart(2, '0')}
-                    </div>
-                  </div>
-                  <FileText className="w-6 h-6 text-[#8DC63F]" />
-                </div>
-              </div>
-
-              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="text-sm text-gray-500 font-medium">Submitted</div>
-                    <div className="text-4xl font-bold text-[#3B82F6] mt-2">
-                      {submittedCount.toString().padStart(2, '0')}
-                    </div>
-                  </div>
-                  <Send className="w-6 h-6 text-[#8DC63F]" />
-                </div>
-              </div>
-
-              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="text-sm text-gray-500 font-medium">Approved</div>
-                    <div className="text-4xl font-bold text-[#3B82F6] mt-2">
-                      {approvedCount.toString().padStart(2, '0')}
-                    </div>
-                  </div>
-                  <CheckCircle className="w-6 h-6 text-[#8DC63F]" />
-                </div>
-              </div>
-            </div>
-
             <div className="flex gap-3 items-center mb-6">
               <div className="relative flex-1">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -398,7 +354,7 @@ export default function StudentApplications() {
                 />
               </div>
 
-              <div className="relative">
+              <div className="relative" ref={filterDropdownRef}>
                 <button
                   onClick={() => setShowFilterDropdown(!showFilterDropdown)}
                   className="bg-[#8DC63F] text-white rounded-xl p-3 hover:bg-[#7DB62F] transition-colors"
@@ -415,8 +371,6 @@ export default function StudentApplications() {
                       { value: 'under_review', label: 'Under Review' },
                       { value: 'approved', label: 'Approved' },
                       { value: 'rejected', label: 'Rejected' },
-                      { value: 'accepted', label: 'Accepted' },
-                      { value: 'closed', label: 'Closed' },
                     ].map((option) => (
                       <button
                         key={option.value}
@@ -541,22 +495,20 @@ export default function StudentApplications() {
                           >
                             View
                           </button>
-                          {canDeleteApplication(application.status) && (
-                            <button
-                              onClick={(event) => handleDeleteApplication(application.id, application.status, event)}
-                              disabled={deletingId === application.id}
-                              className="flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-medium bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-                            >
-                              {deletingId === application.id ? (
-                                <>
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                  Deleting...
-                                </>
-                              ) : (
-                                'Delete'
-                              )}
-                            </button>
-                          )}
+                          <button
+                            onClick={(event) => handleDeleteApplication(application.id, application.status, event)}
+                            disabled={deletingId === application.id}
+                            className="flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-medium bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                          >
+                            {deletingId === application.id ? (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                Deleting...
+                              </>
+                            ) : (
+                              'Delete'
+                            )}
+                          </button>
                         </div>
                       </div>
                     </div>

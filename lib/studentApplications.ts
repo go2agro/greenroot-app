@@ -170,10 +170,6 @@ export async function deleteStudentApplication(applicationId: string) {
     return toPlainResponse(null, fetchError || { message: 'Application not found' })
   }
 
-  if (!['draft', 'submitted'].includes(application.status)) {
-    return toPlainResponse(null, { message: 'Only draft or submitted applications can be deleted' })
-  }
-
   let admin
   try {
     admin = createAdminClient()
