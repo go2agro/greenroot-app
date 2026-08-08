@@ -152,18 +152,12 @@ export async function deleteAccount() {
 
   const { data: applications, error: applicationsError } = await admin
     .from('applications')
-    .select('id, offer_letter_url')
+    .select('id')
     .eq('student_id', userId)
 
   if (applicationsError) return toPlainResponse(null, applicationsError)
 
   const applicationIds = applications?.map((app) => app.id) ?? []
-
-  applications?.forEach((app) => {
-    if (app.offer_letter_url) {
-      applicationDocumentPaths.push(app.offer_letter_url)
-    }
-  })
 
   if (applicationIds.length) {
     const { data: answers, error: answersError } = await admin

@@ -1,9 +1,9 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { toast } from 'sonner'
-import { ExternalLink, FileText, Loader2 } from 'lucide-react'
+import { ExternalLink, FileText, Image as ImageIcon, Loader2 } from 'lucide-react'
 import {
   formatApplicationReferenceId,
   formatApplicationStatusLabel,
@@ -105,7 +105,6 @@ export type ApplicationPaperData = {
   accepted_at?: string
   updated_at?: string
   admin_remarks?: string
-  offer_letter_url?: string
   application_answers?: ApplicationAnswer[]
 }
 
@@ -209,6 +208,21 @@ function parseLanguages(raw?: string): Language[] {
   }
 }
 
+function isPdfFile(fileType?: string, fileName?: string) {
+  const type = (fileType || '').toLowerCase()
+  const name = (fileName || '').toLowerCase()
+  return type.includes('pdf') || name.endsWith('.pdf')
+}
+
+function isImageFile(fileType?: string, fileName?: string) {
+  const type = (fileType || '').toLowerCase()
+  const name = (fileName || '').toLowerCase()
+  return (
+    type.includes('image') ||
+    /\.(jpe?g|png|gif|webp|bmp)$/i.test(name)
+  )
+}
+
 export function FormCell({
   label,
   value,
@@ -276,17 +290,45 @@ export function DocumentRow({
   label,
   subtitle,
   filePath,
+  fileType,
+  fileName,
   openingDoc,
   onView,
+  getSignedUrl,
 }: {
   index: number
   label: string
   subtitle?: string
   filePath?: string
+  fileType?: string
+  fileName?: string
   openingDoc: string | null
   onView: (path: string) => void
+  getSignedUrl?: GetSignedUrl
 }) {
   const uploaded = Boolean(filePath?.trim())
+  const isPdf = isPdfFile(fileType, fileName || label)
+  const isImage = !isPdf && isImageFile(fileType, fileName || label)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!uploaded || !isImage || !filePath || !getSignedUrl) {
+      setPreviewUrl(null)
+      return
+    }
+
+    let cancelled = false
+
+    getSignedUrl(filePath).then((result) => {
+      if (!cancelled && result.data?.signedUrl) {
+        setPreviewUrl(result.data.signedUrl)
+      }
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [uploaded, isImage, filePath, getSignedUrl])
 
   return (
     <li className="flex items-center justify-between gap-3 px-3 py-3 bg-[#FFFEFA]">
@@ -294,10 +336,24 @@ export function DocumentRow({
         <span className="text-xs font-bold text-gray-400 tabular-nums pt-0.5">
           {String(index).padStart(2, '0')}
         </span>
+        {uploaded && isImage && previewUrl ? (
+          <div className="w-12 h-12 rounded-sm border border-gray-200 overflow-hidden flex-shrink-0 bg-gray-50">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={previewUrl}
+              alt={label}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ) : uploaded && isPdf ? (
+          <FileText className="w-8 h-8 text-red-500 flex-shrink-0" />
+        ) : uploaded && isImage ? (
+          <ImageIcon className="w-8 h-8 text-blue-500 flex-shrink-0" />
+        ) : null}
         <div className="min-w-0">
           <p className="text-sm font-medium text-gray-900 truncate">{label}</p>
           <p className="text-xs text-gray-400 mt-0.5 uppercase">
-            {subtitle || (uploaded ? 'Uploaded' : 'Not uploaded')}
+            {subtitle || (uploaded ? (isPdf ? 'PDF' : isImage ? 'Image' : 'Uploaded') : 'Not uploaded')}
           </p>
         </div>
       </div>
@@ -310,6 +366,8 @@ export function DocumentRow({
         >
           {openingDoc === filePath ? (
             <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          ) : isImage ? (
+            <ImageIcon className="w-3.5 h-3.5" />
           ) : (
             <FileText className="w-3.5 h-3.5" />
           )}
@@ -331,10 +389,8 @@ export type ApplicationPaperFormProps = {
   mode: 'admin' | 'student'
   getStudentDocUrl: GetSignedUrl
   getApplicationDocUrl: GetSignedUrl
-  getOfferLetterUrl: GetSignedUrl
   decisionSlot?: React.ReactNode
   showAdminLinks?: boolean
-  acceptanceLetterActions?: React.ReactNode
 }
 
 export function ApplicationPaperForm({
@@ -346,10 +402,8 @@ export function ApplicationPaperForm({
   mode,
   getStudentDocUrl,
   getApplicationDocUrl,
-  getOfferLetterUrl,
   decisionSlot,
   showAdminLinks = false,
-  acceptanceLetterActions,
 }: ApplicationPaperFormProps) {
   const [openingDoc, setOpeningDoc] = useState<string | null>(null)
 
@@ -373,9 +427,23 @@ export function ApplicationPaperForm({
 
   const documentAnswers = useMemo(
     () =>
-      (application.application_answers ?? []).filter(
-        (answer) => answer.field_key?.startsWith('doc_upload_') && answer.file_url
-      ),
+      (application.application_answers ?? [])
+        .filter(
+          (answer) =>
+            answer.field_key?.startsWith('doc_upload_') &&
+            Boolean(answer.file_url?.trim() || answer.file_name?.trim())
+        )
+        .sort((a, b) => {
+          const aIndex = Number.parseInt(
+            a.field_key?.replace('doc_upload_', '') || '0',
+            10
+          )
+          const bIndex = Number.parseInt(
+            b.field_key?.replace('doc_upload_', '') || '0',
+            10
+          )
+          return aIndex - bIndex
+        }),
     [application.application_answers]
   )
 
@@ -465,10 +533,6 @@ export function ApplicationPaperForm({
           <FormCell
             label="Submitted On"
             value={formatDateTime(application.submitted_at)}
-          />
-          <FormCell
-            label="Last Updated"
-            value={formatDateTime(application.updated_at)}
           />
         </div>
 
@@ -618,8 +682,10 @@ export function ApplicationPaperForm({
                 index={index + 1}
                 label={doc.label}
                 filePath={student?.[doc.key] as string | undefined}
+                fileName={doc.label}
                 openingDoc={openingDoc}
                 onView={(path) => openSignedFile(path, getStudentDocUrl)}
+                getSignedUrl={getStudentDocUrl}
               />
             ))}
           </ol>
@@ -729,60 +795,27 @@ export function ApplicationPaperForm({
                   key={doc.field_key}
                   index={index + 1}
                   label={doc.file_name || `Document ${index + 1}`}
-                  subtitle={doc.file_type || 'File'}
+                  subtitle={
+                    isPdfFile(doc.file_type, doc.file_name)
+                      ? 'PDF'
+                      : isImageFile(doc.file_type, doc.file_name)
+                        ? 'Image'
+                        : doc.file_type || 'File'
+                  }
                   filePath={doc.file_url}
+                  fileType={doc.file_type}
+                  fileName={doc.file_name}
                   openingDoc={openingDoc}
                   onView={(path) => openSignedFile(path, getApplicationDocUrl)}
+                  getSignedUrl={getApplicationDocUrl}
                 />
               ))}
             </ol>
           )}
         </FormSection>
 
-        <FormSection number="11" title="Acceptance Letter">
-          <div className="border border-gray-200 px-3 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div>
-              <p className="text-sm font-medium text-gray-900">
-                {application.offer_letter_url
-                  ? 'Acceptance letter on file'
-                  : 'No acceptance letter uploaded'}
-              </p>
-              <p className="text-xs text-gray-400 mt-0.5">
-                {application.offer_letter_url
-                  ? 'PDF document available for review'
-                  : acceptanceLetterActions
-                    ? 'Ready for upload after approval'
-                    : 'Available after the application is approved'}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {application.offer_letter_url && (
-                <button
-                  type="button"
-                  onClick={() =>
-                    openSignedFile(
-                      application.offer_letter_url!,
-                      getOfferLetterUrl
-                    )
-                  }
-                  disabled={openingDoc === application.offer_letter_url}
-                  className="inline-flex items-center gap-1.5 rounded-sm border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-                >
-                  {openingDoc === application.offer_letter_url ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  ) : (
-                    <FileText className="w-3.5 h-3.5" />
-                  )}
-                  View Letter
-                </button>
-              )}
-              {acceptanceLetterActions}
-            </div>
-          </div>
-        </FormSection>
-
         {showAdminRemarks && (
-          <FormSection number="12" title="Administrative Remarks">
+          <FormSection number="11" title="Administrative Remarks">
             <FormBlock
               label="Administrative Remarks"
               value={application.admin_remarks}
@@ -791,7 +824,10 @@ export function ApplicationPaperForm({
         )}
 
         {decisionSlot && (
-          <FormSection number="12" title="Decision Desk">
+          <FormSection
+            number={showAdminRemarks ? "12" : "11"}
+            title="Decision Desk"
+          >
             {decisionSlot}
           </FormSection>
         )}

@@ -10,11 +10,13 @@ import {
   UserPlus,
   type LucideIcon,
 } from 'lucide-react'
+import { toast } from 'sonner'
 import AdminSidebar from '@/components/AdminSidebar'
 import {
   getMyNotifications,
   getUnreadCount,
   markAsRead,
+  markAllAsRead,
 } from '@/lib/notifications'
 import { getMyAdminProfile } from '@/lib/adminProfiles'
 import { getMyProfile } from '@/lib/profiles'
@@ -172,6 +174,7 @@ export default function AdminNotificationsPage() {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [uniqueId, setUniqueId] = useState('')
+  const [isMarkingAllRead, setIsMarkingAllRead] = useState(false)
 
   useEffect(() => {
     let isActive = true
@@ -208,6 +211,11 @@ export default function AdminNotificationsPage() {
   useEffect(() => {
     setFilteredNotifications(filterNotifications(notifications, activeFilter))
   }, [notifications, activeFilter])
+
+  const hasUnread = useMemo(
+    () => notifications.some((item) => !item.is_read),
+    [notifications]
+  )
 
   const filterCounts = useMemo(
     () => ({
@@ -273,6 +281,26 @@ export default function AdminNotificationsPage() {
     }
   }
 
+  const handleMarkAllAsRead = async () => {
+    if (!hasUnread || isMarkingAllRead) return
+
+    setIsMarkingAllRead(true)
+    setNotifications((prev) => prev.map((item) => ({ ...item, is_read: true })))
+
+    const { error } = await markAllAsRead()
+
+    if (error) {
+      const result = await getMyNotifications()
+      setNotifications((result.data ?? []) as NotificationItem[])
+      toast.error('Failed to mark all as read')
+    } else {
+      await getUnreadCount()
+      setUnreadRefreshKey((key) => key + 1)
+    }
+
+    setIsMarkingAllRead(false)
+  }
+
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
       <div className="hidden lg:block">
@@ -302,11 +330,23 @@ export default function AdminNotificationsPage() {
         </div>
 
         <div className="px-4 sm:px-6 lg:px-8 py-6">
-          <div className="mb-6">
-            <h1 className="font-bold text-2xl text-gray-900">Notifications</h1>
-            <p className="text-sm text-gray-500 mt-1">
-              Manage their account, security, and communication preferences.
-            </p>
+          <div className="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div>
+              <h1 className="font-bold text-2xl text-gray-900">Notifications</h1>
+              <p className="text-sm text-gray-500 mt-1">
+                Manage their account, security, and communication preferences.
+              </p>
+            </div>
+            {hasUnread && (
+              <button
+                type="button"
+                onClick={handleMarkAllAsRead}
+                disabled={isMarkingAllRead}
+                className="self-start rounded-lg border border-[#8DC63F] px-4 py-2 text-sm font-medium text-[#8DC63F] hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+              >
+                {isMarkingAllRead ? 'Marking...' : 'Mark all as read'}
+              </button>
+            )}
           </div>
 
           <div className="flex gap-3 flex-nowrap sm:flex-wrap mb-6 overflow-x-auto pb-1 -mx-1 px-1">

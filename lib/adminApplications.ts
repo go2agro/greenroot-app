@@ -114,6 +114,14 @@ export async function getApplicationById(applicationId: string) {
 
   if (error || !data) return toPlainResponse(null, error)
 
+  const { data: applicationAnswers, error: answersError } = await supabase
+    .from('application_answers')
+    .select('*')
+    .eq('application_id', applicationId)
+    .order('step_number', { ascending: true })
+
+  if (answersError) return toPlainResponse(null, answersError)
+
   const { data: studentProfile, error: studentError } = await supabase
     .from('student_profiles')
     .select('*')
@@ -128,6 +136,7 @@ export async function getApplicationById(applicationId: string) {
     {
       ...data,
       profiles: undefined,
+      application_answers: applicationAnswers ?? data.application_answers ?? [],
       student_profiles: studentProfile
         ? {
             ...studentProfile,
@@ -143,53 +152,6 @@ export async function getApplicationById(applicationId: string) {
     },
     null
   )
-}
-
-// ─────────────────────────────────────────
-// MARK APPLICATION UNDER REVIEW
-// ─────────────────────────────────────────
-export async function markUnderReview(applicationId: string, remarks: string) {
-  const { client: supabase, error: authError } = await getAdminDbClient()
-  if (!supabase) return toPlainResponse(null, authError)
-
-  if (!remarks.trim()) {
-    return toPlainResponse(null, { message: 'Administrative remarks are required' })
-  }
-
-  const { data, error } = await supabase
-    .from('applications')
-    .update({
-      status: 'under_review',
-      reviewed_at: new Date().toISOString(),
-      admin_remarks: remarks.trim()
-    })
-    .eq('id', applicationId)
-    .in('status', ['draft', 'submitted'])
-    .select()
-    .single()
-
-  if (!error) {
-    const { data: app } = await supabase
-      .from('applications')
-      .select('student_id')
-      .eq('id', applicationId)
-      .single()
-    const studentId = app?.student_id
-
-    if (studentId) {
-      await createNotification({
-        userId: studentId,
-        type: 'application_under_review',
-        title: 'Application Under Review',
-        message: 'Your application is now being reviewed by our team.',
-        relatedId: applicationId,
-        relatedType: 'application',
-        category: 'application',
-      })
-    }
-  }
-
-  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -344,76 +306,6 @@ export async function getApplicationsByStudent(studentId: string) {
     `)
     .eq('student_id', studentId)
     .order('started_at', { ascending: false })
-
-  return toPlainResponse(data, error)
-}
-
-// ─────────────────────────────────────────
-// UPLOAD OFFER LETTER (admin only) — UI: Acceptance Letter
-// ─────────────────────────────────────────
-export async function uploadOfferLetter(
-  applicationId: string,
-  file: File
-) {
-  const { client: supabase, error: authError } = await getAdminDbClient()
-  if (!supabase) return toPlainResponse(null, authError)
-
-  // Check file size (max 1MB)
-  if (file.size > 1024 * 1024) {
-    return toPlainResponse(null, { message: 'File size must be under 1MB' })
-  }
-
-  // Upload to storage
-  const filePath = `offer-letters/${applicationId}/offer-letter.pdf`
-
-  const { error: uploadError } = await supabase.storage
-    .from('application-documents')
-    .upload(filePath, file, { upsert: true })
-
-  if (uploadError) return toPlainResponse(null, uploadError)
-
-  // Save path to application
-  const { data, error } = await supabase
-    .from('applications')
-    .update({ offer_letter_url: filePath })
-    .eq('id', applicationId)
-    .select()
-    .single()
-
-  if (!error) {
-    const { data: app } = await supabase
-      .from('applications')
-      .select('student_id')
-      .eq('id', applicationId)
-      .single()
-    const studentId = app?.student_id
-
-    if (studentId) {
-      await createNotification({
-        userId: studentId,
-        type: 'offer_letter_uploaded',
-        title: 'Offer Letter Available',
-        message: 'Your offer letter is ready. Please review and respond.',
-        relatedId: applicationId,
-        relatedType: 'application',
-        category: 'application',
-      })
-    }
-  }
-
-  return toPlainResponse(data, error)
-}
-
-// ─────────────────────────────────────────
-// GET OFFER LETTER SIGNED URL (admin only)
-// ─────────────────────────────────────────
-export async function getOfferLetterUrl(filePath: string) {
-  const { client: supabase, error: authError } = await getAdminDbClient()
-  if (!supabase) return toPlainResponse(null, authError)
-
-  const { data, error } = await supabase.storage
-    .from('application-documents')
-    .createSignedUrl(filePath, 60 * 60)
 
   return toPlainResponse(data, error)
 }

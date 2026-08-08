@@ -339,6 +339,14 @@ export async function uploadFileAnswer(
     return toPlainResponse(null, { message: 'File size must be under 1MB' })
   }
 
+  const isPdf =
+    file.type.toLowerCase().includes('pdf') ||
+    file.name.toLowerCase().endsWith('.pdf')
+
+  if (!isPdf) {
+    return toPlainResponse(null, { message: 'Only PDF files are allowed' })
+  }
+
   // Upload file to storage
   const filePath = `${user.id}/${applicationId}/${fieldKey}-${Date.now()}.${file.name.split('.').pop()}`
 
@@ -357,7 +365,7 @@ export async function uploadFileAnswer(
       field_key: fieldKey,
       file_url: filePath,
       file_name: file.name,
-      file_type: file.type.includes('pdf') ? 'pdf' : 'image',
+      file_type: 'pdf',
       updated_at: new Date().toISOString()
     }, { onConflict: 'application_id,field_key' })
 
@@ -423,46 +431,6 @@ export async function submitApplication(applicationId: string) {
 }
 
 // ─────────────────────────────────────────
-// ACCEPT AN OFFER
-// auto withdraws all other applications
-// ─────────────────────────────────────────
-export async function acceptOffer(applicationId: string) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
-
-  // Accept this application
-  const { data: accepted, error: acceptError } = await supabase
-    .from('applications')
-    .update({
-      status: 'accepted',
-      accepted_at: new Date().toISOString()
-    })
-    .eq('id', applicationId)
-    .eq('student_id', user.id)
-    .eq('status', 'approved')
-    .select('id')
-    .single()
-
-  if (acceptError || !accepted) {
-    return toPlainResponse(
-      null,
-      acceptError || { message: 'Only an approved application can be accepted' }
-    )
-  }
-
-  // Auto withdraw other active applications only (keep rejected/closed history intact)
-  const { error: withdrawError } = await supabase
-    .from('applications')
-    .update({ status: 'withdrawn' })
-    .eq('student_id', user.id)
-    .neq('id', applicationId)
-    .in('status', ['draft', 'submitted', 'under_review', 'approved'])
-
-  return toPlainResponse('Offer accepted successfully', withdrawError)
-}
-
-// ─────────────────────────────────────────
 // WITHDRAW APPLICATION
 // ─────────────────────────────────────────
 export async function withdrawApplication(applicationId: string) {
@@ -483,49 +451,6 @@ export async function withdrawApplication(applicationId: string) {
 }
 
 // ─────────────────────────────────────────
-// GET ALL APPROVED APPLICATIONS
-// (with offer letters)
-// ─────────────────────────────────────────
-export async function getApprovedApplications() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
-
-  const { data, error } = await supabase
-    .from('applications')
-    .select(`
-      *,
-      internships (
-        title,
-        subtitle,
-        city,
-        country,
-        image_url,
-        badge,
-        duration_months,
-        stipend_monthly
-      )
-    `)
-    .eq('student_id', user.id)
-    .eq('status', 'approved')
-    .order('decided_at', { ascending: false })
-
-  return toPlainResponse(data, error)
-}
-
-// ─────────────────────────────────────────
-// GET OFFER LETTER (student)
-// ─────────────────────────────────────────
-export async function getMyOfferLetter(filePath: string) {
-  const supabase = await createClient()
-  const { data, error } = await supabase.storage
-    .from('application-documents')
-    .createSignedUrl(filePath, 60 * 60)
-
-  return toPlainResponse(data, error)
-}
-
-// ─────────────────────────────────────────
 // GET APPLICATION FILE (student)
 // ─────────────────────────────────────────
 export async function getMyApplicationFile(filePath: string) {
@@ -533,51 +458,6 @@ export async function getMyApplicationFile(filePath: string) {
   const { data, error } = await supabase.storage
     .from('application-documents')
     .createSignedUrl(filePath, 60 * 60)
-
-  return toPlainResponse(data, error)
-}
-
-// ─────────────────────────────────────────
-// CONFIRM OFFER (student accepts one)
-// auto closes all other applications
-// ─────────────────────────────────────────
-export async function confirmOffer(applicationId: string) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
-
-  // Accept this application
-  const { error: acceptError } = await supabase
-    .from('applications')
-    .update({
-      status: 'accepted',
-      accepted_at: new Date().toISOString()
-    })
-    .eq('id', applicationId)
-
-  if (acceptError) return toPlainResponse(null, acceptError)
-
-  // Auto close ALL other applications
-  // (draft, submitted, under_review, approved)
-  const { error: closeError } = await supabase
-    .from('applications')
-    .update({ status: 'closed' })
-    .eq('student_id', user.id)
-    .neq('id', applicationId)
-    .in('status', ['draft', 'submitted', 'under_review', 'approved'])
-
-  return toPlainResponse('Offer confirmed successfully', closeError)
-}
-
-// ─────────────────────────────────────────
-// DECLINE OFFER (student declines one)
-// ─────────────────────────────────────────
-export async function declineOffer(applicationId: string) {
-  const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('applications')
-    .update({ status: 'closed' })
-    .eq('id', applicationId)
 
   return toPlainResponse(data, error)
 }
@@ -617,7 +497,7 @@ export async function getApplicationCounts() {
     if (isApproved) {
       counts.approved++
     }
-    // Active = in pipeline (awaiting admin decision or student offer response)
+    // Active = in pipeline (awaiting admin decision)
     if (isInReview || app.status === 'approved') {
       counts.active++
     }

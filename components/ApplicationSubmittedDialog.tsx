@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { BadgeCheck } from "lucide-react"
 import {
   Dialog,
@@ -8,36 +7,22 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog"
-import {
-  formatApplicationReferenceId,
-  formatApplicationStatusLabel,
-  formatSubmittedDateTime,
-} from "@/lib/utils"
+import { formatApplicationReferenceId } from "@/lib/utils"
 
 interface ApplicationSubmittedDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   applicationId: string
-  internshipTitle: string
-  internshipCountry?: string
   submittedAt: string
-  status: string
 }
 
 export function ApplicationSubmittedDialog({
   open,
   onOpenChange,
   applicationId,
-  internshipTitle,
-  internshipCountry,
   submittedAt,
-  status,
 }: ApplicationSubmittedDialogProps) {
-  const router = useRouter()
-
-  const internshipLabel = internshipCountry
-    ? `${internshipTitle} – ${internshipCountry}`
-    : internshipTitle
+  const applicationRef = formatApplicationReferenceId(applicationId, submittedAt)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -51,51 +36,33 @@ export function ApplicationSubmittedDialog({
           </div>
 
           <DialogTitle className="mb-3 text-xl font-bold text-[#3B82F6]">
-            Application Submitted Successfully!
+            Congratulations!
           </DialogTitle>
 
-          <DialogDescription className="mb-6 max-w-[440px] text-sm leading-relaxed text-gray-600">
-            Your application has been received and is now under review. We&apos;ll
-            notify you via email once there is an update.
+          <DialogDescription className="mb-6 max-w-[440px] space-y-3 text-sm leading-relaxed text-gray-600">
+            <p>
+              Your application has been sent successfully. You can view it in the{" "}
+              <span className="font-semibold text-gray-800">My Applications</span>{" "}
+              screen.
+            </p>
+            <p>
+              Your application ID is{" "}
+              <span className="font-bold text-[#3B82F6]">{applicationRef}</span>.
+              Please keep this for your records.
+            </p>
+            <p>
+              Keep checking your notifications for any updates about your
+              submitted application.
+            </p>
           </DialogDescription>
 
-          <div className="mb-8 w-full rounded-xl border border-[#8DC63F] bg-[#F7FAF0] p-4 text-left">
-            <p className="mb-3 text-sm font-bold text-gray-900">Application Summary</p>
-            <div className="space-y-1.5 text-sm text-gray-800">
-              <p>
-                <span className="font-medium">Application ID:</span>{" "}
-                {formatApplicationReferenceId(applicationId, submittedAt)}
-              </p>
-              <p>
-                <span className="font-medium">Internship:</span> {internshipLabel}
-              </p>
-              <p>
-                <span className="font-medium">Submitted on:</span>{" "}
-                {formatSubmittedDateTime(submittedAt)}
-              </p>
-              <p>
-                <span className="font-medium">Current Status:</span>{" "}
-                {formatApplicationStatusLabel(status)}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex w-full flex-col gap-3 sm:flex-row">
-            <button
-              type="button"
-              onClick={() => router.push("/student/internships")}
-              className="flex-1 rounded-full bg-[#8DC63F] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#7DB62F]"
-            >
-              Browse more internships
-            </button>
-            <button
-              type="button"
-              onClick={() => router.push("/student/applications")}
-              className="flex-1 rounded-full border border-[#8DC63F] bg-white px-4 py-2.5 text-sm font-semibold text-[#8DC63F] transition-colors hover:bg-[#8DC63F]/5"
-            >
-              Go to My Applications
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => onOpenChange(false)}
+            className="w-full rounded-full bg-[#8DC63F] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#7DB62F]"
+          >
+            Close
+          </button>
         </div>
       </DialogContent>
     </Dialog>

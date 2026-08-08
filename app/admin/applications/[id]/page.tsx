@@ -1,6 +1,6 @@
 'use client'
 
-import { use, useEffect, useRef, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import useSWR from 'swr'
@@ -8,9 +8,7 @@ import { toast } from 'sonner'
 import {
   ArrowLeft,
   CheckCircle,
-  Clock,
   Loader2,
-  Upload,
   XCircle,
 } from 'lucide-react'
 import {
@@ -27,10 +25,7 @@ import {
   approveApplication,
   getApplicationById,
   getApplicationFile,
-  getOfferLetterUrl,
-  markUnderReview,
   rejectApplication,
-  uploadOfferLetter,
 } from '@/lib/adminApplications'
 import { getStudentDocumentUrl } from '@/lib/adminQueries'
 import { getMyAdminProfile } from '@/lib/adminProfiles'
@@ -55,7 +50,7 @@ type Profile = {
   unique_id?: string
 }
 
-type ActionDialog = 'under_review' | 'approve' | 'reject' | null
+type ActionDialog = 'approve' | 'reject' | null
 
 const fetcher = async (fn: () => Promise<{ data: unknown; error: unknown }>) => {
   const res = await fn()
@@ -80,7 +75,6 @@ export default function AdminApplicationDetails({
   params: Promise<{ id: string }>
 }) {
   const { id } = use(params)
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [application, setApplication] = useState<ApplicationDetail | null>(null)
   const [loading, setLoading] = useState(true)
@@ -88,7 +82,6 @@ export default function AdminApplicationDetails({
   const [actionDialog, setActionDialog] = useState<ActionDialog>(null)
   const [actionLoading, setActionLoading] = useState(false)
   const [remarks, setRemarks] = useState('')
-  const [uploadingLetter, setUploadingLetter] = useState(false)
 
   const { data: adminProfile } = useSWR(
     'adminProfileApplicationDetail',
@@ -143,14 +136,8 @@ export default function AdminApplicationDetails({
     ? formatApplicationReferenceId(application.id, application.submitted_at)
     : ''
 
-  const canMarkUnderReview =
-    application?.status === 'submitted' || application?.status === 'draft'
   const canDecide =
     application?.status === 'submitted' || application?.status === 'under_review'
-  const canUploadAcceptanceLetter =
-    application?.status === 'approved' ||
-    application?.status === 'accepted' ||
-    Boolean(application?.offer_letter_url)
 
   const closeActionDialog = () => {
     if (actionLoading) return
@@ -178,14 +165,10 @@ export default function AdminApplicationDetails({
     setActionLoading(true)
 
     const trimmedRemarks = remarks.trim()
-    let result
-    if (actionDialog === 'under_review') {
-      result = await markUnderReview(application.id, trimmedRemarks)
-    } else if (actionDialog === 'approve') {
-      result = await approveApplication(application.id, trimmedRemarks)
-    } else {
-      result = await rejectApplication(application.id, trimmedRemarks)
-    }
+    const result =
+      actionDialog === 'approve'
+        ? await approveApplication(application.id, trimmedRemarks)
+        : await rejectApplication(application.id, trimmedRemarks)
 
     setActionLoading(false)
 
@@ -199,38 +182,11 @@ export default function AdminApplicationDetails({
     }
 
     toast.success(
-      actionDialog === 'under_review'
-        ? 'Marked as under review'
-        : actionDialog === 'approve'
-          ? 'Application approved'
-          : 'Application rejected'
+      actionDialog === 'approve'
+        ? 'Application approved'
+        : 'Application rejected'
     )
     setActionDialog(null)
-    invalidateAdminApplications()
-    await loadApplication()
-  }
-
-  const handleAcceptanceLetterUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0]
-    event.target.value = ''
-    if (!file || !application) return
-
-    setUploadingLetter(true)
-    const result = await uploadOfferLetter(application.id, file)
-    setUploadingLetter(false)
-
-    if (result.error) {
-      toast.error(
-        typeof result.error === 'object' && result.error && 'message' in result.error
-          ? String((result.error as { message: string }).message)
-          : 'Failed to upload acceptance letter'
-      )
-      return
-    }
-
-    toast.success('Acceptance letter uploaded')
     invalidateAdminApplications()
     await loadApplication()
   }
@@ -302,33 +258,6 @@ export default function AdminApplicationDetails({
               showAdminLinks
               getStudentDocUrl={getStudentDocumentUrl}
               getApplicationDocUrl={getApplicationFile}
-              getOfferLetterUrl={getOfferLetterUrl}
-              acceptanceLetterActions={
-                canUploadAcceptanceLetter ? (
-                  <>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept=".pdf,application/pdf"
-                      className="hidden"
-                      onChange={handleAcceptanceLetterUpload}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={uploadingLetter}
-                      className="inline-flex items-center gap-1.5 rounded-sm border border-[#8DC63F] px-3 py-1.5 text-xs font-semibold text-[#8DC63F] hover:bg-[#F0F9E8] disabled:opacity-50"
-                    >
-                      {uploadingLetter ? (
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      ) : (
-                        <Upload className="w-3.5 h-3.5" />
-                      )}
-                      {application.offer_letter_url ? 'Replace' : 'Upload'}
-                    </button>
-                  </>
-                ) : undefined
-              }
               decisionSlot={
                 <div className="relative border-2 border-[#8DC63F] bg-[#F4FBE8] p-4 sm:p-5 shadow-[0_0_0_4px_rgba(141,198,63,0.15)]">
                   <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#8DC63F]" />
@@ -366,44 +295,29 @@ export default function AdminApplicationDetails({
                       }`}
                     />
                     <p className="text-[11px] text-gray-500 mt-2">
-                      Remarks are mandatory before Mark Under Review, Approve, or Reject.
+                      Remarks are mandatory before Approve or Reject.
                     </p>
 
-                    {(canMarkUnderReview || canDecide) && (
+                    {canDecide && (
                       <div className="mt-5 pt-4 border-t border-[#8DC63F]/40 flex flex-wrap justify-end gap-2">
-                        {canMarkUnderReview && (
-                          <button
-                            type="button"
-                            onClick={() => openDecisionDialog('under_review')}
-                            disabled={remarksRequired}
-                            className="inline-flex items-center gap-2 rounded-sm border border-amber-300 bg-amber-50 px-3.5 py-2 text-sm font-semibold text-amber-800 hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-50"
-                          >
-                            <Clock className="w-4 h-4" />
-                            Mark Under Review
-                          </button>
-                        )}
-                        {canDecide && (
-                          <>
-                            <button
-                              type="button"
-                              onClick={() => openDecisionDialog('reject')}
-                              disabled={remarksRequired}
-                              className="inline-flex items-center gap-2 rounded-sm border border-red-300 bg-red-50 px-3.5 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
-                            >
-                              <XCircle className="w-4 h-4" />
-                              Reject
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => openDecisionDialog('approve')}
-                              disabled={remarksRequired}
-                              className="inline-flex items-center gap-2 rounded-sm bg-[#8DC63F] px-3.5 py-2 text-sm font-semibold text-white hover:bg-[#7DB62F] disabled:cursor-not-allowed disabled:opacity-50"
-                            >
-                              <CheckCircle className="w-4 h-4" />
-                              Approve
-                            </button>
-                          </>
-                        )}
+                        <button
+                          type="button"
+                          onClick={() => openDecisionDialog('reject')}
+                          disabled={remarksRequired}
+                          className="inline-flex items-center gap-2 rounded-sm border border-red-300 bg-red-50 px-3.5 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          <XCircle className="w-4 h-4" />
+                          Reject
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => openDecisionDialog('approve')}
+                          disabled={remarksRequired}
+                          className="inline-flex items-center gap-2 rounded-sm bg-[#8DC63F] px-3.5 py-2 text-sm font-semibold text-white hover:bg-[#7DB62F] disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          <CheckCircle className="w-4 h-4" />
+                          Approve
+                        </button>
                       </div>
                     )}
                   </div>
@@ -415,27 +329,14 @@ export default function AdminApplicationDetails({
       </div>
 
       <ConfirmationDialog
-        open={actionDialog === 'under_review'}
-        onOpenChange={(open) => {
-          if (!open) closeActionDialog()
-        }}
-        icon={<Clock />}
-        title="Mark Under Review?"
-        description="This will move the application into under review status. Your remarks will be saved with this decision."
-        confirmText="Mark Under Review"
-        onConfirm={handleActionConfirm}
-        isLoading={actionLoading}
-        loadingText="Updating..."
-      />
-
-      <ConfirmationDialog
         open={actionDialog === 'approve'}
         onOpenChange={(open) => {
           if (!open) closeActionDialog()
         }}
+        variant="success"
         icon={<CheckCircle />}
         title="Approve Application?"
-        description="The student will be marked as approved and your remarks will be saved. You can then upload an acceptance letter."
+        description="The student will be marked as approved and your remarks will be saved with this application."
         confirmText="Approve"
         onConfirm={handleActionConfirm}
         isLoading={actionLoading}
@@ -447,6 +348,7 @@ export default function AdminApplicationDetails({
         onOpenChange={(open) => {
           if (!open) closeActionDialog()
         }}
+        variant="danger"
         icon={<XCircle />}
         title="Reject Application?"
         description="This decision and your administrative remarks will be saved with the application."

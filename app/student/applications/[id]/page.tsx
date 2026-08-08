@@ -16,6 +16,8 @@ import {
   CloudUpload,
   Loader2,
   ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
   Image as ImageIcon,
 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -33,7 +35,6 @@ import { extractRequiredDocuments } from '@/lib/internshipContent'
 import { 
   getMyApplicationById,
   getMyApplicationFile,
-  getMyOfferLetter,
   saveTextAnswer,
   uploadFileAnswer,
   updateCurrentStep,
@@ -428,8 +429,11 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
       }
       
       const fileType = file.type.toLowerCase()
-      if (!fileType.includes('pdf') && !fileType.includes('image')) {
-        toast.error(`${file.name} is not a valid format`)
+      const isPdf =
+        fileType.includes('pdf') || file.name.toLowerCase().endsWith('.pdf')
+
+      if (!isPdf) {
+        toast.error(`${file.name} is not a PDF file`)
         continue
       }
       
@@ -656,8 +660,15 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
               mode="student"
               getStudentDocUrl={getMyStudentDocumentUrl}
               getApplicationDocUrl={getMyApplicationFile}
-              getOfferLetterUrl={getMyOfferLetter}
             />
+            <div className="flex justify-center pt-2 pb-10">
+              <Link
+                href="/student/applications"
+                className="inline-flex items-center justify-center rounded-xl bg-[#8DC63F] px-8 py-3 text-sm font-semibold text-white hover:bg-[#7DB62F] transition-colors"
+              >
+                Go back to Applications
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -1110,7 +1121,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                     <ul className="text-sm text-amber-800 space-y-1 list-disc list-inside">
                       <li>Maximum {MAX_DOCUMENT_UPLOADS} files total</li>
                       <li>Each file must be under 1MB</li>
-                      <li>Accepted formats: PDF, JPG, JPEG, PNG</li>
+                      <li>Accepted format: PDF only</li>
                     </ul>
                   </div>
 
@@ -1127,14 +1138,14 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                       id="file-input"
                       type="file"
                       multiple
-                      accept=".pdf,.jpg,.jpeg,.png"
+                      accept=".pdf,application/pdf"
                       onChange={(e) => handleFileSelect(e.target.files)}
                       className="hidden"
                     />
                     <div className="text-center">
                       <CloudUpload className="w-12 h-12 text-gray-400 mx-auto mb-3" />
                       <p className="font-medium text-gray-600">Click to upload or drag and drop</p>
-                      <p className="text-xs text-gray-400 mt-1">PDF, JPG, PNG • Max 1MB per file • Max {MAX_DOCUMENT_UPLOADS} files</p>
+                      <p className="text-xs text-gray-400 mt-1">PDF only • Max 1MB per file • Max {MAX_DOCUMENT_UPLOADS} files</p>
                     </div>
                   </div>
                   </>
@@ -1418,8 +1429,9 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
             <button
               onClick={handlePrevious}
               disabled={isSaving}
-              className="border border-gray-300 text-gray-600 rounded-lg px-6 py-2.5 font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="border border-gray-300 text-gray-600 rounded-lg px-6 py-2.5 font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
+              <ChevronLeft className="w-4 h-4" />
               Previous
             </button>
           )}
@@ -1456,9 +1468,15 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                     Processing...
                   </>
                 ) : isReadOnly ? (
-                  'View Next'
+                  <>
+                    View Next
+                    <ChevronRight className="w-4 h-4" />
+                  </>
                 ) : (
-                  'Next'
+                  <>
+                    Next
+                    <ChevronRight className="w-4 h-4" />
+                  </>
                 )}
               </button>
             )}
@@ -1471,10 +1489,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
           open={showSuccessDialog}
           onOpenChange={setShowSuccessDialog}
           applicationId={application.id}
-          internshipTitle={application.internships?.title ?? 'Internship'}
-          internshipCountry={application.internships?.country}
           submittedAt={submittedAt}
-          status="submitted"
         />
       )}
     </div>

@@ -10,6 +10,26 @@ import {
 } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 
+type ConfirmationDialogVariant = "danger" | "success" | "warning"
+
+const variantStyles: Record<
+  ConfirmationDialogVariant,
+  { icon: string; title: string }
+> = {
+  danger: {
+    icon: "text-[#E04848]",
+    title: "text-[#E04848]",
+  },
+  success: {
+    icon: "text-[#8DC63F]",
+    title: "text-[#8DC63F]",
+  },
+  warning: {
+    icon: "text-amber-600",
+    title: "text-amber-700",
+  },
+}
+
 interface ConfirmationDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -21,6 +41,7 @@ interface ConfirmationDialogProps {
   onConfirm: () => void
   isLoading?: boolean
   loadingText?: string
+  variant?: ConfirmationDialogVariant
 }
 
 export function ConfirmationDialog({
@@ -34,7 +55,9 @@ export function ConfirmationDialog({
   onConfirm,
   isLoading = false,
   loadingText,
+  variant = "danger",
 }: ConfirmationDialogProps) {
+  const styles = variantStyles[variant]
   return (
     <Dialog
       open={open}
@@ -50,11 +73,16 @@ export function ConfirmationDialog({
         className="max-w-[420px] rounded-2xl border border-[#EEEEEE] bg-white p-8 shadow-xl sm:max-w-[420px]"
       >
         <div className="flex flex-col items-center text-center">
-          <div className="mb-4 flex items-center justify-center text-[#E04848] [&_svg]:size-14">
+          <div
+            className={cn(
+              "mb-4 flex items-center justify-center [&_svg]:size-14",
+              styles.icon
+            )}
+          >
             {icon}
           </div>
 
-          <DialogTitle className="mb-3 text-xl font-bold text-[#E04848]">
+          <DialogTitle className={cn("mb-3 text-xl font-bold", styles.title)}>
             {title}
           </DialogTitle>
 
