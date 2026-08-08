@@ -3,12 +3,15 @@
 import { use, useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import useSWR from 'swr'
 import { toast } from 'sonner'
 import {
   ArrowLeft,
   CheckCircle,
+  EllipsisVertical,
   Loader2,
+  Trash2,
   XCircle,
 } from 'lucide-react'
 import {
@@ -20,9 +23,16 @@ import {
 } from '@/components/ApplicationPaperForm'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { DetailSkeleton, PAGE_CLASS } from '@/components/detailLayout'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Textarea } from '@/components/ui/textarea'
 import {
   approveApplication,
+  deleteApplication,
   getApplicationById,
   getApplicationFile,
   rejectApplication,
@@ -50,7 +60,7 @@ type Profile = {
   unique_id?: string
 }
 
-type ActionDialog = 'approve' | 'reject' | null
+type ActionDialog = 'approve' | 'reject' | 'delete' | null
 
 const fetcher = async (fn: () => Promise<{ data: unknown; error: unknown }>) => {
   const res = await fn()
@@ -75,6 +85,7 @@ export default function AdminApplicationDetails({
   params: Promise<{ id: string }>
 }) {
   const { id } = use(params)
+  const router = useRouter()
 
   const [application, setApplication] = useState<ApplicationDetail | null>(null)
   const [loading, setLoading] = useState(true)
@@ -139,6 +150,9 @@ export default function AdminApplicationDetails({
   const canDecide =
     application?.status === 'submitted' || application?.status === 'under_review'
 
+  const hasFinalDecision =
+    application?.status === 'approved' || application?.status === 'rejected'
+
   const closeActionDialog = () => {
     if (actionLoading) return
     setActionDialog(null)
@@ -156,6 +170,27 @@ export default function AdminApplicationDetails({
 
   const handleActionConfirm = async () => {
     if (!application || !actionDialog) return
+
+    if (actionDialog === 'delete') {
+      setActionLoading(true)
+      const result = await deleteApplication(application.id)
+      setActionLoading(false)
+
+      if (result.error) {
+        toast.error(
+          typeof result.error === 'object' && result.error && 'message' in result.error
+            ? String((result.error as { message: string }).message)
+            : 'Failed to delete application'
+        )
+        return
+      }
+
+      toast.success('Application deleted')
+      setActionDialog(null)
+      invalidateAdminApplications()
+      router.push('/admin/applications')
+      return
+    }
 
     if (remarksRequired) {
       toast.error('Administrative remarks are required before taking a decision')
@@ -324,9 +359,45 @@ export default function AdminApplicationDetails({
                 </div>
               }
             />
+
+            {hasFinalDecision && (
+              <div className="flex justify-center pt-2 pb-10">
+                <Link
+                  href="/admin/applications"
+                  className="inline-flex items-center justify-center rounded-xl bg-[#8DC63F] px-8 py-3 text-sm font-semibold text-white hover:bg-[#7DB62F] transition-colors"
+                >
+                  Go to Applications
+                </Link>
+              </div>
+            )}
           </div>
         )}
       </div>
+
+      {application && !notFound && (
+        <div className="fixed bottom-6 right-6 z-20">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-600 shadow-md hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                aria-label="Application actions"
+              >
+                <EllipsisVertical className="h-5 w-5" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={() => setActionDialog('delete')}
+              >
+                <Trash2 className="h-4 w-4" />
+                Delete application
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )}
 
       <ConfirmationDialog
         open={actionDialog === 'approve'}
@@ -356,6 +427,21 @@ export default function AdminApplicationDetails({
         onConfirm={handleActionConfirm}
         isLoading={actionLoading}
         loadingText="Rejecting..."
+      />
+
+      <ConfirmationDialog
+        open={actionDialog === 'delete'}
+        onOpenChange={(open) => {
+          if (!open) closeActionDialog()
+        }}
+        variant="danger"
+        icon={<Trash2 />}
+        title="Delete Application?"
+        description="This will permanently delete the application and all uploaded documents. This action cannot be undone."
+        confirmText="Delete"
+        onConfirm={handleActionConfirm}
+        isLoading={actionLoading}
+        loadingText="Deleting..."
       />
     </div>
   )

@@ -2,6 +2,7 @@
 
 import { createClient } from './supabase'
 import { getAdminDbClient } from './adminAuth'
+import { listAllStoragePaths } from './supabase-admin'
 import { createNotification } from '@/lib/notifications'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 
@@ -308,4 +309,80 @@ export async function getApplicationsByStudent(studentId: string) {
     .order('started_at', { ascending: false })
 
   return toPlainResponse(data, error)
+}
+
+// ─────────────────────────────────────────
+// DELETE APPLICATION (admin — any status)
+// ─────────────────────────────────────────
+export async function deleteApplication(applicationId: string) {
+  const { client: supabase, error: authError } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
+
+  const { data: application, error: fetchError } = await supabase
+    .from('applications')
+    .select('id, student_id')
+    .eq('id', applicationId)
+    .single()
+
+  if (fetchError || !application) {
+    return toPlainResponse(null, fetchError || { message: 'Application not found' })
+  }
+
+  const { data: answers, error: answersFetchError } = await supabase
+    .from('application_answers')
+    .select('file_url')
+    .eq('application_id', applicationId)
+
+  if (answersFetchError) {
+    return toPlainResponse(null, answersFetchError)
+  }
+
+  const answerFilePaths =
+    answers
+      ?.map((answer) => answer.file_url)
+      .filter((path): path is string => Boolean(path)) ?? []
+
+  const folderFilePaths = await listAllStoragePaths(
+    supabase,
+    'application-documents',
+    `${application.student_id}/${applicationId}`
+  )
+
+  const filePaths = [...new Set([...answerFilePaths, ...folderFilePaths])]
+
+  if (filePaths.length > 0) {
+    const { error: storageError } = await supabase.storage
+      .from('application-documents')
+      .remove(filePaths)
+
+    if (storageError) {
+      return toPlainResponse(null, storageError)
+    }
+  }
+
+  const { error: deleteAnswersError } = await supabase
+    .from('application_answers')
+    .delete()
+    .eq('application_id', applicationId)
+
+  if (deleteAnswersError) {
+    return toPlainResponse(null, deleteAnswersError)
+  }
+
+  const { data: deleted, error: deleteAppError } = await supabase
+    .from('applications')
+    .delete()
+    .eq('id', applicationId)
+    .select('id')
+    .single()
+
+  if (deleteAppError) {
+    return toPlainResponse(null, deleteAppError)
+  }
+
+  if (!deleted) {
+    return toPlainResponse(null, { message: 'Failed to delete application' })
+  }
+
+  return toPlainResponse({ id: applicationId }, null)
 }

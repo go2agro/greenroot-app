@@ -671,6 +671,15 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
             </div>
           </div>
         </div>
+
+        {submittedAt && (
+          <ApplicationSubmittedDialog
+            open={showSuccessDialog}
+            onOpenChange={setShowSuccessDialog}
+            applicationId={application.id}
+            submittedAt={submittedAt}
+          />
+        )}
       </div>
     )
   }

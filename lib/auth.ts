@@ -191,12 +191,6 @@ export async function deleteAccount() {
   studentDocumentPaths.push(...await listAllStoragePaths(admin, 'student-documents', userId))
   applicationDocumentPaths.push(...await listAllStoragePaths(admin, 'application-documents', userId))
 
-  for (const applicationId of applicationIds) {
-    applicationDocumentPaths.push(
-      ...await listAllStoragePaths(admin, 'application-documents', `offer-letters/${applicationId}`)
-    )
-  }
-
   if (studentDocumentPaths.length) {
     try {
       await removeStoragePaths(admin, 'student-documents', studentDocumentPaths)

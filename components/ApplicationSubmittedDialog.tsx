@@ -39,21 +39,23 @@ export function ApplicationSubmittedDialog({
             Congratulations!
           </DialogTitle>
 
-          <DialogDescription className="mb-6 max-w-[440px] space-y-3 text-sm leading-relaxed text-gray-600">
-            <p>
-              Your application has been sent successfully. You can view it in the{" "}
-              <span className="font-semibold text-gray-800">My Applications</span>{" "}
-              screen.
-            </p>
-            <p>
-              Your application ID is{" "}
-              <span className="font-bold text-[#3B82F6]">{applicationRef}</span>.
-              Please keep this for your records.
-            </p>
-            <p>
-              Keep checking your notifications for any updates about your
-              submitted application.
-            </p>
+          <DialogDescription asChild>
+            <div className="mb-6 max-w-[440px] space-y-3 text-sm leading-relaxed text-gray-600">
+              <p>
+                Your application has been sent successfully. You can view it in the{" "}
+                <span className="font-semibold text-gray-800">My Applications</span>{" "}
+                screen.
+              </p>
+              <p>
+                Your application ID is{" "}
+                <span className="font-bold text-[#3B82F6]">{applicationRef}</span>.
+                Please keep this for your records.
+              </p>
+              <p>
+                Keep checking your notifications for any updates about your
+                submitted application.
+              </p>
+            </div>
           </DialogDescription>
 
           <button
