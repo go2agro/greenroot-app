@@ -16,8 +16,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { createAdminAccount, verifySecretKey } from '@/lib/adminSetup'
+import { createPartnerAccount } from '@/lib/partnerSetup'
+
+type AccountType = 'admin' | 'partner'
 
 export default function AdminSetupPage() {
+  const [accountType, setAccountType] = useState<AccountType>('admin')
   const [secretKey, setSecretKey] = useState('')
   const [isVerified, setIsVerified] = useState(false)
   const [keyError, setKeyError] = useState('')
@@ -32,8 +36,10 @@ export default function AdminSetupPage() {
   const [officialEmail, setOfficialEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [adminId, setAdminId] = useState('')
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [createdAccountId, setCreatedAccountId] = useState('')
 
   const fullName = [firstName, middleName, lastName].filter(Boolean).join(' ')
 
@@ -60,23 +66,21 @@ export default function AdminSetupPage() {
     setOfficialEmail('')
     setPhone('')
     setPassword('')
+    setConfirmPassword('')
     setShowPassword(false)
-    setAdminId('')
+    setShowConfirmPassword(false)
+    setCreatedAccountId('')
+    setAccountType('admin')
     setError('')
     setSuccess(false)
   }
 
-  async function handleCreateAdmin(e: React.FormEvent) {
+  async function handleCreateAccount(e: React.FormEvent) {
     e.preventDefault()
     setError('')
 
     if (!firstName.trim() || !lastName.trim()) {
       setError('First name and last name are required.')
-      return
-    }
-
-    if (!adminId.trim()) {
-      setError('Admin ID is required.')
       return
     }
 
@@ -90,9 +94,14 @@ export default function AdminSetupPage() {
       return
     }
 
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.')
+      return
+    }
+
     setIsLoading(true)
 
-    const { error: createError } = await createAdminAccount({
+    const accountDetails = {
       firstName: firstName.trim(),
       middleName: middleName.trim() || undefined,
       lastName: lastName.trim(),
@@ -100,14 +109,20 @@ export default function AdminSetupPage() {
       officialEmail: officialEmail.trim(),
       phone: phone.trim() || undefined,
       password,
-      adminId: adminId.trim(),
-    })
+    }
+
+    const { data, error: createError } =
+      accountType === 'admin'
+        ? await createAdminAccount(accountDetails)
+        : await createPartnerAccount(accountDetails)
 
     if (createError) {
-      setError(createError.message || 'Failed to create admin account.')
+      setError(createError.message || `Failed to create ${accountType} account.`)
       setIsLoading(false)
       return
     }
+
+    setCreatedAccountId(data?.accountId || '')
 
     setSuccess(true)
     setIsLoading(false)
@@ -174,7 +189,7 @@ export default function AdminSetupPage() {
             <CardContent className="pt-8 pb-6 text-center space-y-6">
               <CheckCircle2 className="w-16 h-16 text-[#8DC63F] mx-auto" />
               <h2 className="text-2xl font-bold text-[#1A1A1A]">
-                Admin Account Created!
+                {accountType === 'admin' ? 'Admin' : 'Partner'} Account Created!
               </h2>
               <div className="bg-[#F5F5F5] rounded-lg p-4 text-left space-y-3">
                 <div>
@@ -186,23 +201,25 @@ export default function AdminSetupPage() {
                   <p className="text-sm font-medium text-gray-900">{officialEmail}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide">Admin ID</p>
-                  <p className="text-sm font-medium text-gray-900">{adminId}</p>
+                  <p className="text-xs text-gray-500 uppercase tracking-wide">
+                    {accountType === 'admin' ? 'Admin ID' : 'Partner ID'}
+                  </p>
+                  <p className="text-sm font-medium text-gray-900">{createdAccountId}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide">Temp Password</p>
+                  <p className="text-xs text-gray-500 uppercase tracking-wide">Password</p>
                   <p className="text-sm font-medium text-gray-900 font-mono">{password}</p>
                 </div>
               </div>
               <p className="text-sm text-gray-500">
-                Share credentials securely with the admin.
+                Share credentials securely with the {accountType}.
               </p>
               <Button
                 type="button"
                 onClick={resetForm}
                 className="w-full h-11 bg-[#8DC63F] text-white hover:bg-[#7DB62F] font-semibold"
               >
-                Create Another Admin
+                Create Another Account
               </Button>
             </CardContent>
           </Card>
@@ -219,11 +236,31 @@ export default function AdminSetupPage() {
                 <span className="text-xl font-bold text-gray-900">GreenRoot</span>
               </div>
               <CardTitle className="text-xl font-bold text-[#1A1A1A]">
-                Create Admin Account
+                Create Account
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleCreateAdmin} className="space-y-4">
+              <div className="w-full bg-[#F0F0F0] rounded-lg p-1 mb-6">
+                <div className="grid grid-cols-2 gap-1">
+                  {(['admin', 'partner'] as const).map((type) => (
+                    <button
+                      key={type}
+                      type="button"
+                      onClick={() => setAccountType(type)}
+                      disabled={isLoading}
+                      className={`py-2.5 rounded-md text-sm font-medium transition-colors ${
+                        accountType === type
+                          ? 'bg-[#8DC63F] text-white'
+                          : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      {type === 'admin' ? 'Admin' : 'Partner'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <form onSubmit={handleCreateAccount} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="space-y-2">
                     <Label htmlFor="firstName">First Name *</Label>
@@ -261,25 +298,13 @@ export default function AdminSetupPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="adminId">Admin ID *</Label>
-                  <Input
-                    id="adminId"
-                    value={adminId}
-                    onChange={(e) => setAdminId(e.target.value.toUpperCase())}
-                    placeholder="ADM-XXXXXXXX"
-                    disabled={isLoading}
-                    className="bg-[#F5F5F5] border-0 h-11"
-                  />
-                </div>
-
-                <div className="space-y-2">
                   <Label htmlFor="officialEmail">Official Email *</Label>
                   <Input
                     id="officialEmail"
                     type="email"
                     value={officialEmail}
                     onChange={(e) => setOfficialEmail(e.target.value)}
-                    placeholder="admin@greenroot.com"
+                    placeholder={accountType === 'admin' ? 'admin@greenroot.com' : 'partner@greenroot.com'}
                     disabled={isLoading}
                     className="bg-[#F5F5F5] border-0 h-11"
                   />
@@ -313,7 +338,7 @@ export default function AdminSetupPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password">Temporary Password *</Label>
+                  <Label htmlFor="password">Password *</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <Input
@@ -341,6 +366,35 @@ export default function AdminSetupPage() {
                   </div>
                 </div>
 
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Re-enter Password *</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <Input
+                      id="confirmPassword"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Re-enter password"
+                      disabled={isLoading}
+                      className="bg-[#F5F5F5] border-0 h-11 pl-10 pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      disabled={isLoading}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                      aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="w-4 h-4" />
+                      ) : (
+                        <Eye className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
                 {error && (
                   <p className="text-sm text-[#DC2626] text-center">{error}</p>
                 )}
@@ -353,7 +407,7 @@ export default function AdminSetupPage() {
                   {isLoading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
                   ) : (
-                    'Create Admin Account'
+                    `Create ${accountType === 'admin' ? 'Admin' : 'Partner'} Account`
                   )}
                 </Button>
               </form>

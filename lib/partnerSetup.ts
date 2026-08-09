@@ -4,11 +4,7 @@ import { createAdminClient } from './supabase'
 import { generateAccountId } from './generateAccountId'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 
-export async function verifySecretKey(key: string) {
-  return key === process.env.ADMIN_SETUP_SECRET
-}
-
-export async function createAdminAccount(details: {
+export async function createPartnerAccount(details: {
   firstName: string
   middleName?: string
   lastName: string
@@ -18,29 +14,27 @@ export async function createAdminAccount(details: {
   password: string
 }) {
   const supabase = createAdminClient()
-  const adminId = await generateAccountId(supabase, 'ADM')
+  const partnerId = await generateAccountId(supabase, 'PTR')
 
-  // Step 1 - Create auth user
-  const { data: authData, error: authError } = 
+  const { data: authData, error: authError } =
     await supabase.auth.admin.createUser({
       email: details.officialEmail,
       password: details.password,
       email_confirm: true,
     })
 
-  if (authError || !authData.user) 
+  if (authError || !authData.user)
     return toPlainResponse(null, authError)
 
   const userId = authData.user.id
 
-  // Step 2 - Ensure profiles row exists with admin role + unique_id
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .upsert(
       {
         id: userId,
-        role: 'admin',
-        unique_id: adminId,
+        role: 'partner',
+        unique_id: partnerId,
       },
       { onConflict: 'id' }
     )
@@ -48,12 +42,11 @@ export async function createAdminAccount(details: {
     .single()
 
   if (profileError || !profile) {
-    return toPlainResponse(null, profileError || { message: 'Failed to create admin profile' })
+    return toPlainResponse(null, profileError || { message: 'Failed to create partner profile' })
   }
 
-  // Step 3 - Create admin_profiles row
-  const { error: adminProfileError } = await supabase
-    .from('admin_profiles')
+  const { error: partnerProfileError } = await supabase
+    .from('partner_profiles')
     .insert({
       id: userId,
       first_name: details.firstName,
@@ -64,8 +57,8 @@ export async function createAdminAccount(details: {
       phone_number: details.phone || null,
     })
 
-  if (adminProfileError) 
-    return toPlainResponse(null, adminProfileError)
+  if (partnerProfileError)
+    return toPlainResponse(null, partnerProfileError)
 
-  return toPlainResponse({ success: true, userId, accountId: adminId }, null)
+  return toPlainResponse({ success: true, userId, accountId: partnerId }, null)
 }

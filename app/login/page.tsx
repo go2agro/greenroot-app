@@ -12,7 +12,7 @@ import AuthLeftPanel from '@/components/AuthLeftPanel'
 
 export default function Login() {
   const router = useRouter()
-  const [selectedRole, setSelectedRole] = useState<'student' | 'admin'>('student')
+  const [selectedRole, setSelectedRole] = useState<'student' | 'admin' | 'partner'>('student')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -26,6 +26,8 @@ export default function Login() {
       const { data } = await getMyProfile()
       if (data?.role === 'admin') {
         router.push('/admin/dashboard')
+      } else if (data?.role === 'partner') {
+        router.push('/partner/dashboard')
       } else if (data?.role === 'student') {
         router.push('/student/dashboard')
       }
@@ -95,9 +97,20 @@ export default function Login() {
         return
       }
 
-      router.push(
-        data.profile.role === 'admin' ? '/admin/dashboard' : '/student/dashboard'
-      )
+      if (selectedRole === 'partner' && data.profile.role !== 'partner') {
+        await signOut()
+        setGeneralError('This account does not have partner access.')
+        setIsLoading(false)
+        return
+      }
+
+      const dashboardByRole = {
+        admin: '/admin/dashboard',
+        partner: '/partner/dashboard',
+        student: '/student/dashboard',
+      } as const
+
+      router.push(dashboardByRole[data.profile.role as keyof typeof dashboardByRole] ?? '/student/dashboard')
     } catch (error) {
       console.error('Login error:', error)
       setGeneralError('An error occurred. Please try again.')
@@ -130,45 +143,30 @@ export default function Login() {
             Take the first step in exploring your future.
           </p>
 
-          {/* Student/Admin Toggle */}
+          {/* Role Toggle */}
           <div className="w-full bg-[#F0F0F0] rounded-lg p-1 mb-6">
-            <div className="grid grid-cols-2 gap-1">
-              <button
-                type="button"
-                onClick={() => setSelectedRole('student')}
-                className={`relative py-2.5 rounded-md text-sm sm:text-base transition-colors duration-200 ${
-                  selectedRole === 'student'
-                    ? 'text-white font-semibold'
-                    : 'text-gray-500 font-normal'
-                }`}
-              >
-                {selectedRole === 'student' && (
-                  <motion.div
-                    layoutId="role-bg"
-                    className="absolute inset-0 bg-[#8DC63F] rounded-md z-0"
-                    transition={{ type: "spring", stiffness: 400, damping: 35 }}
-                  />
-                )}
-                <span className="relative z-10">Student</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedRole('admin')}
-                className={`relative py-2.5 rounded-md text-sm sm:text-base transition-colors duration-200 ${
-                  selectedRole === 'admin'
-                    ? 'text-white font-semibold'
-                    : 'text-gray-500 font-normal'
-                }`}
-              >
-                {selectedRole === 'admin' && (
-                  <motion.div
-                    layoutId="role-bg"
-                    className="absolute inset-0 bg-[#8DC63F] rounded-md z-0"
-                    transition={{ type: "spring", stiffness: 400, damping: 35 }}
-                  />
-                )}
-                <span className="relative z-10">Admin</span>
-              </button>
+            <div className="grid grid-cols-3 gap-1">
+              {(['student', 'admin', 'partner'] as const).map((role) => (
+                <button
+                  key={role}
+                  type="button"
+                  onClick={() => setSelectedRole(role)}
+                  className={`relative py-2.5 rounded-md text-sm sm:text-base transition-colors duration-200 ${
+                    selectedRole === role
+                      ? 'text-white font-semibold'
+                      : 'text-gray-500 font-normal'
+                  }`}
+                >
+                  {selectedRole === role && (
+                    <motion.div
+                      layoutId="role-bg"
+                      className="absolute inset-0 bg-[#8DC63F] rounded-md z-0"
+                      transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+                    />
+                  )}
+                  <span className="relative z-10 capitalize">{role}</span>
+                </button>
+              ))}
             </div>
           </div>
 
