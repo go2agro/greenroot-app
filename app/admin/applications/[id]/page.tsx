@@ -30,6 +30,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Textarea } from '@/components/ui/textarea'
+import PartnerAssignBar from '@/components/PartnerAssignBar'
 import {
   approveApplication,
   deleteApplication,
@@ -359,6 +360,8 @@ export default function AdminApplicationDetails({
                 </div>
               }
             />
+
+            <PartnerAssignBar applicationId={application.id} />
 
             {hasFinalDecision && (
               <div className="flex justify-center pt-2 pb-10">

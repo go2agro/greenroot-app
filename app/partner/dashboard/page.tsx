@@ -1,96 +1,92 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Image from 'next/image'
-import { Loader2, LogOut } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { getMyProfile } from '@/lib/profiles'
-import { getMyPartnerProfile } from '@/lib/partnerProfiles'
-import { signOut } from '@/lib/auth'
+import Link from 'next/link'
+import { CheckCircle, FileText, XCircle } from 'lucide-react'
+import PartnerShell from '@/components/PartnerShell'
+import { getPartnerDashboardData } from '@/lib/partnerDashboard'
+
+const KPI_CARD_CLASS =
+  'bg-white border border-[#EEEEEE] rounded-2xl p-5 transition-colors hover:border-[#8DC63F]'
+
+function KpiCardSkeleton() {
+  return (
+    <div className="animate-pulse space-y-3">
+      <div className="w-8 h-8 bg-gray-200 rounded" />
+      <div className="h-4 bg-gray-200 rounded w-24" />
+      <div className="h-8 bg-gray-200 rounded w-16" />
+    </div>
+  )
+}
 
 export default function PartnerDashboardPage() {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(true)
-  const [profile, setProfile] = useState<{ role?: string; unique_id?: string } | null>(null)
-  const [partnerProfile, setPartnerProfile] = useState<{
-    first_name?: string
-    last_name?: string
-    official_email?: string
-  } | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState({ total: 0, approved: 0, rejected: 0 })
 
   useEffect(() => {
-    async function loadProfile() {
-      const { data } = await getMyProfile()
-
-      if (!data || data.role !== 'partner') {
-        router.replace('/login')
-        return
-      }
-
-      setProfile(data)
-
-      const { data: partnerData } = await getMyPartnerProfile()
-      setPartnerProfile(partnerData)
-      setIsLoading(false)
+    async function loadDashboard() {
+      const { data } = await getPartnerDashboardData()
+      if (data?.stats) setStats(data.stats)
+      setLoading(false)
     }
 
-    loadProfile()
-  }, [router])
-
-  async function handleLogout() {
-    await signOut()
-    router.push('/login')
-  }
-
-  if (isLoading || !profile) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Loader2 className="w-8 h-8 animate-spin text-[#8DC63F]" />
-      </div>
-    )
-  }
-
-  const displayName = [partnerProfile?.first_name, partnerProfile?.last_name]
-    .filter(Boolean)
-    .join(' ') || 'Partner'
+    loadDashboard()
+  }, [])
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Image src="/greenroot-logo.svg" alt="GreenRoot" width={32} height={32} />
-          <span className="text-xl font-bold text-gray-900">GreenRoot Partner</span>
+    <PartnerShell activePage="dashboard">
+      <div className="p-4 sm:p-6 lg:p-8 space-y-6">
+        <div>
+          <h1 className="font-bold text-2xl text-gray-900">Dashboard</h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Overview of applications assigned to you.
+          </p>
         </div>
-        <Button
-          variant="outline"
-          onClick={handleLogout}
-          className="gap-2"
-        >
-          <LogOut className="w-4 h-4" />
-          Logout
-        </Button>
-      </header>
 
-      <main className="max-w-3xl mx-auto px-6 py-10">
-        <h1 className="text-2xl font-bold text-[#1A1A1A] mb-2">
-          Welcome, {displayName}
-        </h1>
-        <p className="text-gray-500 mb-8">
-          Partner portal is being set up. More features coming soon.
-        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <Link href="/partner/applications" className={`${KPI_CARD_CLASS} block`}>
+            {loading ? (
+              <KpiCardSkeleton />
+            ) : (
+              <>
+                <FileText className="w-8 h-8 text-[#8DC63F] mb-3" />
+                <p className="text-sm text-gray-500">Total Applications</p>
+                <p className="text-3xl font-bold text-[#3B82F6] mt-1">
+                  {stats.total.toLocaleString()}
+                </p>
+              </>
+            )}
+          </Link>
 
-        <div className="bg-white rounded-xl p-6 shadow-sm space-y-4">
-          <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wide">Partner ID</p>
-            <p className="text-sm font-medium text-gray-900">{profile.unique_id}</p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wide">Official Email</p>
-            <p className="text-sm font-medium text-gray-900">{partnerProfile?.official_email}</p>
-          </div>
+          <Link href="/partner/applications" className={`${KPI_CARD_CLASS} block`}>
+            {loading ? (
+              <KpiCardSkeleton />
+            ) : (
+              <>
+                <CheckCircle className="w-8 h-8 text-[#8DC63F] mb-3" />
+                <p className="text-sm text-gray-500">Approved</p>
+                <p className="text-3xl font-bold text-[#3B82F6] mt-1">
+                  {stats.approved.toLocaleString()}
+                </p>
+              </>
+            )}
+          </Link>
+
+          <Link href="/partner/applications" className={`${KPI_CARD_CLASS} block`}>
+            {loading ? (
+              <KpiCardSkeleton />
+            ) : (
+              <>
+                <XCircle className="w-8 h-8 text-[#8DC63F] mb-3" />
+                <p className="text-sm text-gray-500">Rejected</p>
+                <p className="text-3xl font-bold text-[#3B82F6] mt-1">
+                  {stats.rejected.toLocaleString()}
+                </p>
+              </>
+            )}
+          </Link>
         </div>
-      </main>
-    </div>
+      </div>
+    </PartnerShell>
   )
 }
