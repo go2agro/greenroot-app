@@ -82,10 +82,35 @@ export function formatSubmittedDateTime(dateString: string) {
 }
 
 export function formatApplicationStatusLabel(status: string) {
-  if (status === 'submitted') return 'Under Review'
+  const labels: Record<string, string> = {
+    submitted: 'Awaiting Screening',
+    under_review: 'Screening Passed',
+    admin_accepted: 'Screening Passed',
+    forwarded_to_partner: 'With Partner',
+    partner_review: 'Partner Reviewed',
+  }
+
+  if (labels[status]) return labels[status]
 
   return status
     .split('_')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ')
+}
+
+export function formatStudentStatusLabel(status: string) {
+  const studentLabels: Record<string, string> = {
+    draft: 'Draft',
+    submitted: 'Under Review',
+    under_review: 'Under Review',
+    admin_accepted: 'Under Review',
+    forwarded_to_partner: 'Under Review',
+    partner_review: 'Under Review',
+    approved: 'Approved',
+    rejected: 'Rejected',
+    accepted: 'Accepted',
+    closed: 'Closed',
+    withdrawn: 'Withdrawn',
+  }
+  return studentLabels[status] || 'Under Review'
 }

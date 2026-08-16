@@ -16,6 +16,7 @@ import {
   Clock,
 } from 'lucide-react'
 import PartnerSidebar from '@/components/PartnerSidebar'
+import PartnerBottomNavigation from '@/components/PartnerBottomNavigation'
 import { getMyAssignedApplications } from '@/lib/partnerApplications'
 import { getMyPartnerProfile } from '@/lib/partnerProfiles'
 import { getMyProfile } from '@/lib/profiles'
@@ -293,12 +294,14 @@ export default function PartnerApplications() {
         const email = app.student_profiles?.email?.toLowerCase() ?? ''
         const title = app.internships?.title?.toLowerCase() ?? ''
         const refId = formatApplicationReferenceId(app.id, app.submitted_at).toLowerCase()
+        const rawId = app.id.toLowerCase()
         return (
           firstName.includes(query) ||
           lastName.includes(query) ||
           email.includes(query) ||
           title.includes(query) ||
-          refId.includes(query)
+          refId.includes(query) ||
+          rawId.includes(query)
         )
       })
     }
@@ -782,6 +785,8 @@ export default function PartnerApplications() {
           </div>
         </div>
       </div>
+
+      <PartnerBottomNavigation />
     </div>
   )
 }

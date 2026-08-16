@@ -30,7 +30,7 @@ import { getApplicationStatusTimestamp, formatApplicationReferenceId } from '@/l
 
 const ITEMS_PER_PAGE = 8
 
-type ApplicationStatus = 'draft' | 'submitted' | 'under_review' | 'approved' | 'rejected' | 'accepted' | 'closed'
+type ApplicationStatus = 'draft' | 'submitted' | 'under_review' | 'admin_accepted' | 'forwarded_to_partner' | 'partner_review' | 'approved' | 'rejected' | 'accepted' | 'closed' | 'withdrawn'
 
 type Application = {
   id: string
@@ -56,9 +56,11 @@ const getStatusBadgeColor = (status: ApplicationStatus) => {
     case 'draft':
       return 'bg-gray-100 text-gray-700 border-gray-200'
     case 'submitted':
-      return 'bg-blue-50 text-blue-700 border-blue-200'
     case 'under_review':
-      return 'bg-amber-50 text-amber-700 border-amber-200'
+    case 'admin_accepted':
+    case 'forwarded_to_partner':
+    case 'partner_review':
+      return 'bg-blue-50 text-blue-700 border-blue-200'
     case 'approved':
       return 'bg-green-50 text-green-700 border-green-200'
     case 'rejected':
@@ -66,16 +68,28 @@ const getStatusBadgeColor = (status: ApplicationStatus) => {
     case 'accepted':
       return 'bg-purple-50 text-purple-700 border-purple-200'
     case 'closed':
+    case 'withdrawn':
       return 'bg-gray-50 text-gray-500 border-gray-200'
     default:
-      return 'bg-gray-100 text-gray-700 border-gray-200'
+      return 'bg-blue-50 text-blue-700 border-blue-200'
   }
 }
 
 const formatStatusText = (status: ApplicationStatus) => {
-  return status.split('_').map(word => 
-    word.charAt(0).toUpperCase() + word.slice(1)
-  ).join(' ')
+  const studentLabels: Record<string, string> = {
+    draft: 'Draft',
+    submitted: 'Under Review',
+    under_review: 'Under Review',
+    admin_accepted: 'Under Review',
+    forwarded_to_partner: 'Under Review',
+    partner_review: 'Under Review',
+    approved: 'Approved',
+    rejected: 'Rejected',
+    accepted: 'Accepted',
+    closed: 'Closed',
+    withdrawn: 'Withdrawn',
+  }
+  return studentLabels[status] || 'Under Review'
 }
 
 const getCountryFlag = (country: string) => {
@@ -188,10 +202,12 @@ export default function StudentApplications() {
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
-      result = result.filter(app => 
-        app.internships?.title?.toLowerCase().includes(query) ||
-        app.internships?.country?.toLowerCase().includes(query)
-      )
+      result = result.filter(app => {
+        const title = app.internships?.title?.toLowerCase() ?? ''
+        const country = app.internships?.country?.toLowerCase() ?? ''
+        const refId = `gr-${new Date(app.submitted_at || app.started_at).getFullYear()}-${(parseInt(app.id.replace(/-/g, '').slice(0, 8), 16) % 100000).toString().padStart(5, '0')}`.toLowerCase()
+        return title.includes(query) || country.includes(query) || refId.includes(query) || app.id.toLowerCase().includes(query)
+      })
     }
 
     if (filterStatus !== 'all') {

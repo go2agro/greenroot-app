@@ -3,6 +3,7 @@
 import { createClient } from './supabase'
 import { getAdminDbClient } from './adminAuth'
 import { listAllStoragePaths } from './supabase-admin'
+import { recordApplicationEvent } from '@/lib/applicationEvents'
 import { createNotification } from '@/lib/notifications'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 
@@ -156,35 +157,83 @@ export async function getApplicationById(applicationId: string) {
 }
 
 // ─────────────────────────────────────────
-// APPROVE APPLICATION
+// ACCEPT APPLICATION (admin screening gate)
+// ─────────────────────────────────────────
+export async function acceptApplicationScreening(
+  applicationId: string,
+  remarks?: string
+) {
+  const { client: supabase, error: authError, userId } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
+
+  const now = new Date().toISOString()
+  const trimmedRemarks = remarks?.trim()
+
+  const { data, error } = await supabase
+    .from('applications')
+    .update({
+      status: 'under_review',
+      reviewed_at: now,
+      admin_remarks: trimmedRemarks || null,
+    })
+    .eq('id', applicationId)
+    .eq('status', 'submitted')
+    .select()
+    .single()
+
+  if (!error && data) {
+    await recordApplicationEvent({
+      applicationId,
+      eventType: 'admin_accepted',
+      actorId: userId ?? undefined,
+      actorRole: 'admin',
+      message: trimmedRemarks,
+    })
+  }
+
+  return toPlainResponse(data, error)
+}
+
+// ─────────────────────────────────────────
+// APPROVE APPLICATION (final decision)
 // ─────────────────────────────────────────
 export async function approveApplication(applicationId: string, remarks: string) {
-  const { client: supabase, error: authError } = await getAdminDbClient()
+  const { client: supabase, error: authError, userId } = await getAdminDbClient()
   if (!supabase) return toPlainResponse(null, authError)
 
   if (!remarks.trim()) {
     return toPlainResponse(null, { message: 'Administrative remarks are required' })
   }
 
+  const now = new Date().toISOString()
+
   const { data, error } = await supabase
     .from('applications')
     .update({
       status: 'approved',
-      decided_at: new Date().toISOString(),
-      admin_remarks: remarks.trim()
+      decided_at: now,
+      admin_remarks: remarks.trim(),
     })
     .eq('id', applicationId)
-    .in('status', ['submitted', 'under_review'])
+    .in('status', ['partner_review', 'forwarded_to_partner', 'admin_accepted', 'under_review'])
     .select()
     .single()
 
-  if (!error) {
+  if (!error && data) {
     const { data: app } = await supabase
       .from('applications')
       .select('student_id')
       .eq('id', applicationId)
       .single()
     const studentId = app?.student_id
+
+    await recordApplicationEvent({
+      applicationId,
+      eventType: 'final_approved',
+      actorId: userId ?? undefined,
+      actorRole: 'admin',
+      message: remarks.trim(),
+    })
 
     if (studentId) {
       await createNotification({
@@ -203,42 +252,77 @@ export async function approveApplication(applicationId: string, remarks: string)
 }
 
 // ─────────────────────────────────────────
-// REJECT APPLICATION
+// REJECT APPLICATION (screening or final)
 // ─────────────────────────────────────────
-export async function rejectApplication(applicationId: string, remarks: string) {
-  const { client: supabase, error: authError } = await getAdminDbClient()
+export async function rejectApplication(
+  applicationId: string,
+  rejectionMessage: string
+) {
+  const { client: supabase, error: authError, userId } = await getAdminDbClient()
   if (!supabase) return toPlainResponse(null, authError)
 
-  if (!remarks.trim()) {
-    return toPlainResponse(null, { message: 'Administrative remarks are required' })
+  if (!rejectionMessage.trim()) {
+    return toPlainResponse(null, { message: 'A rejection message is required' })
   }
+
+  const now = new Date().toISOString()
+  const trimmedMessage = rejectionMessage.trim()
+
+  const { data: existing, error: fetchError } = await supabase
+    .from('applications')
+    .select('status, student_id')
+    .eq('id', applicationId)
+    .single()
+
+  if (fetchError || !existing) {
+    return toPlainResponse(null, fetchError || { message: 'Application not found' })
+  }
+
+  const isScreeningRejection = existing.status === 'submitted'
+  const allowedStatuses = isScreeningRejection
+    ? ['submitted']
+    : ['partner_review', 'forwarded_to_partner', 'admin_accepted', 'under_review']
 
   const { data, error } = await supabase
     .from('applications')
     .update({
       status: 'rejected',
-      decided_at: new Date().toISOString(),
-      admin_remarks: remarks.trim()
+      decided_at: now,
+      admin_remarks: trimmedMessage,
+      partner_id: null,
     })
     .eq('id', applicationId)
-    .in('status', ['submitted', 'under_review'])
+    .in('status', allowedStatuses)
     .select()
     .single()
 
-  if (!error) {
-    const { data: app } = await supabase
-      .from('applications')
-      .select('student_id')
-      .eq('id', applicationId)
-      .single()
-    const studentId = app?.student_id
+  if (!error && data) {
+    const studentId = existing.student_id
+
+    await recordApplicationEvent({
+      applicationId,
+      eventType: isScreeningRejection ? 'admin_rejected' : 'final_rejected',
+      actorId: userId ?? undefined,
+      actorRole: 'admin',
+      message: trimmedMessage,
+    })
+
+    if (isScreeningRejection) {
+      await recordApplicationEvent({
+        applicationId,
+        eventType: 'closed',
+        actorId: userId ?? undefined,
+        actorRole: 'admin',
+        message: trimmedMessage,
+      })
+    }
 
     if (studentId) {
       await createNotification({
         userId: studentId,
         type: 'application_rejected',
         title: 'Application Update',
-        message: 'Your application was not selected at this time.',
+        message: trimmedMessage,
         relatedId: applicationId,
         relatedType: 'application',
         category: 'application',
@@ -315,7 +399,7 @@ export async function getApplicationsByStudent(studentId: string) {
 // DELETE APPLICATION (admin — any status)
 // ─────────────────────────────────────────
 export async function deleteApplication(applicationId: string) {
-  const { client: supabase, error: authError } = await getAdminDbClient()
+  const { client: supabase, error: authError, userId } = await getAdminDbClient()
   if (!supabase) return toPlainResponse(null, authError)
 
   const { data: application, error: fetchError } = await supabase
@@ -327,6 +411,14 @@ export async function deleteApplication(applicationId: string) {
   if (fetchError || !application) {
     return toPlainResponse(null, fetchError || { message: 'Application not found' })
   }
+
+  await recordApplicationEvent({
+    applicationId,
+    eventType: 'deleted',
+    actorId: userId ?? undefined,
+    actorRole: 'admin',
+    message: 'Application permanently deleted by admin',
+  })
 
   const { data: answers, error: answersFetchError } = await supabase
     .from('application_answers')

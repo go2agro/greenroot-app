@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import PartnerSidebar from '@/components/PartnerSidebar'
+import PartnerBottomNavigation from '@/components/PartnerBottomNavigation'
 import { getMyPartnerProfile } from '@/lib/partnerProfiles'
 import { getMyProfile } from '@/lib/profiles'
 
@@ -107,8 +108,10 @@ export default function PartnerShell({
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto">{children}</div>
+        <div className="flex-1 overflow-y-auto pb-16 lg:pb-0">{children}</div>
       </div>
+
+      <PartnerBottomNavigation />
     </div>
   )
 }

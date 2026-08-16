@@ -22,6 +22,7 @@ type PartnerOption = {
 
 interface PartnerAssignBarProps {
   applicationId: string
+  onAssigned?: () => void
 }
 
 function getPartnerName(partner: PartnerOption) {
@@ -30,7 +31,7 @@ function getPartnerName(partner: PartnerOption) {
     .join(' ')
 }
 
-export default function PartnerAssignBar({ applicationId }: PartnerAssignBarProps) {
+export default function PartnerAssignBar({ applicationId, onAssigned }: PartnerAssignBarProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [partners, setPartners] = useState<PartnerOption[]>([])
   const [assignedPartner, setAssignedPartner] = useState<PartnerOption | null>(null)
@@ -118,26 +119,23 @@ export default function PartnerAssignBar({ applicationId }: PartnerAssignBarProp
       setSearchQuery('')
       setPartners([])
       toast.success(`Assigned to ${getPartnerName(partner)}`)
+      onAssigned?.()
     }
   }
 
   return (
     <div className="bg-white border border-[#EEEEEE] rounded-2xl p-4 sm:p-5 space-y-4">
-      <div>
-        <h3 className="text-base font-bold text-gray-900">Assign Partner</h3>
-        <p className="text-sm text-gray-500 mt-1">
-          Search and assign this application to a partner reviewer.
-        </p>
-      </div>
 
       {assignedPartner && (
         <div className="rounded-xl border border-[#8DC63F]/40 bg-[#F4FBE8] p-4">
-          <p className="text-xs uppercase tracking-wide text-gray-500 mb-2">Currently Assigned</p>
+          <p className="text-xs uppercase tracking-wide text-gray-500 mb-2">Forwarded To</p>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <p className="font-semibold text-gray-900">{getPartnerName(assignedPartner)}</p>
               <p className="text-sm text-gray-500">{assignedPartner.official_email}</p>
-              <p className="text-xs text-[#8DC63F] mt-1">{assignedPartner.unique_id || 'N/A'}</p>
+              {assignedPartner.unique_id && (
+                <p className="text-xs text-gray-400 mt-1">Ref: {assignedPartner.unique_id}</p>
+              )}
             </div>
             <div className="flex flex-wrap gap-2">
               {(assignedPartner.countries ?? []).map((country) => (
@@ -189,7 +187,9 @@ export default function PartnerAssignBar({ applicationId }: PartnerAssignBarProp
                   <div className="min-w-0">
                     <p className="font-semibold text-gray-900 truncate">{getPartnerName(partner)}</p>
                     <p className="text-sm text-gray-500 truncate">{partner.official_email}</p>
-                    <p className="text-xs text-[#8DC63F] mt-0.5">{partner.unique_id || 'N/A'}</p>
+                    {partner.unique_id && (
+                      <p className="text-xs text-gray-400 mt-0.5">Ref: {partner.unique_id}</p>
+                    )}
                   </div>
                 </div>
                 <div className="flex flex-wrap justify-end gap-1.5 max-w-[45%]">

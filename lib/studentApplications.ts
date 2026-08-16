@@ -3,6 +3,7 @@
 import { createClient } from './supabase'
 import { createAdminClient } from './supabase-admin'
 import { checkProfileCompletion } from './studentProfiles'
+import { recordApplicationEvent } from '@/lib/applicationEvents'
 import { createNotification } from '@/lib/notifications'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 
@@ -425,6 +426,13 @@ export async function submitApplication(applicationId: string) {
         category: 'application',
       })
     }
+
+    await recordApplicationEvent({
+      applicationId,
+      eventType: 'submitted',
+      actorRole: 'student',
+      message: 'Application submitted by student',
+    })
   }
 
   return toPlainResponse(data ?? { id: applicationId, status: 'submitted' }, error)

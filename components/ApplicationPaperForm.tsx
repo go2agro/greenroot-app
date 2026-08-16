@@ -7,6 +7,7 @@ import { ExternalLink, FileText, Image as ImageIcon, Loader2 } from 'lucide-reac
 import {
   formatApplicationReferenceId,
   formatApplicationStatusLabel,
+  formatStudentStatusLabel,
 } from '@/lib/utils'
 
 export type ApplicationAnswer = {
@@ -170,6 +171,12 @@ function getStatusBadgeClass(status: string) {
       return 'bg-blue-50 text-blue-700 border-blue-200'
     case 'under_review':
       return 'bg-amber-50 text-amber-800 border-amber-200'
+    case 'admin_accepted':
+      return 'bg-emerald-50 text-emerald-800 border-emerald-200'
+    case 'forwarded_to_partner':
+      return 'bg-sky-50 text-sky-800 border-sky-200'
+    case 'partner_review':
+      return 'bg-violet-50 text-violet-800 border-violet-200'
     case 'approved':
       return 'bg-green-50 text-green-800 border-green-200'
     case 'rejected':
@@ -507,7 +514,7 @@ export function ApplicationPaperForm({
             <span
               className={`inline-flex px-2.5 py-1 rounded-sm text-xs font-semibold border ${getStatusBadgeClass(application.status)}`}
             >
-              {formatApplicationStatusLabel(application.status)}
+              {mode === 'student' ? formatStudentStatusLabel(application.status) : formatApplicationStatusLabel(application.status)}
             </span>
           </div>
         </div>
@@ -826,7 +833,7 @@ export function ApplicationPaperForm({
         {decisionSlot && (
           <FormSection
             number={showAdminRemarks ? "12" : "11"}
-            title="Decision Desk"
+            title="Screening & Forwarding"
           >
             {decisionSlot}
           </FormSection>

@@ -16,6 +16,7 @@ import {
   Clock,
 } from 'lucide-react'
 import AdminSidebar from '@/components/AdminSidebar'
+import AdminBottomNavigation from '@/components/AdminBottomNavigation'
 import { getAllApplications } from '@/lib/adminApplications'
 import { getMyAdminProfile } from '@/lib/adminProfiles'
 import { getMyProfile } from '@/lib/profiles'
@@ -34,6 +35,9 @@ type ApplicationStatus =
   | 'draft'
   | 'submitted'
   | 'under_review'
+  | 'admin_accepted'
+  | 'forwarded_to_partner'
+  | 'partner_review'
   | 'approved'
   | 'rejected'
   | 'accepted'
@@ -83,7 +87,10 @@ const EMPTY_FILTERS: FilterState = {
 
 const STATUS_OPTIONS: { value: ApplicationStatus; label: string }[] = [
   { value: 'draft', label: 'Draft' },
-  { value: 'submitted', label: 'Submitted' },
+  { value: 'submitted', label: 'Awaiting Screening' },
+  { value: 'admin_accepted', label: 'Screening Passed' },
+  { value: 'forwarded_to_partner', label: 'With Partner' },
+  { value: 'partner_review', label: 'Partner Reviewed' },
   { value: 'under_review', label: 'Under Review' },
   { value: 'approved', label: 'Approved' },
   { value: 'rejected', label: 'Rejected' },
@@ -119,6 +126,12 @@ function getStatusBadgeClass(status: ApplicationStatus) {
       return 'bg-gray-100 text-gray-600'
     case 'submitted':
       return 'bg-blue-100 text-blue-600'
+    case 'admin_accepted':
+      return 'bg-emerald-100 text-emerald-700'
+    case 'forwarded_to_partner':
+      return 'bg-sky-100 text-sky-700'
+    case 'partner_review':
+      return 'bg-violet-100 text-violet-700'
     case 'under_review':
       return 'bg-amber-100 text-amber-600'
     case 'approved':
@@ -368,12 +381,14 @@ export default function AdminApplications() {
         const email = app.student_profiles?.email?.toLowerCase() ?? ''
         const title = app.internships?.title?.toLowerCase() ?? ''
         const refId = formatApplicationReferenceId(app.id, app.submitted_at).toLowerCase()
+        const rawId = app.id.toLowerCase()
         return (
           firstName.includes(query) ||
           lastName.includes(query) ||
           email.includes(query) ||
           title.includes(query) ||
-          refId.includes(query)
+          refId.includes(query) ||
+          rawId.includes(query)
         )
       })
     }
@@ -857,6 +872,8 @@ export default function AdminApplications() {
           </div>
         </div>
       </div>
+
+      <AdminBottomNavigation />
     </div>
   )
 }

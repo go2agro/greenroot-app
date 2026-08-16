@@ -1,6 +1,8 @@
 'use server'
 
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { createClient } from './supabase'
+import { createAdminClient } from './supabase-admin'
 
 type PartnerAuthError = {
   message: string
@@ -41,4 +43,23 @@ export async function getPartnerUserId(): Promise<{
   }
 
   return { userId: user.id, error: null }
+}
+
+export async function getPartnerDbClient(): Promise<{
+  client: SupabaseClient | null
+  userId: string | null
+  error: PartnerAuthError | null
+}> {
+  const { userId, error } = await getPartnerUserId()
+  if (!userId) return { client: null, userId: null, error }
+
+  try {
+    return { client: createAdminClient(), userId, error: null }
+  } catch {
+    return {
+      client: null,
+      userId: null,
+      error: { message: 'Partner configuration missing' },
+    }
+  }
 }

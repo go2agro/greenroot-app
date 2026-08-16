@@ -1,14 +1,12 @@
 'use server'
 
-import { createClient } from './supabase'
-import { getPartnerUserId } from './partnerAuth'
+import { getPartnerDbClient } from './partnerAuth'
+import { PARTNER_VISIBLE_STATUSES } from './partnerApplicationVisibility'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 export async function getPartnerDashboardData() {
-  const { userId, error: authError } = await getPartnerUserId()
-  if (!userId) return toPlainResponse(null, authError)
-
-  const supabase = await createClient()
+  const { client: supabase, userId, error: authError } = await getPartnerDbClient()
+  if (!supabase || !userId) return toPlainResponse(null, authError)
 
   const [
     { data: applications, error: applicationsError },
@@ -18,7 +16,9 @@ export async function getPartnerDashboardData() {
     supabase
       .from('applications')
       .select('status')
-      .eq('partner_id', userId),
+      .eq('partner_id', userId)
+      .in('status', [...PARTNER_VISIBLE_STATUSES])
+      .not('reviewed_at', 'is', null),
     supabase
       .from('partner_profiles')
       .select('first_name, last_name, official_email')

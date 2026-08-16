@@ -42,7 +42,7 @@ import {
 } from '@/lib/studentApplications'
 import { getMyStudentProfile, getMyStudentDocumentUrl } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
-import { formatApplicationStatusLabel, formatApplicationReferenceId } from '@/lib/utils'
+import { formatStudentStatusLabel, formatApplicationReferenceId } from '@/lib/utils'
 
 type ApplicationData = ApplicationPaperData & {
   internships?: ApplicationPaperInternship & {
@@ -90,9 +90,11 @@ function getStudentStatusBadgeClass(status: string) {
     case 'draft':
       return 'bg-gray-100 text-gray-600'
     case 'submitted':
-      return 'bg-blue-100 text-blue-600'
     case 'under_review':
-      return 'bg-amber-100 text-amber-700'
+    case 'admin_accepted':
+    case 'forwarded_to_partner':
+    case 'partner_review':
+      return 'bg-blue-100 text-blue-600'
     case 'approved':
       return 'bg-green-100 text-green-700'
     case 'rejected':
@@ -100,9 +102,10 @@ function getStudentStatusBadgeClass(status: string) {
     case 'accepted':
       return 'bg-purple-100 text-purple-700'
     case 'closed':
+    case 'withdrawn':
       return 'bg-gray-100 text-gray-500'
     default:
-      return 'bg-gray-100 text-gray-600'
+      return 'bg-blue-100 text-blue-600'
   }
 }
 
@@ -730,7 +733,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                 </div>
                 <div className="flex-shrink-0">
                   <span className={`px-3 py-1.5 rounded-lg text-xs font-medium ${getStudentStatusBadgeClass(application.status)}`}>
-                    {formatApplicationStatusLabel(application.status)}
+                    {formatStudentStatusLabel(application.status)}
                   </span>
                 </div>
               </div>

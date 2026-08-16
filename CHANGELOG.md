@@ -29,7 +29,6 @@
 - Post selection module (offer letter + confirmation)
 - Admin dashboard KPIs
 - Billing calculator
-- Video playlists and library
 - Student profile completion check
 - Posthog analytics
 - ShadCN component library setup

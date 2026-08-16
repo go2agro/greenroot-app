@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import AdminSidebar from '@/components/AdminSidebar'
+import AdminBottomNavigation from '@/components/AdminBottomNavigation'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { getMyProfile } from '@/lib/profiles'
 import { getMyAdminProfile, updateAdminProfile } from '@/lib/adminProfiles'
@@ -619,6 +620,8 @@ export default function AdminProfilePage() {
         isLoading={isLoggingOut}
         loadingText="Logging out..."
       />
+
+      <AdminBottomNavigation />
     </div>
   )
 }

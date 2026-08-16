@@ -24,6 +24,7 @@ import {
   Tooltip,
 } from 'recharts'
 import AdminSidebar from '@/components/AdminSidebar'
+import AdminBottomNavigation from '@/components/AdminBottomNavigation'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
@@ -648,6 +649,8 @@ export default function AdminDashboard() {
           </div>
         )}
       </div>
+
+      <AdminBottomNavigation />
     </div>
   )
 }

@@ -35,7 +35,7 @@ interface ConfirmationDialogProps {
   onOpenChange: (open: boolean) => void
   icon: ReactNode
   title: string
-  description: string
+  description: ReactNode
   cancelText?: string
   confirmText: string
   onConfirm: () => void

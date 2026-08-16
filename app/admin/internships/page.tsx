@@ -19,6 +19,7 @@ import {
   Globe,
 } from 'lucide-react'
 import AdminSidebar from '@/components/AdminSidebar'
+import AdminBottomNavigation from '@/components/AdminBottomNavigation'
 import { getAllInternships } from '@/lib/internships'
 import { getMyAdminProfile } from '@/lib/adminProfiles'
 import { getMyProfile } from '@/lib/profiles'
@@ -600,6 +601,8 @@ export default function AdminInternships() {
           </div>
         </div>
       </div>
+
+      <AdminBottomNavigation />
     </div>
   )
 }

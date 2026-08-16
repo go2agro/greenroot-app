@@ -3,27 +3,45 @@
 import { use, useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import useSWR from 'swr'
-import { ArrowLeft } from 'lucide-react'
+import { toast } from 'sonner'
+import { ArrowLeft, CheckCircle, XCircle } from 'lucide-react'
 import {
   ApplicationPaperForm,
+  FormCell,
   type ApplicationPaperData,
   type ApplicationPaperInternship,
   type ApplicationPaperStudentProfile,
 } from '@/components/ApplicationPaperForm'
+import { ApplicationTimeline } from '@/components/ApplicationTimeline'
+import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { DetailSkeleton, PAGE_CLASS } from '@/components/detailLayout'
+import PartnerBottomNavigation from '@/components/PartnerBottomNavigation'
+import { Textarea } from '@/components/ui/textarea'
+import { getPartnerApplicationTimeline } from '@/lib/applicationEvents'
+import { buildApplicationTimeline, type TimelineStep } from '@/lib/applicationTimeline'
 import {
   getMyAssignedApplicationById,
   getPartnerApplicationFile,
   getPartnerStudentDocumentUrl,
+  submitPartnerDecision,
 } from '@/lib/partnerApplications'
 import { getMyPartnerProfile } from '@/lib/partnerProfiles'
 import { getMyProfile } from '@/lib/profiles'
-import { formatApplicationReferenceId } from '@/lib/utils'
+import {
+  formatApplicationReferenceId,
+  formatApplicationStatusLabel,
+} from '@/lib/utils'
 
 type ApplicationDetail = ApplicationPaperData & {
   internships?: ApplicationPaperInternship | null
   student_profiles?: ApplicationPaperStudentProfile | null
+  partner_id?: string | null
+  reviewed_at?: string | null
+  partner_decision?: 'approve' | 'reject' | null
+  partner_remarks?: string | null
+  partner_decided_at?: string | null
 }
 
 type PartnerProfile = {
@@ -34,6 +52,8 @@ type PartnerProfile = {
 type Profile = {
   unique_id?: string
 }
+
+type DecisionDialog = 'approve' | 'reject' | null
 
 const fetcher = async (fn: () => Promise<{ data: unknown; error: unknown }>) => {
   const res = await fn()
@@ -58,10 +78,15 @@ export default function PartnerApplicationDetails({
   params: Promise<{ id: string }>
 }) {
   const { id } = use(params)
+  const router = useRouter()
 
   const [application, setApplication] = useState<ApplicationDetail | null>(null)
+  const [timelineSteps, setTimelineSteps] = useState<TimelineStep[]>([])
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
+  const [decisionDialog, setDecisionDialog] = useState<DecisionDialog>(null)
+  const [decisionLoading, setDecisionLoading] = useState(false)
+  const [remarks, setRemarks] = useState('')
 
   const { data: partnerProfile } = useSWR(
     'partnerProfileApplicationDetail',
@@ -75,22 +100,38 @@ export default function PartnerApplicationDetails({
     { revalidateOnFocus: false }
   )
 
-  useEffect(() => {
-    async function loadApplication() {
-      setLoading(true)
-      const result = await getMyAssignedApplicationById(id)
-
-      if (result.error || !result.data) {
-        setNotFound(true)
-        setApplication(null)
-      } else {
-        setApplication(result.data as ApplicationDetail)
-        setNotFound(false)
-      }
-
-      setLoading(false)
+  const loadTimeline = async (applicationId: string, app?: ApplicationDetail) => {
+    const result = await getPartnerApplicationTimeline(applicationId)
+    if (!result.error && result.data?.timeline?.length) {
+      setTimelineSteps(result.data.timeline as TimelineStep[])
+      return
     }
 
+    if (app) {
+      setTimelineSteps(buildApplicationTimeline(app))
+    }
+  }
+
+  const loadApplication = async () => {
+    setLoading(true)
+    const result = await getMyAssignedApplicationById(id)
+
+    if (result.error || !result.data) {
+      setNotFound(true)
+      setApplication(null)
+      setTimelineSteps([])
+    } else {
+      const app = result.data as ApplicationDetail
+      setApplication(app)
+      setNotFound(false)
+      setRemarks(app.partner_remarks || '')
+      await loadTimeline(app.id, app)
+    }
+
+    setLoading(false)
+  }
+
+  useEffect(() => {
     loadApplication()
   }, [id])
 
@@ -111,6 +152,185 @@ export default function PartnerApplicationDetails({
   const student = application?.student_profiles
   const internship = application?.internships
   const profileMeta = getNestedUniqueId(student)
+  const applicationRef = application
+    ? formatApplicationReferenceId(application.id, application.submitted_at)
+    : ''
+
+  const canDecide =
+    application &&
+    ['under_review', 'forwarded_to_partner'].includes(application.status) &&
+    !application.partner_decision
+
+  const hasDecided = application?.partner_decision
+
+  const closeDecisionDialog = () => {
+    if (decisionLoading) return
+    setDecisionDialog(null)
+  }
+
+  const handleDecisionConfirm = async () => {
+    if (!application || !decisionDialog) return
+
+    if (!remarks.trim()) {
+      toast.error('Please provide remarks for your decision')
+      return
+    }
+
+    setDecisionLoading(true)
+    const result = await submitPartnerDecision(application.id, decisionDialog, remarks.trim())
+    setDecisionLoading(false)
+
+    if (result.error || !result.data) {
+      toast.error(
+        result.error && typeof result.error === 'object' && 'message' in result.error
+          ? String((result.error as { message: string }).message)
+          : 'Failed to submit decision. Please check if the database columns exist.'
+      )
+      return
+    }
+
+    setDecisionDialog(null)
+    toast.success(
+      decisionDialog === 'approve'
+        ? 'Decision submitted — recommended for approval'
+        : 'Decision submitted — recommended for rejection'
+    )
+    await loadApplication()
+  }
+
+  const decisionSlot =
+    canDecide || hasDecided ? (
+      <div className="space-y-5">
+        {canDecide && (
+          <div className="relative border-2 border-[#3B82F6] bg-blue-50 p-4 sm:p-5 shadow-[0_0_0_4px_rgba(59,130,246,0.15)]">
+            <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#3B82F6]" />
+            <div className="pl-2">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-sm bg-[#3B82F6] px-2.5 py-1">
+                <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-white">
+                  Your Decision Required
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 mb-4">
+                <FormCell label="Application" value={applicationRef} />
+                <FormCell
+                  label="Current Status"
+                  value={formatApplicationStatusLabel(application!.status)}
+                />
+                <FormCell label="Reviewing Partner" value={partnerName} />
+                <FormCell
+                  label="Partner ID"
+                  value={(myProfile as Profile | null)?.unique_id}
+                />
+              </div>
+
+              <p className="text-sm text-gray-600 mb-4">
+                Review the application thoroughly. Your decision and remarks will be sent
+                to the admin for final review. The admin will make the final decision and
+                notify the student.
+              </p>
+
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-gray-700 mb-1.5">
+                Your Remarks <span className="text-red-500">*</span>
+              </label>
+              <Textarea
+                value={remarks}
+                onChange={(e) => setRemarks(e.target.value)}
+                placeholder="Provide detailed remarks about your decision. This will only be visible to the admin..."
+                className={`min-h-[120px] rounded-none bg-white focus-visible:ring-[#3B82F6] focus-visible:border-[#3B82F6] ${
+                  !remarks.trim()
+                    ? 'border-red-300 focus-visible:border-red-400 focus-visible:ring-red-200'
+                    : 'border-[#3B82F6]/50'
+                }`}
+              />
+              <p className="text-[11px] text-gray-500 mt-2">
+                Your remarks will only be visible to the admin, not the student.
+              </p>
+
+              <div className="mt-5 pt-4 border-t border-[#3B82F6]/40 flex flex-wrap justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setDecisionDialog('reject')}
+                  disabled={!remarks.trim()}
+                  className="inline-flex items-center gap-2 rounded-sm border border-red-300 bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-700 hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <XCircle className="w-4 h-4" />
+                  Recommend Rejection
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDecisionDialog('approve')}
+                  disabled={!remarks.trim()}
+                  className="inline-flex items-center gap-2 rounded-sm bg-[#8DC63F] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#7DB62F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <CheckCircle className="w-4 h-4" />
+                  Recommend Approval
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {hasDecided && (
+          <div
+            className={`relative border-2 p-4 sm:p-5 ${
+              application.partner_decision === 'approve'
+                ? 'border-[#8DC63F] bg-[#F4FBE8]'
+                : 'border-red-300 bg-red-50'
+            }`}
+          >
+            <div
+              className={`absolute left-0 top-0 bottom-0 w-1.5 ${
+                application.partner_decision === 'approve' ? 'bg-[#8DC63F]' : 'bg-red-400'
+              }`}
+            />
+            <div className="pl-2">
+              <div
+                className={`mb-4 inline-flex items-center gap-2 rounded-sm px-2.5 py-1 ${
+                  application.partner_decision === 'approve'
+                    ? 'bg-[#8DC63F]'
+                    : 'bg-red-500'
+                }`}
+              >
+                <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-white">
+                  Decision Submitted
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 mb-3">
+                {application.partner_decision === 'approve' ? (
+                  <CheckCircle className="w-5 h-5 text-[#8DC63F]" />
+                ) : (
+                  <XCircle className="w-5 h-5 text-red-500" />
+                )}
+                <p
+                  className={`font-semibold ${
+                    application.partner_decision === 'approve'
+                      ? 'text-[#5F8F2D]'
+                      : 'text-red-700'
+                  }`}
+                >
+                  You recommended{' '}
+                  {application.partner_decision === 'approve' ? 'approval' : 'rejection'}
+                </p>
+              </div>
+
+              <div className="bg-white/60 rounded-lg border border-gray-200 p-3 mb-3">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                  Your Remarks
+                </p>
+                <p className="text-sm text-gray-700">{application.partner_remarks}</p>
+              </div>
+
+              <p className="text-sm text-gray-500">
+                The admin has received your decision and will make the final call. The
+                student will be notified by the admin.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    ) : null
 
   return (
     <div className="min-h-screen bg-[#EFEDE8] flex flex-col">
@@ -169,12 +389,7 @@ export default function PartnerApplicationDetails({
           </div>
         ) : (
           <div className={`${PAGE_CLASS} p-4 sm:p-6 lg:p-8 space-y-5`}>
-            <div className="bg-white border border-[#EEEEEE] rounded-2xl p-4 sm:p-5">
-              <p className="text-xs uppercase tracking-wide text-gray-500">Application</p>
-              <p className="text-lg font-bold text-[#8DC63F] mt-1">
-                {formatApplicationReferenceId(application.id, application.submitted_at)}
-              </p>
-            </div>
+            <ApplicationTimeline steps={timelineSteps} applicationRef={applicationRef} />
 
             <ApplicationPaperForm
               application={application}
@@ -185,10 +400,54 @@ export default function PartnerApplicationDetails({
               mode="admin"
               getStudentDocUrl={(filePath) => getPartnerStudentDocumentUrl(id, filePath)}
               getApplicationDocUrl={(filePath) => getPartnerApplicationFile(id, filePath)}
+              decisionSlot={decisionSlot}
             />
+
+            {hasDecided && (
+              <div className="flex justify-center pt-2 pb-10">
+                <Link
+                  href="/partner/applications"
+                  className="inline-flex items-center justify-center rounded-xl bg-[#8DC63F] px-8 py-3 text-sm font-semibold text-white hover:bg-[#7DB62F] transition-colors"
+                >
+                  Go to Applications
+                </Link>
+              </div>
+            )}
           </div>
         )}
       </div>
+
+      <ConfirmationDialog
+        open={decisionDialog === 'approve'}
+        onOpenChange={(open) => {
+          if (!open) closeDecisionDialog()
+        }}
+        variant="success"
+        icon={<CheckCircle />}
+        title="Recommend Approval?"
+        description="Your recommendation and remarks will be sent to the admin for final review. The admin will make the final decision."
+        confirmText="Recommend Approval"
+        onConfirm={handleDecisionConfirm}
+        isLoading={decisionLoading}
+        loadingText="Submitting..."
+      />
+
+      <ConfirmationDialog
+        open={decisionDialog === 'reject'}
+        onOpenChange={(open) => {
+          if (!open) closeDecisionDialog()
+        }}
+        variant="danger"
+        icon={<XCircle />}
+        title="Recommend Rejection?"
+        description="Your recommendation and remarks will be sent to the admin for final review. The admin will make the final decision."
+        confirmText="Recommend Rejection"
+        onConfirm={handleDecisionConfirm}
+        isLoading={decisionLoading}
+        loadingText="Submitting..."
+      />
+
+      <PartnerBottomNavigation />
     </div>
   )
 }

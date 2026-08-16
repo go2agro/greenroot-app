@@ -2,6 +2,8 @@
 
 import { getAdminDbClient } from './adminAuth'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
+import { recordApplicationEvent } from '@/lib/applicationEvents'
+import { createNotification } from '@/lib/notifications'
 
 type PartnerRow = {
   id: string
@@ -100,12 +102,12 @@ export async function searchPartnersForAssignment(search?: string) {
 }
 
 export async function assignApplicationToPartner(applicationId: string, partnerId: string) {
-  const { client: supabase, error: authError } = await getAdminDbClient()
+  const { client: supabase, error: authError, userId } = await getAdminDbClient()
   if (!supabase) return toPlainResponse(null, authError)
 
   const { data: partner, error: partnerError } = await supabase
     .from('partner_profiles')
-    .select('id')
+    .select('id, first_name, last_name')
     .eq('id', partnerId)
     .maybeSingle()
 
@@ -116,8 +118,32 @@ export async function assignApplicationToPartner(applicationId: string, partnerI
     .from('applications')
     .update({ partner_id: partnerId })
     .eq('id', applicationId)
-    .select('id, partner_id')
+    .in('status', ['under_review', 'admin_accepted', 'forwarded_to_partner'])
+    .select('id, partner_id, student_id')
     .single()
+
+  if (!error && data) {
+    const partnerName = [partner.first_name, partner.last_name].filter(Boolean).join(' ')
+
+    await recordApplicationEvent({
+      applicationId,
+      eventType: 'forwarded_to_partner',
+      actorId: userId ?? undefined,
+      actorRole: 'admin',
+      message: `Forwarded to ${partnerName}`,
+      metadata: { partner_id: partnerId },
+    })
+
+    await createNotification({
+      userId: partnerId,
+      type: 'application_assigned',
+      title: 'New Application Assigned',
+      message: 'An application has been forwarded to you for review.',
+      relatedId: applicationId,
+      relatedType: 'application',
+      category: 'application',
+    })
+  }
 
   return toPlainResponse(data, error)
 }

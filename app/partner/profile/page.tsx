@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import PartnerSidebar from '@/components/PartnerSidebar'
+import PartnerBottomNavigation from '@/components/PartnerBottomNavigation'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { getMyProfile } from '@/lib/profiles'
 import { getMyPartnerProfile, updatePartnerProfile } from '@/lib/partnerProfiles'
@@ -740,6 +741,8 @@ export default function PartnerProfilePage() {
         isLoading={isLoggingOut}
         loadingText="Logging out..."
       />
+
+      <PartnerBottomNavigation />
     </div>
   )
 }
