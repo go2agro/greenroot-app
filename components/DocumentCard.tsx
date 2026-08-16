@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { ExternalLink, Loader2 } from 'lucide-react'
-import { toast } from 'sonner'
 
 type SignedUrlResult = {
   data: { signedUrl?: string } | null
@@ -31,13 +30,6 @@ export function DocumentCard({
     setLoading(false)
 
     if (result.error || !result.data?.signedUrl) {
-      const message =
-        typeof result.error === 'object' &&
-        result.error &&
-        'message' in result.error
-          ? String((result.error as { message: string }).message)
-          : 'Failed to open document'
-      toast.error(message)
       return
     }
 

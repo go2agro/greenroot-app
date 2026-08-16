@@ -28,7 +28,6 @@ import { stripRequiredDocumentsBlock } from '@/lib/internshipContent'
 import { startApplication } from '@/lib/studentApplications'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
-import { toast } from 'sonner'
 
 interface Internship {
   id: string
@@ -108,8 +107,6 @@ export default function StudentInternshipDetail({ params }: { params: Promise<{ 
       if (errorMessage.includes('Already applied')) {
         setShowAlreadyAppliedAlert(true)
         window.scrollTo({ top: 0, behavior: 'smooth' })
-      } else {
-        toast.error(errorMessage)
       }
       setApplying(false)
     } else {

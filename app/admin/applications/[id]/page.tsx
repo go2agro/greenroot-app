@@ -5,7 +5,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import useSWR from 'swr'
-import { toast } from 'sonner'
 import {
   ArrowLeft,
   CheckCircle,
@@ -212,15 +211,9 @@ export default function AdminApplicationDetails({
       setActionLoading(false)
 
       if (result.error) {
-        toast.error(
-          typeof result.error === 'object' && result.error && 'message' in result.error
-            ? String((result.error as { message: string }).message)
-            : 'Failed to delete application'
-        )
         return
       }
 
-      toast.success('Application deleted')
       setActionDialog(null)
       invalidateAdminApplications()
       router.push('/admin/applications')
@@ -229,7 +222,6 @@ export default function AdminApplicationDetails({
 
     if (actionDialog === 'reject') {
       if (!rejectionMessage.trim()) {
-        toast.error('Please write a rejection message for the student')
         return
       }
 
@@ -238,15 +230,9 @@ export default function AdminApplicationDetails({
       setActionLoading(false)
 
       if (result.error) {
-        toast.error(
-          typeof result.error === 'object' && result.error && 'message' in result.error
-            ? String((result.error as { message: string }).message)
-            : 'Failed to reject application'
-        )
         return
       }
 
-      toast.success('Application rejected and closed')
       setActionDialog(null)
       setRejectionMessage('')
       invalidateAdminApplications()
@@ -260,11 +246,6 @@ export default function AdminApplicationDetails({
       setActionLoading(false)
 
       if (result.error || !result.data) {
-        toast.error(
-          result.error && typeof result.error === 'object' && 'message' in result.error
-            ? String((result.error as { message: string }).message)
-            : 'Failed to accept application. Please try again.'
-        )
         return
       }
 
@@ -279,7 +260,6 @@ export default function AdminApplicationDetails({
           : prev
       )
       setActionDialog(null)
-      toast.success('Application accepted — forward to a partner below')
       invalidateAdminApplications()
       await loadApplication()
       
@@ -291,7 +271,6 @@ export default function AdminApplicationDetails({
 
     if (actionDialog === 'approve' || actionDialog === 'final_reject') {
       if (!finalRemarks.trim()) {
-        toast.error('Administrative remarks are required for the final decision')
         return
       }
 
@@ -305,19 +284,9 @@ export default function AdminApplicationDetails({
       setActionLoading(false)
 
       if (result.error) {
-        toast.error(
-          typeof result.error === 'object' && result.error && 'message' in result.error
-            ? String((result.error as { message: string }).message)
-            : 'Action failed'
-        )
         return
       }
 
-      toast.success(
-        actionDialog === 'approve'
-          ? 'Final decision: Application approved'
-          : 'Final decision: Application rejected'
-      )
       setActionDialog(null)
       invalidateAdminApplications()
       await loadApplication()

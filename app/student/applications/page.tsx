@@ -20,7 +20,6 @@ import {
   Loader2,
   Trash2,
 } from 'lucide-react'
-import { toast } from 'sonner'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { getMyApplications, deleteStudentApplication } from '@/lib/studentApplications'
 import { invalidateAllApplicationData } from '@/lib/cache'
@@ -261,11 +260,9 @@ export default function StudentApplications() {
       const result = await deleteStudentApplication(pendingDelete.id)
 
       if (result.error) {
-        toast.error(result.error.message || 'Failed to delete application')
         return
       }
 
-      toast.success('Application deleted successfully')
       await refreshApplications(
         (applications ?? []).filter((app: Application) => app.id !== pendingDelete.id),
         { revalidate: true }
@@ -275,7 +272,6 @@ export default function StudentApplications() {
       setPendingDelete(null)
     } catch (error) {
       console.error('Error deleting application:', error)
-      toast.error('Failed to delete application')
     } finally {
       setDeletingId(null)
     }

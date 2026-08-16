@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { toast } from 'sonner'
 import { ExternalLink, FileText, Image as ImageIcon, Loader2 } from 'lucide-react'
 import {
   formatApplicationReferenceId,
@@ -476,11 +475,6 @@ export function ApplicationPaperForm({
     setOpeningDoc(null)
 
     if (result.error || !result.data?.signedUrl) {
-      toast.error(
-        typeof result.error === 'object' && result.error && 'message' in result.error
-          ? String((result.error as { message: string }).message)
-          : 'Failed to open document'
-      )
       return
     }
 

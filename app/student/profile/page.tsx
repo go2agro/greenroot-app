@@ -17,7 +17,6 @@ import {
   CheckCircle2,
   Trash2
 } from 'lucide-react'
-import { toast } from 'sonner'
 import StudentSidebar from '@/components/StudentSidebar'
 import StudentMobileLogo from '@/components/StudentMobileLogo'
 import BottomNavigation from '@/components/BottomNavigation'
@@ -223,13 +222,11 @@ export default function StudentProfile() {
 
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf']
     if (!allowedTypes.includes(file.type)) {
-      toast.error('Only JPEG, PNG, and PDF files are allowed')
       e.target.value = '' // Reset input
       return
     }
 
     if (file.size > 50 * 1024 * 1024) {
-      toast.error('File size must be less than 50MB')
       e.target.value = '' // Reset input
       return
     }
@@ -238,16 +235,13 @@ export default function StudentProfile() {
     try {
       const result = await uploadStudentDocument(file, docType)
       if (result.error) {
-        toast.error('Failed to upload document')
         console.error('Upload error:', result.error)
       } else {
-        toast.success('Document uploaded successfully')
         await refreshProfile()
         await refreshCompletion()
         e.target.value = '' // Reset input after successful upload
       }
     } catch (error) {
-      toast.error('Failed to upload document')
       console.error('Upload exception:', error)
     } finally {
       setUploadingDoc(null)
@@ -312,9 +306,8 @@ export default function StudentProfile() {
 
       const result = await updateStudentProfile(dataToSave)
       if (result.error) {
-        toast.error('Failed to save changes')
+        // Error handling without toast
       } else {
-        toast.success('Saved successfully')
         await refreshProfile()
         await refreshCompletion()
         // Collapse the section after save
@@ -323,7 +316,7 @@ export default function StudentProfile() {
         progressBarRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }
     } catch (error) {
-      toast.error('Failed to save changes')
+      // Error handling without toast
     } finally {
       setSavingSection(null)
     }
@@ -334,7 +327,6 @@ export default function StudentProfile() {
     if (profile?.unique_id) {
       navigator.clipboard.writeText(profile.unique_id)
       setCopiedId(true)
-      toast.success('Student ID copied to clipboard')
       setTimeout(() => setCopiedId(false), 2000)
     }
   }
@@ -351,15 +343,12 @@ export default function StudentProfile() {
   const handleDeleteDocument = async (docType: string) => {
     try {
       const result = await updateStudentProfile({ [docType]: null })
-      if (result.error) {
-        toast.error('Failed to delete document')
-      } else {
-        toast.success('Document deleted successfully')
+      if (!result.error) {
         await refreshProfile()
         await refreshCompletion()
       }
     } catch (error) {
-      toast.error('Failed to delete document')
+      // Error handling without toast
     }
   }
 
@@ -370,7 +359,6 @@ export default function StudentProfile() {
       await signOut()
       router.push('/login')
     } catch (error) {
-      toast.error('Failed to logout')
       setIsLoggingOut(false)
     }
   }
@@ -381,14 +369,11 @@ export default function StudentProfile() {
     try {
       const result = await deleteAccount()
       if (result.error) {
-        toast.error('Failed to delete account')
         setIsDeletingAccount(false)
         return
       }
-      toast.success('Account deleted successfully')
       router.push('/login')
     } catch (error) {
-      toast.error('Failed to delete account')
       setIsDeletingAccount(false)
     }
   }

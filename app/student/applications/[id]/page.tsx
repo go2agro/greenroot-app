@@ -20,7 +20,6 @@ import {
   ChevronRight,
   Image as ImageIcon,
 } from 'lucide-react'
-import { toast } from 'sonner'
 import UserAvatar from '@/components/UserAvatar'
 import { ApplicationSubmittedDialog } from '@/components/ApplicationSubmittedDialog'
 import {
@@ -183,7 +182,6 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
       ])
       
       if (!appResult.data) {
-        toast.error('Application not found')
         router.push('/student/applications')
         return
       }
@@ -230,7 +228,6 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
       }
     } catch (error) {
       console.error('Error loading application:', error)
-      toast.error('Failed to load application')
     } finally {
       setIsLoading(false)
     }
@@ -280,11 +277,9 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
   const validateStep2 = () => {
     if (!formData.academic_current_status) {
-      toast.error('Please select your current status')
       return false
     }
     if (!formData.academic_graduation_year) {
-      toast.error('Please enter your graduation year')
       return false
     }
     return true
@@ -295,11 +290,9 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
       lang.language && lang.read && lang.write && lang.speak
     )
     if (validLanguages.length === 0) {
-      toast.error('Please add at least one language with all proficiency levels')
       return false
     }
     if (validLanguages.length > MAX_LANGUAGES) {
-      toast.error(`Maximum ${MAX_LANGUAGES} languages allowed`)
       return false
     }
     return true
@@ -308,7 +301,6 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
   const validateStep4 = () => {
     const totalFiles = uploadedFiles.length + existingFiles.length
     if (totalFiles === 0) {
-      toast.error('Please upload at least one document')
       return false
     }
     return true
@@ -334,11 +326,8 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
           saveTextAnswer(application.id, 2, field.key, field.value)
         )
       )
-      
-      toast.success('Academic details saved')
     } catch (error) {
       console.error('Error saving step 2:', error)
-      toast.error('Failed to save academic details')
     } finally {
       setIsSaving(false)
     }
@@ -362,11 +351,8 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
         saveTextAnswer(application.id, 3, 'health_allergies', formData.health_allergies || ''),
         saveTextAnswer(application.id, 3, 'health_disabilities', formData.health_disabilities || ''),
       ])
-      
-      toast.success('Language and health information saved')
     } catch (error) {
       console.error('Error saving step 3:', error)
-      toast.error('Failed to save information')
     } finally {
       setIsSaving(false)
     }
@@ -388,12 +374,10 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
         )
       }
       
-      toast.success('Documents uploaded successfully')
       setUploadedFiles([])
       await loadData()
     } catch (error) {
       console.error('Error uploading documents:', error)
-      toast.error('Failed to upload documents')
       throw error
     } finally {
       setIsSaving(false)
@@ -417,7 +401,6 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
     const remainingSlots = MAX_DOCUMENT_UPLOADS - totalFiles
     
     if (remainingSlots === 0) {
-      toast.error(`Maximum ${MAX_DOCUMENT_UPLOADS} files allowed`)
       return
     }
     
@@ -427,7 +410,6 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
       const file = files[i]
       
       if (file.size > 1024 * 1024) {
-        toast.error(`${file.name} is over 1MB`)
         continue
       }
       
@@ -436,7 +418,6 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
         fileType.includes('pdf') || file.name.toLowerCase().endsWith('.pdf')
 
       if (!isPdf) {
-        toast.error(`${file.name} is not a PDF file`)
         continue
       }
       
@@ -449,7 +430,6 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
     
     if (newFiles.length > 0) {
       setUploadedFiles([...uploadedFiles, ...newFiles])
-      toast.success(`${newFiles.length} file(s) added`)
     }
   }
 
@@ -474,12 +454,10 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
     URL.revokeObjectURL(newFiles[index].preview)
     newFiles.splice(index, 1)
     setUploadedFiles(newFiles)
-    toast.success('File removed')
   }
 
   const handleSubmit = async () => {
     if (!declarations.confirm || !declarations.terms) {
-      toast.error('Please accept both declarations')
       return
     }
     
@@ -512,12 +490,9 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
         setSubmittedAt(submissionTime)
         setShowSuccessDialog(true)
         invalidateApplications()
-      } else {
-        toast.error(result.error?.message || 'Failed to submit application')
       }
     } catch (error) {
       console.error('Error submitting application:', error)
-      toast.error('Failed to submit application')
     } finally {
       setIsSubmitting(false)
     }
@@ -525,11 +500,9 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
   const addLanguage = () => {
     if (!languages.some(isLanguageComplete)) {
-      toast.error('Please complete at least one language before adding another')
       return
     }
     if (languages.length >= MAX_LANGUAGES) {
-      toast.error(`Maximum ${MAX_LANGUAGES} languages allowed`)
       return
     }
     setLanguages([...languages, { language: '', read: '', write: '', speak: '' }])

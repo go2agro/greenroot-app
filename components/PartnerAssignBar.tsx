@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { Search, UserRound } from 'lucide-react'
-import { toast } from 'sonner'
 import { getCountryFlag } from '@/lib/countries'
 import {
   assignApplicationToPartner,
@@ -76,7 +75,6 @@ export default function PartnerAssignBar({ applicationId, onAssigned }: PartnerA
             : 'Failed to search partners'
         setSearchError(message)
         setPartners([])
-        toast.error(message)
       } else {
         setPartners((data as PartnerOption[]) ?? [])
       }
@@ -105,11 +103,6 @@ export default function PartnerAssignBar({ applicationId, onAssigned }: PartnerA
     setIsAssigning(false)
 
     if (error) {
-      toast.error(
-        typeof error === 'object' && error && 'message' in error
-          ? String((error as { message: string }).message)
-          : 'Failed to assign partner'
-      )
       return
     }
 
@@ -118,7 +111,6 @@ export default function PartnerAssignBar({ applicationId, onAssigned }: PartnerA
       setShowResults(false)
       setSearchQuery('')
       setPartners([])
-      toast.success(`Assigned to ${getPartnerName(partner)}`)
       onAssigned?.()
     }
   }

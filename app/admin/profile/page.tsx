@@ -14,7 +14,6 @@ import {
   CheckCircle2,
   Save,
 } from 'lucide-react'
-import { toast } from 'sonner'
 import AdminSidebar from '@/components/AdminSidebar'
 import AdminBottomNavigation from '@/components/AdminBottomNavigation'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
@@ -151,14 +150,13 @@ export default function AdminProfilePage() {
 
       const result = await updateAdminProfile(dataToSave)
       if (result.error) {
-        toast.error('Failed to save')
+        // Error handling without toast
       } else {
-        toast.success('Saved successfully')
         await refreshAdminProfile()
         setCollapsedSections((prev) => ({ ...prev, [section]: true }))
       }
     } catch {
-      toast.error('Failed to save changes')
+      // Error handling without toast
     } finally {
       setSavingSection(null)
     }
@@ -168,7 +166,6 @@ export default function AdminProfilePage() {
     if (profileData.unique_id) {
       navigator.clipboard.writeText(profileData.unique_id)
       setCopiedId(true)
-      toast.success('Admin ID copied to clipboard')
       setTimeout(() => setCopiedId(false), 2000)
     }
   }
@@ -186,7 +183,6 @@ export default function AdminProfilePage() {
       await signOut()
       router.push('/login')
     } catch {
-      toast.error('Failed to logout')
       setIsLoggingOut(false)
     }
   }

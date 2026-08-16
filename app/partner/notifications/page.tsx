@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { Bell, CheckCircle, FileText, type LucideIcon } from 'lucide-react'
-import { toast } from 'sonner'
 import PartnerShell from '@/components/PartnerShell'
 import {
   getMyNotifications,
@@ -138,7 +137,6 @@ export default function PartnerNotificationsPage() {
     if (error) {
       const result = await getMyNotifications()
       setNotifications((result.data ?? []) as NotificationItem[])
-      toast.error('Failed to mark all as read')
     } else {
       setUnreadRefreshKey((key) => key + 1)
     }

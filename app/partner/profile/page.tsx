@@ -14,7 +14,6 @@ import {
   CheckCircle2,
   Save,
 } from 'lucide-react'
-import { toast } from 'sonner'
 import PartnerSidebar from '@/components/PartnerSidebar'
 import PartnerBottomNavigation from '@/components/PartnerBottomNavigation'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
@@ -134,7 +133,6 @@ export default function PartnerProfilePage() {
         }
       } else if (section === 'countries') {
         if (!formData.countries?.length) {
-          toast.error('Please select at least one country')
           setSavingSection(null)
           return
         }
@@ -164,14 +162,13 @@ export default function PartnerProfilePage() {
 
       const result = await updatePartnerProfile(dataToSave)
       if (result.error) {
-        toast.error('Failed to save')
+        // Error handling without toast
       } else {
-        toast.success('Saved successfully')
         await refreshPartnerProfile()
         setCollapsedSections((prev) => ({ ...prev, [section]: true }))
       }
     } catch {
-      toast.error('Failed to save changes')
+      // Error handling without toast
     } finally {
       setSavingSection(null)
     }
@@ -181,7 +178,6 @@ export default function PartnerProfilePage() {
     if (profileData.unique_id) {
       navigator.clipboard.writeText(profileData.unique_id)
       setCopiedId(true)
-      toast.success('Partner ID copied to clipboard')
       setTimeout(() => setCopiedId(false), 2000)
     }
   }
@@ -199,7 +195,6 @@ export default function PartnerProfilePage() {
       await signOut()
       router.push('/login')
     } catch {
-      toast.error('Failed to logout')
       setIsLoggingOut(false)
     }
   }
@@ -208,11 +203,9 @@ export default function PartnerProfilePage() {
 
   const handleAddCountry = () => {
     if (!selectedCountry) {
-      toast.error('Please select a country')
       return
     }
     if (partnerCountries.includes(selectedCountry)) {
-      toast.error('Country already added')
       return
     }
     setFormData((prev) => ({

@@ -16,7 +16,6 @@ import {
   CreditCard,
   Briefcase,
 } from 'lucide-react'
-import { toast } from 'sonner'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -364,7 +363,6 @@ export default function AdminInternshipDetails({ params }: { params: Promise<{ i
     if (!form) return
 
     if (!form.title.trim()) {
-      toast.error('Title is required')
       return
     }
 
@@ -372,12 +370,10 @@ export default function AdminInternshipDetails({ params }: { params: Promise<{ i
     const result = await updateInternship(id, formToPayload(form))
 
     if (result.error) {
-      toast.error(result.error.message || 'Failed to save internship')
       setSaving(false)
       return
     }
 
-    toast.success('Internship updated successfully')
     setSaving(false)
   }
 
@@ -386,13 +382,11 @@ export default function AdminInternshipDetails({ params }: { params: Promise<{ i
     const result = await deleteInternship(id)
 
     if (result.error) {
-      toast.error(result.error.message || 'Failed to delete internship')
       setDeleting(false)
       setShowDeleteDialog(false)
       return
     }
 
-    toast.success('Internship deleted')
     router.push('/admin/internships')
   }
 

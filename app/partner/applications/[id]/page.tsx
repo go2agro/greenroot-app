@@ -5,7 +5,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import useSWR from 'swr'
-import { toast } from 'sonner'
 import { ArrowLeft, CheckCircle, XCircle } from 'lucide-react'
 import {
   ApplicationPaperForm,
@@ -172,7 +171,6 @@ export default function PartnerApplicationDetails({
     if (!application || !decisionDialog) return
 
     if (!remarks.trim()) {
-      toast.error('Please provide remarks for your decision')
       return
     }
 
@@ -181,20 +179,10 @@ export default function PartnerApplicationDetails({
     setDecisionLoading(false)
 
     if (result.error || !result.data) {
-      toast.error(
-        result.error && typeof result.error === 'object' && 'message' in result.error
-          ? String((result.error as { message: string }).message)
-          : 'Failed to submit decision. Please check if the database columns exist.'
-      )
       return
     }
 
     setDecisionDialog(null)
-    toast.success(
-      decisionDialog === 'approve'
-        ? 'Decision submitted — recommended for approval'
-        : 'Decision submitted — recommended for rejection'
-    )
     await loadApplication()
   }
 

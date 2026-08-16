@@ -10,7 +10,6 @@ import {
   UserPlus,
   type LucideIcon,
 } from 'lucide-react'
-import { toast } from 'sonner'
 import AdminSidebar from '@/components/AdminSidebar'
 import AdminBottomNavigation from '@/components/AdminBottomNavigation'
 import {
@@ -293,7 +292,6 @@ export default function AdminNotificationsPage() {
     if (error) {
       const result = await getMyNotifications()
       setNotifications((result.data ?? []) as NotificationItem[])
-      toast.error('Failed to mark all as read')
     } else {
       await getUnreadCount()
       setUnreadRefreshKey((key) => key + 1)

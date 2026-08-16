@@ -1,0 +1,43 @@
+{
+  "hero": {
+    "heading": "Explore International Agriculture Internships",
+    "subheading": "Apply to world class internship programmes from India",
+    "ctaButton": "Explore Internships",
+    "ctaLink": "/internships"
+  },
+  "features": {
+    "heading": "Why Choose GreenRoot?",
+    "subheading": "We connect Indian agriculture students with global opportunities",
+    "items": [
+      {
+        "id": "global-network",
+        "title": "Global Network",
+        "description": "Access to 100+ international farms and agricultural institutions"
+      },
+      {
+        "id": "visa-support",
+        "title": "Visa Support",
+        "description": "Complete assistance with visa applications and documentation"
+      },
+      {
+        "id": "career-growth",
+        "title": "Career Growth",
+        "description": "Build international experience and industry connections"
+      }
+    ]
+  },
+  "stats": {
+    "heading": "Our Impact",
+    "items": [
+      { "value": "500+", "label": "Students Placed" },
+      { "value": "25+", "label": "Partner Countries" },
+      { "value": "100+", "label": "Partner Farms" }
+    ]
+  },
+  "cta": {
+    "heading": "Ready to Start Your Journey?",
+    "subheading": "Join hundreds of students who have transformed their careers",
+    "buttonText": "Get Started",
+    "buttonLink": "/signup"
+  }
+}
