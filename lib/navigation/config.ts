@@ -121,14 +121,6 @@ export const NAVIGATION_CONFIG: Record<string, NavigationRoute> = {
     roles: ['student'],
     category: 'student'
   },
-  studentMyInternship: {
-    id: 'studentMyInternship',
-    label: 'My Internship',
-    route: '/student/my-internship',
-    roles: ['student'],
-    category: 'student',
-    description: 'Post selection internship details'
-  },
   
   // Admin routes
   adminDashboard: {
@@ -149,27 +141,6 @@ export const NAVIGATION_CONFIG: Record<string, NavigationRoute> = {
     id: 'adminStudentDetail',
     label: 'Student Details',
     route: '/admin/students/[id]',
-    roles: ['admin'],
-    category: 'admin'
-  },
-  adminAdmins: {
-    id: 'adminAdmins',
-    label: 'Admins',
-    route: '/admin/admins',
-    roles: ['admin'],
-    category: 'admin'
-  },
-  adminAdminDetail: {
-    id: 'adminAdminDetail',
-    label: 'Admin Details',
-    route: '/admin/admins/[id]',
-    roles: ['admin'],
-    category: 'admin'
-  },
-  adminAdminNew: {
-    id: 'adminAdminNew',
-    label: 'Add New Admin',
-    route: '/admin/admins/new',
     roles: ['admin'],
     category: 'admin'
   },
@@ -208,18 +179,48 @@ export const NAVIGATION_CONFIG: Record<string, NavigationRoute> = {
     roles: ['admin'],
     category: 'admin'
   },
-  adminBilling: {
-    id: 'adminBilling',
-    label: 'Billing',
-    route: '/admin/billing',
-    roles: ['admin'],
-    category: 'admin'
-  },
   adminNotifications: {
     id: 'adminNotifications',
     label: 'Notifications',
     route: '/admin/notifications',
     roles: ['admin'],
     category: 'admin'
+  },
+
+  // Partner routes
+  partnerDashboard: {
+    id: 'partnerDashboard',
+    label: 'Dashboard',
+    route: '/partner/dashboard',
+    roles: ['partner'],
+    category: 'partner'
+  },
+  partnerApplications: {
+    id: 'partnerApplications',
+    label: 'Applications',
+    route: '/partner/applications',
+    roles: ['partner'],
+    category: 'partner'
+  },
+  partnerApplicationDetail: {
+    id: 'partnerApplicationDetail',
+    label: 'Application Details',
+    route: '/partner/applications/[id]',
+    roles: ['partner'],
+    category: 'partner'
+  },
+  partnerNotifications: {
+    id: 'partnerNotifications',
+    label: 'Notifications',
+    route: '/partner/notifications',
+    roles: ['partner'],
+    category: 'partner'
+  },
+  partnerProfile: {
+    id: 'partnerProfile',
+    label: 'My Profile',
+    route: '/partner/profile',
+    roles: ['partner'],
+    category: 'partner'
   }
 };

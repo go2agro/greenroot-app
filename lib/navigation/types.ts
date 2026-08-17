@@ -1,4 +1,4 @@
-export type UserRole = 'public' | 'student' | 'admin';
+export type UserRole = 'public' | 'student' | 'admin' | 'partner';
 
 export type AppVersion = string; // Format: "1.0.0"
 

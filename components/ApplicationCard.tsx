@@ -49,13 +49,13 @@ export default function ApplicationCard({
         {/* Image */}
         <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
           <Image
-            src={imageUrl || '/images/placeholder.jpg'}
+            src={imageUrl || '/images/placeholder.png'}
             alt={title}
             fill
             className="object-cover"
             onError={(e) => {
               const target = e.target as HTMLImageElement
-              target.src = '/images/placeholder.jpg'
+              target.src = '/images/placeholder.png'
             }}
           />
         </div>

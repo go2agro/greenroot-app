@@ -64,14 +64,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
 
   useEffect(() => {
     async function fetchData() {
-      console.log('Fetching internship with ID:', id)
-      const { data: internshipData, error: internshipError } = await getInternshipById(id)
-      
-      if (internshipError) {
-        console.error('Error fetching internship:', internshipError)
-      }
-      
-      console.log('Internship data:', internshipData)
+      const { data: internshipData } = await getInternshipById(id)
       
       if (internshipData) {
         setInternship(internshipData)

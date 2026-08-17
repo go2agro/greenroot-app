@@ -361,13 +361,13 @@ export default function StudentDashboard() {
                       <div className="flex items-center gap-4">
                         <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                           <Image
-                            src={app.internships?.image_url || '/images/placeholder.jpg'}
+                            src={app.internships?.image_url || '/images/placeholder.png'}
                             alt={app.internships?.title || 'Internship'}
                             fill
                             className="object-cover"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement
-                              target.src = '/images/placeholder.jpg'
+                              target.src = '/images/placeholder.png'
                             }}
                           />
                         </div>
@@ -424,13 +424,13 @@ export default function StudentDashboard() {
                       <div className="flex items-center gap-4">
                         <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                           <Image
-                            src={app.internships.image_url || '/images/placeholder.jpg'}
+                            src={app.internships.image_url || '/images/placeholder.png'}
                             alt={app.internships.title}
                             fill
                             className="object-cover"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement
-                              target.src = '/images/placeholder.jpg'
+                              target.src = '/images/placeholder.png'
                             }}
                           />
                         </div>

@@ -29,25 +29,3 @@ export async function getProfileById(userId: string) {
 
   return toPlainResponse(data, error)
 }
-
-// Update role (admin use only) [DO NOT USE THIS FUNCTION. ASK FOR PERMISSION BEFORE USING IT.]
-export async function updateRole(userId: string, role: 'student' | 'admin') {
-  const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('profiles')
-    .update({ role })
-    .eq('id', userId)
-
-  return toPlainResponse(data, error)
-}
-
-// Update unique ID (admin use only) [DO NOT USE THIS FUNCTION. ASK FOR PERMISSION BEFORE USING IT.]
-export async function updateUniqueId(userId: string, uniqueId: string) {
-  const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('profiles')
-    .update({ unique_id: uniqueId })
-    .eq('id', userId)
-
-  return toPlainResponse(data, error)
-}
