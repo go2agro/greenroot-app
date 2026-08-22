@@ -53,6 +53,23 @@ export async function markAsRead(notificationId: string) {
 }
 
 // ─────────────────────────────────────────
+// DELETE NOTIFICATION
+// ─────────────────────────────────────────
+export async function deleteNotification(notificationId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+
+  const { data, error } = await supabase
+    .from('notifications')
+    .delete()
+    .eq('id', notificationId)
+    .eq('user_id', user.id)
+
+  return toPlainResponse(data, error)
+}
+
+// ─────────────────────────────────────────
 // MARK ALL AS READ
 // ─────────────────────────────────────────
 export async function markAllAsRead() {

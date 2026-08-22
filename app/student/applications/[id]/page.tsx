@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import UserAvatar from '@/components/UserAvatar'
 import { ApplicationSubmittedDialog } from '@/components/ApplicationSubmittedDialog'
+import { AcceptApplicationSection } from '@/components/AcceptApplicationSection'
 import {
   ApplicationPaperForm,
   type ApplicationPaperData,
@@ -606,6 +607,11 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
     </div>
   )
 
+  const handleApplicationAccepted = () => {
+    loadData()
+    invalidateApplications()
+  }
+
   // Submitted (and later statuses): paper form matching admin, without Decision Desk
   if (application.status !== 'draft') {
     return (
@@ -627,6 +633,34 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                 </Link>
               </div>
             )}
+            {application.status === 'accepted' && (
+              <div className="rounded-sm border border-green-200 bg-green-50 px-4 py-3 flex items-center gap-3">
+                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <p className="text-sm text-green-800">
+                  <strong>Application Accepted!</strong> You have accepted this internship. For any queries or next steps, please reach out to us via the{' '}
+                  <Link href="/contact" className="font-semibold text-green-700 underline hover:text-green-900">
+                    Contact Us
+                  </Link>{' '}
+                  section.
+                </p>
+              </div>
+            )}
+            {application.status === 'closed' && (
+              <div className="rounded-sm border border-gray-200 bg-gray-50 px-4 py-3 flex items-center gap-3">
+                <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+                <p className="text-sm text-gray-700">
+                  This application has been closed. This may have happened because you accepted another approved application.
+                </p>
+              </div>
+            )}
             <ApplicationPaperForm
               application={application}
               student={paperStudent}
@@ -637,6 +671,13 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
               getStudentDocUrl={getMyStudentDocumentUrl}
               getApplicationDocUrl={getMyApplicationFile}
             />
+            {application.status === 'approved' && (
+              <AcceptApplicationSection
+                applicationId={application.id}
+                submittedAt={application.submitted_at}
+                onAccepted={handleApplicationAccepted}
+              />
+            )}
             <div className="flex justify-center pt-2 pb-10">
               <Link
                 href="/student/applications"

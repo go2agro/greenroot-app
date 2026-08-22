@@ -72,6 +72,62 @@ const BAR_COLORS = ['#1D4ED8', '#93C5FD']
 const PROFILE_COMPLETION_COLORS = ['#8DC63F', '#93C5FD']
 const CARD_CLASS = 'bg-white border border-[#EEEEEE] rounded-2xl p-6'
 
+const KPI_CARDS = [
+  {
+    key: 'students',
+    label: 'Total Students',
+    href: '/admin/students',
+    icon: Users,
+    gradient: 'bg-gradient-to-br from-[#3B82F6] to-[#8DC63F]',
+    border: 'border-[#7DB62F]/80',
+  },
+  {
+    key: 'applications',
+    label: 'Total Applications',
+    href: '/admin/applications',
+    icon: FileText,
+    gradient: 'bg-gradient-to-br from-[#2563EB] to-[#22C55E]',
+    border: 'border-[#16A34A]/50',
+  },
+  {
+    key: 'acceptance',
+    label: 'Acceptance Rate',
+    href: null,
+    icon: CheckCircle,
+    gradient: 'bg-gradient-to-br from-[#8DC63F] to-[#3B82F6]',
+    border: 'border-[#3B82F6]/50',
+  },
+  {
+    key: 'internships',
+    label: 'Total Internships Listed',
+    href: '/admin/internships',
+    icon: Briefcase,
+    gradient: 'bg-gradient-to-br from-[#1D4ED8] to-[#7DB62F]',
+    border: 'border-[#5A9A2E]/70',
+  },
+] as const
+
+function getKpiValue(
+  key: (typeof KPI_CARDS)[number]['key'],
+  values: {
+    studentsCount: number
+    applicationsCount: number
+    acceptanceRate: string | number
+    internshipsCount: number
+  }
+) {
+  switch (key) {
+    case 'students':
+      return values.studentsCount.toLocaleString()
+    case 'applications':
+      return values.applicationsCount.toLocaleString()
+    case 'acceptance':
+      return `${values.acceptanceRate}%`
+    case 'internships':
+      return values.internshipsCount.toLocaleString()
+  }
+}
+
 function getDayName(date: Date): string {
   const dayIndex = date.getDay()
   return dayIndex === 0 ? 'Sun' : DAY_NAMES[dayIndex - 1]
@@ -174,10 +230,13 @@ function DashboardSkeleton() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
-            <div className="h-8 w-8 animate-pulse bg-gray-200 rounded-lg mb-3" />
-            <div className="h-4 w-24 animate-pulse bg-gray-200 rounded mb-2" />
-            <div className="h-9 w-16 animate-pulse bg-gray-200 rounded" />
+          <div
+            key={i}
+            className="bg-gradient-to-br from-[#3B82F6]/30 to-[#8DC63F]/30 border border-[#8DC63F]/20 rounded-xl p-5"
+          >
+            <div className="h-10 w-10 animate-pulse bg-white/30 rounded-full mb-3" />
+            <div className="h-4 w-24 animate-pulse bg-white/30 rounded mb-2" />
+            <div className="h-9 w-16 animate-pulse bg-white/30 rounded" />
           </div>
         ))}
       </div>
@@ -205,11 +264,48 @@ function DashboardSkeleton() {
 function KpiCardSkeleton() {
   return (
     <>
-      <div className="h-8 w-8 animate-pulse bg-gray-200 rounded-lg mb-3" />
-      <div className="h-4 w-24 animate-pulse bg-gray-200 rounded mb-2" />
-      <div className="h-9 w-16 animate-pulse bg-gray-200 rounded" />
+      <div className="h-10 w-10 animate-pulse bg-white/25 rounded-full mb-3 border border-white/20" />
+      <div className="h-4 w-24 animate-pulse bg-white/25 rounded mb-2" />
+      <div className="h-9 w-16 animate-pulse bg-white/25 rounded" />
     </>
   )
+}
+
+function DashboardKpiCard({
+  card,
+  loading,
+  value,
+}: {
+  card: (typeof KPI_CARDS)[number]
+  loading: boolean
+  value: string
+}) {
+  const Icon = card.icon
+  const content = (
+    <>
+      <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-3 border border-white/30">
+        <Icon className="w-5 h-5 text-white" />
+      </div>
+      <p className="text-sm text-white/90">{card.label}</p>
+      {loading ? (
+        <div className="h-9 w-20 animate-pulse bg-white/25 rounded mt-1" />
+      ) : (
+        <p className="text-3xl font-bold text-white mt-1">{value}</p>
+      )}
+    </>
+  )
+
+  const className = `${card.gradient} border ${card.border} rounded-xl p-5 shadow-sm transition-all hover:shadow-md`
+
+  if (card.href) {
+    return (
+      <Link href={card.href} className={`${className} block cursor-pointer hover:brightness-105`}>
+        {loading ? <KpiCardSkeleton /> : content}
+      </Link>
+    )
+  }
+
+  return <div className={`${className} cursor-default`}>{loading ? <KpiCardSkeleton /> : content}</div>
 }
 
 function EmptyState({ message }: { message: string }) {
@@ -339,8 +435,12 @@ export default function AdminDashboard() {
       ? `${formatDateLabel(appliedDateRange.from)} – ${formatDateLabel(appliedDateRange.to)}`
       : null
 
-  const kpiCardClass =
-    'bg-white border border-[#EEEEEE] rounded-2xl p-5 transition-colors hover:border-[#8DC63F]'
+  const kpiValues = {
+    studentsCount,
+    applicationsCount,
+    acceptanceRate,
+    internshipsCount,
+  }
 
   return (
     <div className="flex h-screen bg-[#F9F9F9] overflow-hidden">
@@ -425,59 +525,14 @@ export default function AdminDashboard() {
 
             {/* Row 1 — KPI Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Link href="/admin/students" className={`${kpiCardClass} block cursor-pointer`}>
-                {kpiLoading ? (
-                  <KpiCardSkeleton />
-                ) : (
-                  <>
-                    <Users className="w-8 h-8 text-[#8DC63F] mb-3" />
-                    <p className="text-sm text-gray-500">Total Students</p>
-                    <p className="text-3xl font-bold text-[#3B82F6] mt-1">
-                      {studentsCount.toLocaleString()}
-                    </p>
-                  </>
-                )}
-              </Link>
-
-              <Link href="/admin/applications" className={`${kpiCardClass} block cursor-pointer`}>
-                {kpiLoading ? (
-                  <KpiCardSkeleton />
-                ) : (
-                  <>
-                    <FileText className="w-8 h-8 text-[#8DC63F] mb-3" />
-                    <p className="text-sm text-gray-500">Total Applications</p>
-                    <p className="text-3xl font-bold text-[#3B82F6] mt-1">
-                      {applicationsCount.toLocaleString()}
-                    </p>
-                  </>
-                )}
-              </Link>
-
-              <div className={`${kpiCardClass} cursor-default`}>
-                {kpiLoading ? (
-                  <KpiCardSkeleton />
-                ) : (
-                  <>
-                    <CheckCircle className="w-8 h-8 text-[#8DC63F] mb-3" />
-                    <p className="text-sm text-gray-500">Acceptance Rate</p>
-                    <p className="text-3xl font-bold text-[#3B82F6] mt-1">{acceptanceRate}%</p>
-                  </>
-                )}
-              </div>
-
-              <Link href="/admin/internships" className={`${kpiCardClass} block cursor-pointer`}>
-                {kpiLoading ? (
-                  <KpiCardSkeleton />
-                ) : (
-                  <>
-                    <Briefcase className="w-8 h-8 text-[#8DC63F] mb-3" />
-                    <p className="text-sm text-gray-500">Total Internships Listed</p>
-                    <p className="text-3xl font-bold text-[#3B82F6] mt-1">
-                      {internshipsCount.toLocaleString()}
-                    </p>
-                  </>
-                )}
-              </Link>
+              {KPI_CARDS.map((card) => (
+                <DashboardKpiCard
+                  key={card.key}
+                  card={card}
+                  loading={kpiLoading}
+                  value={getKpiValue(card.key, kpiValues)}
+                />
+              ))}
             </div>
 
             {/* Row 2 — Application Pipeline */}

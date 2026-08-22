@@ -590,3 +590,162 @@ export async function getDraftApplications() {
 
   return toPlainResponse(data, error)
 }
+
+// ─────────────────────────────────────────
+// GET APPROVED APPLICATIONS COUNT
+// ─────────────────────────────────────────
+export async function getApprovedApplicationsCount() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+
+  const { count, error } = await supabase
+    .from('applications')
+    .select('*', { count: 'exact', head: true })
+    .eq('student_id', user.id)
+    .eq('status', 'approved')
+
+  return toPlainResponse({ count: count ?? 0 }, error)
+}
+
+// ─────────────────────────────────────────
+// ACCEPT APPLICATION (student selects one approved application)
+// ─────────────────────────────────────────
+export async function acceptApplication(
+  applicationId: string,
+  confirmationText: string,
+  applicationRefId: string
+) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+
+  const expectedText = `I am accepting this application ${applicationRefId}`
+  if (confirmationText.trim() !== expectedText) {
+    return toPlainResponse(null, {
+      message: 'Confirmation text does not match. Please type the exact text shown.',
+      code: 'CONFIRMATION_MISMATCH',
+    })
+  }
+
+  const { data: application, error: fetchError } = await supabase
+    .from('applications')
+    .select(`
+      id, status, student_id, internship_id,
+      student_profiles (first_name, last_name),
+      internships (title)
+    `)
+    .eq('id', applicationId)
+    .eq('student_id', user.id)
+    .single()
+
+  if (fetchError || !application) {
+    return toPlainResponse(null, fetchError || { message: 'Application not found' })
+  }
+
+  if (application.status !== 'approved') {
+    return toPlainResponse(null, {
+      message: 'Only approved applications can be accepted.',
+      code: 'INVALID_STATUS',
+    })
+  }
+
+  const { data: existingAccepted } = await supabase
+    .from('applications')
+    .select('id')
+    .eq('student_id', user.id)
+    .eq('status', 'accepted')
+    .limit(1)
+    .maybeSingle()
+
+  if (existingAccepted) {
+    return toPlainResponse(null, {
+      message: 'You have already accepted another application. Only one application can be accepted.',
+      code: 'ALREADY_ACCEPTED',
+    })
+  }
+
+  const now = new Date().toISOString()
+
+  const { data: acceptedApp, error: acceptError } = await supabase
+    .from('applications')
+    .update({
+      status: 'accepted',
+      accepted_at: now,
+    })
+    .eq('id', applicationId)
+    .eq('student_id', user.id)
+    .eq('status', 'approved')
+    .select('id, status, accepted_at')
+    .single()
+
+  if (acceptError || !acceptedApp) {
+    return toPlainResponse(null, acceptError || { message: 'Failed to accept application' })
+  }
+
+  await recordApplicationEvent({
+    applicationId,
+    eventType: 'student_accepted',
+    actorRole: 'student',
+    message: 'Student accepted this application offer',
+  })
+
+  const { data: otherApproved } = await supabase
+    .from('applications')
+    .select('id')
+    .eq('student_id', user.id)
+    .eq('status', 'approved')
+    .neq('id', applicationId)
+
+  if (otherApproved && otherApproved.length > 0) {
+    const otherIds = otherApproved.map(app => app.id)
+
+    await supabase
+      .from('applications')
+      .update({
+        status: 'closed',
+        closed_at: now,
+      })
+      .eq('student_id', user.id)
+      .eq('status', 'approved')
+      .neq('id', applicationId)
+
+    for (const otherId of otherIds) {
+      await recordApplicationEvent({
+        applicationId: otherId,
+        eventType: 'auto_closed',
+        actorRole: 'system',
+        message: `Student chose a different application (${applicationRefId})`,
+        metadata: { accepted_application_id: applicationId, accepted_application_ref: applicationRefId },
+      })
+    }
+  }
+
+  const adminClient = createAdminClient()
+  const { data: admins } = await adminClient
+    .from('profiles')
+    .select('id')
+    .eq('role', 'admin')
+
+  const studentProfile = application.student_profiles as { first_name?: string; last_name?: string } | null
+  const internshipData = application.internships as { title?: string } | null
+  const studentName = [studentProfile?.first_name, studentProfile?.last_name].filter(Boolean).join(' ') || 'A student'
+  const internshipTitle = internshipData?.title || 'an internship'
+
+  for (const admin of admins ?? []) {
+    await createNotification({
+      userId: admin.id,
+      type: 'application_accepted',
+      title: 'Application Accepted by Student',
+      message: `${studentName} has accepted their application for ${internshipTitle} (${applicationRefId}).`,
+      relatedId: applicationId,
+      relatedType: 'application',
+      category: 'application',
+    })
+  }
+
+  return toPlainResponse({
+    accepted: acceptedApp,
+    closedCount: otherApproved?.length ?? 0,
+  }, null)
+}

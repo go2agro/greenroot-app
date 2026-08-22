@@ -15,6 +15,7 @@ import {
 import StudentSidebar from '@/components/StudentSidebar'
 import StudentMobileLogo from '@/components/StudentMobileLogo'
 import BottomNavigation from '@/components/BottomNavigation'
+import { NotificationPressable } from '@/components/NotificationPressable'
 import {
   getMyNotifications,
   getUnreadCount,
@@ -324,6 +325,11 @@ export default function StudentNotificationsPage() {
     }
   }
 
+  const handleNotificationDeleted = (notificationId: string) => {
+    setNotifications((prev) => prev.filter((item) => item.id !== notificationId))
+    setUnreadRefreshKey((key) => key + 1)
+  }
+
   const handleMarkAllAsRead = async () => {
     if (!hasUnread || isMarkingAllRead) return
 
@@ -460,11 +466,15 @@ export default function StudentNotificationsPage() {
                       const isUnread = !notification.is_read
 
                       return (
-                        <button
+                        <NotificationPressable
                           key={notification.id}
-                          type="button"
+                          notificationId={notification.id}
                           onClick={() => handleNotificationClick(notification)}
-                          className={`w-full text-left border border-[#EEEEEE] rounded-2xl p-4 mb-3 flex items-start gap-4 cursor-pointer transition-colors ${
+                          onDeleted={handleNotificationDeleted}
+                          timestamp={formatRelativeTime(notification.created_at)}
+                          isUnread={isUnread}
+                          showUnreadDot
+                          className={`border border-[#EEEEEE] rounded-2xl p-4 mb-3 transition-colors ${
                             isUnread ? 'bg-white' : 'bg-[#FAFAFA]'
                           }`}
                         >
@@ -486,16 +496,7 @@ export default function StudentNotificationsPage() {
                               {notification.message}
                             </p>
                           </div>
-
-                          <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                            <span className="text-xs text-gray-400 whitespace-nowrap">
-                              {formatRelativeTime(notification.created_at)}
-                            </span>
-                            {isUnread && (
-                              <span className="w-2.5 h-2.5 rounded-full bg-[#3B82F6]" />
-                            )}
-                          </div>
-                        </button>
+                        </NotificationPressable>
                       )
                     })}
                   </div>

@@ -3,6 +3,7 @@ import { Montserrat, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import appConfig from '@/config/appConfig.json';
 import MaintenancePage from '@/components/MaintenancePage';
+import OfflineBanner from '@/components/OfflineBanner';
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -43,6 +44,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
+        <OfflineBanner />
         {isMaintenanceMode ? <MaintenancePage /> : children}
       </body>
     </html>

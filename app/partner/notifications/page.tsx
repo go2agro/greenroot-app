@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Bell, CheckCircle, FileText, type LucideIcon } from 'lucide-react'
 import PartnerShell from '@/components/PartnerShell'
+import { NotificationPressable } from '@/components/NotificationPressable'
 import {
   getMyNotifications,
   markAsRead,
@@ -127,6 +128,11 @@ export default function PartnerNotificationsPage() {
     }
   }
 
+  function handleNotificationDeleted(notificationId: string) {
+    setNotifications((prev) => prev.filter((item) => item.id !== notificationId))
+    setUnreadRefreshKey((key) => key + 1)
+  }
+
   async function handleMarkAllAsRead() {
     if (!hasUnread || isMarkingAllRead) return
 
@@ -206,27 +212,24 @@ export default function PartnerNotificationsPage() {
               const { Icon, wrapperClass, iconClass } = getNotificationIcon(notification.type)
 
               return (
-                <button
+                <NotificationPressable
                   key={notification.id}
-                  type="button"
+                  notificationId={notification.id}
                   onClick={() => handleNotificationClick(notification)}
-                  className={`w-full text-left border border-[#EEEEEE] rounded-2xl p-4 bg-white hover:border-[#8DC63F] transition-colors ${
-                    !notification.is_read ? 'border-l-4 border-l-[#8DC63F]' : ''
-                  }`}
+                  onDeleted={handleNotificationDeleted}
+                  timestamp={formatRelativeTime(notification.created_at)}
+                  className={`border border-[#EEEEEE] rounded-2xl p-4 transition-colors ${
+                    !notification.is_read ? 'border-l-4 border-l-[#8DC63F] bg-white' : 'bg-white'
+                  } hover:border-[#8DC63F]`}
                 >
-                  <div className="flex items-start gap-4">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${wrapperClass}`}>
-                      <Icon className={`w-5 h-5 ${iconClass}`} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-gray-900">{notification.title}</p>
-                      <p className="text-sm text-gray-500 mt-1">{notification.message}</p>
-                    </div>
-                    <p className="text-xs text-gray-400 whitespace-nowrap">
-                      {formatRelativeTime(notification.created_at)}
-                    </p>
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${wrapperClass}`}>
+                    <Icon className={`w-5 h-5 ${iconClass}`} />
                   </div>
-                </button>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-gray-900">{notification.title}</p>
+                    <p className="text-sm text-gray-500 mt-1">{notification.message}</p>
+                  </div>
+                </NotificationPressable>
               )
             })}
           </div>

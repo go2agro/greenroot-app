@@ -20,6 +20,9 @@ import {
   type ApplicationPaperStudentProfile,
 } from '@/components/ApplicationPaperForm'
 import { ApplicationTimeline } from '@/components/ApplicationTimeline'
+import { ApplicationStagesStepper } from '@/components/ApplicationStagesStepper'
+import { getMostRecentStageUpdate, getStageLabel, type ApplicationStageRecord } from '@/lib/applicationStages.shared'
+import { getApplicationStages } from '@/lib/applicationStages'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { DetailSkeleton, PAGE_CLASS } from '@/components/detailLayout'
 import {
@@ -111,6 +114,7 @@ export default function AdminApplicationDetails({
   const [actionLoading, setActionLoading] = useState(false)
   const [rejectionMessage, setRejectionMessage] = useState('')
   const [finalRemarks, setFinalRemarks] = useState('')
+  const [latestStage, setLatestStage] = useState<ApplicationStageRecord | null>(null)
   const partnerSectionRef = useRef<HTMLDivElement>(null)
 
   const { data: adminProfile } = useSWR(
@@ -151,6 +155,17 @@ export default function AdminApplicationDetails({
       setNotFound(false)
       setFinalRemarks(app.admin_remarks || '')
       await loadTimeline(app.id, app)
+
+      if (app.status === 'accepted') {
+        const stagesResult = await getApplicationStages(app.id)
+        if (stagesResult.data) {
+          setLatestStage(getMostRecentStageUpdate(stagesResult.data))
+        } else {
+          setLatestStage(null)
+        }
+      } else {
+        setLatestStage(null)
+      }
     }
 
     setLoading(false)
@@ -526,7 +541,107 @@ export default function AdminApplicationDetails({
           </div>
         ) : (
           <div className={`${PAGE_CLASS} p-4 sm:p-6 lg:p-8 space-y-5`}>
-            <ApplicationTimeline steps={timelineSteps} applicationRef={applicationRef} />
+            {application.status === 'accepted' ? (
+              <>
+                <div className="bg-gradient-to-r from-[#3B82F6] to-[#8DC63F] border border-[#7DB62F] rounded-xl p-5 shadow-sm">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0 border border-white/30">
+                      <CheckCircle className="w-7 h-7 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-4">
+                        <h3 className="font-bold text-lg text-white">Application Accepted</h3>
+                        {latestStage && (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white text-xs font-semibold border border-white/30">
+                            <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                            {getStageLabel(latestStage.stage_key)}
+                          </span>
+                        )}
+                      </div>
+                      
+                      {latestStage ? (
+                        <div className="mt-3 bg-white rounded-lg p-3 border border-white/40 shadow-sm">
+                          <p className="text-xs font-semibold text-[#3B82F6] uppercase tracking-wide mb-1">
+                            Latest Update
+                          </p>
+                          <p className="text-sm font-medium text-gray-900">
+                            {getStageLabel(latestStage.stage_key)}
+                          </p>
+                          <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                            {latestStage.comment}
+                          </p>
+                          <p className="text-[10px] text-gray-500 mt-2">
+                            Updated on{' '}
+                            {new Date(latestStage.recorded_at).toLocaleString('en-GB', {
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric',
+                              hour: 'numeric',
+                              minute: '2-digit',
+                            })}
+                            {latestStage.admin_name && ` by ${latestStage.admin_name}`}
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="mt-2">
+                          <p className="text-sm text-white/95">
+                            Accepted on{' '}
+                            <span className="font-semibold">
+                              {application.accepted_at
+                                ? new Date(application.accepted_at).toLocaleString('en-GB', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric',
+                                    hour: 'numeric',
+                                    minute: '2-digit',
+                                  })
+                                : 'N/A'}
+                            </span>
+                          </p>
+                          <p className="text-xs text-white/80 mt-1">
+                            No stages recorded yet. Click on a stage below to begin tracking progress.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <ApplicationStagesStepper 
+                  applicationId={application.id} 
+                  onStageUpdated={setLatestStage}
+                />
+              </>
+            ) : application.status === 'closed' && timelineSteps.some(step => step.actorRole === 'system') ? (
+              <div className="bg-gradient-to-r from-gray-50 to-slate-50 border-2 border-gray-300 rounded-lg p-5">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <XCircle className="w-7 h-7 text-gray-500" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg text-gray-700">Application Auto-Closed</h3>
+                    <p className="text-sm text-gray-600 mt-1">
+                      This application was automatically closed by the system on{' '}
+                      <span className="font-semibold">
+                        {application.closed_at
+                          ? new Date(application.closed_at).toLocaleString('en-GB', {
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric',
+                              hour: 'numeric',
+                              minute: '2-digit',
+                            })
+                          : 'N/A'}
+                      </span>
+                    </p>
+                    <p className="text-xs text-gray-500 mt-2">
+                      The student chose to accept a different approved application. This application is no longer active.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <ApplicationTimeline steps={timelineSteps} applicationRef={applicationRef} />
+            )}
 
             <ApplicationPaperForm
               application={application}

@@ -6,6 +6,8 @@ export type ApplicationEventType =
   | 'partner_decided'
   | 'final_approved'
   | 'final_rejected'
+  | 'student_accepted'
+  | 'auto_closed'
   | 'closed'
   | 'deleted'
 
@@ -77,6 +79,7 @@ export function buildApplicationTimeline(
   const finalRejectedEvent = findEvent(events, 'final_rejected')
   const rejectedEvent = findEvent(events, 'admin_rejected')
   const closedEvent = findEvent(events, 'closed')
+  const autoClosedEvent = findEvent(events, 'auto_closed')
   const deletedEvent = findEvent(events, 'deleted')
 
   const submittedAt =
@@ -226,15 +229,26 @@ export function buildApplicationTimeline(
   ]
 
   if (application.status === 'closed' && adminAcceptedAt) {
+    const isAutoClosed = Boolean(autoClosedEvent)
+    const closedTimestamp = autoClosedEvent?.created_at ?? closedEvent?.created_at ?? application.closed_at ?? application.updated_at
+    
+    let closedMessage: string | undefined
+    if (autoClosedEvent) {
+      closedMessage = autoClosedEvent.message ?? 'Student accepted a different application'
+    } else if (closedEvent) {
+      closedMessage = closedEvent.message
+    }
+
     steps.push({
       key: 'closed',
-      label: 'Application Closed',
-      timestamp: formatTimelineDate(
-        closedEvent?.created_at ?? application.closed_at ?? application.updated_at
-      ),
+      label: isAutoClosed ? 'Auto-Closed' : 'Application Closed',
+      description: isAutoClosed 
+        ? 'Closed because student chose another application' 
+        : 'Application closed by admin',
+      timestamp: formatTimelineDate(closedTimestamp),
       status: 'terminal',
-      actorRole: 'admin',
-      message: closedEvent?.message ?? application.admin_remarks ?? undefined,
+      actorRole: isAutoClosed ? 'system' : 'admin',
+      message: closedMessage,
     })
   }
 
