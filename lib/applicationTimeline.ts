@@ -236,7 +236,7 @@ export function buildApplicationTimeline(
     if (autoClosedEvent) {
       closedMessage = autoClosedEvent.message ?? 'Student accepted a different application'
     } else if (closedEvent) {
-      closedMessage = closedEvent.message
+      closedMessage = closedEvent.message ?? undefined
     }
 
     steps.push({
