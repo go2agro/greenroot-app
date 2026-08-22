@@ -23,8 +23,7 @@ import AdminBottomNavigation from '@/components/AdminBottomNavigation'
 import { getAllInternships } from '@/lib/internships'
 import { getMyAdminProfile } from '@/lib/adminProfiles'
 import { getMyProfile } from '@/lib/profiles'
-
-const ITEMS_PER_PAGE = 9
+import { ITEMS_PER_PAGE } from '@/lib/appConfig'
 
 type Internship = {
   id: string

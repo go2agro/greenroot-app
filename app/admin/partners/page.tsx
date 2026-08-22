@@ -1,66 +1,36 @@
 "use client"
 
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import useSWR from 'swr'
 import {
   Search,
-  FileText,
+  Handshake,
   ChevronLeft,
   ChevronRight,
   SlidersHorizontal,
-  Send,
-  CheckCircle,
-  XCircle,
+  Globe,
   Clock,
 } from 'lucide-react'
 import AdminSidebar from '@/components/AdminSidebar'
 import AdminBottomNavigation from '@/components/AdminBottomNavigation'
-import { getAllApplications } from '@/lib/adminApplications'
+import { getAllPartners } from '@/lib/adminPartners'
 import { getMyAdminProfile } from '@/lib/adminProfiles'
 import { getMyProfile } from '@/lib/profiles'
-import { getAllInternships } from '@/lib/internships'
-import {
-  formatApplicationReferenceId,
-  getApplicationStatusTimestamp,
-} from '@/lib/utils'
-import { ITEMS_PER_PAGE } from '@/lib/appConfig'
+
+const ITEMS_PER_PAGE = 5
 
 const TABLE_GRID_CLASS =
-  'md:grid md:grid-cols-[130px_minmax(0,1fr)_minmax(0,1.4fr)_100px_110px_40px] md:gap-4 md:items-center md:px-6 md:py-4'
+  'md:grid md:grid-cols-5 md:gap-4 md:items-center md:px-6 md:py-4'
 
-type ApplicationStatus =
-  | 'draft'
-  | 'submitted'
-  | 'under_review'
-  | 'admin_accepted'
-  | 'forwarded_to_partner'
-  | 'partner_review'
-  | 'approved'
-  | 'rejected'
-  | 'accepted'
-  | 'closed'
-
-type Application = {
+type PartnerProfile = {
   id: string
-  status: ApplicationStatus
-  started_at?: string
-  submitted_at?: string
-  updated_at?: string
-  decided_at?: string
-  accepted_at?: string
-  internships?: {
-    title?: string
-    country?: string
-    flag_emoji?: string
-  } | null
-  student_profiles?: {
-    first_name?: string
-    last_name?: string
-    email?: string
-    profiles?: { unique_id?: string } | { unique_id?: string }[] | null
-  } | null
+  first_name?: string
+  middle_name?: string
+  last_name?: string
+  official_email?: string
+  countries?: string[] | null
+  profiles?: { unique_id?: string; created_at?: string; role?: string } | { unique_id?: string; created_at?: string; role?: string }[] | null
 }
 
 type AdminProfile = {
@@ -73,29 +43,12 @@ type Profile = {
 }
 
 type FilterState = {
-  statuses: ApplicationStatus[]
   countries: string[]
-  internships: string[]
 }
 
 const EMPTY_FILTERS: FilterState = {
-  statuses: [],
   countries: [],
-  internships: [],
 }
-
-const STATUS_OPTIONS: { value: ApplicationStatus; label: string }[] = [
-  { value: 'draft', label: 'Draft' },
-  { value: 'submitted', label: 'Awaiting Screening' },
-  { value: 'admin_accepted', label: 'Screening Passed' },
-  { value: 'forwarded_to_partner', label: 'With Partner' },
-  { value: 'partner_review', label: 'Partner Reviewed' },
-  { value: 'under_review', label: 'Under Review' },
-  { value: 'approved', label: 'Approved' },
-  { value: 'rejected', label: 'Rejected' },
-  { value: 'accepted', label: 'Accepted' },
-  { value: 'closed', label: 'Closed' },
-]
 
 const KPI_CARD_CLASS =
   'bg-white border border-[#EEEEEE] rounded-2xl p-5 transition-colors hover:border-[#8DC63F]'
@@ -106,105 +59,61 @@ const fetcher = async (fn: () => Promise<{ data: unknown; error: unknown }>) => 
     throw new Error(
       typeof res.error === 'object' && res.error && 'message' in res.error
         ? String((res.error as { message: string }).message)
-        : 'Failed to load applications'
+        : 'Failed to load partners'
     )
   }
-  return (res.data as Application[]) ?? []
+  return (res.data as PartnerProfile[]) ?? []
 }
 
-function formatStatusText(status: ApplicationStatus) {
-  return status
-    .split('_')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+function getNestedProfile(partner: PartnerProfile) {
+  const profile = partner.profiles
+  return Array.isArray(profile) ? profile[0] : profile
+}
+
+function getPartnerSortTimestamp(partner: PartnerProfile) {
+  const profile = getNestedProfile(partner)
+  const dateString = profile?.created_at
+  return dateString ? new Date(dateString).getTime() : 0
+}
+
+function sortPartnersLatestFirst(partners: PartnerProfile[]) {
+  return [...partners].sort(
+    (a, b) => getPartnerSortTimestamp(b) - getPartnerSortTimestamp(a)
+  )
+}
+
+function displayValue(value?: string | null) {
+  return value?.trim() ? value : '-'
+}
+
+function getPartnerName(partner: PartnerProfile) {
+  const name = [partner.first_name, partner.middle_name, partner.last_name]
+    .filter(Boolean)
     .join(' ')
+  return name || '-'
 }
 
-function getStatusBadgeClass(status: ApplicationStatus) {
-  switch (status) {
-    case 'draft':
-      return 'bg-gray-100 text-gray-600'
-    case 'submitted':
-      return 'bg-blue-100 text-blue-600'
-    case 'admin_accepted':
-      return 'bg-emerald-100 text-emerald-700'
-    case 'forwarded_to_partner':
-      return 'bg-sky-100 text-sky-700'
-    case 'partner_review':
-      return 'bg-violet-100 text-violet-700'
-    case 'under_review':
-      return 'bg-amber-100 text-amber-600'
-    case 'approved':
-      return 'bg-green-100 text-green-600'
-    case 'rejected':
-      return 'bg-red-100 text-red-600'
-    case 'accepted':
-      return 'bg-purple-100 text-purple-600'
-    case 'closed':
-      return 'bg-gray-100 text-gray-500'
-    default:
-      return 'bg-gray-100 text-gray-600'
-  }
+function formatCountries(countries?: string[] | null) {
+  if (!countries?.length) return '-'
+  return countries.join(', ')
 }
 
-function getStudentName(application: Application) {
-  const firstName = application.student_profiles?.first_name
-  const lastName = application.student_profiles?.last_name
-  return [firstName, lastName].filter(Boolean).join(' ') || 'Unknown student'
-}
+function formatRelativeDate(dateString?: string) {
+  if (!dateString) return '-'
 
-function getCountryFlag(country?: string, emoji?: string) {
-  if (emoji) return emoji
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMins = Math.floor(diffMs / 60000)
+  const diffHours = Math.floor(diffMs / 3600000)
+  const diffDays = Math.floor(diffMs / 86400000)
 
-  const countryToCode: Record<string, string> = {
-    USA: 'US',
-    'United States': 'US',
-    UK: 'GB',
-    'United Kingdom': 'GB',
-    Canada: 'CA',
-    Australia: 'AU',
-    India: 'IN',
-    Germany: 'DE',
-    France: 'FR',
-    Italy: 'IT',
-    Spain: 'ES',
-    Netherlands: 'NL',
-    Belgium: 'BE',
-    Switzerland: 'CH',
-    Austria: 'AT',
-    Japan: 'JP',
-    China: 'CN',
-    'South Korea': 'KR',
-    Brazil: 'BR',
-    Mexico: 'MX',
-    Argentina: 'AR',
-    'New Zealand': 'NZ',
-    Singapore: 'SG',
-    Ireland: 'IE',
-    Denmark: 'DK',
-    Sweden: 'SE',
-    Norway: 'NO',
-    Finland: 'FI',
-    Poland: 'PL',
-    Portugal: 'PT',
-    Greece: 'GR',
-    Israel: 'IL',
-    UAE: 'AE',
-    'South Africa': 'ZA',
-    Kenya: 'KE',
-    Nigeria: 'NG',
-    Egypt: 'EG',
-    Thailand: 'TH',
-    Vietnam: 'VN',
-    Indonesia: 'ID',
-    Philippines: 'PH',
-    Malaysia: 'MY',
-  }
+  if (diffMins < 1) return 'Just now'
+  if (diffMins < 60) return `${diffMins}m ago`
+  if (diffHours < 24) return `${diffHours}h ago`
+  if (diffDays < 7) return `${diffDays}d ago`
 
-  if (!country) return '🌍'
-  const code = countryToCode[country] || countryToCode[country.split(',')[0]?.trim()]
-  if (!code) return '🌍'
-
-  return String.fromCodePoint(...[...code].map((c) => c.charCodeAt(0) + 127397))
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
 function toggleArrayItem<T>(items: T[], item: T) {
@@ -269,21 +178,19 @@ function ListSkeleton() {
           className="bg-white border border-[#EEEEEE] rounded-2xl p-4 animate-pulse flex items-center gap-4"
         >
           <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className="h-4 bg-gray-200 rounded w-28" />
+            <div className="h-4 bg-gray-200 rounded w-24" />
             <div className="h-4 bg-gray-200 rounded flex-1" />
             <div className="h-4 bg-gray-200 rounded flex-1" />
-            <div className="h-6 bg-gray-200 rounded-full w-24" />
+            <div className="h-4 bg-gray-200 rounded flex-1" />
             <div className="h-4 bg-gray-200 rounded w-20" />
           </div>
-          <div className="h-8 w-8 bg-gray-200 rounded-lg flex-shrink-0" />
         </div>
       ))}
     </div>
   )
 }
 
-export default function AdminApplications() {
-  const router = useRouter()
+export default function AdminPartners() {
   const filterPanelRef = useRef<HTMLDivElement>(null)
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -292,27 +199,9 @@ export default function AdminApplications() {
   const [appliedFilters, setAppliedFilters] = useState<FilterState>(EMPTY_FILTERS)
   const [currentPage, setCurrentPage] = useState(1)
 
-  const { data: applications, isLoading, error: loadError } = useSWR(
-    'adminAllApplications',
-    () => fetcher(getAllApplications),
-    {
-      dedupingInterval: 30000,
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
-    }
-  )
-
-  const { data: allInternships } = useSWR(
-    'adminAllInternshipsForFilters',
-    async () => {
-      try {
-        const res = await getAllInternships()
-        if (res.error) return []
-        return (res.data as { country?: string; title?: string }[]) ?? []
-      } catch {
-        return []
-      }
-    },
+  const { data: partners, isLoading, error: loadError } = useSWR(
+    'adminAllPartners',
+    () => fetcher(getAllPartners),
     {
       dedupingInterval: 300000,
       revalidateOnFocus: false,
@@ -332,84 +221,66 @@ export default function AdminApplications() {
     revalidateOnReconnect: false,
   })
 
-  const applicationList = useMemo(
-    () => (applications as Application[] | undefined) ?? [],
-    [applications]
+  const partnerList = useMemo(
+    () =>
+      sortPartnersLatestFirst((partners as PartnerProfile[] | undefined) ?? []),
+    [partners]
   )
 
   const uniqueCountries = useMemo(() => {
-    const fromApplications = applicationList
-      .map((app) => app.internships?.country?.trim())
-      .filter(Boolean) as string[]
-    const fromInternships = ((allInternships as { country?: string }[]) ?? [])
-      .map((item) => item.country?.trim())
-      .filter(Boolean) as string[]
-    return [...new Set([...fromApplications, ...fromInternships])].sort()
-  }, [applicationList, allInternships])
-
-  const uniqueInternships = useMemo(() => {
-    const fromApplications = applicationList
-      .map((app) => app.internships?.title?.trim())
-      .filter(Boolean) as string[]
-    const fromInternships = ((allInternships as { title?: string }[]) ?? [])
-      .map((item) => item.title?.trim())
-      .filter(Boolean) as string[]
-    return [...new Set([...fromApplications, ...fromInternships])].sort()
-  }, [applicationList, allInternships])
+    const countrySet = new Set<string>()
+    partnerList.forEach((partner) => {
+      partner.countries?.forEach((country) => {
+        if (country?.trim()) countrySet.add(country.trim())
+      })
+    })
+    return [...countrySet].sort()
+  }, [partnerList])
 
   const stats = useMemo(() => {
-    const total = applicationList.length
-    const pending = applicationList.filter(
-      (app) => app.status === 'submitted' || app.status === 'under_review'
-    ).length
-    const approved = applicationList.filter(
-      (app) => app.status === 'approved' || app.status === 'accepted'
-    ).length
-    const rejected = applicationList.filter((app) => app.status === 'rejected').length
-    return { total, pending, approved, rejected }
-  }, [applicationList])
+    const total = partnerList.length
+    const countriesCovered = uniqueCountries.length
+    return { total, countriesCovered }
+  }, [partnerList, uniqueCountries])
 
-  const filteredApplications = useMemo(() => {
-    let result = [...applicationList]
+  const filteredPartners = useMemo(() => {
+    let result = [...partnerList]
 
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase()
-      result = result.filter((app) => {
-        const firstName = app.student_profiles?.first_name?.toLowerCase() ?? ''
-        const lastName = app.student_profiles?.last_name?.toLowerCase() ?? ''
-        const email = app.student_profiles?.email?.toLowerCase() ?? ''
-        const title = app.internships?.title?.toLowerCase() ?? ''
-        const refId = formatApplicationReferenceId(app.id, app.submitted_at).toLowerCase()
-        const rawId = app.id.toLowerCase()
+      result = result.filter((partner) => {
+        const firstName = partner.first_name?.toLowerCase() ?? ''
+        const lastName = partner.last_name?.toLowerCase() ?? ''
+        const middleName = partner.middle_name?.toLowerCase() ?? ''
+        const uniqueId = getNestedProfile(partner)?.unique_id?.toLowerCase() ?? ''
+        const email = partner.official_email?.toLowerCase() ?? ''
+        const fullName = [firstName, middleName, lastName].filter(Boolean).join(' ')
+        const countryMatch = (partner.countries ?? []).some((country) =>
+          country.toLowerCase().includes(query)
+        )
+
         return (
           firstName.includes(query) ||
           lastName.includes(query) ||
+          middleName.includes(query) ||
+          fullName.includes(query) ||
+          uniqueId.includes(query) ||
           email.includes(query) ||
-          title.includes(query) ||
-          refId.includes(query) ||
-          rawId.includes(query)
+          countryMatch
         )
       })
     }
 
-    if (appliedFilters.statuses.length > 0) {
-      result = result.filter((app) => appliedFilters.statuses.includes(app.status))
-    }
-
     if (appliedFilters.countries.length > 0) {
-      result = result.filter(
-        (app) => app.internships?.country && appliedFilters.countries.includes(app.internships.country)
+      result = result.filter((partner) =>
+        (partner.countries ?? []).some((country) =>
+          appliedFilters.countries.includes(country)
+        )
       )
     }
 
-    if (appliedFilters.internships.length > 0) {
-      result = result.filter(
-        (app) => app.internships?.title && appliedFilters.internships.includes(app.internships.title)
-      )
-    }
-
-    return result
-  }, [applicationList, searchQuery, appliedFilters])
+    return sortPartnersLatestFirst(result)
+  }, [partnerList, searchQuery, appliedFilters])
 
   useEffect(() => {
     setCurrentPage(1)
@@ -432,17 +303,11 @@ export default function AdminApplications() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [showFilterPanel])
 
-  const totalPages = Math.ceil(filteredApplications.length / ITEMS_PER_PAGE)
+  const totalPages = Math.ceil(filteredPartners.length / ITEMS_PER_PAGE)
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
-  const paginatedApplications = filteredApplications.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE
-  )
+  const paginatedPartners = filteredPartners.slice(startIndex, startIndex + ITEMS_PER_PAGE)
 
-  const activeFilterCount =
-    appliedFilters.statuses.length +
-    appliedFilters.countries.length +
-    appliedFilters.internships.length
+  const activeFilterCount = appliedFilters.countries.length
 
   const handleApplyFilters = () => {
     setAppliedFilters(pendingFilters)
@@ -507,7 +372,7 @@ export default function AdminApplications() {
     <div className="flex h-screen bg-[#F9F9F9] overflow-hidden">
       <div className="hidden lg:block">
         <AdminSidebar
-          activePage="applications"
+          activePage="partners"
           isCollapsed={isSidebarCollapsed}
           onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         />
@@ -517,9 +382,9 @@ export default function AdminApplications() {
         <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex-shrink-0">
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
-              <h1 className="font-bold text-xl sm:text-2xl text-gray-900">Applications</h1>
+              <h1 className="font-bold text-xl sm:text-2xl text-gray-900">Partners</h1>
               <p className="text-sm text-gray-500 mt-0.5 hidden sm:block">
-                Manage and review all student applications
+                View all registered partner organizations
               </p>
             </div>
 
@@ -538,17 +403,16 @@ export default function AdminApplications() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto pb-20 lg:pb-0">
           <div className="p-4 sm:p-6 lg:p-8">
-            {/* KPI cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-2 gap-4 mb-6">
               <div className={KPI_CARD_CLASS}>
                 {isLoading ? (
                   <KpiCardSkeleton />
                 ) : (
                   <>
-                    <FileText className="w-8 h-8 text-[#8DC63F] mb-3" />
-                    <p className="text-sm text-gray-500">Total Applications</p>
+                    <Handshake className="w-8 h-8 text-[#8DC63F] mb-3" />
+                    <p className="text-sm text-gray-500">Total Partners</p>
                     <p className="text-3xl font-bold text-[#3B82F6] mt-1">
                       {stats.total.toLocaleString()}
                     </p>
@@ -561,51 +425,22 @@ export default function AdminApplications() {
                   <KpiCardSkeleton />
                 ) : (
                   <>
-                    <Send className="w-8 h-8 text-[#8DC63F] mb-3" />
-                    <p className="text-sm text-gray-500">Pending Review</p>
+                    <Globe className="w-8 h-8 text-[#8DC63F] mb-3" />
+                    <p className="text-sm text-gray-500">Countries Covered</p>
                     <p className="text-3xl font-bold text-[#3B82F6] mt-1">
-                      {stats.pending.toLocaleString()}
-                    </p>
-                  </>
-                )}
-              </div>
-
-              <div className={KPI_CARD_CLASS}>
-                {isLoading ? (
-                  <KpiCardSkeleton />
-                ) : (
-                  <>
-                    <CheckCircle className="w-8 h-8 text-[#8DC63F] mb-3" />
-                    <p className="text-sm text-gray-500">Approved</p>
-                    <p className="text-3xl font-bold text-[#3B82F6] mt-1">
-                      {stats.approved.toLocaleString()}
-                    </p>
-                  </>
-                )}
-              </div>
-
-              <div className={KPI_CARD_CLASS}>
-                {isLoading ? (
-                  <KpiCardSkeleton />
-                ) : (
-                  <>
-                    <XCircle className="w-8 h-8 text-[#8DC63F] mb-3" />
-                    <p className="text-sm text-gray-500">Rejected</p>
-                    <p className="text-3xl font-bold text-[#3B82F6] mt-1">
-                      {stats.rejected.toLocaleString()}
+                      {stats.countriesCovered.toLocaleString()}
                     </p>
                   </>
                 )}
               </div>
             </div>
 
-            {/* Search + filter */}
             <div className="flex gap-3 items-center mb-6">
               <div className="relative flex-1">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search by application ID, student name, email or internship..."
+                  placeholder="Search by partner ID, name, email, or country..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-white border border-[#EEEEEE] rounded-xl py-3 px-4 pl-12 focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
@@ -638,27 +473,9 @@ export default function AdminApplications() {
                     </div>
 
                     <div className="p-4 space-y-3">
-                      <FilterCategory title="Status">
-                        <div className="space-y-1">
-                          {STATUS_OPTIONS.map((option) => (
-                            <FilterCheckboxItem
-                              key={option.value}
-                              label={option.label}
-                              checked={pendingFilters.statuses.includes(option.value)}
-                              onChange={() =>
-                                setPendingFilters((prev) => ({
-                                  ...prev,
-                                  statuses: toggleArrayItem(prev.statuses, option.value),
-                                }))
-                              }
-                            />
-                          ))}
-                        </div>
-                      </FilterCategory>
-
                       <FilterCategory title="Country">
                         {uniqueCountries.length > 0 ? (
-                          <div className="space-y-1 max-h-36 overflow-y-auto">
+                          <div className="space-y-1 max-h-48 overflow-y-auto">
                             {uniqueCountries.map((country) => (
                               <FilterCheckboxItem
                                 key={country}
@@ -675,28 +492,6 @@ export default function AdminApplications() {
                           </div>
                         ) : (
                           <p className="text-xs text-gray-400">No countries available</p>
-                        )}
-                      </FilterCategory>
-
-                      <FilterCategory title="Internship">
-                        {uniqueInternships.length > 0 ? (
-                          <div className="space-y-1 max-h-36 overflow-y-auto">
-                            {uniqueInternships.map((title) => (
-                              <FilterCheckboxItem
-                                key={title}
-                                label={title}
-                                checked={pendingFilters.internships.includes(title)}
-                                onChange={() =>
-                                  setPendingFilters((prev) => ({
-                                    ...prev,
-                                    internships: toggleArrayItem(prev.internships, title),
-                                  }))
-                                }
-                              />
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-xs text-gray-400">No internships available</p>
                         )}
                       </FilterCategory>
                     </div>
@@ -725,98 +520,81 @@ export default function AdminApplications() {
             <div className="mb-6">
               <p className="text-sm text-gray-500">
                 {isLoading
-                  ? 'Loading applications...'
-                  : `Showing ${filteredApplications.length} ${filteredApplications.length === 1 ? 'application' : 'applications'}`}
+                  ? 'Loading partners...'
+                  : `Showing ${filteredPartners.length} ${filteredPartners.length === 1 ? 'partner' : 'partners'}`}
               </p>
             </div>
 
-            {/* Applications list */}
             {isLoading ? (
               <ListSkeleton />
             ) : loadError ? (
               <div className="bg-white border border-[#EEEEEE] rounded-2xl flex flex-col items-center justify-center py-16">
-                <FileText className="w-12 h-12 text-gray-300 mb-3" />
-                <p className="font-semibold text-gray-500">Failed to load applications</p>
+                <Handshake className="w-12 h-12 text-gray-300 mb-3" />
+                <p className="font-semibold text-gray-500">Failed to load partners</p>
                 <p className="text-sm text-gray-400 mt-1">{loadError.message}</p>
               </div>
-            ) : filteredApplications.length === 0 ? (
+            ) : filteredPartners.length === 0 ? (
               <div className="bg-white border border-[#EEEEEE] rounded-2xl flex flex-col items-center justify-center py-16">
-                <FileText className="w-12 h-12 text-gray-300 mb-3" />
-                <p className="font-semibold text-gray-500">No applications found</p>
-                <p className="text-sm text-gray-400 mt-1">Try adjusting your filters</p>
+                <Handshake className="w-12 h-12 text-gray-300 mb-3" />
+                <p className="font-semibold text-gray-500">No partners found</p>
+                <p className="text-sm text-gray-400 mt-1">Try adjusting your search or filters</p>
               </div>
             ) : (
               <>
                 <div
                   className={`hidden ${TABLE_GRID_CLASS} bg-[#F9F9F9] border border-[#EEEEEE] rounded-t-2xl text-xs font-semibold text-gray-500 uppercase tracking-wide md:py-3`}
                 >
-                  <span>Application ID</span>
-                  <span>Student</span>
-                  <span>Internship</span>
-                  <span>Status</span>
-                  <span>Time</span>
-                  <span />
+                  <span>Partner ID</span>
+                  <span>Name</span>
+                  <span>Email</span>
+                  <span>Countries</span>
+                  <span>Joined</span>
                 </div>
 
                 <div className="space-y-3 md:space-y-0 md:border md:border-t-0 md:border-[#EEEEEE] md:rounded-b-2xl md:overflow-hidden">
-                  {paginatedApplications.map((application) => {
-                    const country = application.internships?.country
+                  {paginatedPartners.map((partner) => {
+                    const profileData = getNestedProfile(partner)
 
                     return (
                       <div
-                        key={application.id}
-                        onClick={() => router.push(`/admin/applications/${application.id}`)}
-                        className={`group bg-white border border-[#EEEEEE] md:border-0 md:border-b md:last:border-b-0 rounded-2xl md:rounded-none hover:bg-green-50 cursor-pointer transition-colors p-4 ${TABLE_GRID_CLASS}`}
+                        key={partner.id}
+                        className={`bg-white border border-[#EEEEEE] md:border-0 md:border-b md:last:border-b-0 rounded-2xl md:rounded-none p-4 ${TABLE_GRID_CLASS}`}
                       >
                         <div className="mb-3 md:mb-0 min-w-0">
-                          <p className="md:hidden text-xs text-gray-400 mb-0.5">Application ID</p>
+                          <p className="md:hidden text-xs text-gray-400 mb-0.5">Partner ID</p>
                           <p className="text-sm font-semibold text-[#8DC63F] truncate">
-                            {formatApplicationReferenceId(application.id, application.submitted_at)}
+                            {displayValue(profileData?.unique_id)}
                           </p>
                         </div>
 
                         <div className="mb-3 md:mb-0 min-w-0">
-                          <p className="md:hidden text-xs text-gray-400 mb-0.5">Student</p>
+                          <p className="md:hidden text-xs text-gray-400 mb-0.5">Name</p>
                           <p className="text-sm font-medium text-gray-900 truncate">
-                            {getStudentName(application)}
+                            {getPartnerName(partner)}
                           </p>
                         </div>
 
                         <div className="mb-3 md:mb-0 min-w-0">
-                          <p className="md:hidden text-xs text-gray-400 mb-0.5">Internship</p>
-                          <p className="text-sm font-medium text-gray-900 truncate">
-                            {application.internships?.title || 'Unknown internship'}
+                          <p className="md:hidden text-xs text-gray-400 mb-0.5">Email</p>
+                          <p className="text-sm text-gray-600 truncate">
+                            {displayValue(partner.official_email)}
                           </p>
-                          {country && (
-                            <div className="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5">
-                              <span className="text-sm leading-none">
-                                {getCountryFlag(country, application.internships?.flag_emoji)}
-                              </span>
-                              <span className="truncate">{country}</span>
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="mb-3 md:mb-0">
-                          <p className="md:hidden text-xs text-gray-400 mb-0.5">Status</p>
-                          <span
-                            className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(application.status)}`}
-                          >
-                            {formatStatusText(application.status)}
-                          </span>
                         </div>
 
                         <div className="mb-3 md:mb-0 min-w-0">
-                          <p className="md:hidden text-xs text-gray-400 mb-0.5">Time</p>
+                          <p className="md:hidden text-xs text-gray-400 mb-0.5">Countries</p>
+                          <p className="text-sm text-gray-600 truncate">
+                            {formatCountries(partner.countries)}
+                          </p>
+                        </div>
+
+                        <div className="min-w-0">
+                          <p className="md:hidden text-xs text-gray-400 mb-0.5">Joined</p>
                           <div className="flex items-center gap-1 text-sm text-gray-500">
                             <Clock className="w-3.5 h-3.5 flex-shrink-0" />
-                            <span className="truncate">{getApplicationStatusTimestamp(application)}</span>
-                          </div>
-                        </div>
-
-                        <div className="flex md:justify-end">
-                          <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#F5F5F5] text-gray-500 transition-colors group-hover:bg-[#8DC63F] group-hover:text-white">
-                            <ChevronRight className="w-4 h-4" />
+                            <span className="truncate">
+                              {formatRelativeDate(profileData?.created_at)}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -824,7 +602,7 @@ export default function AdminApplications() {
                   })}
                 </div>
 
-                {filteredApplications.length > 0 && (
+                {filteredPartners.length > 0 && totalPages > 1 && (
                   <div className="flex items-center justify-center gap-2 mt-8">
                     <button
                       type="button"

@@ -14,7 +14,17 @@ type PartnerRow = {
   countries?: string[] | null
 }
 
-function mapPartnerRow(partner: PartnerRow, uniqueId: string | null) {
+type ProfileMeta = {
+  unique_id?: string
+  role?: string
+  created_at?: string
+}
+
+type PartnerListRow = PartnerRow & {
+  profiles?: ProfileMeta
+}
+
+function mapPartnerRow(partner: PartnerRow, profile: ProfileMeta | null) {
   return {
     id: partner.id,
     first_name: partner.first_name ?? undefined,
@@ -22,39 +32,79 @@ function mapPartnerRow(partner: PartnerRow, uniqueId: string | null) {
     last_name: partner.last_name ?? undefined,
     official_email: partner.official_email ?? undefined,
     countries: partner.countries ?? [],
-    unique_id: uniqueId,
+    unique_id: profile?.unique_id ?? undefined,
   }
 }
 
-async function fetchPartnersWithIds(
+async function fetchPartnerProfileMeta(
+  supabase: NonNullable<Awaited<ReturnType<typeof getAdminDbClient>>['client']>,
+  partnerIds: string[]
+) {
+  const profileMap = new Map<string, ProfileMeta>()
+
+  if (!partnerIds.length) return profileMap
+
+  const { data: profiles, error: profilesError } = await supabase
+    .from('profiles')
+    .select('id, unique_id, role, created_at')
+    .in('id', partnerIds)
+
+  if (profilesError) throw profilesError
+
+  profiles?.forEach((profile) => {
+    profileMap.set(profile.id, {
+      unique_id: profile.unique_id ?? undefined,
+      role: profile.role ?? undefined,
+      created_at: profile.created_at ?? undefined,
+    })
+  })
+
+  return profileMap
+}
+
+async function fetchAllPartnerRows(
   supabase: NonNullable<Awaited<ReturnType<typeof getAdminDbClient>>['client']>
 ) {
   const { data: partners, error } = await supabase
     .from('partner_profiles')
     .select('id, first_name, middle_name, last_name, official_email, countries')
     .order('first_name', { ascending: true })
-    .limit(200)
 
   if (error) throw error
 
   const partnerIds = (partners ?? []).map((partner) => partner.id)
-  const profileMap = new Map<string, string>()
+  const profileMap = await fetchPartnerProfileMeta(supabase, partnerIds)
 
-  if (partnerIds.length) {
-    const { data: profiles, error: profilesError } = await supabase
-      .from('profiles')
-      .select('id, unique_id')
-      .in('id', partnerIds)
+  return (partners ?? []).map((partner) => ({
+    ...partner,
+    profiles: profileMap.get(partner.id),
+  }))
+}
 
-    if (profilesError) throw profilesError
+export async function getAllPartners() {
+  const { client: supabase, error: authError } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
 
-    profiles?.forEach((profile) => {
-      if (profile.unique_id) profileMap.set(profile.id, profile.unique_id)
+  try {
+    const partners = await fetchAllPartnerRows(supabase)
+    const sorted = [...partners].sort((a, b) => {
+      const aTime = a.profiles?.created_at ? new Date(a.profiles.created_at).getTime() : 0
+      const bTime = b.profiles?.created_at ? new Date(b.profiles.created_at).getTime() : 0
+      return bTime - aTime
     })
+    return toPlainResponse(sorted, null)
+  } catch (error) {
+    return toPlainResponse(null, error)
   }
+}
 
-  return (partners ?? []).map((partner) =>
-    mapPartnerRow(partner, profileMap.get(partner.id) ?? null)
+async function fetchPartnersWithIds(
+  supabase: NonNullable<Awaited<ReturnType<typeof getAdminDbClient>>['client']>
+) {
+  const partners = await fetchAllPartnerRows(supabase)
+
+  return partners.map((partner) =>
+    mapPartnerRow(partner, partner.profiles ?? null)
   )
 }
 
@@ -178,7 +228,9 @@ export async function getApplicationAssignment(applicationId: string) {
 
   return toPlainResponse(
     {
-      partner: mapPartnerRow(partner, profile?.unique_id ?? null),
+      partner: mapPartnerRow(partner, profile ? {
+        unique_id: profile.unique_id ?? undefined,
+      } : null),
     },
     null
   )

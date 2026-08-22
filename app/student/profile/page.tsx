@@ -29,6 +29,10 @@ import {
   uploadStudentDocument,
   checkProfileCompletion
 } from '@/lib/studentProfiles'
+import {
+  MAX_FILE_UPLOAD_BYTES,
+  MAX_FILE_UPLOAD_ERROR,
+} from '@/lib/appConfig'
 
 interface ProfileData {
   first_name?: string
@@ -139,6 +143,7 @@ export default function StudentProfile() {
   const [savingSection, setSavingSection] = useState<string | null>(null)
   const [sameAsPermanent, setSameAsPermanent] = useState(false)
   const [uploadingDoc, setUploadingDoc] = useState<string | null>(null)
+  const [uploadError, setUploadError] = useState<string | null>(null)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [isDeletingAccount, setIsDeletingAccount] = useState(false)
   const [showLogoutDialog, setShowLogoutDialog] = useState(false)
@@ -223,19 +228,27 @@ export default function StudentProfile() {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf']
     if (!allowedTypes.includes(file.type)) {
       e.target.value = '' // Reset input
+      setUploadError('Only JPEG, PNG, and PDF files are allowed')
       return
     }
 
-    if (file.size > 50 * 1024 * 1024) {
+    if (file.size > MAX_FILE_UPLOAD_BYTES) {
       e.target.value = '' // Reset input
+      setUploadError(MAX_FILE_UPLOAD_ERROR)
       return
     }
 
+    setUploadError(null)
     setUploadingDoc(docType)
     try {
       const result = await uploadStudentDocument(file, docType)
       if (result.error) {
         console.error('Upload error:', result.error)
+        setUploadError(
+          typeof result.error === 'object' && result.error && 'message' in result.error
+            ? String(result.error.message)
+            : MAX_FILE_UPLOAD_ERROR
+        )
       } else {
         await refreshProfile()
         await refreshCompletion()
@@ -931,6 +944,9 @@ export default function StudentProfile() {
                 } overflow-hidden`}
               >
               <div className="px-6 pb-6">
+              {uploadError && (
+                <p className="text-sm text-red-500 mb-4">{uploadError}</p>
+              )}
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>

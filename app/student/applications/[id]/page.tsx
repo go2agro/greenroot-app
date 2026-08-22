@@ -43,6 +43,12 @@ import {
 import { getMyStudentProfile, getMyStudentDocumentUrl } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
 import { formatStudentStatusLabel, formatApplicationReferenceId } from '@/lib/utils'
+import {
+  APPLICATION_STEPS_COUNT,
+  MAX_FILE_UPLOAD_BYTES,
+  MAX_FILE_UPLOAD_ERROR,
+  MAX_FILE_UPLOAD_MB,
+} from '@/lib/appConfig'
 
 type ApplicationData = ApplicationPaperData & {
   internships?: ApplicationPaperInternship & {
@@ -160,6 +166,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
   })
   
   const [isDragging, setIsDragging] = useState(false)
+  const [fileUploadError, setFileUploadError] = useState<string | null>(null)
   const [showSuccessDialog, setShowSuccessDialog] = useState(false)
   const [submittedAt, setSubmittedAt] = useState<string | null>(null)
 
@@ -238,7 +245,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
     if (!application) return
 
     if (isReadOnly) {
-      if (currentStep < 5) {
+      if (currentStep < APPLICATION_STEPS_COUNT) {
         setCurrentStep(currentStep + 1)
       }
       return
@@ -253,12 +260,12 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
     } else if (currentStep === 4) {
       if (!validateStep4()) return
       await saveStep4()
-      setCurrentStep(5)
-      await updateCurrentStep(application.id, 5)
+      setCurrentStep(APPLICATION_STEPS_COUNT)
+      await updateCurrentStep(application.id, APPLICATION_STEPS_COUNT)
       return
     }
     
-    if (currentStep < 5) {
+    if (currentStep < APPLICATION_STEPS_COUNT) {
       const nextStep = currentStep + 1
       setCurrentStep(nextStep)
       await updateCurrentStep(application.id, nextStep)
@@ -406,11 +413,13 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
     }
     
     const newFiles: UploadedFile[] = []
+    let rejectedForSize = false
     
     for (let i = 0; i < Math.min(files.length, remainingSlots); i++) {
       const file = files[i]
       
-      if (file.size > 1024 * 1024) {
+      if (file.size > MAX_FILE_UPLOAD_BYTES) {
+        rejectedForSize = true
         continue
       }
       
@@ -427,6 +436,12 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
         fieldKey: `doc_upload_${totalFiles + newFiles.length}`,
         preview: URL.createObjectURL(file)
       })
+    }
+    
+    if (rejectedForSize) {
+      setFileUploadError(MAX_FILE_UPLOAD_ERROR)
+    } else {
+      setFileUploadError(null)
     }
     
     if (newFiles.length > 0) {
@@ -484,7 +499,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                 ...prev,
                 status: 'submitted',
                 submitted_at: submissionTime,
-                current_step: 5,
+                current_step: APPLICATION_STEPS_COUNT,
               }
             : prev
         )
@@ -1122,7 +1137,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                   <p className="text-sm text-gray-500 mb-6">
                     {requiredDocumentsText
                       ? 'Read the required documents list below, then upload your files.'
-                      : `Upload your documents below. Maximum ${MAX_DOCUMENT_UPLOADS} files, 1MB each.`}
+                      : `Upload your documents below. Maximum ${MAX_DOCUMENT_UPLOADS} files, ${MAX_FILE_UPLOAD_MB}MB each.`}
                   </p>
 
                   {requiredDocumentsText && (
@@ -1146,7 +1161,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                   <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
                     <ul className="text-sm text-amber-800 space-y-1 list-disc list-inside">
                       <li>Maximum {MAX_DOCUMENT_UPLOADS} files total</li>
-                      <li>Each file must be under 1MB</li>
+                      <li>Each file must be under {MAX_FILE_UPLOAD_MB}MB</li>
                       <li>Accepted format: PDF only</li>
                     </ul>
                   </div>
@@ -1171,9 +1186,12 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                     <div className="text-center">
                       <CloudUpload className="w-12 h-12 text-gray-400 mx-auto mb-3" />
                       <p className="font-medium text-gray-600">Click to upload or drag and drop</p>
-                      <p className="text-xs text-gray-400 mt-1">PDF only • Max 1MB per file • Max {MAX_DOCUMENT_UPLOADS} files</p>
+                      <p className="text-xs text-gray-400 mt-1">PDF only • Max {MAX_FILE_UPLOAD_MB}MB per file • Max {MAX_DOCUMENT_UPLOADS} files</p>
                     </div>
                   </div>
+                  {fileUploadError && (
+                    <p className="text-sm text-red-500 mt-2">{fileUploadError}</p>
+                  )}
                   </>
                   )}
 
@@ -1232,7 +1250,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                 </div>
               )}
 
-              {currentStep === 5 && (
+              {currentStep === APPLICATION_STEPS_COUNT && (
                 <div>
                   <h3 className="font-bold text-xl text-gray-900 mb-2">Review & Submit</h3>
                   <p className="text-sm text-gray-500 mb-6">
@@ -1482,7 +1500,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
               </button>
             )}
 
-            {currentStep < 5 && (
+            {currentStep < APPLICATION_STEPS_COUNT && (
               <button
                 onClick={handleNext}
                 disabled={isSaving}

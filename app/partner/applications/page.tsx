@@ -25,8 +25,7 @@ import {
   formatApplicationReferenceId,
   getApplicationStatusTimestamp,
 } from '@/lib/utils'
-
-const ITEMS_PER_PAGE = 5
+import { ITEMS_PER_PAGE } from '@/lib/appConfig'
 
 const TABLE_GRID_CLASS =
   'md:grid md:grid-cols-[130px_minmax(0,1fr)_minmax(0,1.4fr)_100px_110px_40px] md:gap-4 md:items-center md:px-6 md:py-4'

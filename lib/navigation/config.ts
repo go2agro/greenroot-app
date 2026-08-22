@@ -144,6 +144,13 @@ export const NAVIGATION_CONFIG: Record<string, NavigationRoute> = {
     roles: ['admin'],
     category: 'admin'
   },
+  adminPartners: {
+    id: 'adminPartners',
+    label: 'Partners',
+    route: '/admin/partners',
+    roles: ['admin'],
+    category: 'admin'
+  },
   adminInternships: {
     id: 'adminInternships',
     label: 'Manage Internships',

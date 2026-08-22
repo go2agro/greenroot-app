@@ -6,7 +6,12 @@ import { checkProfileCompletion } from './studentProfiles'
 import { recordApplicationEvent } from '@/lib/applicationEvents'
 import { createNotification } from '@/lib/notifications'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
-import appConfig from '@/config/appConfig.json'
+import {
+  appConfig,
+  APPLICATION_STEPS_COUNT,
+  MAX_FILE_UPLOAD_BYTES,
+  MAX_FILE_UPLOAD_ERROR,
+} from '@/lib/appConfig'
 
 const ACTIVE_APPLICATION_STATUSES = [
   'draft',
@@ -352,9 +357,8 @@ export async function uploadFileAnswer(
   const { supabase, user, error: accessError } = await assertOwnedDraftApplication(applicationId)
   if (!supabase || !user || accessError) return toPlainResponse(null, accessError)
 
-  // Check file size (max 1MB)
-  if (file.size > 1024 * 1024) {
-    return toPlainResponse(null, { message: 'File size must be under 1MB' })
+  if (file.size > MAX_FILE_UPLOAD_BYTES) {
+    return toPlainResponse(null, { message: MAX_FILE_UPLOAD_ERROR })
   }
 
   const isPdf =
@@ -397,6 +401,12 @@ export async function updateCurrentStep(applicationId: string, stepNumber: numbe
   const { supabase, error: accessError } = await assertOwnedDraftApplication(applicationId)
   if (!supabase || accessError) return toPlainResponse(null, accessError)
 
+  if (stepNumber < 1 || stepNumber > APPLICATION_STEPS_COUNT) {
+    return toPlainResponse(null, {
+      message: `Step must be between 1 and ${APPLICATION_STEPS_COUNT}`,
+    })
+  }
+
   const { data, error } = await supabase
     .from('applications')
     .update({ current_step: stepNumber })
@@ -418,7 +428,7 @@ export async function submitApplication(applicationId: string) {
     .update({
       status: 'submitted',
       submitted_at: new Date().toISOString(),
-      current_step: 5
+      current_step: APPLICATION_STEPS_COUNT
     })
     .eq('id', applicationId)
     .eq('status', 'draft')

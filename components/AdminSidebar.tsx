@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   FileText,
   Briefcase,
+  Handshake,
   Users,
   User,
   Bell,
@@ -31,6 +32,7 @@ const navItems = [
   { id: 'applications', icon: FileText, label: 'Applications', href: '/admin/applications' },
   { id: 'internships', icon: Briefcase, label: 'Internships', href: '/admin/internships' },
   { id: 'students', icon: Users, label: 'Students', href: '/admin/students' },
+  { id: 'partners', icon: Handshake, label: 'Partners', href: '/admin/partners' },
   { id: 'profile', icon: User, label: 'Profile', href: '/admin/profile' },
   { id: 'notifications', icon: Bell, label: 'Notifications', href: '/admin/notifications' },
 ]

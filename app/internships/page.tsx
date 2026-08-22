@@ -7,8 +7,7 @@ import { Search, MapPin, Clock, Banknote, ChevronLeft, ChevronRight, X } from 'l
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { getAllInternships } from '@/lib/internships'
-
-const ITEMS_PER_PAGE = 9
+import { ITEMS_PER_PAGE } from '@/lib/appConfig'
 
 type Internship = {
   id: string

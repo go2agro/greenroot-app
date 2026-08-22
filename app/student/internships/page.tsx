@@ -13,8 +13,7 @@ import { Search, MapPin, Clock, Banknote, ChevronLeft, ChevronRight, X, RefreshC
 import { getAllInternships } from '@/lib/internships'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
-
-const ITEMS_PER_PAGE = 9
+import { ITEMS_PER_PAGE } from '@/lib/appConfig'
 
 type Internship = {
   id: string

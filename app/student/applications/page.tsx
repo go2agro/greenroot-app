@@ -26,8 +26,7 @@ import { invalidateAllApplicationData } from '@/lib/cache'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
 import { getApplicationStatusTimestamp, formatApplicationReferenceId } from '@/lib/utils'
-
-const ITEMS_PER_PAGE = 8
+import { ITEMS_PER_PAGE } from '@/lib/appConfig'
 
 type ApplicationStatus = 'draft' | 'submitted' | 'under_review' | 'admin_accepted' | 'forwarded_to_partner' | 'partner_review' | 'approved' | 'rejected' | 'accepted' | 'closed' | 'withdrawn'
 
