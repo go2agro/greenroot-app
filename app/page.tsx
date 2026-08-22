@@ -22,6 +22,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import { getTopPaidInternships } from '@/lib/internships';
+import landingConfig from '@/config/pages/landing.json';
 
 type FeaturedInternship = {
   id: string
@@ -81,25 +82,24 @@ export default function Home() {
             {/* Left Column */}
             <div className="flex flex-col gap-6">
               <h1 className="font-bold text-3xl md:text-4xl lg:text-5xl text-[#1A1A1A] leading-tight">
-                Empowering the Next Generation of{' '}
-                <span className="text-[#A3D32F]">Agricultural Leaders</span>
+                {landingConfig.hero.heading_prefix}{' '}
+                <span className="text-[#A3D32F]">{landingConfig.hero.heading_highlight}</span>
               </h1>
               <p className="text-sm md:text-base text-gray-600 leading-relaxed font-semibold">
-                Gain hands-on experience with world-class farms and agricultural 
-                organizations across the globe.
+                {landingConfig.hero.subheading}
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link 
-                  href="/internships" 
+                  href={landingConfig.hero.cta_primary_link} 
                   className="bg-[#A3D32F] text-white rounded-lg px-6 py-3 font-semibold hover:bg-[#92C120] transition-colors text-center"
                 >
-                  Browse Internships
+                  {landingConfig.hero.cta_primary_text}
                 </Link>
                 <Link 
-                  href="/about" 
+                  href={landingConfig.hero.cta_secondary_link} 
                   className="border border-gray-300 text-gray-700 rounded-lg px-6 py-3 font-medium hover:border-[#A3D32F] transition-colors text-center"
                 >
-                  Learn More
+                  {landingConfig.hero.cta_secondary_text}
                 </Link>
               </div>
             </div>
@@ -142,33 +142,18 @@ export default function Home() {
       {/* STATS BAR */}
       <section className="w-full bg-white border-t border-b border-gray-100 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-gray-100">
-            <div className="flex flex-col items-center justify-center gap-2 pt-8 md:pt-0">
-              <AnimatedCounter
-                target={300}
-                suffix="+"
-                className="font-bold text-3xl text-[#549FE3]"
-              />
-              <div className="text-sm text-gray-600 font-semibold">Total students</div>
-            </div>
-            <div className="flex flex-col items-center justify-center gap-2 pt-8 md:pt-0">
-              <AnimatedCounter
-                target={5}
-                suffix="+"
-                padStart={2}
-                className="font-bold text-3xl text-[#549FE3]"
-              />
-              <div className="text-sm text-gray-600 font-semibold">Total countries</div>
-            </div>
-            <div className="flex flex-col items-center justify-center gap-2 pt-8 md:pt-0">
-              <AnimatedCounter
-                target={8}
-                suffix="+"
-                padStart={2}
-                className="font-bold text-3xl text-[#549FE3]"
-              />
-              <div className="text-sm text-gray-600 font-semibold">Total Internships</div>
-            </div>
+          <div className={`grid grid-cols-1 md:grid-cols-${landingConfig.stats.length} gap-8 divide-y md:divide-y-0 md:divide-x divide-gray-100`}>
+            {landingConfig.stats.map((stat, index) => (
+              <div key={index} className="flex flex-col items-center justify-center gap-2 pt-8 md:pt-0">
+                <AnimatedCounter
+                  target={stat.value}
+                  suffix={stat.suffix}
+                  padStart={stat.value < 100 ? 2 : undefined}
+                  className="font-bold text-3xl text-[#549FE3]"
+                />
+                <div className="text-sm text-gray-600 font-semibold">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

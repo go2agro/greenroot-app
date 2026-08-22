@@ -1,10 +1,18 @@
 {
   "hero": {
-    "heading": "Explore International Agriculture Internships",
-    "subheading": "Apply to world class internship programmes from India",
-    "ctaButton": "Explore Internships",
-    "ctaLink": "/internships"
+    "heading_prefix": "Empowering the Next Generation of",
+    "heading_highlight": "Agricultural Leaders",
+    "subheading": "Gain hands-on experience with world-class farms and agricultural organizations across the globe.",
+    "cta_primary_text": "Browse Internships",
+    "cta_primary_link": "/internships",
+    "cta_secondary_text": "Learn More",
+    "cta_secondary_link": "/about"
   },
+  "stats": [
+    { "value": 300, "suffix": "+", "label": "Students Placed" },
+    { "value": 25, "suffix": "+", "label": "Partner Countries" },
+    { "value": 98, "suffix": "%", "label": "Success Rate" }
+  ],
   "features": {
     "heading": "Why Choose GreenRoot?",
     "subheading": "We connect Indian agriculture students with global opportunities",
@@ -26,18 +34,10 @@
       }
     ]
   },
-  "stats": {
-    "heading": "Our Impact",
-    "items": [
-      { "value": "500+", "label": "Students Placed" },
-      { "value": "25+", "label": "Partner Countries" },
-      { "value": "100+", "label": "Partner Farms" }
-    ]
-  },
   "cta": {
     "heading": "Ready to Start Your Journey?",
     "subheading": "Join hundreds of students who have transformed their careers",
-    "buttonText": "Get Started",
-    "buttonLink": "/signup"
+    "button_text": "Get Started",
+    "button_link": "/signup"
   }
 }

@@ -37,7 +37,7 @@
   "contact_email": "support@greenroot.in",
   "contact_phone": "+91 79729 37388",
   "contact_address": "Mumbai, India",
-  "website_url": "https://greenroot.in",
+  "website_url": "https://greenroot.co.in",
 
   "social_instagram": "",
   "social_linkedin": "",
@@ -48,7 +48,7 @@
   "footer_tagline": "Empowering the next generation of agricultural leaders",
 
   "maintenance_mode": false,
-  "max_applications_per_student": 5,
+  "max_applications_per_student": 100,
   "items_per_page": 10,
   "max_file_upload_mb": 5,
   "application_steps_count": 5,

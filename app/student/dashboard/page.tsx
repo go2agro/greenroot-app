@@ -15,7 +15,6 @@ import { getMyStudentProfile, checkProfileCompletion } from '@/lib/studentProfil
 import { getApplicationCounts, getActiveApplications, getDraftApplications } from '@/lib/studentApplications'
 import { getRecentInternships } from '@/lib/internships'
 import { getApplicationStatusTimestamp } from '@/lib/utils'
-import recentInternshipsData from '@/config/recentInternships.json'
 
 interface ProfileData {
   first_name: string
@@ -146,8 +145,8 @@ export default function StudentDashboard() {
   const drafts = draftApplications || []
   const activeCount = counts.active ?? (counts.submitted + counts.approved)
   
-  // Use real data if available, otherwise use dummy data from config file
-  const internships = recentInternships?.length > 0 ? recentInternships : (recentInternshipsData as Internship[])
+  // Use real data only - no fallback dummy data
+  const internships = recentInternships || []
 
   // Get display name - show email if first name is empty
   const displayName = profileData?.first_name || profileData?.email || profile?.email || 'Student'
@@ -465,33 +464,35 @@ export default function StudentDashboard() {
             </div>
           </div>
 
-          {/* Recently Added Internships */}
-          <div className="mb-6 sm:mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg sm:text-xl font-bold text-gray-900">Recently added Internships</h2>
-              <button
-                onClick={handleRefreshInternships}
-                disabled={isRefreshingInternships}
-                className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors disabled:opacity-50"
-                title="Refresh internships"
-              >
-                <RefreshCw className={`w-4 h-4 text-gray-600 ${isRefreshingInternships ? 'animate-spin' : ''}`} />
-              </button>
+          {/* Recently Added Internships - Only show when data exists */}
+          {internships.length > 0 && (
+            <div className="mb-6 sm:mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900">Recently added Internships</h2>
+                <button
+                  onClick={handleRefreshInternships}
+                  disabled={isRefreshingInternships}
+                  className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                  title="Refresh internships"
+                >
+                  <RefreshCw className={`w-4 h-4 text-gray-600 ${isRefreshingInternships ? 'animate-spin' : ''}`} />
+                </button>
+              </div>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {internships.slice(0, 4).map((internship: Internship) => (
+                  <InternshipCard
+                    key={internship.id}
+                    id={internship.id}
+                    title={internship.title}
+                    location={`${internship.city || ''}${internship.city && internship.country ? ', ' : ''}${internship.country || ''}`}
+                    imageUrl={internship.image_url || ''}
+                    badge={internship.badge}
+                    flag={internship.flag}
+                  />
+                ))}
+              </div>
             </div>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {internships.slice(0, 4).map((internship: Internship) => (
-                <InternshipCard
-                  key={internship.id}
-                  id={internship.id}
-                  title={internship.title}
-                  location={`${internship.city || ''}${internship.city && internship.country ? ', ' : ''}${internship.country || ''}`}
-                  imageUrl={internship.image_url || ''}
-                  badge={internship.badge}
-                  flag={internship.flag}
-                />
-              ))}
-            </div>
-          </div>
+          )}
 
           {/* Browse Internships CTA */}
           <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-6 sm:p-8 relative overflow-hidden">

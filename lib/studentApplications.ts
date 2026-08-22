@@ -6,6 +6,7 @@ import { checkProfileCompletion } from './studentProfiles'
 import { recordApplicationEvent } from '@/lib/applicationEvents'
 import { createNotification } from '@/lib/notifications'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
+import appConfig from '@/config/appConfig.json'
 
 const ACTIVE_APPLICATION_STATUSES = [
   'draft',
@@ -14,6 +15,8 @@ const ACTIVE_APPLICATION_STATUSES = [
   'approved',
   'accepted',
 ] as const
+
+const MAX_APPLICATIONS = appConfig.max_applications_per_student || 5
 
 async function assertOwnedDraftApplication(applicationId: string) {
   const supabase = await createClient()
@@ -87,6 +90,20 @@ export async function startApplication(internshipId: string) {
   if (profileCompletion.data && !profileCompletion.data.isComplete) {
     return toPlainResponse(null, {
       message: `Please complete your profile before applying. Missing: ${profileCompletion.data.missingFields.join(', ')}`
+    })
+  }
+
+  // Check if student has reached max applications limit
+  const { count: activeCount } = await supabase
+    .from('applications')
+    .select('*', { count: 'exact', head: true })
+    .eq('student_id', user.id)
+    .in('status', [...ACTIVE_APPLICATION_STATUSES])
+
+  if (activeCount !== null && activeCount >= MAX_APPLICATIONS) {
+    return toPlainResponse(null, {
+      message: `You have reached the maximum limit of ${MAX_APPLICATIONS} active applications. Please wait for existing applications to be processed or withdraw one to apply again.`,
+      code: 'MAX_APPLICATIONS_REACHED',
     })
   }
 
