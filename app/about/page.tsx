@@ -6,138 +6,39 @@ import {
   HandHeart,
   Briefcase,
   Scale,
-  Handshake,
   GraduationCap,
   ArrowUpRight,
   Sprout,
   Compass,
   Sun,
+  Handshake,
+  type LucideIcon,
 } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import { getAboutContent } from '@/lib/about'
 
-const storyChapters = [
-  {
-    step: '01',
-    title: 'The seed',
-    label: 'Why we began',
-    icon: Sprout,
-    body: 'Agriculture students were ready to grow — but the path to real, international experience felt distant, confusing, and out of reach. GreenRoot began as a simple belief: opportunity should travel as freely as ambition.',
-  },
-  {
-    step: '02',
-    title: 'The roots',
-    label: 'How we work',
-    icon: Compass,
-    body: 'We carefully curate internships with farms and agri organizations worldwide — pairing students with mentors, clear expectations, and hands-on learning that turns classroom knowledge into field confidence.',
-  },
-  {
-    step: '03',
-    title: 'The canopy',
-    label: 'What we promise',
-    icon: Sun,
-    body: 'Every placement is built on transparency and trust. No guesswork, no empty listings — just meaningful experience that helps the next generation of agri-professionals stand taller in a changing world.',
-  },
-]
+const iconMap: Record<string, LucideIcon> = {
+  Leaf,
+  Globe,
+  HandHeart,
+  Briefcase,
+  Scale,
+  GraduationCap,
+  Sprout,
+  Compass,
+  Sun,
+  Handshake,
+}
 
-const pillars = [
-  {
-    title: 'Mission',
-    icon: Leaf,
-    text: 'Open trusted global internships so agriculture students can learn, innovate, and grow into confident professionals.',
-  },
-  {
-    title: 'Vision',
-    icon: Globe,
-    text: 'Become the platform students and industry leaders trust most to connect talent with worldwide agri opportunity.',
-  },
-  {
-    title: 'Promise',
-    icon: HandHeart,
-    text: 'Curate every internship for quality and clarity — so every student walks into real experience, not uncertainty.',
-  },
-]
+function resolveIcon(name: string): LucideIcon {
+  return iconMap[name] ?? Leaf
+}
 
-const stats = [
-  { value: '5000+', label: 'Students placed' },
-  { value: '24', label: 'Countries reached' },
-  { value: '200+', label: 'Partner firms' },
-]
+export default async function About() {
+  const about = await getAboutContent()
+  const { hero, stats, story, pillars, team, goals, cta } = about
 
-const founders = [
-  {
-    name: 'Mr. Sunil Landkar',
-    role: 'Co-founder & CEO',
-    email: 'sunil@go2agro.com',
-    mobile: '+91 7972537388',
-    image: 'https://picsum.photos/400/500?random=42',
-  },
-]
-
-const teamMembers = [
-  {
-    name: 'Shubham Jaydeokar',
-    role: 'Tech Lead',
-    image: 'https://picsum.photos/400/500?random=50',
-  },
-  {
-    name: 'Kasturi Pawde',
-    role: 'Design Head',
-    image: 'https://picsum.photos/400/500?random=51',
-  },
-]
-
-const advisors = [
-  {
-    name: 'Mr. Abraham Yehunda',
-    roleLine1: 'CEO Israel-India Initiative',
-    roleLine2: 'Advisor - International Associate',
-    image: 'https://picsum.photos/80/80?random=43',
-  },
-  {
-    name: 'Giri & Jadhav Associate',
-    roleLine1: 'Advisor - Finance & Tax',
-    roleLine2: null,
-    icon: 'briefcase' as const,
-  },
-  {
-    name: 'Mr. Sharad Pabale',
-    roleLine1: 'CEO Israel-India Initiative',
-    roleLine2: 'Advisor - International Associate',
-    image: 'https://picsum.photos/80/80?random=45',
-  },
-  {
-    name: 'Radhika Sakseria',
-    roleLine1: 'Advocate',
-    roleLine2: null,
-    icon: 'scale' as const,
-  },
-]
-
-const goals = [
-  {
-    icon: Globe,
-    title: 'Wider horizons',
-    text: 'Open internship pathways in more countries each year.',
-  },
-  {
-    icon: Handshake,
-    title: 'Deeper partnerships',
-    text: 'Grow with leading farms and agricultural organizations.',
-  },
-  {
-    icon: GraduationCap,
-    title: 'Ready for the field',
-    text: 'Help students leave with practical, career-ready skills.',
-  },
-  {
-    icon: Leaf,
-    title: 'Grow responsibly',
-    text: 'Champion sustainable and innovative farming practices.',
-  },
-]
-
-export default function About() {
   return (
     <div className="min-h-screen bg-[#F7FAF2]">
       <Navbar activeLink="about" />
@@ -150,31 +51,29 @@ export default function About() {
             <div className="grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
               <div className="flex flex-col gap-6">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#7BA82A]">
-                  Our story · GreenRoot
+                  {hero.eyebrow}
                 </p>
                 <h1 className="font-bold text-4xl sm:text-5xl lg:text-[3.25rem] text-[#1F2A14] leading-[1.08] tracking-tight">
-                  We grow careers{' '}
-                  <span className="text-[#A3D32F]">the way nature does</span>
-                  {' '}— patiently, globally, with purpose.
+                  {hero.heading}{' '}
+                  <span className="text-[#A3D32F]">{hero.headingHighlight}</span>
+                  {' '}{hero.headingSuffix}
                 </h1>
                 <p className="text-base md:text-lg text-[#5A6750] leading-relaxed max-w-lg">
-                  GreenRoot is where agriculture students meet the world. We open
-                  doors to international internships so tomorrow&apos;s agri
-                  leaders can learn in the field, not just from textbooks.
+                  {hero.description}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 pt-1">
                   <Link
-                    href="/internships"
+                    href={hero.primaryCta.href}
                     className="inline-flex items-center justify-center gap-2 bg-[#A3D32F] text-[#1F2A14] rounded-2xl px-6 py-3.5 text-sm font-semibold hover:bg-[#92C120] transition-colors"
                   >
-                    Explore internships
+                    {hero.primaryCta.label}
                     <ArrowUpRight className="w-4 h-4" />
                   </Link>
                   <Link
-                    href="#our-story"
+                    href={hero.secondaryCta.href}
                     className="inline-flex items-center justify-center rounded-2xl px-6 py-3.5 text-sm font-medium text-[#3D4A32] bg-white/80 border border-[#D5E0C8] hover:border-[#A3D32F] transition-colors"
                   >
-                    Read our story
+                    {hero.secondaryCta.label}
                   </Link>
                 </div>
               </div>
@@ -182,8 +81,8 @@ export default function About() {
               <div className="grid grid-cols-2 gap-3 sm:gap-4 h-[340px] sm:h-[400px]">
                 <div className="relative row-span-2 rounded-3xl overflow-hidden bg-[#E4EED4]">
                   <Image
-                    src="https://picsum.photos/700/800?random=40"
-                    alt="Students learning in an agricultural field"
+                    src={hero.images.main}
+                    alt={hero.images.mainAlt}
                     fill
                     className="object-cover"
                     sizes="(max-width: 1024px) 50vw, 25vw"
@@ -192,8 +91,8 @@ export default function About() {
                 </div>
                 <div className="relative rounded-3xl overflow-hidden bg-[#D6EAF8]">
                   <Image
-                    src="https://picsum.photos/400/300?random=49"
-                    alt="Greenhouse research"
+                    src={hero.images.secondary}
+                    alt={hero.images.secondaryAlt}
                     fill
                     className="object-cover"
                     sizes="(max-width: 1024px) 50vw, 25vw"
@@ -203,10 +102,10 @@ export default function About() {
                   <Sprout className="w-6 h-6 text-[#1F2A14]" />
                   <div>
                     <p className="font-bold text-3xl text-[#1F2A14] tracking-tight">
-                      5000+
+                      {hero.highlightStat.value}
                     </p>
                     <p className="text-xs font-medium text-[#1F2A14]/75 mt-1 leading-snug">
-                      students guided into global agri careers
+                      {hero.highlightStat.label}
                     </p>
                   </div>
                 </div>
@@ -247,21 +146,19 @@ export default function About() {
         >
           <div className="max-w-2xl mb-10 md:mb-12">
             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#7BA82A] mb-3">
-              Our story
+              {story.eyebrow}
             </p>
             <h2 className="font-bold text-3xl md:text-4xl text-[#1F2A14] tracking-tight leading-tight mb-4">
-              Grown from a gap. Guided by a greener future.
+              {story.heading}
             </h2>
             <p className="text-[15px] md:text-base text-[#5A6750] leading-relaxed">
-              The best agriculture careers aren&apos;t built in isolation —
-              they&apos;re cultivated across borders, mentors, and seasons of
-              real practice. Here&apos;s how GreenRoot took root.
+              {story.description}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {storyChapters.map((chapter, index) => {
-              const Icon = chapter.icon
+            {story.chapters.map((chapter, index) => {
+              const Icon = resolveIcon(chapter.icon)
               const tones = [
                 'bg-white border border-[#DCE6D0]',
                 'bg-[#EAF5D4]',
@@ -300,21 +197,21 @@ export default function About() {
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 md:pb-20">
           <div className="rounded-3xl bg-[#A3D32F] px-6 py-8 sm:px-8 sm:py-9 mb-5">
             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#1F2A14]/70 mb-2">
-              What drives us
+              {pillars.eyebrow}
             </p>
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
               <h2 className="font-bold text-2xl md:text-3xl text-[#1F2A14] tracking-tight leading-tight max-w-xl">
-                Mission, vision & promise — in one breath.
+                {pillars.heading}
               </h2>
               <p className="text-sm text-[#1F2A14]/75 leading-relaxed md:max-w-xs md:text-right">
-                Three commitments that shape every internship we share.
+                {pillars.description}
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {pillars.map((pillar) => {
-              const Icon = pillar.icon
+            {pillars.items.map((pillar) => {
+              const Icon = resolveIcon(pillar.icon)
               return (
                 <div
                   key={pillar.title}
@@ -341,22 +238,19 @@ export default function About() {
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10 md:mb-12">
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#7BA82A] mb-3">
-                  The people
+                  {team.eyebrow}
                 </p>
                 <h2 className="font-bold text-3xl md:text-4xl text-[#1F2A14] tracking-tight leading-tight">
-                  Hands that plant. Minds that guide.
+                  {team.heading}
                 </h2>
               </div>
               <p className="text-[15px] text-[#5A6750] leading-relaxed md:max-w-sm md:text-right">
-                Founders, team leads, and advisors who blend agronomy,
-                education, and operations — so every student journey feels
-                personal and possible.
+                {team.description}
               </p>
             </div>
 
-            {/* Founder — large */}
             <div className="mb-5">
-              {founders.map((person) => (
+              {team.founders.map((person) => (
                 <article
                   key={person.name}
                   className="rounded-3xl overflow-hidden bg-[#F7FAF2] border border-[#DCE6D0] flex flex-col sm:flex-row"
@@ -399,9 +293,8 @@ export default function About() {
               ))}
             </div>
 
-            {/* Team + advisors — equal small cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {advisors.map((advisor) => (
+              {team.advisors.map((advisor) => (
                 <article
                   key={advisor.name}
                   className="rounded-3xl bg-[#F7FAF2] border border-[#DCE6D0] p-5 flex gap-4 items-center min-h-[112px]"
@@ -444,7 +337,7 @@ export default function About() {
                 </article>
               ))}
 
-              {teamMembers.map((person) => (
+              {team.members.map((person) => (
                 <article
                   key={person.name}
                   className="rounded-3xl bg-[#F7FAF2] border border-[#DCE6D0] p-5 flex gap-4 items-center min-h-[112px]"
@@ -480,24 +373,22 @@ export default function About() {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10 md:mb-12">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#7BA82A] mb-3">
-                Looking ahead
+                {goals.eyebrow}
               </p>
               <h2 className="font-bold text-3xl md:text-4xl text-[#1F2A14] tracking-tight leading-tight">
-                Where we&apos;re growing next
+                {goals.heading}
               </h2>
             </div>
             <p className="text-[15px] text-[#5A6750] leading-relaxed md:max-w-md md:text-right">
-              Our north star is simple: make global agricultural learning
-              accessible, trustworthy, and transformative — for every student
-              willing to grow.
+              {goals.description}
             </p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-5">
             <div className="relative min-h-[280px] lg:min-h-full rounded-3xl overflow-hidden bg-[#E4EED4]">
               <Image
-                src="https://picsum.photos/700/700?random=47"
-                alt="Greenhouse and field collaboration"
+                src={goals.image}
+                alt={goals.imageAlt}
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -505,8 +396,8 @@ export default function About() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              {goals.map((goal, index) => {
-                const Icon = goal.icon
+              {goals.items.map((goal, index) => {
+                const Icon = resolveIcon(goal.icon)
                 return (
                   <div
                     key={goal.title}
@@ -542,28 +433,27 @@ export default function About() {
             <div className="relative grid lg:grid-cols-2 gap-8 items-center p-8 sm:p-10 md:p-12">
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#7BA82A] mb-3">
-                  Your turn to grow
+                  {cta.eyebrow}
                 </p>
                 <h2 className="font-bold text-3xl sm:text-4xl text-[#1F2A14] leading-tight tracking-tight mb-4">
-                  Ready to plant the next chapter of your agri career?
+                  {cta.heading}
                 </h2>
                 <p className="text-[15px] text-[#5A6750] leading-relaxed max-w-lg mb-7">
-                  Browse curated international internships — or create an
-                  account and start your application today.
+                  {cta.description}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Link
-                    href="/internships"
+                    href={cta.primaryCta.href}
                     className="inline-flex items-center justify-center gap-2 bg-[#A3D32F] text-[#1F2A14] rounded-2xl px-6 py-3.5 text-sm font-semibold hover:bg-[#92C120] transition-colors"
                   >
-                    Browse Internships
+                    {cta.primaryCta.label}
                     <ArrowUpRight className="w-4 h-4" />
                   </Link>
                   <Link
-                    href="/signup"
+                    href={cta.secondaryCta.href}
                     className="inline-flex items-center justify-center rounded-2xl px-6 py-3.5 text-sm font-medium text-[#3D4A32] bg-white border border-[#D5E0C8] hover:border-[#A3D32F] transition-colors"
                   >
-                    Create Account
+                    {cta.secondaryCta.label}
                   </Link>
                 </div>
               </div>
@@ -571,8 +461,8 @@ export default function About() {
               <div className="relative hidden lg:block h-[260px]">
                 <div className="absolute inset-0 rounded-2xl overflow-hidden border border-white/60">
                   <Image
-                    src="https://picsum.photos/500/400?random=48"
-                    alt="Student ready for an agriculture internship"
+                    src={cta.image}
+                    alt={cta.imageAlt}
                     fill
                     className="object-cover"
                     sizes="50vw"

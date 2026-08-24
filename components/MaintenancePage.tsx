@@ -1,7 +1,11 @@
 import Image from 'next/image'
 import appConfig from '@/config/appConfig.json'
+import { getPrimaryPhone, getPrimarySupportEmail } from '@/lib/config'
 
 export default function MaintenancePage() {
+  const supportEmail = getPrimarySupportEmail()
+  const primaryPhone = getPrimaryPhone()
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-white flex items-center justify-center p-4">
       <div className="max-w-md w-full text-center">
@@ -47,20 +51,22 @@ export default function MaintenancePage() {
 
         <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
           <p className="text-sm text-gray-500 mb-2">Need immediate assistance?</p>
-          <a
-            href={`mailto:${appConfig.contact_email}`}
-            className="text-[#8DC63F] font-medium hover:underline"
-          >
-            {appConfig.contact_email}
-          </a>
-          {appConfig.contact_phone && (
+          {supportEmail && (
+            <a
+              href={`mailto:${supportEmail}`}
+              className="text-[#8DC63F] font-medium hover:underline"
+            >
+              {supportEmail}
+            </a>
+          )}
+          {primaryPhone && (
             <>
               <span className="text-gray-300 mx-2">|</span>
               <a
-                href={`tel:${appConfig.contact_phone.replace(/\s/g, '')}`}
+                href={`tel:${primaryPhone.tel}`}
                 className="text-[#8DC63F] font-medium hover:underline"
               >
-                {appConfig.contact_phone}
+                {primaryPhone.display}
               </a>
             </>
           )}

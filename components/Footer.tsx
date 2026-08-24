@@ -4,12 +4,22 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Mail, Phone } from 'lucide-react'
 import appConfig from '@/config/appConfig.json'
+import {
+  contactConfig,
+  getFormattedAddress,
+  getPrimaryPhone,
+  getPrimarySupportEmail,
+} from '@/lib/config'
 
 export default function Footer() {
+  const supportEmail = getPrimarySupportEmail()
+  const primaryPhone = getPrimaryPhone()
+  const address = getFormattedAddress()
+
   return (
     <footer className="w-full bg-[#F8F9FA] border-t border-gray-100 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
           <div className="lg:col-span-1 flex flex-col gap-4">
             <Link href="/" className="flex items-center gap-2">
               <Image 
@@ -49,27 +59,52 @@ export default function Footer() {
           </div>
 
           <div className="flex flex-col gap-3">
+            <h3 className="font-bold text-gray-900">Legal</h3>
+            <Link href="/terms" className="text-sm text-gray-600 hover:text-[#8DC63F]">
+              Terms & Conditions
+            </Link>
+            <Link href="/privacy" className="text-sm text-gray-600 hover:text-[#8DC63F]">
+              Privacy Policy
+            </Link>
+          </div>
+
+          <div className="flex flex-col gap-3">
             <h3 className="font-bold text-gray-900">Contact</h3>
-            {appConfig.contact_email && (
+            {supportEmail && (
               <a 
-                href={`mailto:${appConfig.contact_email}`} 
+                href={`mailto:${supportEmail}`} 
                 className="text-sm text-gray-600 hover:text-[#8DC63F] flex items-center gap-2"
               >
                 <Mail className="w-4 h-4" />
-                {appConfig.contact_email}
+                {supportEmail}
               </a>
             )}
-            {appConfig.contact_phone && (
+            {primaryPhone && (
               <a 
-                href={`tel:${appConfig.contact_phone.replace(/\s/g, '')}`} 
+                href={`tel:${primaryPhone.tel}`} 
                 className="text-sm text-gray-600 hover:text-[#8DC63F] flex items-center gap-2"
               >
                 <Phone className="w-4 h-4" />
-                {appConfig.contact_phone}
+                {primaryPhone.display}
               </a>
             )}
-            {appConfig.contact_address && (
-              <p className="text-sm text-gray-600">{appConfig.contact_address}</p>
+            {address && (
+              <p className="text-sm text-gray-600">{address}</p>
+            )}
+            {contactConfig.socials.length > 0 && (
+              <div className="flex flex-wrap gap-3 pt-1">
+                {contactConfig.socials.map((social) => (
+                  <Link
+                    key={social.id}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-gray-600 hover:text-[#8DC63F]"
+                  >
+                    {social.label}
+                  </Link>
+                ))}
+              </div>
             )}
           </div>
         </div>

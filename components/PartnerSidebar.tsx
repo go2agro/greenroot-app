@@ -9,12 +9,11 @@ import {
   User,
   Bell,
   HelpCircle,
-  Mail,
-  Phone,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
 import NotificationBadge from '@/components/NotificationBadge'
+import SidebarHelpContact from '@/components/SidebarHelpContact'
 import { getUnreadCount } from '@/lib/notifications'
 
 interface PartnerSidebarProps {
@@ -38,8 +37,6 @@ export default function PartnerSidebar({
   unreadRefreshKey = 0,
 }: PartnerSidebarProps) {
   const [unreadCount, setUnreadCount] = useState(0)
-  const supportEmail = 'greenroot@gmail.com'
-  const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(supportEmail)}&su=${encodeURIComponent('GreenRoot Support')}`
 
   useEffect(() => {
     let isActive = true
@@ -127,33 +124,7 @@ export default function PartnerSidebar({
         })}
       </nav>
 
-      {!isCollapsed && (
-        <div className="p-3">
-          <div className="bg-gray-50 rounded-xl p-4 mx-3 mb-4">
-            <h3 className="text-sm font-semibold text-gray-900 mb-1">Need help?</h3>
-            <p className="text-xs text-gray-500 mb-3">
-              Here&apos;s our contact number and email address
-            </p>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm">
-                <Phone className="w-4 h-4 text-[#8DC63F] flex-shrink-0" />
-                <span className="text-[#8DC63F] break-all">1234567890</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Mail className="w-4 h-4 text-[#8DC63F] flex-shrink-0" />
-                <a
-                  href={gmailComposeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#8DC63F] break-all text-xs hover:underline"
-                >
-                  {supportEmail}
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {!isCollapsed && <SidebarHelpContact />}
 
       {isCollapsed && (
         <div className="p-4 border-t border-[#EEEEEE] flex justify-center">
