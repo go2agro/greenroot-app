@@ -7,7 +7,6 @@
     "applicationSubmit": "Application submitted successfully.",
     "applicationWithdraw": "Application withdrawn.",
     "offerAccept": "Congratulations! You have accepted the offer.",
-    "offerDecline": "Offer declined.",
     "passwordReset": "Password reset email sent. Please check your inbox.",
     "passwordUpdate": "Password updated successfully."
   },

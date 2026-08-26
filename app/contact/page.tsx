@@ -126,7 +126,7 @@ export default async function Contact() {
                   </p>
                   <ul className="flex flex-col gap-4">
                     {contact.phones.map((phone) => (
-                      <li key={phone.tel} className="min-w-0">
+                      <li key={phone.label} className="min-w-0">
                         <p className="text-xs text-gray-500 mb-1">{phone.label}</p>
                         <a
                           href={`tel:${phone.tel}`}
