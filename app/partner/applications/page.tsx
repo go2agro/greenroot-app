@@ -25,7 +25,7 @@ import {
   formatApplicationReferenceId,
   getApplicationStatusTimestamp,
 } from '@/lib/utils'
-import { ITEMS_PER_PAGE } from '@/lib/appConfig'
+import { ITEMS_PER_PAGE, LABEL_SEARCH_PLACEHOLDER } from '@/lib/appConfig'
 
 const TABLE_GRID_CLASS =
   'md:grid md:grid-cols-[130px_minmax(0,1fr)_minmax(0,1.4fr)_100px_110px_40px] md:gap-4 md:items-center md:px-6 md:py-4'
@@ -92,7 +92,7 @@ const STATUS_OPTIONS: { value: ApplicationStatus; label: string }[] = [
 ]
 
 const KPI_CARD_CLASS =
-  'bg-white border border-[#EEEEEE] rounded-2xl p-5 transition-colors hover:border-[#8DC63F]'
+  'bg-white border border-gr-border rounded-2xl p-5 transition-colors hover:border-gr-primary'
 
 const fetcher = async (fn: () => Promise<{ data: unknown; error: unknown }>) => {
   const res = await fn()
@@ -166,8 +166,8 @@ function FilterCategory({
   children: React.ReactNode
 }) {
   return (
-    <div className="border border-[#EEEEEE] rounded-xl overflow-hidden">
-      <div className="px-3 py-2.5 bg-[#F9F9F9] border-b border-[#EEEEEE]">
+    <div className="border border-gr-border rounded-xl overflow-hidden">
+      <div className="px-3 py-2.5 bg-gr-background border-b border-gr-border">
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{title}</p>
       </div>
       <div className="p-3">{children}</div>
@@ -190,7 +190,7 @@ function FilterCheckboxItem({
         type="checkbox"
         checked={checked}
         onChange={onChange}
-        className="rounded border-gray-300 text-[#8DC63F] focus:ring-[#8DC63F]"
+        className="rounded border-gray-300 text-gr-primary focus:ring-gr-primary"
       />
       <span className="line-clamp-2">{label}</span>
     </label>
@@ -203,7 +203,7 @@ function ListSkeleton() {
       {Array.from({ length: 5 }).map((_, i) => (
         <div
           key={i}
-          className="bg-white border border-[#EEEEEE] rounded-2xl p-4 animate-pulse flex items-center gap-4"
+          className="bg-white border border-gr-border rounded-2xl p-4 animate-pulse flex items-center gap-4"
         >
           <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-4">
             <div className="h-4 bg-gray-200 rounded w-28" />
@@ -417,7 +417,7 @@ export default function PartnerApplications() {
   }
 
   return (
-    <div className="flex h-screen bg-[#F9F9F9] overflow-hidden">
+    <div className="flex h-screen bg-gr-background overflow-hidden">
       <div className="hidden lg:block">
         <PartnerSidebar
           activePage="applications"
@@ -427,7 +427,7 @@ export default function PartnerApplications() {
       </div>
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex-shrink-0">
+        <div className="bg-white border-b border-gr-border px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex-shrink-0">
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
               <h1 className="font-bold text-xl sm:text-2xl text-gray-900">Applications</h1>
@@ -439,11 +439,11 @@ export default function PartnerApplications() {
             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
               <div className="hidden sm:block text-right">
                 <p className="text-sm font-bold text-gray-900">{partnerName}</p>
-                <p className="text-sm text-[#8DC63F]">{profileMeta?.unique_id || 'N/A'}</p>
+                <p className="text-sm text-gr-primary">{profileMeta?.unique_id || 'N/A'}</p>
               </div>
               <Link
                 href="/partner/profile"
-                className="w-10 h-10 rounded-full bg-[#3B82F6] flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity"
+                className="w-10 h-10 rounded-full bg-gr-secondary flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity"
               >
                 {getAvatarInitials()}
               </Link>
@@ -460,9 +460,9 @@ export default function PartnerApplications() {
                   <KpiCardSkeleton />
                 ) : (
                   <>
-                    <FileText className="w-8 h-8 text-[#8DC63F] mb-3" />
+                    <FileText className="w-8 h-8 text-gr-primary mb-3" />
                     <p className="text-sm text-gray-500">Total Applications</p>
-                    <p className="text-3xl font-bold text-[#3B82F6] mt-1">
+                    <p className="text-3xl font-bold text-gr-secondary mt-1">
                       {stats.total.toLocaleString()}
                     </p>
                   </>
@@ -474,9 +474,9 @@ export default function PartnerApplications() {
                   <KpiCardSkeleton />
                 ) : (
                   <>
-                    <Send className="w-8 h-8 text-[#8DC63F] mb-3" />
+                    <Send className="w-8 h-8 text-gr-primary mb-3" />
                     <p className="text-sm text-gray-500">Pending Review</p>
-                    <p className="text-3xl font-bold text-[#3B82F6] mt-1">
+                    <p className="text-3xl font-bold text-gr-secondary mt-1">
                       {stats.pending.toLocaleString()}
                     </p>
                   </>
@@ -488,9 +488,9 @@ export default function PartnerApplications() {
                   <KpiCardSkeleton />
                 ) : (
                   <>
-                    <CheckCircle className="w-8 h-8 text-[#8DC63F] mb-3" />
+                    <CheckCircle className="w-8 h-8 text-gr-primary mb-3" />
                     <p className="text-sm text-gray-500">Approved</p>
-                    <p className="text-3xl font-bold text-[#3B82F6] mt-1">
+                    <p className="text-3xl font-bold text-gr-secondary mt-1">
                       {stats.approved.toLocaleString()}
                     </p>
                   </>
@@ -502,9 +502,9 @@ export default function PartnerApplications() {
                   <KpiCardSkeleton />
                 ) : (
                   <>
-                    <XCircle className="w-8 h-8 text-[#8DC63F] mb-3" />
+                    <XCircle className="w-8 h-8 text-gr-primary mb-3" />
                     <p className="text-sm text-gray-500">Rejected</p>
-                    <p className="text-3xl font-bold text-[#3B82F6] mt-1">
+                    <p className="text-3xl font-bold text-gr-secondary mt-1">
                       {stats.rejected.toLocaleString()}
                     </p>
                   </>
@@ -518,10 +518,10 @@ export default function PartnerApplications() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search by application ID, student name, email or internship..."
+                  placeholder={LABEL_SEARCH_PLACEHOLDER}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white border border-[#EEEEEE] rounded-xl py-3 px-4 pl-12 focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+                  className="w-full bg-white border border-gr-border rounded-xl py-3 px-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent"
                 />
               </div>
 
@@ -532,20 +532,20 @@ export default function PartnerApplications() {
                     setPendingFilters(appliedFilters)
                     setShowFilterPanel(!showFilterPanel)
                   }}
-                  className="relative bg-[#8DC63F] text-white rounded-xl p-3 hover:bg-[#7DB62F] transition-colors"
+                  className="relative bg-gr-primary text-white rounded-xl p-3 hover:bg-gr-primary-hover transition-colors"
                   aria-label="Open filters"
                 >
                   <SlidersHorizontal className="w-5 h-5" />
                   {activeFilterCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#3B82F6] text-white text-xs font-bold rounded-full flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-gr-secondary text-white text-xs font-bold rounded-full flex items-center justify-center">
                       {activeFilterCount}
                     </span>
                   )}
                 </button>
 
                 {showFilterPanel && (
-                  <div className="absolute right-0 top-full mt-2 bg-white border border-[#EEEEEE] rounded-2xl shadow-lg w-[320px] sm:w-[360px] z-20 max-h-[70vh] overflow-y-auto">
-                    <div className="p-4 border-b border-[#EEEEEE]">
+                  <div className="absolute right-0 top-full mt-2 bg-white border border-gr-border rounded-2xl shadow-lg w-[320px] sm:w-[360px] z-20 max-h-[70vh] overflow-y-auto">
+                    <div className="p-4 border-b border-gr-border">
                       <p className="font-semibold text-gray-900 text-sm">Filters</p>
                       <p className="text-xs text-gray-500 mt-0.5">Select multiple options</p>
                     </div>
@@ -614,18 +614,18 @@ export default function PartnerApplications() {
                       </FilterCategory>
                     </div>
 
-                    <div className="p-4 border-t border-[#EEEEEE] flex gap-2">
+                    <div className="p-4 border-t border-gr-border flex gap-2">
                       <button
                         type="button"
                         onClick={handleClearFilters}
-                        className="flex-1 py-2.5 rounded-xl text-sm font-medium text-gray-600 border border-[#EEEEEE] hover:bg-gray-50 transition-colors"
+                        className="flex-1 py-2.5 rounded-xl text-sm font-medium text-gray-600 border border-gr-border hover:bg-gray-50 transition-colors"
                       >
                         Clear
                       </button>
                       <button
                         type="button"
                         onClick={handleApplyFilters}
-                        className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white bg-[#8DC63F] hover:bg-[#7DB62F] transition-colors"
+                        className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white bg-gr-primary hover:bg-gr-primary-hover transition-colors"
                       >
                         Filter
                       </button>
@@ -647,13 +647,13 @@ export default function PartnerApplications() {
             {isLoading ? (
               <ListSkeleton />
             ) : loadError ? (
-              <div className="bg-white border border-[#EEEEEE] rounded-2xl flex flex-col items-center justify-center py-16">
+              <div className="bg-white border border-gr-border rounded-2xl flex flex-col items-center justify-center py-16">
                 <FileText className="w-12 h-12 text-gray-300 mb-3" />
                 <p className="font-semibold text-gray-500">Failed to load applications</p>
                 <p className="text-sm text-gray-400 mt-1">{loadError.message}</p>
               </div>
             ) : filteredApplications.length === 0 ? (
-              <div className="bg-white border border-[#EEEEEE] rounded-2xl flex flex-col items-center justify-center py-16">
+              <div className="bg-white border border-gr-border rounded-2xl flex flex-col items-center justify-center py-16">
                 <FileText className="w-12 h-12 text-gray-300 mb-3" />
                 <p className="font-semibold text-gray-500">No applications found</p>
                 <p className="text-sm text-gray-400 mt-1">Try adjusting your filters</p>
@@ -661,7 +661,7 @@ export default function PartnerApplications() {
             ) : (
               <>
                 <div
-                  className={`hidden ${TABLE_GRID_CLASS} bg-[#F9F9F9] border border-[#EEEEEE] rounded-t-2xl text-xs font-semibold text-gray-500 uppercase tracking-wide md:py-3`}
+                  className={`hidden ${TABLE_GRID_CLASS} bg-gr-background border border-gr-border rounded-t-2xl text-xs font-semibold text-gray-500 uppercase tracking-wide md:py-3`}
                 >
                   <span>Application ID</span>
                   <span>Student</span>
@@ -671,7 +671,7 @@ export default function PartnerApplications() {
                   <span />
                 </div>
 
-                <div className="space-y-3 md:space-y-0 md:border md:border-t-0 md:border-[#EEEEEE] md:rounded-b-2xl md:overflow-hidden">
+                <div className="space-y-3 md:space-y-0 md:border md:border-t-0 md:border-gr-border md:rounded-b-2xl md:overflow-hidden">
                   {paginatedApplications.map((application) => {
                     const country = application.internships?.country
 
@@ -679,11 +679,11 @@ export default function PartnerApplications() {
                       <div
                         key={application.id}
                         onClick={() => router.push(`/partner/applications/${application.id}`)}
-                        className={`group bg-white border border-[#EEEEEE] md:border-0 md:border-b md:last:border-b-0 rounded-2xl md:rounded-none hover:bg-green-50 cursor-pointer transition-colors p-4 ${TABLE_GRID_CLASS}`}
+                        className={`group bg-white border border-gr-border md:border-0 md:border-b md:last:border-b-0 rounded-2xl md:rounded-none hover:bg-green-50 cursor-pointer transition-colors p-4 ${TABLE_GRID_CLASS}`}
                       >
                         <div className="mb-3 md:mb-0 min-w-0">
                           <p className="md:hidden text-xs text-gray-400 mb-0.5">Application ID</p>
-                          <p className="text-sm font-semibold text-[#8DC63F] truncate">
+                          <p className="text-sm font-semibold text-gr-primary truncate">
                             {formatApplicationReferenceId(application.id, application.submitted_at)}
                           </p>
                         </div>
@@ -728,7 +728,7 @@ export default function PartnerApplications() {
                         </div>
 
                         <div className="flex md:justify-end">
-                          <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#F5F5F5] text-gray-500 transition-colors group-hover:bg-[#8DC63F] group-hover:text-white">
+                          <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-gr-input-bg text-gray-500 transition-colors group-hover:bg-gr-primary group-hover:text-white">
                             <ChevronRight className="w-4 h-4" />
                           </div>
                         </div>
@@ -743,7 +743,7 @@ export default function PartnerApplications() {
                       type="button"
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
-                      className="border border-[#EEEEEE] rounded-lg px-3 py-2 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="border border-gr-border rounded-lg px-3 py-2 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       <ChevronLeft className="w-5 h-5" />
                     </button>
@@ -760,8 +760,8 @@ export default function PartnerApplications() {
                           onClick={() => handlePageChange(page as number)}
                           className={`min-w-[40px] px-3 py-2 rounded-lg font-medium transition-colors ${
                             currentPage === page
-                              ? 'bg-[#8DC63F] text-white'
-                              : 'border border-[#EEEEEE] bg-white hover:bg-gray-50'
+                              ? 'bg-gr-primary text-white'
+                              : 'border border-gr-border bg-white hover:bg-gray-50'
                           }`}
                         >
                           {page}
@@ -773,7 +773,7 @@ export default function PartnerApplications() {
                       type="button"
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
-                      className="border border-[#EEEEEE] rounded-lg px-3 py-2 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="border border-gr-border rounded-lg px-3 py-2 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       <ChevronRight className="w-5 h-5" />
                     </button>

@@ -27,13 +27,13 @@ export default function PartnerBottomNavigation() {
               href={item.href}
               className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-colors min-w-0 flex-1 ${
                 isActive 
-                  ? 'text-[#8DC63F]' 
+                  ? 'text-gr-primary' 
                   : 'text-gray-600'
               }`}
             >
-              <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-[#8DC63F]' : ''}`} />
+              <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-gr-primary' : ''}`} />
               <span className={`text-xs font-medium truncate max-w-full ${
-                isActive ? 'text-[#8DC63F]' : 'text-gray-600'
+                isActive ? 'text-gr-primary' : 'text-gray-600'
               }`}>
                 {item.label}
               </span>

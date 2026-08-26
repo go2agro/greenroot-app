@@ -46,3 +46,4 @@ export const LABEL_NO_RESULTS = appConfig.label_no_results
 export const LABEL_SEARCH_PLACEHOLDER = appConfig.label_search_placeholder
 
 export const APP_COLORS = appConfig.colors
+export { themeColors } from '@/lib/theme'

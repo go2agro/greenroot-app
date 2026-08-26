@@ -4,6 +4,7 @@ import "./globals.css";
 import appConfig from '@/config/appConfig.json';
 import MaintenancePage from '@/components/MaintenancePage';
 import OfflineBanner from '@/components/OfflineBanner';
+import ThemeVariables from '@/components/ThemeVariables';
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -44,6 +45,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
+        <ThemeVariables />
         <OfflineBanner />
         {isMaintenanceMode ? <MaintenancePage /> : children}
       </body>

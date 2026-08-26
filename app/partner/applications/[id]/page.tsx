@@ -190,10 +190,10 @@ export default function PartnerApplicationDetails({
     canDecide || hasDecided ? (
       <div className="space-y-5">
         {canDecide && (
-          <div className="relative border-2 border-[#3B82F6] bg-blue-50 p-4 sm:p-5 shadow-[0_0_0_4px_rgba(59,130,246,0.15)]">
-            <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#3B82F6]" />
+          <div className="relative border-2 border-gr-secondary bg-gr-secondary/10 p-4 sm:p-5 shadow-[0_0_0_4px_color-mix(in_srgb,var(--gr-secondary)_15%,transparent)]">
+            <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gr-secondary" />
             <div className="pl-2">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-sm bg-[#3B82F6] px-2.5 py-1">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-sm bg-gr-secondary px-2.5 py-1">
                 <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-white">
                   Your Decision Required
                 </span>
@@ -225,17 +225,17 @@ export default function PartnerApplicationDetails({
                 value={remarks}
                 onChange={(e) => setRemarks(e.target.value)}
                 placeholder="Provide detailed remarks about your decision. This will only be visible to the admin..."
-                className={`min-h-[120px] rounded-none bg-white focus-visible:ring-[#3B82F6] focus-visible:border-[#3B82F6] ${
+                className={`min-h-[120px] rounded-none bg-white focus-visible:ring-gr-secondary focus-visible:border-gr-secondary ${
                   !remarks.trim()
                     ? 'border-red-300 focus-visible:border-red-400 focus-visible:ring-red-200'
-                    : 'border-[#3B82F6]/50'
+                    : 'border-gr-secondary/50'
                 }`}
               />
               <p className="text-[11px] text-gray-500 mt-2">
                 Your remarks will only be visible to the admin, not the student.
               </p>
 
-              <div className="mt-5 pt-4 border-t border-[#3B82F6]/40 flex flex-wrap justify-end gap-2">
+              <div className="mt-5 pt-4 border-t border-gr-secondary/40 flex flex-wrap justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setDecisionDialog('reject')}
@@ -249,7 +249,7 @@ export default function PartnerApplicationDetails({
                   type="button"
                   onClick={() => setDecisionDialog('approve')}
                   disabled={!remarks.trim()}
-                  className="inline-flex items-center gap-2 rounded-sm bg-[#8DC63F] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#7DB62F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center gap-2 rounded-sm bg-gr-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-gr-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <CheckCircle className="w-4 h-4" />
                   Recommend Approval
@@ -263,20 +263,20 @@ export default function PartnerApplicationDetails({
           <div
             className={`relative border-2 p-4 sm:p-5 ${
               application.partner_decision === 'approve'
-                ? 'border-[#8DC63F] bg-[#F4FBE8]'
+                ? 'border-gr-primary bg-[#F4FBE8]'
                 : 'border-red-300 bg-red-50'
             }`}
           >
             <div
               className={`absolute left-0 top-0 bottom-0 w-1.5 ${
-                application.partner_decision === 'approve' ? 'bg-[#8DC63F]' : 'bg-red-400'
+                application.partner_decision === 'approve' ? 'bg-gr-primary' : 'bg-red-400'
               }`}
             />
             <div className="pl-2">
               <div
                 className={`mb-4 inline-flex items-center gap-2 rounded-sm px-2.5 py-1 ${
                   application.partner_decision === 'approve'
-                    ? 'bg-[#8DC63F]'
+                    ? 'bg-gr-primary'
                     : 'bg-red-500'
                 }`}
               >
@@ -287,7 +287,7 @@ export default function PartnerApplicationDetails({
 
               <div className="flex items-center gap-2 mb-3">
                 {application.partner_decision === 'approve' ? (
-                  <CheckCircle className="w-5 h-5 text-[#8DC63F]" />
+                  <CheckCircle className="w-5 h-5 text-gr-primary" />
                 ) : (
                   <XCircle className="w-5 h-5 text-red-500" />
                 )}
@@ -326,7 +326,7 @@ export default function PartnerApplicationDetails({
         <div className="relative flex items-center justify-center">
           <Link
             href="/partner/applications"
-            className="absolute left-0 flex items-center gap-2 text-gray-600 hover:text-[#8DC63F] transition-colors"
+            className="absolute left-0 flex items-center gap-2 text-gray-600 hover:text-gr-primary transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
             <span className="font-medium">Back</span>
@@ -348,13 +348,13 @@ export default function PartnerApplicationDetails({
               <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">
                 {partnerName}
               </p>
-              <p className="text-xs text-[#8DC63F] font-medium">
+              <p className="text-xs text-gr-primary font-medium">
                 ID: {(myProfile as Profile | null)?.unique_id || 'N/A'}
               </p>
             </div>
             <Link
               href="/partner/profile"
-              className="w-10 h-10 rounded-full bg-[#3B82F6] flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity flex-shrink-0"
+              className="w-10 h-10 rounded-full bg-gr-secondary flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity flex-shrink-0"
             >
               {getAvatarInitials()}
             </Link>
@@ -370,7 +370,7 @@ export default function PartnerApplicationDetails({
             <p className="text-gray-500 mb-4">Application not found.</p>
             <Link
               href="/partner/applications"
-              className="text-sm font-semibold text-[#8DC63F] hover:underline"
+              className="text-sm font-semibold text-gr-primary hover:underline"
             >
               Back to Applications
             </Link>
@@ -395,7 +395,7 @@ export default function PartnerApplicationDetails({
               <div className="flex justify-center pt-2 pb-10">
                 <Link
                   href="/partner/applications"
-                  className="inline-flex items-center justify-center rounded-xl bg-[#8DC63F] px-8 py-3 text-sm font-semibold text-white hover:bg-[#7DB62F] transition-colors"
+                  className="inline-flex items-center justify-center rounded-xl bg-gr-primary px-8 py-3 text-sm font-semibold text-white hover:bg-gr-primary-hover transition-colors"
                 >
                   Go to Applications
                 </Link>

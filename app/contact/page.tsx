@@ -54,13 +54,13 @@ export default async function Contact() {
   const contact = await getContactInfo()
 
   return (
-    <div className="min-h-screen bg-[#FAFBF7]">
+    <div className="min-h-screen bg-gr-primary-light">
       <Navbar activeLink="contact" />
 
       <main className="w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14 lg:py-16">
           <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8 md:mb-10">
-            <h1 className="font-bold text-3xl md:text-4xl lg:text-[2.75rem] text-[#1A1A1A] leading-tight tracking-tight">
+            <h1 className="font-bold text-3xl md:text-4xl lg:text-[2.75rem] text-gr-text-dark leading-tight tracking-tight">
               {contact.pageTitle}
             </h1>
             <p className="md:max-w-md md:text-right text-sm md:text-[15px] text-gray-600 leading-relaxed">
@@ -84,10 +84,10 @@ export default async function Contact() {
 
             <div className="lg:col-span-5 flex flex-col gap-5">
               <div className="rounded-2xl bg-white border border-gray-200 px-6 py-6 sm:px-7 sm:py-7">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8DC63F] mb-3">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gr-primary mb-3">
                   Visit
                 </p>
-                <h2 className="text-xl font-bold text-[#1A1A1A] mb-2">
+                <h2 className="text-xl font-bold text-gr-text-dark mb-2">
                   {contact.officeName}
                 </h2>
                 <address className="not-italic text-sm text-gray-600 leading-relaxed mb-4">
@@ -102,7 +102,7 @@ export default async function Contact() {
                     href={contact.mapDirectionsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 text-sm font-semibold text-[#1A1A1A] border border-gray-200 rounded-lg px-4 py-2.5 hover:border-[#8DC63F] hover:text-[#8DC63F] transition-colors"
+                    className="inline-flex items-center justify-center gap-2 text-sm font-semibold text-gr-text-dark border border-gray-200 rounded-lg px-4 py-2.5 hover:border-gr-primary hover:text-gr-primary transition-colors"
                   >
                     Get directions
                     <ExternalLink className="w-3.5 h-3.5" />
@@ -121,7 +121,7 @@ export default async function Contact() {
 
               <div className="grid sm:grid-cols-2 gap-5">
                 <div className="rounded-2xl bg-white border border-gray-200 px-6 py-6">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8DC63F] mb-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gr-primary mb-4">
                     Call
                   </p>
                   <ul className="flex flex-col gap-4">
@@ -130,7 +130,7 @@ export default async function Contact() {
                         <p className="text-xs text-gray-500 mb-1">{phone.label}</p>
                         <a
                           href={`tel:${phone.tel}`}
-                          className="block text-[15px] font-semibold text-[#1A1A1A] hover:text-[#8DC63F] transition-colors tabular-nums"
+                          className="block text-[15px] font-semibold text-gr-text-dark hover:text-gr-primary transition-colors tabular-nums"
                         >
                           {phone.display}
                         </a>
@@ -140,7 +140,7 @@ export default async function Contact() {
                 </div>
 
                 <div className="rounded-2xl bg-white border border-gray-200 px-6 py-6">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8DC63F] mb-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gr-primary mb-4">
                     Email
                   </p>
                   <ul className="flex flex-col gap-4">
@@ -149,7 +149,7 @@ export default async function Contact() {
                         <p className="text-xs text-gray-500 mb-1">{item.label}</p>
                         <a
                           href={`mailto:${item.email}`}
-                          className="block text-[15px] font-semibold text-[#1A1A1A] hover:text-[#8DC63F] transition-colors break-all"
+                          className="block text-[15px] font-semibold text-gr-text-dark hover:text-gr-primary transition-colors break-all"
                         >
                           {item.email}
                         </a>
@@ -159,10 +159,10 @@ export default async function Contact() {
                 </div>
               </div>
 
-              <div className="rounded-2xl bg-[#1A1A1A] px-6 py-6 sm:px-7 text-white">
+              <div className="rounded-2xl bg-gr-text-dark px-6 py-6 sm:px-7 text-white">
                 <div className="grid sm:grid-cols-2 gap-8">
                   <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A3D32F] mb-4">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gr-primary mb-4">
                       Hours
                     </p>
                     <ul className="flex flex-col gap-2.5">
@@ -181,7 +181,7 @@ export default async function Contact() {
                   </div>
 
                   <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A3D32F] mb-4">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gr-primary mb-4">
                       Follow
                     </p>
                     <div className="flex flex-wrap gap-2.5">
@@ -195,7 +195,7 @@ export default async function Contact() {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={social.label}
-                            className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 text-white hover:bg-[#A3D32F] hover:text-[#1A1A1A] transition-colors"
+                            className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 text-white hover:bg-gr-primary hover:text-gr-text-dark transition-colors"
                           >
                             {Icon ? (
                               <Icon className="w-[18px] h-[18px]" />

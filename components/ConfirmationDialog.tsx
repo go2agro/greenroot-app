@@ -21,8 +21,8 @@ const variantStyles: Record<
     title: "text-[#E04848]",
   },
   success: {
-    icon: "text-[#8DC63F]",
-    title: "text-[#8DC63F]",
+    icon: "text-gr-primary",
+    title: "text-gr-primary",
   },
   warning: {
     icon: "text-amber-600",
@@ -70,7 +70,7 @@ export function ConfirmationDialog({
       <DialogContent
         showCloseButton={false}
         overlayClassName="bg-black/50 supports-backdrop-filter:backdrop-blur-[2px]"
-        className="max-w-[420px] rounded-2xl border border-[#EEEEEE] bg-white p-8 shadow-xl sm:max-w-[420px]"
+        className="max-w-[420px] rounded-2xl border border-gr-border bg-white p-8 shadow-xl sm:max-w-[420px]"
       >
         <div className="flex flex-col items-center text-center">
           <div
@@ -96,8 +96,8 @@ export function ConfirmationDialog({
               onClick={() => onOpenChange(false)}
               disabled={isLoading}
               className={cn(
-                "flex-1 rounded-full border border-[#8DC63F] px-4 py-2.5 text-sm font-semibold text-[#8DC63F] transition-colors",
-                "hover:bg-[#8DC63F]/5 disabled:cursor-not-allowed disabled:opacity-50"
+                "flex-1 rounded-full border border-gr-primary px-4 py-2.5 text-sm font-semibold text-gr-primary transition-colors",
+                "hover:bg-gr-primary/5 disabled:cursor-not-allowed disabled:opacity-50"
               )}
             >
               {cancelText}
@@ -107,8 +107,8 @@ export function ConfirmationDialog({
               onClick={onConfirm}
               disabled={isLoading}
               className={cn(
-                "flex flex-1 items-center justify-center gap-2 rounded-full bg-[#8DC63F] px-4 py-2.5 text-sm font-semibold text-white transition-colors",
-                "hover:bg-[#7DB62F] disabled:cursor-not-allowed disabled:opacity-50"
+                "flex flex-1 items-center justify-center gap-2 rounded-full bg-gr-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors",
+                "hover:bg-gr-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
               )}
             >
               {isLoading ? (

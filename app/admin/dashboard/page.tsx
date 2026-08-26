@@ -32,6 +32,7 @@ import {
   getAdminDashboardData,
   getDashboardKpisByDateRange,
 } from '@/lib/adminDashboard'
+import { themeColors } from '@/lib/theme'
 
 type TimeFilter = 'this_week' | 'this_month' | 'last_3_months'
 
@@ -68,9 +69,9 @@ interface ProfileCompletionStats {
 }
 
 const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-const BAR_COLORS = ['#1D4ED8', '#93C5FD']
-const PROFILE_COMPLETION_COLORS = ['#8DC63F', '#93C5FD']
-const CARD_CLASS = 'bg-white border border-[#EEEEEE] rounded-2xl p-6'
+const BAR_COLORS = [themeColors.secondary, '#93C5FD']
+const PROFILE_COMPLETION_COLORS = [themeColors.primary, '#93C5FD']
+const CARD_CLASS = 'bg-white border border-gr-border rounded-2xl p-6'
 
 const KPI_CARDS = [
   {
@@ -78,32 +79,32 @@ const KPI_CARDS = [
     label: 'Total Students',
     href: '/admin/students',
     icon: Users,
-    gradient: 'bg-gradient-to-br from-[#3B82F6] to-[#8DC63F]',
-    border: 'border-[#7DB62F]/80',
+    gradient: 'bg-gradient-to-br from-gr-secondary to-gr-primary',
+    border: 'border-gr-primary-hover/80',
   },
   {
     key: 'applications',
     label: 'Total Applications',
     href: '/admin/applications',
     icon: FileText,
-    gradient: 'bg-gradient-to-br from-[#2563EB] to-[#22C55E]',
-    border: 'border-[#16A34A]/50',
+    gradient: 'bg-gradient-to-br from-gr-secondary to-gr-success',
+    border: 'border-gr-success/50',
   },
   {
     key: 'acceptance',
     label: 'Acceptance Rate',
     href: null,
     icon: CheckCircle,
-    gradient: 'bg-gradient-to-br from-[#8DC63F] to-[#3B82F6]',
-    border: 'border-[#3B82F6]/50',
+    gradient: 'bg-gradient-to-br from-gr-primary to-gr-secondary',
+    border: 'border-gr-secondary/50',
   },
   {
     key: 'internships',
     label: 'Total Internships Listed',
     href: '/admin/internships',
     icon: Briefcase,
-    gradient: 'bg-gradient-to-br from-[#1D4ED8] to-[#7DB62F]',
-    border: 'border-[#5A9A2E]/70',
+    gradient: 'bg-gradient-to-br from-gr-secondary to-gr-primary-hover',
+    border: 'border-gr-primary-hover/70',
   },
 ] as const
 
@@ -232,7 +233,7 @@ function DashboardSkeleton() {
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="bg-gradient-to-br from-[#3B82F6]/30 to-[#8DC63F]/30 border border-[#8DC63F]/20 rounded-xl p-5"
+            className="bg-gradient-to-br from-gr-secondary/30 to-gr-primary/30 border border-gr-primary/20 rounded-xl p-5"
           >
             <div className="h-10 w-10 animate-pulse bg-white/30 rounded-full mb-3" />
             <div className="h-4 w-24 animate-pulse bg-white/30 rounded mb-2" />
@@ -310,7 +311,7 @@ function DashboardKpiCard({
 
 function EmptyState({ message }: { message: string }) {
   return (
-    <div className="py-8 text-center text-sm text-gray-500 border border-dashed border-[#EEEEEE] rounded-xl">
+    <div className="py-8 text-center text-sm text-gray-500 border border-dashed border-gr-border rounded-xl">
       {message}
     </div>
   )
@@ -443,7 +444,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="flex h-screen bg-[#F9F9F9] overflow-hidden">
+    <div className="flex h-screen bg-gr-background overflow-hidden">
       <div className="hidden lg:block">
         <AdminSidebar
           activePage="dashboard"
@@ -453,15 +454,15 @@ export default function AdminDashboard() {
       </div>
 
       <div className="flex-1 overflow-auto">
-        <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+        <div className="bg-white border-b border-gr-border px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
           <div className="flex items-center justify-end gap-3">
             <div className="text-right hidden sm:block">
               <p className="text-sm font-bold text-gray-900">{adminName}</p>
-              <p className="text-sm text-[#8DC63F]">{uniqueId}</p>
+              <p className="text-sm text-gr-primary">{uniqueId}</p>
             </div>
             <Link
               href="/admin/profile"
-              className="w-10 h-10 rounded-full bg-[#3B82F6] flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity"
+              className="w-10 h-10 rounded-full bg-gr-secondary flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity"
             >
               {getAvatarInitials()}
             </Link>
@@ -490,7 +491,7 @@ export default function AdminDashboard() {
                 <PopoverTrigger asChild>
                   <button
                     type="button"
-                    className="bg-[#8DC63F] text-white rounded-xl p-3 hover:opacity-90 transition-opacity flex-shrink-0"
+                    className="bg-gr-primary text-white rounded-xl p-3 hover:opacity-90 transition-opacity flex-shrink-0"
                     aria-label="Select date range"
                   >
                     <CalendarDays className="w-5 h-5" />
@@ -505,14 +506,14 @@ export default function AdminDashboard() {
                     numberOfMonths={1}
                     disabled={{ after: new Date() }}
                   />
-                  <div className="flex items-center justify-between gap-2 border-t border-[#EEEEEE] p-3">
+                  <div className="flex items-center justify-between gap-2 border-t border-gr-border p-3">
                     <Button type="button" variant="outline" size="sm" onClick={handleClearDateRange}>
                       Clear
                     </Button>
                     <Button
                       type="button"
                       size="sm"
-                      className="bg-[#8DC63F] hover:bg-[#7DB62F] text-white"
+                      className="bg-gr-primary hover:bg-gr-primary-hover text-white"
                       onClick={handleApplyDateRange}
                       disabled={!dateRange?.from || !dateRange?.to}
                     >
@@ -544,12 +545,12 @@ export default function AdminDashboard() {
                     <div key={stage.label} className="flex flex-col items-center">
                       <div className="relative flex items-center justify-center w-full h-12">
                         {index > 0 && (
-                          <div className="absolute right-1/2 left-0 top-1/2 -translate-y-1/2 h-[3px] bg-[#8DC63F]" />
+                          <div className="absolute right-1/2 left-0 top-1/2 -translate-y-1/2 h-[3px] bg-gr-primary" />
                         )}
                         {index < pipelineStages.length - 1 && (
-                          <div className="absolute left-1/2 right-0 top-1/2 -translate-y-1/2 h-[3px] bg-[#8DC63F]" />
+                          <div className="absolute left-1/2 right-0 top-1/2 -translate-y-1/2 h-[3px] bg-gr-primary" />
                         )}
-                        <div className="relative z-10 w-12 h-12 rounded-full bg-[#8DC63F] text-white font-bold text-sm flex items-center justify-center">
+                        <div className="relative z-10 w-12 h-12 rounded-full bg-gr-primary text-white font-bold text-sm flex items-center justify-center">
                           {stage.count.toString().padStart(2, '0')}
                         </div>
                       </div>
@@ -570,7 +571,7 @@ export default function AdminDashboard() {
                   <select
                     value={timeFilter}
                     onChange={(e) => setTimeFilter(e.target.value as TimeFilter)}
-                    className="border border-[#EEEEEE] rounded-lg px-3 py-2 text-sm bg-white w-full sm:w-auto"
+                    className="border border-gr-border rounded-lg px-3 py-2 text-sm bg-white w-full sm:w-auto"
                   >
                     <option value="this_week">This week</option>
                     <option value="this_month">This month</option>
@@ -580,7 +581,7 @@ export default function AdminDashboard() {
 
                 <ResponsiveContainer width="100%" height={280}>
                   <BarChart data={chartData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#EEEEEE" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--gr-border)" />
                     <XAxis
                       dataKey="name"
                       axisLine={false}
@@ -609,7 +610,7 @@ export default function AdminDashboard() {
                     {topInternships.map((item, index) => (
                       <div
                         key={`${item.internship?.title}-${index}`}
-                        className="flex items-center justify-between gap-4 py-3 border-b border-[#EEEEEE] last:border-0"
+                        className="flex items-center justify-between gap-4 py-3 border-b border-gr-border last:border-0"
                       >
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-medium text-gray-900 truncate">
@@ -619,7 +620,7 @@ export default function AdminDashboard() {
                             {item.internship?.country || 'Unknown country'}
                           </p>
                         </div>
-                        <span className="text-lg font-bold text-[#3B82F6] flex-shrink-0">
+                        <span className="text-lg font-bold text-gr-secondary flex-shrink-0">
                           {item.count.toLocaleString()}
                         </span>
                       </div>
@@ -671,29 +672,29 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="space-y-4">
-                  <div className="rounded-xl bg-[#F9F9F9] border border-[#EEEEEE] p-4">
+                  <div className="rounded-xl bg-gr-background border border-gr-border p-4">
                     <p className="text-sm text-gray-500">Total students</p>
-                    <p className="text-3xl font-bold text-[#3B82F6] mt-1">
+                    <p className="text-3xl font-bold text-gr-secondary mt-1">
                       {totalProfiledStudents.toLocaleString()}
                     </p>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="rounded-xl bg-[#F9F9F9] border border-[#EEEEEE] p-4">
+                    <div className="rounded-xl bg-gr-background border border-gr-border p-4">
                       <p className="text-sm text-gray-500">Complete</p>
-                      <p className="text-2xl font-bold text-[#3B82F6] mt-1">
+                      <p className="text-2xl font-bold text-gr-secondary mt-1">
                         {profileCompletionStats.complete.toLocaleString()}
                       </p>
                     </div>
-                    <div className="rounded-xl bg-[#F9F9F9] border border-[#EEEEEE] p-4">
+                    <div className="rounded-xl bg-gr-background border border-gr-border p-4">
                       <p className="text-sm text-gray-500">Incomplete</p>
-                      <p className="text-2xl font-bold text-[#3B82F6] mt-1">
+                      <p className="text-2xl font-bold text-gr-secondary mt-1">
                         {profileCompletionStats.incomplete.toLocaleString()}
                       </p>
                     </div>
                   </div>
                   <p className="text-sm text-gray-500">
                     Overall completion rate:{' '}
-                    <span className="font-semibold text-[#8DC63F]">
+                    <span className="font-semibold text-gr-primary">
                       {profileCompletionRate}%
                     </span>
                   </p>

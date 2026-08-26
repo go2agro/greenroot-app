@@ -7,7 +7,7 @@ import PartnerShell from '@/components/PartnerShell'
 import { getPartnerDashboardData } from '@/lib/partnerDashboard'
 
 const KPI_CARD_CLASS =
-  'bg-white border border-[#EEEEEE] rounded-2xl p-5 transition-colors hover:border-[#8DC63F]'
+  'bg-white border border-gr-border rounded-2xl p-5 transition-colors hover:border-gr-primary'
 
 function KpiCardSkeleton() {
   return (
@@ -49,9 +49,9 @@ export default function PartnerDashboardPage() {
               <KpiCardSkeleton />
             ) : (
               <>
-                <FileText className="w-8 h-8 text-[#8DC63F] mb-3" />
+                <FileText className="w-8 h-8 text-gr-primary mb-3" />
                 <p className="text-sm text-gray-500">Total Applications</p>
-                <p className="text-3xl font-bold text-[#3B82F6] mt-1">
+                <p className="text-3xl font-bold text-gr-secondary mt-1">
                   {stats.total.toLocaleString()}
                 </p>
               </>
@@ -63,9 +63,9 @@ export default function PartnerDashboardPage() {
               <KpiCardSkeleton />
             ) : (
               <>
-                <CheckCircle className="w-8 h-8 text-[#8DC63F] mb-3" />
+                <CheckCircle className="w-8 h-8 text-gr-primary mb-3" />
                 <p className="text-sm text-gray-500">Approved</p>
-                <p className="text-3xl font-bold text-[#3B82F6] mt-1">
+                <p className="text-3xl font-bold text-gr-secondary mt-1">
                   {stats.approved.toLocaleString()}
                 </p>
               </>
@@ -77,9 +77,9 @@ export default function PartnerDashboardPage() {
               <KpiCardSkeleton />
             ) : (
               <>
-                <XCircle className="w-8 h-8 text-[#8DC63F] mb-3" />
+                <XCircle className="w-8 h-8 text-gr-primary mb-3" />
                 <p className="text-sm text-gray-500">Rejected</p>
-                <p className="text-3xl font-bold text-[#3B82F6] mt-1">
+                <p className="text-3xl font-bold text-gr-secondary mt-1">
                   {stats.rejected.toLocaleString()}
                 </p>
               </>

@@ -8,6 +8,7 @@ import {
   getApplicationAssignment,
   searchPartnersForAssignment,
 } from '@/lib/adminPartners'
+import { LABEL_SEARCH_PLACEHOLDER } from '@/lib/appConfig'
 
 type PartnerOption = {
   id: string
@@ -116,10 +117,10 @@ export default function PartnerAssignBar({ applicationId, onAssigned }: PartnerA
   }
 
   return (
-    <div className="bg-white border border-[#EEEEEE] rounded-2xl p-4 sm:p-5 space-y-4">
+    <div className="bg-white border border-gr-border rounded-2xl p-4 sm:p-5 space-y-4">
 
       {assignedPartner && (
-        <div className="rounded-xl border border-[#8DC63F]/40 bg-[#F4FBE8] p-4">
+        <div className="rounded-xl border border-gr-primary/40 bg-[#F4FBE8] p-4">
           <p className="text-xs uppercase tracking-wide text-gray-500 mb-2">Forwarded To</p>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
@@ -133,7 +134,7 @@ export default function PartnerAssignBar({ applicationId, onAssigned }: PartnerA
               {(assignedPartner.countries ?? []).map((country) => (
                 <span
                   key={country}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-white border border-[#EEEEEE] px-3 py-1 text-xs font-medium text-gray-700"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-white border border-gr-border px-3 py-1 text-xs font-medium text-gray-700"
                 >
                   <span>{getCountryFlag(country)}</span>
                   {country}
@@ -154,15 +155,15 @@ export default function PartnerAssignBar({ applicationId, onAssigned }: PartnerA
             setShowResults(true)
           }}
           onFocus={() => setShowResults(true)}
-          placeholder="Search by name, last name, partner ID, or country..."
-          className="w-full bg-[#F5F5F5] border border-[#EEEEEE] rounded-xl py-3 px-4 pl-12 focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+          placeholder={LABEL_SEARCH_PLACEHOLDER}
+          className="w-full bg-gr-input-bg border border-gr-border rounded-xl py-3 px-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent"
         />
       </div>
 
       <p className={`text-xs ${searchError ? 'text-red-500' : 'text-gray-500'}`}>{resultLabel}</p>
 
       {showResults && searchQuery.trim() && !isSearching && partners.length > 0 && (
-        <div className="border border-[#EEEEEE] rounded-xl overflow-hidden divide-y divide-[#EEEEEE]">
+        <div className="border border-gr-border rounded-xl overflow-hidden divide-y divide-gr-border">
           {partners.map((partner) => (
             <button
               key={partner.id}
@@ -173,7 +174,7 @@ export default function PartnerAssignBar({ applicationId, onAssigned }: PartnerA
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-full bg-[#3B82F6] text-white flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-gr-secondary text-white flex items-center justify-center flex-shrink-0">
                     <UserRound className="w-5 h-5" />
                   </div>
                   <div className="min-w-0">
@@ -190,7 +191,7 @@ export default function PartnerAssignBar({ applicationId, onAssigned }: PartnerA
                       <span
                         key={country}
                         title={country}
-                        className="inline-flex items-center gap-1 rounded-full bg-[#F5F5F5] px-2 py-1 text-xs text-gray-700"
+                        className="inline-flex items-center gap-1 rounded-full bg-gr-input-bg px-2 py-1 text-xs text-gray-700"
                       >
                         <span>{getCountryFlag(country)}</span>
                         <span className="hidden sm:inline">{country}</span>

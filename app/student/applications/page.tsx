@@ -26,7 +26,7 @@ import { invalidateAllApplicationData } from '@/lib/cache'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
 import { getApplicationStatusTimestamp, formatApplicationReferenceId } from '@/lib/utils'
-import { BTN_DELETE, ITEMS_PER_PAGE } from '@/lib/appConfig'
+import { BTN_DELETE, ITEMS_PER_PAGE, LABEL_SEARCH_PLACEHOLDER } from '@/lib/appConfig'
 import { getMessage } from '@/lib/messages'
 
 type ApplicationStatus = 'draft' | 'submitted' | 'under_review' | 'admin_accepted' | 'forwarded_to_partner' | 'partner_review' | 'approved' | 'rejected' | 'accepted' | 'closed' | 'withdrawn'
@@ -317,7 +317,7 @@ export default function StudentApplications() {
   const isLoading = applicationsLoading
 
   return (
-    <div className="flex h-screen bg-[#F9F9F9]">
+    <div className="flex h-screen bg-gr-background">
       <div className="hidden lg:block">
         <StudentSidebar
           isCollapsed={isSidebarCollapsed}
@@ -326,13 +326,13 @@ export default function StudentApplications() {
       </div>
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4">
+        <div className="bg-white border-b border-gr-border px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-3">
             <StudentMobileLogo />
             <div className="flex items-center gap-3 ml-auto">
               <div className="text-right">
                 <div className="font-bold text-gray-900">{userName}</div>
-                <div className="text-xs text-[#3B82F6] font-medium">ID: {myProfile?.unique_id || 'N/A'}</div>
+                <div className="text-xs text-gr-secondary font-medium">ID: {myProfile?.unique_id || 'N/A'}</div>
               </div>
               <Link href="/student/profile" className="cursor-pointer hover:opacity-80 transition-opacity">
                 <UserAvatar
@@ -359,23 +359,23 @@ export default function StudentApplications() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search internships (e.g. Soil Research)"
+                  placeholder={LABEL_SEARCH_PLACEHOLDER}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white border border-[#EEEEEE] rounded-xl py-3 px-4 pl-12 focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+                  className="w-full bg-white border border-gr-border rounded-xl py-3 px-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent"
                 />
               </div>
 
               <div className="relative" ref={filterDropdownRef}>
                 <button
                   onClick={() => setShowFilterDropdown(!showFilterDropdown)}
-                  className="bg-[#8DC63F] text-white rounded-xl p-3 hover:bg-[#7DB62F] transition-colors"
+                  className="bg-gr-primary text-white rounded-xl p-3 hover:bg-gr-primary-hover transition-colors"
                 >
                   <SlidersHorizontal className="w-5 h-5" />
                 </button>
 
                 {showFilterDropdown && (
-                  <div className="absolute right-0 top-full mt-2 bg-white border border-[#EEEEEE] rounded-xl shadow-lg py-2 w-48 z-10">
+                  <div className="absolute right-0 top-full mt-2 bg-white border border-gr-border rounded-xl shadow-lg py-2 w-48 z-10">
                     {[
                       { value: 'all', label: 'All' },
                       { value: 'draft', label: 'Draft' },
@@ -391,7 +391,7 @@ export default function StudentApplications() {
                           setShowFilterDropdown(false)
                         }}
                         className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${
-                          filterStatus === option.value ? 'bg-green-50 text-[#8DC63F] font-medium' : 'text-gray-700'
+                          filterStatus === option.value ? 'bg-green-50 text-gr-primary font-medium' : 'text-gray-700'
                         }`}
                       >
                         {option.label}
@@ -405,7 +405,7 @@ export default function StudentApplications() {
             {isLoading ? (
               <div className="space-y-3">
                 {[...Array(5)].map((_, i) => (
-                  <div key={i} className="bg-white border border-[#EEEEEE] rounded-2xl p-4 animate-pulse">
+                  <div key={i} className="bg-white border border-gr-border rounded-2xl p-4 animate-pulse">
                     <div className="flex items-center gap-4">
                       <div className="w-24 h-20 bg-gray-200 rounded-xl" />
                       <div className="flex-1 space-y-3">
@@ -425,7 +425,7 @@ export default function StudentApplications() {
                 <p className="text-sm text-gray-400 mb-4">Start browsing internships and apply!</p>
                 <button
                   onClick={() => router.push('/student/internships')}
-                  className="bg-[#8DC63F] text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#7DB62F] transition-colors"
+                  className="bg-gr-primary text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-gr-primary-hover transition-colors"
                 >
                   Browse Internships
                 </button>
@@ -436,7 +436,7 @@ export default function StudentApplications() {
                   {paginatedApplications.map((application, index) => (
                     <div
                       key={application.id}
-                      className="bg-white border border-[#EEEEEE] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 hover:shadow-md transition-shadow"
+                      className="bg-white border border-gr-border rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 hover:shadow-md transition-shadow"
                     >
                       <div className="flex items-center gap-4 flex-1 min-w-0">
                         <div className="relative w-24 h-20 rounded-xl overflow-hidden flex-shrink-0">
@@ -532,7 +532,7 @@ export default function StudentApplications() {
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
-                      className="border border-[#EEEEEE] rounded-lg px-3 py-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="border border-gr-border rounded-lg px-3 py-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       <ChevronLeft className="w-5 h-5" />
                     </button>
@@ -548,8 +548,8 @@ export default function StudentApplications() {
                           onClick={() => handlePageChange(page as number)}
                           className={`min-w-[40px] px-3 py-2 rounded-lg font-medium transition-colors ${
                             currentPage === page
-                              ? 'bg-[#8DC63F] text-white'
-                              : 'border border-[#EEEEEE] hover:bg-gray-50'
+                              ? 'bg-gr-primary text-white'
+                              : 'border border-gr-border hover:bg-gray-50'
                           }`}
                         >
                           {page}
@@ -560,7 +560,7 @@ export default function StudentApplications() {
                     <button
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
-                      className="border border-[#EEEEEE] rounded-lg px-3 py-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="border border-gr-border rounded-lg px-3 py-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       <ChevronRight className="w-5 h-5" />
                     </button>

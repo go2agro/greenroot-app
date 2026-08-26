@@ -543,20 +543,20 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
   if (isLoading) {
     return (
-      <div className="flex h-screen bg-[#F9F9F9] items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#8DC63F] animate-spin" />
+      <div className="flex h-screen bg-gr-background items-center justify-center">
+        <Loader2 className="w-8 h-8 text-gr-primary animate-spin" />
       </div>
     )
   }
 
   if (!application || !profile) {
     return (
-      <div className="flex h-screen bg-[#F9F9F9] items-center justify-center">
+      <div className="flex h-screen bg-gr-background items-center justify-center">
         <div className="text-center">
           <p className="text-gray-500 mb-4">Application not found</p>
           <Link
             href="/student/applications"
-            className="text-[#8DC63F] hover:underline"
+            className="text-gr-primary hover:underline"
           >
             Back to Applications
           </Link>
@@ -576,11 +576,11 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
   }
 
   const studentHeader = (
-    <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4 flex-shrink-0">
+    <div className="bg-white border-b border-gr-border px-4 sm:px-6 lg:px-8 py-4 flex-shrink-0">
       <div className="relative flex items-center justify-center">
         <Link
           href="/student/applications"
-          className="absolute left-0 flex items-center gap-2 text-gray-600 hover:text-[#8DC63F] transition-colors"
+          className="absolute left-0 flex items-center gap-2 text-gray-600 hover:text-gr-primary transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
           <span className="font-medium">Back</span>
@@ -602,7 +602,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
             <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">
               {userName}
             </p>
-            <p className="text-xs text-[#3B82F6] font-medium">
+            <p className="text-xs text-gr-secondary font-medium">
               ID: {myProfile?.unique_id || 'N/A'}
             </p>
           </div>
@@ -647,7 +647,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                 </p>
                 <Link
                   href={`/student/internships/${application.internship_id}`}
-                  className="inline-flex items-center justify-center rounded-lg bg-[#8DC63F] px-4 py-2 text-sm font-semibold text-white hover:bg-[#7DB62F] transition-colors flex-shrink-0"
+                  className="inline-flex items-center justify-center rounded-lg bg-gr-primary px-4 py-2 text-sm font-semibold text-white hover:bg-gr-primary-hover transition-colors flex-shrink-0"
                 >
                   Apply Again
                 </Link>
@@ -701,7 +701,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
             <div className="flex justify-center pt-2 pb-10">
               <Link
                 href="/student/applications"
-                className="inline-flex items-center justify-center rounded-xl bg-[#8DC63F] px-8 py-3 text-sm font-semibold text-white hover:bg-[#7DB62F] transition-colors"
+                className="inline-flex items-center justify-center rounded-xl bg-gr-primary px-8 py-3 text-sm font-semibold text-white hover:bg-gr-primary-hover transition-colors"
               >
                 Go back to Applications
               </Link>
@@ -728,14 +728,14 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
   }
 
   return (
-    <div className="flex h-screen bg-[#F9F9F9]">
+    <div className="flex h-screen bg-gr-background">
       <div className="flex-1 flex flex-col overflow-hidden">
         {studentHeader}
 
         <div className="flex-1 overflow-y-auto pb-24">
           <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
 
-            <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5 mb-6">
+            <div className="bg-white border border-gr-border rounded-2xl p-5 mb-6">
               <div className="flex items-center gap-4">
                 {application.internships?.image_url && (
                   <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
@@ -773,7 +773,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
               </div>
             </div>
 
-            <div className="bg-white border border-[#EEEEEE] rounded-2xl p-6 mb-6">
+            <div className="bg-white border border-gr-border rounded-2xl p-6 mb-6">
               <div className="grid grid-cols-5 mb-8">
                 {STEP_NAMES.map((name, index) => {
                   const stepNumber = index + 1
@@ -786,14 +786,14 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                         {index > 0 && (
                           <div
                             className={`absolute right-1/2 left-0 top-1/2 -translate-y-1/2 h-[3px] transition-colors ${
-                              currentStep > index ? 'bg-[#8DC63F]' : 'bg-gray-200'
+                              currentStep > index ? 'bg-gr-primary' : 'bg-gray-200'
                             }`}
                           />
                         )}
                         {index < STEP_NAMES.length - 1 && (
                           <div
                             className={`absolute left-1/2 right-0 top-1/2 -translate-y-1/2 h-[3px] transition-colors ${
-                              currentStep > stepNumber ? 'bg-[#8DC63F]' : 'bg-gray-200'
+                              currentStep > stepNumber ? 'bg-gr-primary' : 'bg-gray-200'
                             }`}
                           />
                         )}
@@ -803,7 +803,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                           disabled={!isReadOnly}
                           className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-colors ${
                             isReached
-                              ? 'bg-[#8DC63F] text-white'
+                              ? 'bg-gr-primary text-white'
                               : 'bg-gray-200 text-gray-400'
                           } ${isReadOnly ? 'cursor-pointer hover:opacity-90' : 'cursor-default'}`}
                         >
@@ -812,7 +812,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                       </div>
                       <span
                         className={`text-[10px] sm:text-xs mt-2 font-medium text-center leading-tight max-w-[72px] sm:max-w-none ${
-                          isActive ? 'text-[#8DC63F]' : 'text-gray-500'
+                          isActive ? 'text-gr-primary' : 'text-gray-500'
                         }`}
                       >
                         {name}
@@ -967,7 +967,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                           value={formData.academic_current_status || ''}
                           onChange={(e) => setFormData({ ...formData, academic_current_status: e.target.value })}
                           disabled={isReadOnly}
-                          className={`w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
+                          className={`w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                         >
                           <option value="">Select status</option>
                           <option value="Studying">Studying</option>
@@ -984,7 +984,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                           value={formData.academic_graduation_year || ''}
                           onChange={(e) => setFormData({ ...formData, academic_graduation_year: e.target.value })}
                           disabled={isReadOnly}
-                          className={`w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
+                          className={`w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                         />
                       </div>
                     </div>
@@ -1003,7 +1003,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                       <button
                         onClick={addLanguage}
                         disabled={languages.length >= MAX_LANGUAGES}
-                        className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-4 py-2 text-sm font-medium hover:bg-green-50 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="border border-gr-primary text-gr-primary rounded-lg px-4 py-2 text-sm font-medium hover:bg-green-50 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Plus className="w-4 h-4" />
                         Add Language
@@ -1013,7 +1013,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
                     <div className="space-y-4">
                       {languages.map((lang, index) => (
-                        <div key={index} className="relative border border-[#EEEEEE] rounded-xl p-4">
+                        <div key={index} className="relative border border-gr-border rounded-xl p-4">
                           {languages.length > 1 && !isReadOnly && (
                             <button
                               onClick={() => removeLanguage(index)}
@@ -1029,7 +1029,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                                 value={lang.language}
                                 onChange={(e) => updateLanguage(index, 'language', e.target.value)}
                                 disabled={isReadOnly}
-                                className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
+                                className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                               >
                                 <option value="">Select language</option>
                                 <option value="English">English</option>
@@ -1050,7 +1050,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                                 value={lang.read}
                                 onChange={(e) => updateLanguage(index, 'read', e.target.value)}
                                 disabled={isReadOnly}
-                                className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
+                                className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                               >
                                 <option value="">Read level</option>
                                 <option value="Beginner">Beginner</option>
@@ -1063,7 +1063,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                                 value={lang.write}
                                 onChange={(e) => updateLanguage(index, 'write', e.target.value)}
                                 disabled={isReadOnly}
-                                className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
+                                className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                               >
                                 <option value="">Write level</option>
                                 <option value="Beginner">Beginner</option>
@@ -1076,7 +1076,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                                 value={lang.speak}
                                 onChange={(e) => updateLanguage(index, 'speak', e.target.value)}
                                 disabled={isReadOnly}
-                                className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
+                                className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                               >
                                 <option value="">Speak level</option>
                                 <option value="Beginner">Beginner</option>
@@ -1104,7 +1104,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                           value={formData.health_medical_conditions || ''}
                           onChange={(e) => setFormData({ ...formData, health_medical_conditions: e.target.value })}
                           disabled={isReadOnly}
-                          className={`w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
+                          className={`w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                         />
                       </div>
 
@@ -1116,7 +1116,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                           value={formData.health_allergies || ''}
                           onChange={(e) => setFormData({ ...formData, health_allergies: e.target.value })}
                           disabled={isReadOnly}
-                          className={`w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
+                          className={`w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                         />
                       </div>
 
@@ -1128,7 +1128,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                           value={formData.health_disabilities || ''}
                           onChange={(e) => setFormData({ ...formData, health_disabilities: e.target.value })}
                           disabled={isReadOnly}
-                          className={`w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
+                          className={`w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                         />
                       </div>
                     </div>
@@ -1146,9 +1146,9 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                   </p>
 
                   {requiredDocumentsText && (
-                    <div className="bg-[#F0F7E6] border border-[#8DC63F]/30 rounded-xl p-5 mb-6">
+                    <div className="bg-gr-primary-light border border-gr-primary/30 rounded-xl p-5 mb-6">
                       <div className="flex items-start gap-3">
-                        <Info className="w-5 h-5 text-[#8DC63F] flex-shrink-0 mt-0.5" />
+                        <Info className="w-5 h-5 text-gr-primary flex-shrink-0 mt-0.5" />
                         <div>
                           <h4 className="font-semibold text-gray-900 mb-2">
                             Documents Required for This Internship
@@ -1176,7 +1176,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                     className={`bg-gray-50 rounded-2xl p-6 border-2 border-dashed transition-colors cursor-pointer ${
-                      isDragging ? 'border-[#8DC63F] bg-green-50' : 'border-gray-300'
+                      isDragging ? 'border-gr-primary bg-green-50' : 'border-gray-300'
                     }`}
                     onClick={() => document.getElementById('file-input')?.click()}
                   >
@@ -1205,7 +1205,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                   )}
 
                   <p className={`text-sm text-center mt-3 ${
-                    uploadedFiles.length + existingFiles.length >= MAX_DOCUMENT_UPLOADS ? 'text-red-500' : 'text-[#8DC63F]'
+                    uploadedFiles.length + existingFiles.length >= MAX_DOCUMENT_UPLOADS ? 'text-red-500' : 'text-gr-primary'
                   }`}>
                     {uploadedFiles.length + existingFiles.length} / {MAX_DOCUMENT_UPLOADS} files uploaded
                   </p>
@@ -1213,7 +1213,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                   {(existingFiles.length > 0 || uploadedFiles.length > 0) && (
                     <div className="mt-4 grid grid-cols-1 gap-3">
                       {existingFiles.map((file, index) => (
-                        <div key={`existing-${index}`} className="bg-white border border-[#EEEEEE] rounded-xl p-3 flex items-center gap-3">
+                        <div key={`existing-${index}`} className="bg-white border border-gr-border rounded-xl p-3 flex items-center gap-3">
                           {isPdfFile(file.fileType) ? (
                             <FileText className="w-8 h-8 text-red-500 flex-shrink-0" />
                           ) : (
@@ -1227,7 +1227,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                       ))}
 
                       {uploadedFiles.map((file, index) => (
-                        <div key={`new-${index}`} className="bg-white border border-[#EEEEEE] rounded-xl p-3 flex items-center gap-3">
+                        <div key={`new-${index}`} className="bg-white border border-gr-border rounded-xl p-3 flex items-center gap-3">
                           {isPdfFile(file.file.type) ? (
                             <FileText className="w-8 h-8 text-red-500 flex-shrink-0" />
                           ) : (
@@ -1265,7 +1265,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                   <div className="space-y-4">
                     <div className="bg-gray-50 rounded-2xl p-5">
                       <div className="flex items-center gap-2 mb-4">
-                        <User className="w-5 h-5 text-[#8DC63F]" />
+                        <User className="w-5 h-5 text-gr-primary" />
                         <h4 className="font-semibold text-gray-900">Personal Information</h4>
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
@@ -1302,7 +1302,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
                     <div className="bg-gray-50 rounded-2xl p-5">
                       <div className="flex items-center gap-2 mb-4">
-                        <GraduationCap className="w-5 h-5 text-[#8DC63F]" />
+                        <GraduationCap className="w-5 h-5 text-gr-primary" />
                         <h4 className="font-semibold text-gray-900">Academic Details</h4>
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
@@ -1335,7 +1335,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
                     <div className="bg-gray-50 rounded-2xl p-5">
                       <div className="flex items-center gap-2 mb-4">
-                        <Languages className="w-5 h-5 text-[#8DC63F]" />
+                        <Languages className="w-5 h-5 text-gr-primary" />
                         <h4 className="font-semibold text-gray-900">Language Proficiency</h4>
                       </div>
                       <div className="space-y-2 text-sm">
@@ -1352,7 +1352,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
                     <div className="bg-gray-50 rounded-2xl p-5">
                       <div className="flex items-center gap-2 mb-4">
-                        <Heart className="w-5 h-5 text-[#8DC63F]" />
+                        <Heart className="w-5 h-5 text-gr-primary" />
                         <h4 className="font-semibold text-gray-900">Health Information</h4>
                       </div>
                       <div className="space-y-3 text-sm">
@@ -1373,7 +1373,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
                     <div className="bg-gray-50 rounded-2xl p-5">
                       <div className="flex items-center gap-2 mb-4">
-                        <FileText className="w-5 h-5 text-[#8DC63F]" />
+                        <FileText className="w-5 h-5 text-gr-primary" />
                         <h4 className="font-semibold text-gray-900">Documents</h4>
                       </div>
                       <div className="space-y-2 text-sm">
@@ -1412,7 +1412,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                         type="checkbox"
                         checked={declarations.confirm}
                         onChange={(e) => setDeclarations({ ...declarations, confirm: e.target.checked })}
-                        className="mt-1 w-5 h-5 rounded border-gray-300 text-[#8DC63F] focus:ring-[#8DC63F] accent-[#8DC63F]"
+                        className="mt-1 w-5 h-5 rounded border-gray-300 text-gr-primary focus:ring-gr-primary accent-gr-primary"
                       />
                       <span className="text-sm text-gray-700">
                         I confirm that all the information provided in this application is true, accurate and complete to the best of my knowledge. I understand that any false information may result in disqualification.
@@ -1424,7 +1424,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                         type="checkbox"
                         checked={declarations.terms}
                         onChange={(e) => setDeclarations({ ...declarations, terms: e.target.checked })}
-                        className="mt-1 w-5 h-5 rounded border-gray-300 text-[#8DC63F] focus:ring-[#8DC63F] accent-[#8DC63F]"
+                        className="mt-1 w-5 h-5 rounded border-gray-300 text-gr-primary focus:ring-gr-primary accent-gr-primary"
                       />
                       <span className="text-sm text-gray-700">
                         I agree to the{' '}
@@ -1432,7 +1432,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                           href="/terms"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[#8DC63F] hover:underline"
+                          className="text-gr-primary hover:underline"
                           onClick={(e) => e.stopPropagation()}
                         >
                           Terms & Conditions
@@ -1442,7 +1442,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                           href="/privacy"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[#8DC63F] hover:underline"
+                          className="text-gr-primary hover:underline"
                           onClick={(e) => e.stopPropagation()}
                         >
                           Privacy Policy
@@ -1454,7 +1454,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                     <button
                       onClick={handleSubmit}
                       disabled={!declarations.confirm || !declarations.terms || isSubmitting}
-                      className="w-full bg-[#8DC63F] text-white rounded-xl py-4 font-semibold text-base mt-6 hover:bg-[#7DB62F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="w-full bg-gr-primary text-white rounded-xl py-4 font-semibold text-base mt-6 hover:bg-gr-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {isSubmitting ? (
                         <>
@@ -1473,7 +1473,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
           </div>
         </div>
 
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#EEEEEE] px-8 py-4 flex justify-between items-center z-10">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gr-border px-8 py-4 flex justify-between items-center z-10">
           {currentStep > 1 && (
             <button
               onClick={handlePrevious}
@@ -1492,7 +1492,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
               <button
                 onClick={handleSaveDraft}
                 disabled={isSaving}
-                className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-6 py-2.5 font-medium hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="border border-gr-primary text-gr-primary rounded-lg px-6 py-2.5 font-medium hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {isSaving ? (
                   <>
@@ -1509,7 +1509,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
               <button
                 onClick={handleNext}
                 disabled={isSaving}
-                className="bg-[#8DC63F] text-white rounded-lg px-6 py-2.5 font-medium hover:bg-[#7DB62F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="bg-gr-primary text-white rounded-lg px-6 py-2.5 font-medium hover:bg-gr-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {isSaving ? (
                   <>

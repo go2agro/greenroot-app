@@ -72,7 +72,7 @@ export default function ResetPasswordPage() {
           <p className="text-gray-600 mb-6">This password reset link is invalid or has expired.</p>
           <Link 
             href="/login" 
-            className="inline-block bg-[#A3D32F] text-white rounded-lg px-6 py-2 font-semibold hover:bg-[#92C120] transition-colors"
+            className="inline-block bg-gr-primary text-white rounded-lg px-6 py-2 font-semibold hover:bg-gr-primary-hover transition-colors"
           >
             {BTN_LOGIN}
           </Link>
@@ -120,7 +120,7 @@ export default function ResetPasswordPage() {
             </div>
 
             <div className="flex flex-col items-center text-center mb-8">
-              <div className="w-16 h-16 rounded-full bg-[#A3D32F] flex items-center justify-center mb-6">
+              <div className="w-16 h-16 rounded-full bg-gr-primary flex items-center justify-center mb-6">
                 <CheckCircle2 className="w-10 h-10 text-white" />
               </div>
               
@@ -137,7 +137,7 @@ export default function ResetPasswordPage() {
 
               <Link 
                 href="/login" 
-                className="w-full block text-center bg-[#A3D32F] text-white rounded-lg px-6 py-3 font-semibold hover:bg-[#92C120] transition-colors"
+                className="w-full block text-center bg-gr-primary text-white rounded-lg px-6 py-3 font-semibold hover:bg-gr-primary-hover transition-colors"
               >
                 {BTN_LOGIN}
               </Link>
@@ -252,7 +252,7 @@ export default function ResetPasswordPage() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full h-12 bg-[#A3D32F] text-white font-semibold rounded-lg hover:bg-[#92C120] transition-colors"
+              className="w-full h-12 bg-gr-primary text-white font-semibold rounded-lg hover:bg-gr-primary-hover transition-colors"
             >
               {isLoading ? 'Resetting Password...' : 'Reset Password'}
             </Button>

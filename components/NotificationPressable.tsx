@@ -72,7 +72,7 @@ export function NotificationPressable({
           <span className="text-xs text-gray-400 whitespace-nowrap">{timestamp}</span>
 
           {showUnreadDot && isUnread && (
-            <span className="mt-2 h-2.5 w-2.5 rounded-full bg-[#3B82F6]" />
+            <span className="mt-2 h-2.5 w-2.5 rounded-full bg-gr-secondary" />
           )}
 
           <button

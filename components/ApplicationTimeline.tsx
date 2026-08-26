@@ -43,23 +43,23 @@ function getStepStyles(step: TimelineStep) {
   switch (step.status) {
     case 'completed':
       return {
-        dot: 'bg-[#8DC63F] text-white border-[#8DC63F] shadow-[0_0_0_4px_rgba(141,198,63,0.18)]',
-        line: 'bg-[#8DC63F]',
+        dot: 'bg-gr-primary text-white border-gr-primary shadow-[0_0_0_4px_rgba(141,198,63,0.18)]',
+        line: 'bg-gr-primary',
         title: 'text-gray-900',
         description: 'text-gray-500',
         timestamp: 'text-[#5F8F2D]',
       }
     case 'current':
       return {
-        dot: 'bg-white text-[#8DC63F] border-[#8DC63F] shadow-[0_0_0_4px_rgba(141,198,63,0.18)]',
-        line: 'bg-gradient-to-b from-[#8DC63F] to-[#DDD9D0]',
+        dot: 'bg-white text-gr-primary border-gr-primary shadow-[0_0_0_4px_rgba(141,198,63,0.18)]',
+        line: 'bg-gradient-to-b from-gr-primary to-[#DDD9D0]',
         title: 'text-gray-900',
         description: 'text-gray-600',
-        timestamp: 'text-[#8DC63F] font-medium',
+        timestamp: 'text-gr-primary font-medium',
       }
     case 'terminal':
       return {
-        dot: 'bg-red-500 text-white border-red-500 shadow-[0_0_0_4px_rgba(239,68,68,0.15)]',
+        dot: 'bg-red-500 text-white border-gr-error shadow-[0_0_0_4px_rgba(239,68,68,0.15)]',
         line: 'bg-red-200',
         title: 'text-red-700',
         description: 'text-red-500/80',
@@ -97,7 +97,7 @@ export function ApplicationTimeline({
       <div className="border-b border-[#EEEAE3] bg-[#F7F5EF] px-5 sm:px-6 py-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#8DC63F]">
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-gr-primary">
               Application Timeline
             </p>
             <h2 className="text-lg font-bold text-gray-900 mt-1">

@@ -62,30 +62,30 @@ function getNotificationIcon(type: string): {
       return {
         Icon: FileText,
         wrapperClass: 'bg-[#E8F5D6]',
-        iconClass: 'text-[#8DC63F]',
+        iconClass: 'text-gr-primary',
       }
     case 'new_student_registered':
       return {
         Icon: UserPlus,
-        wrapperClass: 'bg-[#E0EEFF]',
+        wrapperClass: 'bg-gr-secondary/10',
         iconClass: 'text-blue-500',
       }
     case 'application_submitted':
       return {
         Icon: Send,
         wrapperClass: 'bg-[#E8F5D6]',
-        iconClass: 'text-[#8DC63F]',
+        iconClass: 'text-gr-primary',
       }
     case 'offer_accepted':
       return {
         Icon: CheckCircle,
         wrapperClass: 'bg-[#E8F5D6]',
-        iconClass: 'text-[#8DC63F]',
+        iconClass: 'text-gr-primary',
       }
     case 'message_from_greenroot':
       return {
         Icon: FileText,
-        wrapperClass: 'bg-[#E0EEFF]',
+        wrapperClass: 'bg-gr-secondary/10',
         iconClass: 'text-blue-400',
       }
     default:
@@ -325,9 +325,9 @@ export default function AdminNotificationsPage() {
                 <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">
                   {displayName}
                 </p>
-                <p className="text-[#8DC63F] text-sm">{uniqueId || 'N/A'}</p>
+                <p className="text-gr-primary text-sm">{uniqueId || 'N/A'}</p>
               </div>
-              <div className="rounded-full w-10 h-10 bg-[#3B82F6] flex items-center justify-center">
+              <div className="rounded-full w-10 h-10 bg-gr-secondary flex items-center justify-center">
                 <span className="text-white font-semibold text-sm">{initials}</span>
               </div>
             </div>
@@ -347,7 +347,7 @@ export default function AdminNotificationsPage() {
                 type="button"
                 onClick={handleMarkAllAsRead}
                 disabled={isMarkingAllRead}
-                className="self-start rounded-lg border border-[#8DC63F] px-4 py-2 text-sm font-medium text-[#8DC63F] hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                className="self-start rounded-lg border border-gr-primary px-4 py-2 text-sm font-medium text-gr-primary hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
               >
                 {isMarkingAllRead ? 'Marking...' : 'Mark all as read'}
               </button>
@@ -366,8 +366,8 @@ export default function AdminNotificationsPage() {
                   onClick={() => handleFilterChange(tab.key)}
                   className={`rounded-full px-4 py-2 text-sm font-medium cursor-pointer transition-all whitespace-nowrap flex-shrink-0 ${
                     isActive
-                      ? 'bg-[#8DC63F] text-white'
-                      : 'bg-white border border-gray-200 text-gray-600 hover:border-[#8DC63F] hover:text-[#8DC63F]'
+                      ? 'bg-gr-primary text-white'
+                      : 'bg-white border border-gray-200 text-gray-600 hover:border-gr-primary hover:text-gr-primary'
                   }`}
                 >
                   {tab.label} ({count})
@@ -381,7 +381,7 @@ export default function AdminNotificationsPage() {
               {[0, 1, 2, 3].map((index) => (
                 <div
                   key={index}
-                  className="border border-[#EEEEEE] rounded-2xl p-4 bg-white animate-pulse"
+                  className="border border-gr-border rounded-2xl p-4 bg-white animate-pulse"
                 >
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-2xl bg-gray-200" />
@@ -427,8 +427,8 @@ export default function AdminNotificationsPage() {
                           timestamp={formatRelativeTime(notification.created_at)}
                           isUnread={isUnread}
                           showUnreadDot
-                          className={`border border-[#EEEEEE] rounded-2xl p-4 mb-3 transition-colors ${
-                            isUnread ? 'bg-white' : 'bg-[#FAFAFA]'
+                          className={`border border-gr-border rounded-2xl p-4 mb-3 transition-colors ${
+                            isUnread ? 'bg-white' : 'bg-gr-background'
                           }`}
                         >
                           <div

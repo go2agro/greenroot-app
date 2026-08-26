@@ -53,7 +53,7 @@ const indianStates = [
   'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
 ]
 
-const inputClass = 'bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm'
+const inputClass = 'bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm'
 const labelClass = 'text-sm font-medium text-gray-700 mb-2 block'
 
 export default function PartnerProfilePage() {
@@ -230,7 +230,7 @@ export default function PartnerProfilePage() {
         type="button"
         onClick={() => handleSave(section)}
         disabled={savingSection === section}
-        className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-[#8DC63F] hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
+        className="border border-gr-primary text-gr-primary rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-gr-primary hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
       >
         <Save className="w-4 h-4" />
         {savingSection === section ? 'Saving...' : 'Save'}
@@ -240,9 +240,9 @@ export default function PartnerProfilePage() {
 
   if (isFirstLoad) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#F9F9F9]">
+      <div className="flex h-screen items-center justify-center bg-gr-background">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#8DC63F] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <div className="w-16 h-16 border-4 border-gr-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-gray-600">Loading profile...</p>
         </div>
       </div>
@@ -250,7 +250,7 @@ export default function PartnerProfilePage() {
   }
 
   return (
-    <div className="flex h-screen bg-[#F9F9F9] overflow-hidden">
+    <div className="flex h-screen bg-gr-background overflow-hidden">
       <div className="hidden lg:block">
         <PartnerSidebar
           activePage="profile"
@@ -260,7 +260,7 @@ export default function PartnerProfilePage() {
       </div>
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex-shrink-0">
+        <div className="bg-white border-b border-gr-border px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex-shrink-0">
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
               <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
@@ -276,13 +276,13 @@ export default function PartnerProfilePage() {
                 <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">
                   {displayName}
                 </p>
-                <p className="text-xs text-[#8DC63F] font-medium">
+                <p className="text-xs text-gr-primary font-medium">
                   {profileData.unique_id || 'N/A'}
                 </p>
               </div>
               <Link
                 href="/partner/profile"
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#3B82F6] flex items-center justify-center text-white font-bold text-sm sm:text-base hover:opacity-80 transition-opacity"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gr-secondary flex items-center justify-center text-white font-bold text-sm sm:text-base hover:opacity-80 transition-opacity"
               >
                 {getAvatarInitials()}
               </Link>
@@ -292,9 +292,9 @@ export default function PartnerProfilePage() {
 
         <div className="flex-1 overflow-auto">
           <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto">
-            <div className="bg-white rounded-2xl border border-[#EEEEEE] p-6 mb-6">
+            <div className="bg-white rounded-2xl border border-gr-border p-6 mb-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                <div className="w-24 h-24 rounded-full overflow-hidden bg-[#3B82F6] flex items-center justify-center flex-shrink-0">
+                <div className="w-24 h-24 rounded-full overflow-hidden bg-gr-secondary flex items-center justify-center flex-shrink-0">
                   <span className="text-3xl font-bold text-white">{getAvatarInitials()}</span>
                 </div>
 
@@ -306,7 +306,7 @@ export default function PartnerProfilePage() {
                       {partnerCountries.map((country) => (
                         <span
                           key={country}
-                          className="inline-flex items-center gap-1.5 rounded-full bg-[#F5F5F5] px-3 py-1 text-xs font-medium text-gray-700"
+                          className="inline-flex items-center gap-1.5 rounded-full bg-gr-input-bg px-3 py-1 text-xs font-medium text-gray-700"
                         >
                           <span>{getCountryFlag(country)}</span>
                           {country}
@@ -334,7 +334,7 @@ export default function PartnerProfilePage() {
                 <button
                   type="button"
                   onClick={copyPartnerId}
-                  className="border border-[#3B82F6] text-[#3B82F6] rounded-lg px-4 py-2 text-sm font-medium hover:bg-blue-50 transition-colors flex items-center gap-2 flex-shrink-0"
+                  className="border border-gr-secondary text-gr-secondary rounded-lg px-4 py-2 text-sm font-medium hover:bg-gr-secondary/10 transition-colors flex items-center gap-2 flex-shrink-0"
                 >
                   Partner ID - {profileData.unique_id || 'N/A'}
                   {copiedId ? (
@@ -346,14 +346,14 @@ export default function PartnerProfilePage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl border border-[#EEEEEE] mb-6 overflow-hidden">
+            <div className="bg-white rounded-2xl border border-gr-border mb-6 overflow-hidden">
               <button
                 type="button"
                 onClick={() => toggleSection('personal')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
                 <h2 className="text-lg font-bold text-gray-900">
-                  Section A: <span className="text-[#3B82F6]">Personal Information</span>
+                  Section A: <span className="text-gr-secondary">Personal Information</span>
                 </h2>
                 {collapsedSections.personal ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
@@ -428,14 +428,14 @@ export default function PartnerProfilePage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl border border-[#EEEEEE] mb-6 overflow-hidden">
+            <div className="bg-white rounded-2xl border border-gr-border mb-6 overflow-hidden">
               <button
                 type="button"
                 onClick={() => toggleSection('countries')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
                 <h2 className="text-lg font-bold text-gray-900">
-                  Section B: <span className="text-[#3B82F6]">Operating Countries</span>
+                  Section B: <span className="text-gr-secondary">Operating Countries</span>
                   <span className="text-red-500 text-sm font-medium ml-2">*</span>
                 </h2>
                 {collapsedSections.countries ? (
@@ -472,7 +472,7 @@ export default function PartnerProfilePage() {
                     <button
                       type="button"
                       onClick={handleAddCountry}
-                      className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-6 py-3 text-sm font-semibold hover:bg-[#8DC63F] hover:text-white transition-colors"
+                      className="border border-gr-primary text-gr-primary rounded-lg px-6 py-3 text-sm font-semibold hover:bg-gr-primary hover:text-white transition-colors"
                     >
                       Add Country
                     </button>
@@ -485,7 +485,7 @@ export default function PartnerProfilePage() {
                           key={country}
                           type="button"
                           onClick={() => handleRemoveCountry(country)}
-                          className="inline-flex items-center gap-1.5 rounded-full bg-[#F5F5F5] px-3 py-1.5 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                          className="inline-flex items-center gap-1.5 rounded-full bg-gr-input-bg px-3 py-1.5 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
                         >
                           <span>{getCountryFlag(country)}</span>
                           {country}
@@ -502,14 +502,14 @@ export default function PartnerProfilePage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl border border-[#EEEEEE] mb-6 overflow-hidden">
+            <div className="bg-white rounded-2xl border border-gr-border mb-6 overflow-hidden">
               <button
                 type="button"
                 onClick={() => toggleSection('contact')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
                 <h2 className="text-lg font-bold text-gray-900">
-                  Section C: <span className="text-[#3B82F6]">Contact Information</span>
+                  Section C: <span className="text-gr-secondary">Contact Information</span>
                 </h2>
                 {collapsedSections.contact ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
@@ -569,14 +569,14 @@ export default function PartnerProfilePage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl border border-[#EEEEEE] mb-6 overflow-hidden">
+            <div className="bg-white rounded-2xl border border-gr-border mb-6 overflow-hidden">
               <button
                 type="button"
                 onClick={() => toggleSection('address')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
                 <h2 className="text-lg font-bold text-gray-900">
-                  Section D: <span className="text-[#3B82F6]">Address Details</span>
+                  Section D: <span className="text-gr-secondary">Address Details</span>
                 </h2>
                 {collapsedSections.address ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
@@ -654,14 +654,14 @@ export default function PartnerProfilePage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl border border-[#EEEEEE] mb-6 overflow-hidden">
+            <div className="bg-white rounded-2xl border border-gr-border mb-6 overflow-hidden">
               <button
                 type="button"
                 onClick={() => toggleSection('identity')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
                 <h2 className="text-lg font-bold text-gray-900">
-                  Section E: <span className="text-[#3B82F6]">Identity & Documents</span>
+                  Section E: <span className="text-gr-secondary">Identity & Documents</span>
                 </h2>
                 {collapsedSections.identity ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
@@ -702,7 +702,7 @@ export default function PartnerProfilePage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl border border-[#EEEEEE] p-6">
+            <div className="bg-white rounded-2xl border border-gr-border p-6">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                   <h3 className="font-semibold text-base text-gray-900 mb-1">Logout</h3>
@@ -712,7 +712,7 @@ export default function PartnerProfilePage() {
                   type="button"
                   onClick={() => setShowLogoutDialog(true)}
                   disabled={isLoggingOut}
-                  className="border border-red-500 text-red-500 rounded-lg px-6 py-2.5 flex items-center justify-center gap-2 hover:bg-red-500 hover:text-white transition-colors disabled:opacity-50"
+                  className="border border-gr-error text-red-500 rounded-lg px-6 py-2.5 flex items-center justify-center gap-2 hover:bg-red-500 hover:text-white transition-colors disabled:opacity-50"
                 >
                   <LogOut className="w-4 h-4" />
                   {isLoggingOut ? 'Logging out...' : 'Logout'}

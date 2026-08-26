@@ -23,7 +23,7 @@ import AdminBottomNavigation from '@/components/AdminBottomNavigation'
 import { getAllInternships } from '@/lib/internships'
 import { getMyAdminProfile } from '@/lib/adminProfiles'
 import { getMyProfile } from '@/lib/profiles'
-import { ITEMS_PER_PAGE } from '@/lib/appConfig'
+import { ITEMS_PER_PAGE, LABEL_SEARCH_PLACEHOLDER } from '@/lib/appConfig'
 
 type Internship = {
   id: string
@@ -66,7 +66,7 @@ const getBadgeColor = (badge: string) => {
   if (badgeUpper.includes('HORTICULTURE')) return 'bg-green-600'
   if (badgeUpper.includes('GENETICS')) return 'bg-indigo-500'
   if (badgeUpper.includes('AUTOMATION')) return 'bg-orange-500'
-  return 'bg-[#8DC63F]'
+  return 'bg-gr-primary'
 }
 
 const getCountryFlag = (country: string, emoji?: string) => {
@@ -126,7 +126,7 @@ const getCountryFlag = (country: string, emoji?: string) => {
 const fetcher = (fn: () => Promise<{ data: unknown }>) => fn().then((res) => res.data)
 
 const KPI_CARD_CLASS =
-  'bg-white border border-[#EEEEEE] rounded-2xl p-5 transition-colors hover:border-[#8DC63F]'
+  'bg-white border border-gr-border rounded-2xl p-5 transition-colors hover:border-gr-primary'
 
 function countUniqueValues(values: (string | undefined)[]) {
   return new Set(
@@ -150,7 +150,7 @@ function InternshipsSkeleton() {
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           key={i}
-          className="bg-white rounded-2xl border border-[#EEEEEE] overflow-hidden animate-pulse"
+          className="bg-white rounded-2xl border border-gr-border overflow-hidden animate-pulse"
         >
           <div className="h-48 bg-gray-200" />
           <div className="p-4 space-y-3">
@@ -311,7 +311,7 @@ export default function AdminInternships() {
   const isLoading = internships === undefined
 
   return (
-    <div className="flex h-screen bg-[#F9F9F9] overflow-hidden">
+    <div className="flex h-screen bg-gr-background overflow-hidden">
       <div className="hidden lg:block">
         <AdminSidebar
           activePage="internships"
@@ -321,7 +321,7 @@ export default function AdminInternships() {
       </div>
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex-shrink-0">
+        <div className="bg-white border-b border-gr-border px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex-shrink-0">
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
               <h1 className="font-bold text-xl sm:text-2xl text-gray-900">Internships</h1>
@@ -333,11 +333,11 @@ export default function AdminInternships() {
             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
               <div className="hidden sm:block text-right">
                 <p className="text-sm font-bold text-gray-900">{adminName}</p>
-                <p className="text-sm text-[#8DC63F]">{profileMeta?.unique_id || 'N/A'}</p>
+                <p className="text-sm text-gr-primary">{profileMeta?.unique_id || 'N/A'}</p>
               </div>
               <Link
                 href="/admin/profile"
-                className="w-10 h-10 rounded-full bg-[#3B82F6] flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity"
+                className="w-10 h-10 rounded-full bg-gr-secondary flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity"
               >
                 {getAvatarInitials()}
               </Link>
@@ -353,9 +353,9 @@ export default function AdminInternships() {
                   <KpiCardSkeleton />
                 ) : (
                   <>
-                    <Briefcase className="w-8 h-8 text-[#8DC63F] mb-3" />
+                    <Briefcase className="w-8 h-8 text-gr-primary mb-3" />
                     <p className="text-sm text-gray-500">Total Internships</p>
-                    <p className="text-3xl font-bold text-[#3B82F6] mt-1">
+                    <p className="text-3xl font-bold text-gr-secondary mt-1">
                       {internshipKpis.totalInternships.toLocaleString()}
                     </p>
                   </>
@@ -367,9 +367,9 @@ export default function AdminInternships() {
                   <KpiCardSkeleton />
                 ) : (
                   <>
-                    <Globe className="w-8 h-8 text-[#8DC63F] mb-3" />
+                    <Globe className="w-8 h-8 text-gr-primary mb-3" />
                     <p className="text-sm text-gray-500">Total Countries</p>
-                    <p className="text-3xl font-bold text-[#3B82F6] mt-1">
+                    <p className="text-3xl font-bold text-gr-secondary mt-1">
                       {internshipKpis.totalCountries.toLocaleString()}
                     </p>
                   </>
@@ -381,10 +381,10 @@ export default function AdminInternships() {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search internships (e.g. Soil Research, Netherlands)"
+                placeholder={LABEL_SEARCH_PLACEHOLDER}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white border border-[#EEEEEE] rounded-xl py-3 px-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+                className="w-full bg-white border border-gr-border rounded-xl py-3 px-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent"
               />
               {searchQuery && (
                 <button
@@ -410,7 +410,7 @@ export default function AdminInternships() {
               <div className="flex items-center gap-3 flex-wrap">
                 <Link
                   href="/admin/internships/new"
-                  className="inline-flex items-center gap-2 bg-[#8DC63F] text-white rounded-lg px-4 py-2 text-sm font-semibold hover:bg-[#7DB62F] transition-colors"
+                  className="inline-flex items-center gap-2 bg-gr-primary text-white rounded-lg px-4 py-2 text-sm font-semibold hover:bg-gr-primary-hover transition-colors"
                 >
                   <Plus className="w-4 h-4" />
                   Add Internship
@@ -420,7 +420,7 @@ export default function AdminInternships() {
                   type="button"
                   onClick={handleRefresh}
                   disabled={isRefreshing}
-                  className="p-2 rounded-lg border border-[#EEEEEE] bg-white hover:bg-gray-50 transition-colors disabled:opacity-50"
+                  className="p-2 rounded-lg border border-gr-border bg-white hover:bg-gray-50 transition-colors disabled:opacity-50"
                   title="Refresh internships"
                 >
                   <RefreshCw
@@ -433,7 +433,7 @@ export default function AdminInternships() {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as SortOption)}
-                    className="border border-[#EEEEEE] rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+                    className="border border-gr-border rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent"
                   >
                     <option value="most_recent">Most Recent</option>
                     <option value="oldest_first">Oldest First</option>
@@ -449,14 +449,14 @@ export default function AdminInternships() {
             {isLoading ? (
               <InternshipsSkeleton />
             ) : paginatedInternships.length === 0 ? (
-              <div className="text-center py-16 bg-white border border-dashed border-[#EEEEEE] rounded-2xl">
+              <div className="text-center py-16 bg-white border border-dashed border-gr-border rounded-2xl">
                 <p className="text-gray-500 mb-4">
                   {searchQuery ? 'No internships match your search.' : 'No active internships yet.'}
                 </p>
                 {!searchQuery && (
                   <Link
                     href="/admin/internships/new"
-                    className="inline-flex items-center gap-2 bg-[#8DC63F] text-white rounded-lg px-4 py-2.5 text-sm font-semibold hover:bg-[#7DB62F] transition-colors"
+                    className="inline-flex items-center gap-2 bg-gr-primary text-white rounded-lg px-4 py-2.5 text-sm font-semibold hover:bg-gr-primary-hover transition-colors"
                   >
                     <Plus className="w-4 h-4" />
                     Create First Internship
@@ -469,7 +469,7 @@ export default function AdminInternships() {
                   {paginatedInternships.map((internship, index) => (
                     <div
                       key={internship.id}
-                      className="bg-white rounded-2xl border border-[#EEEEEE] overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+                      className="bg-white rounded-2xl border border-gr-border overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer"
                       onClick={() => router.push(`/admin/internships/${internship.id}`)}
                     >
                       <div className="relative h-48 w-full">
@@ -531,7 +531,7 @@ export default function AdminInternships() {
                           {internship.stipend_monthly > 0 && (
                             <div className="flex items-center gap-2 text-sm">
                               <Banknote className="w-4 h-4 text-gray-500 flex-shrink-0" />
-                              <span className="font-bold text-[#8DC63F]">
+                              <span className="font-bold text-gr-primary">
                                 $ {internship.stipend_monthly.toLocaleString()} / Month
                               </span>
                             </div>
@@ -544,7 +544,7 @@ export default function AdminInternships() {
                             e.stopPropagation()
                             router.push(`/admin/internships/${internship.id}`)
                           }}
-                          className="w-full bg-[#8DC63F] text-white rounded-lg py-2.5 font-semibold text-sm hover:bg-[#7DB62F] transition-colors"
+                          className="w-full bg-gr-primary text-white rounded-lg py-2.5 font-semibold text-sm hover:bg-gr-primary-hover transition-colors"
                         >
                           View Details
                         </button>
@@ -559,7 +559,7 @@ export default function AdminInternships() {
                       type="button"
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
-                      className="border border-[#EEEEEE] rounded-lg px-3 py-2 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="border border-gr-border rounded-lg px-3 py-2 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       <ChevronLeft className="w-5 h-5" />
                     </button>
@@ -576,8 +576,8 @@ export default function AdminInternships() {
                           onClick={() => handlePageChange(page as number)}
                           className={`min-w-[40px] px-3 py-2 rounded-lg font-medium transition-colors ${
                             currentPage === page
-                              ? 'bg-[#8DC63F] text-white'
-                              : 'border border-[#EEEEEE] bg-white hover:bg-gray-50'
+                              ? 'bg-gr-primary text-white'
+                              : 'border border-gr-border bg-white hover:bg-gray-50'
                           }`}
                         >
                           {page}
@@ -589,7 +589,7 @@ export default function AdminInternships() {
                       type="button"
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
-                      className="border border-[#EEEEEE] rounded-lg px-3 py-2 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="border border-gr-border rounded-lg px-3 py-2 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       <ChevronRight className="w-5 h-5" />
                     </button>

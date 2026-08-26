@@ -14,8 +14,8 @@ export default function Navbar({ activeLink }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const linkStyle = (link: string) =>
-    `text-gray-700 hover:text-[#8DC63F] transition-colors ${
-      activeLink === link ? 'border-b-2 border-[#8DC63F] pb-1' : ''
+    `text-gray-700 hover:text-gr-primary transition-colors ${
+      activeLink === link ? 'border-b-2 border-gr-primary pb-1' : ''
     }`
 
   return (
@@ -48,13 +48,13 @@ export default function Navbar({ activeLink }: NavbarProps) {
           <div className="hidden md:flex items-center gap-3">
             <Link 
               href="/login" 
-              className="bg-[#8DC63F] text-white rounded-lg px-4 py-2 hover:bg-[#7AB62F] transition-colors font-semibold"
+              className="bg-gr-primary text-white rounded-lg px-4 py-2 hover:bg-gr-primary-hover transition-colors font-semibold"
             >
               {BTN_LOGIN}
             </Link>
             <Link 
               href="/signup" 
-              className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 hover:border-[#8DC63F] transition-colors"
+              className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 hover:border-gr-primary transition-colors"
             >
               {BTN_SIGNUP}
             </Link>
@@ -62,7 +62,7 @@ export default function Navbar({ activeLink }: NavbarProps) {
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-gray-700 hover:text-[#8DC63F]"
+            className="md:hidden p-2 text-gray-700 hover:text-gr-primary"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -73,21 +73,21 @@ export default function Navbar({ activeLink }: NavbarProps) {
             <div className="flex flex-col gap-4">
               <Link 
                 href="/internships" 
-                className="text-gray-700 hover:text-[#8DC63F] py-2"
+                className="text-gray-700 hover:text-gr-primary py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Opportunities
               </Link>
               <Link 
                 href="/about" 
-                className="text-gray-700 hover:text-[#8DC63F] py-2"
+                className="text-gray-700 hover:text-gr-primary py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 About Us
               </Link>
               <Link 
                 href="/contact" 
-                className="text-gray-700 hover:text-[#8DC63F] py-2"
+                className="text-gray-700 hover:text-gr-primary py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Contact
@@ -95,7 +95,7 @@ export default function Navbar({ activeLink }: NavbarProps) {
               <div className="flex flex-col gap-2 pt-4">
                 <Link 
                   href="/login" 
-                  className="bg-[#8DC63F] text-white rounded-lg px-4 py-2 text-center font-semibold"
+                  className="bg-gr-primary text-white rounded-lg px-4 py-2 text-center font-semibold"
                 >
                   {BTN_LOGIN}
                 </Link>

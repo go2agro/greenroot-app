@@ -1,4 +1,4 @@
-export const CARD_CLASS = 'bg-white border border-[#EEEEEE] rounded-2xl p-6'
+export const CARD_CLASS = 'bg-white border border-gr-border rounded-2xl p-6'
 export const PAGE_CLASS = 'w-full max-w-5xl mx-auto'
 
 export function DetailSkeleton() {

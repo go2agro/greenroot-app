@@ -47,11 +47,11 @@ type Profile = {
   unique_id?: string
 }
 
-const CARD_CLASS = 'bg-white border border-[#EEEEEE] rounded-2xl p-6'
+const CARD_CLASS = 'bg-white border border-gr-border rounded-2xl p-6'
 const FIELD_CLASS =
-  'border-[#EEEEEE] rounded-xl h-10 focus-visible:ring-[#8DC63F] focus-visible:border-[#8DC63F]'
+  'border-gr-border rounded-xl h-10 focus-visible:ring-gr-primary focus-visible:border-gr-primary'
 const TEXTAREA_CLASS =
-  'border-[#EEEEEE] rounded-xl min-h-[100px] focus-visible:ring-[#8DC63F] focus-visible:border-[#8DC63F]'
+  'border-gr-border rounded-xl min-h-[100px] focus-visible:ring-gr-primary focus-visible:border-gr-primary'
 
 const fetcher = (fn: () => Promise<{ data: unknown }>) => fn().then((res) => res.data)
 
@@ -155,7 +155,7 @@ function ImageUrlField({
           placeholder={placeholder}
           className={`${FIELD_CLASS} flex-1 min-w-0`}
         />
-        <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-[#EEEEEE] flex-shrink-0 bg-gray-100">
+        <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-gr-border flex-shrink-0 bg-gray-100">
           {trimmedValue && !previewError ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -265,12 +265,12 @@ export default function AdminInternshipsNew() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F9F9F9] flex flex-col">
-      <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4 flex-shrink-0">
+    <div className="min-h-screen bg-gr-background flex flex-col">
+      <div className="bg-white border-b border-gr-border px-4 sm:px-6 lg:px-8 py-4 flex-shrink-0">
         <div className="relative flex items-center justify-center">
           <Link
             href="/admin/internships"
-            className="absolute left-0 flex items-center gap-2 text-gray-600 hover:text-[#8DC63F] transition-colors"
+            className="absolute left-0 flex items-center gap-2 text-gray-600 hover:text-gr-primary transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
             <span className="font-medium">Back</span>
@@ -290,13 +290,13 @@ export default function AdminInternshipsNew() {
           <div className="absolute right-0 flex items-center gap-2 sm:gap-3">
             <div className="hidden sm:block text-right">
               <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">{adminName}</p>
-              <p className="text-xs text-[#8DC63F] font-medium">
+              <p className="text-xs text-gr-primary font-medium">
                 ID: {profileMeta?.unique_id || 'N/A'}
               </p>
             </div>
             <Link
               href="/admin/profile"
-              className="w-10 h-10 rounded-full bg-[#3B82F6] flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity flex-shrink-0"
+              className="w-10 h-10 rounded-full bg-gr-secondary flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity flex-shrink-0"
             >
               {getAvatarInitials()}
             </Link>
@@ -381,7 +381,7 @@ export default function AdminInternshipsNew() {
                 <select
                   value={form.work_mode}
                   onChange={(e) => updateField('work_mode', e.target.value)}
-                  className="w-full h-10 border border-[#EEEEEE] rounded-xl px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+                  className="w-full h-10 border border-gr-border rounded-xl px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent"
                 >
                   <option value="">Select work mode</option>
                   <option value="onsite">Onsite</option>
@@ -528,7 +528,7 @@ export default function AdminInternshipsNew() {
               type="button"
               onClick={handleCreate}
               disabled={saving}
-              className="inline-flex items-center justify-center gap-2 bg-[#8DC63F] text-white rounded-xl px-8 py-3 font-semibold hover:bg-[#7DB62F] transition-colors disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 bg-gr-primary text-white rounded-xl px-8 py-3 font-semibold hover:bg-gr-primary-hover transition-colors disabled:opacity-50"
             >
               {saving ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -539,7 +539,7 @@ export default function AdminInternshipsNew() {
             </button>
             <Link
               href="/admin/internships"
-              className="inline-flex items-center justify-center gap-2 border border-[#EEEEEE] text-gray-600 rounded-xl px-8 py-3 font-semibold hover:bg-gray-50 transition-colors"
+              className="inline-flex items-center justify-center gap-2 border border-gr-border text-gray-600 rounded-xl px-8 py-3 font-semibold hover:bg-gray-50 transition-colors"
             >
               Cancel
             </Link>

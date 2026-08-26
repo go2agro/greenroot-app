@@ -28,14 +28,14 @@ export function ApplicationSubmittedDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         overlayClassName="bg-black/50 supports-backdrop-filter:backdrop-blur-[2px]"
-        className="max-w-[calc(100%-2rem)] rounded-2xl border border-[#EEEEEE] bg-white p-6 shadow-xl sm:max-w-[560px] sm:p-8"
+        className="max-w-[calc(100%-2rem)] rounded-2xl border border-gr-border bg-white p-6 shadow-xl sm:max-w-[560px] sm:p-8"
       >
         <div className="flex flex-col items-center text-center">
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#8DC63F] text-white shadow-sm">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gr-primary text-white shadow-sm">
             <BadgeCheck className="h-10 w-10" strokeWidth={1.75} />
           </div>
 
-          <DialogTitle className="mb-3 text-xl font-bold text-[#3B82F6]">
+          <DialogTitle className="mb-3 text-xl font-bold text-gr-secondary">
             Congratulations!
           </DialogTitle>
 
@@ -48,7 +48,7 @@ export function ApplicationSubmittedDialog({
               </p>
               <p>
                 Your application ID is{" "}
-                <span className="font-bold text-[#3B82F6]">{applicationRef}</span>.
+                <span className="font-bold text-gr-secondary">{applicationRef}</span>.
                 Please keep this for your records.
               </p>
               <p>
@@ -61,7 +61,7 @@ export function ApplicationSubmittedDialog({
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="w-full rounded-full bg-[#8DC63F] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#7DB62F]"
+            className="w-full rounded-full bg-gr-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gr-primary-hover"
           >
             Close
           </button>

@@ -55,11 +55,11 @@ export default function PartnerSidebar({
 
   return (
     <div
-      className={`h-screen bg-white border-r border-[#EEEEEE] flex flex-col transition-all duration-300 ${
+      className={`h-screen bg-white border-r border-gr-border flex flex-col transition-all duration-300 ${
         isCollapsed ? 'w-20' : 'w-[220px]'
       }`}
     >
-      <div className="p-4 border-b border-[#EEEEEE]">
+      <div className="p-4 border-b border-gr-border">
         {isCollapsed ? (
           <div className="flex flex-col items-center gap-3">
             {onToggle && (
@@ -82,7 +82,7 @@ export default function PartnerSidebar({
               className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
             >
               <Image src="/greenroot-logo.svg" alt="GreenRoot" width={32} height={32} />
-              <span className="text-xl font-bold text-[#8DC63F]">GreenRoot</span>
+              <span className="text-xl font-bold text-gr-primary">GreenRoot</span>
             </Link>
             {onToggle && (
               <button
@@ -110,7 +110,7 @@ export default function PartnerSidebar({
               title={isCollapsed ? item.label : undefined}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                 isActive
-                  ? 'bg-[#8DC63F] text-white font-medium'
+                  ? 'bg-gr-primary text-white font-medium'
                   : 'text-[#555555] hover:bg-gray-100'
               } ${isCollapsed ? 'justify-center' : ''}`}
             >
@@ -127,8 +127,8 @@ export default function PartnerSidebar({
       {!isCollapsed && <SidebarHelpContact />}
 
       {isCollapsed && (
-        <div className="p-4 border-t border-[#EEEEEE] flex justify-center">
-          <button className="text-gray-600 hover:text-[#8DC63F] transition-colors">
+        <div className="p-4 border-t border-gr-border flex justify-center">
+          <button className="text-gray-600 hover:text-gr-primary transition-colors">
             <HelpCircle className="w-5 h-5" />
           </button>
         </div>

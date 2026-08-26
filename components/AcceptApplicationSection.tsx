@@ -53,7 +53,7 @@ export function AcceptApplicationSection({
 
   if (success) {
     return (
-      <div className="bg-[#FFFEFA] border border-[#D6D1C4] rounded-lg overflow-hidden">
+      <div className="bg-gr-primary-light border border-gr-border rounded-lg overflow-hidden">
         <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-200 px-5 py-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
@@ -91,7 +91,7 @@ export function AcceptApplicationSection({
   }
 
   return (
-    <div className="bg-[#FFFEFA] border border-[#D6D1C4] rounded-lg overflow-hidden">
+    <div className="bg-gr-primary-light border border-gr-border rounded-lg overflow-hidden">
       <div className="bg-gradient-to-r from-yellow-50 to-amber-50 border-b border-yellow-300 px-5 py-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">

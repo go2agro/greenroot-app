@@ -17,9 +17,9 @@ export default function MaintenancePage() {
             height={40}
             className="mx-auto mb-6"
           />
-          <div className="w-20 h-20 bg-[#8DC63F]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-20 h-20 bg-gr-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg
-              className="w-10 h-10 text-[#8DC63F]"
+              className="w-10 h-10 text-gr-primary"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -54,7 +54,7 @@ export default function MaintenancePage() {
           {supportEmail && (
             <a
               href={`mailto:${supportEmail}`}
-              className="text-[#8DC63F] font-medium hover:underline"
+              className="text-gr-primary font-medium hover:underline"
             >
               {supportEmail}
             </a>
@@ -64,7 +64,7 @@ export default function MaintenancePage() {
               <span className="text-gray-300 mx-2">|</span>
               <a
                 href={`tel:${primaryPhone.tel}`}
-                className="text-[#8DC63F] font-medium hover:underline"
+                className="text-gr-primary font-medium hover:underline"
               >
                 {primaryPhone.display}
               </a>

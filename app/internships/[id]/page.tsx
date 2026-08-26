@@ -142,7 +142,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-2 text-gray-600 hover:text-[#8DC63F] transition-colors"
+          className="flex items-center gap-2 text-gray-600 hover:text-gr-primary transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
           <span className="font-medium">Back</span>
@@ -174,7 +174,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
             
             <button
               onClick={() => router.push('/login')}
-              className="bg-[#8DC63F] text-white rounded-lg px-8 py-3 font-semibold hover:bg-[#7AB62F] transition-colors"
+              className="bg-gr-primary text-white rounded-lg px-8 py-3 font-semibold hover:bg-gr-primary-hover transition-colors"
             >
               {BTN_APPLY_NOW}
             </button>
@@ -182,7 +182,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
         </div>
       </div>
 
-      <div className="w-full bg-white border-b border-[#EEEEEE] py-6">
+      <div className="w-full bg-white border-b border-gr-border py-6">
         <div className="max-w-7xl mx-auto px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="flex items-center gap-3">
@@ -233,7 +233,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
       </div>
 
       <div className="max-w-7xl mx-auto px-8 py-10">
-        <h2 className="font-bold text-xl mb-4 text-[#1A1A1A]">About this Internship</h2>
+        <h2 className="font-bold text-xl mb-4 text-gr-text-dark">About this Internship</h2>
         <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">
           {stripRequiredDocumentsBlock(internship.long_description) || 'No description available.'}
         </p>
@@ -241,13 +241,13 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
 
       {responsibilities.length > 0 && (
         <div className="max-w-7xl mx-auto px-8 py-10">
-          <h2 className="font-bold text-xl mb-4 text-[#1A1A1A]">Key Responsibilities</h2>
+          <h2 className="font-bold text-xl mb-4 text-gr-text-dark">Key Responsibilities</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {responsibilities.map((resp, idx) => {
               const IconComponent = responsibilityIcons[idx % responsibilityIcons.length]
               return (
-                <div key={idx} className="bg-[#F0F7E6] rounded-xl p-4 flex items-start gap-3">
-                  <IconComponent className="w-5 h-5 text-[#8DC63F] mt-0.5 flex-shrink-0" />
+                <div key={idx} className="bg-gr-primary-light rounded-xl p-4 flex items-start gap-3">
+                  <IconComponent className="w-5 h-5 text-gr-primary mt-0.5 flex-shrink-0" />
                   <p className="text-sm text-gray-700">{resp}</p>
                 </div>
               )
@@ -258,7 +258,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
 
       {skills.length > 0 && (
         <div className="max-w-7xl mx-auto px-8 py-10">
-          <h2 className="font-bold text-xl mb-4 text-[#1A1A1A]">Skills you&apos;ll learn</h2>
+          <h2 className="font-bold text-xl mb-4 text-gr-text-dark">Skills you&apos;ll learn</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="relative h-72 rounded-2xl overflow-hidden">
               <Image
@@ -272,7 +272,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
               {skills.map((skill, idx) => {
                 const IconComponent = iconMap[skill.icon as keyof typeof iconMap] || Leaf
                 return (
-                  <div key={idx} className="bg-white border border-[#EEEEEE] rounded-xl p-4 mb-3 flex items-center gap-3">
+                  <div key={idx} className="bg-white border border-gr-border rounded-xl p-4 mb-3 flex items-center gap-3">
                     <IconComponent className="w-5 h-5 text-blue-500" />
                     <span className="text-sm font-medium text-gray-800">{skill.name}</span>
                   </div>
@@ -286,8 +286,8 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
       <div className="max-w-7xl mx-auto px-8 py-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h2 className="font-bold text-xl mb-4 text-[#1A1A1A]">Eligibility</h2>
-            <div className="bg-white border-l-4 border-[#8DC63F] rounded-r-xl p-6 shadow-sm">
+            <h2 className="font-bold text-xl mb-4 text-gr-text-dark">Eligibility</h2>
+            <div className="bg-white border-l-4 border-gr-primary rounded-r-xl p-6 shadow-sm">
               {eligibility.length > 0 ? (
                 eligibility.map((req, idx) => (
                   <div key={idx} className="flex items-start gap-2 text-sm text-gray-600 mb-2">
@@ -302,8 +302,8 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
           </div>
 
           <div>
-            <h2 className="font-bold text-xl mb-4 text-[#1A1A1A]">Stipend Details</h2>
-            <div className="bg-white border-l-4 border-[#8DC63F] rounded-r-xl p-6 shadow-sm">
+            <h2 className="font-bold text-xl mb-4 text-gr-text-dark">Stipend Details</h2>
+            <div className="bg-white border-l-4 border-gr-primary rounded-r-xl p-6 shadow-sm">
               <p className="font-semibold text-gray-900 mb-2">Monthly Stipend</p>
               <p className="text-sm text-gray-600 mb-4">
                 {internship.stipend_monthly 
@@ -327,14 +327,14 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
       </div>
 
       <div className="max-w-7xl mx-auto px-8 py-10 mb-10">
-        <div className="bg-[#F0F7E6] rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="bg-gr-primary-light rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <h3 className="font-bold text-lg text-gray-900 mb-1">Ready to Start?</h3>
             <p className="text-sm text-gray-500">Take the first step toward your global agriculture career.</p>
           </div>
           <button
             onClick={() => router.push('/login')}
-            className="bg-[#8DC63F] text-white rounded-lg px-6 py-3 font-semibold hover:bg-[#7AB62F] transition-colors whitespace-nowrap w-full md:w-auto"
+            className="bg-gr-primary text-white rounded-lg px-6 py-3 font-semibold hover:bg-gr-primary-hover transition-colors whitespace-nowrap w-full md:w-auto"
           >
             {BTN_APPLY_NOW}
           </button>

@@ -22,10 +22,10 @@ export default function SidebarHelpContact() {
         <div className="space-y-2">
           {primaryPhone && (
             <div className="flex items-center gap-2 text-sm">
-              <Phone className="w-4 h-4 text-[#8DC63F] flex-shrink-0" />
+              <Phone className="w-4 h-4 text-gr-primary flex-shrink-0" />
               <a
                 href={`tel:${primaryPhone.tel}`}
-                className="text-[#8DC63F] break-all hover:underline tabular-nums"
+                className="text-gr-primary break-all hover:underline tabular-nums"
               >
                 {primaryPhone.display}
               </a>
@@ -33,12 +33,12 @@ export default function SidebarHelpContact() {
           )}
           {supportEmail && (
             <div className="flex items-center gap-2 text-sm">
-              <Mail className="w-4 h-4 text-[#8DC63F] flex-shrink-0" />
+              <Mail className="w-4 h-4 text-gr-primary flex-shrink-0" />
               <a
                 href={gmailComposeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#8DC63F] break-all text-xs hover:underline"
+                className="text-gr-primary break-all text-xs hover:underline"
               >
                 {supportEmail}
               </a>

@@ -148,8 +148,8 @@ export default function DevBillingPage() {
                   />
                   <span className="text-2xl font-bold text-gray-900">GreenRoot</span>
                 </div>
-                <CardTitle className="text-xl font-bold text-[#1A1A1A] flex items-center gap-2 justify-center">
-                  <ShieldAlert className="w-5 h-5 text-[#8DC63F]" />
+                <CardTitle className="text-xl font-bold text-gr-text-dark flex items-center gap-2 justify-center">
+                  <ShieldAlert className="w-5 h-5 text-gr-primary" />
                   Dev Billing Access
                 </CardTitle>
               </CardHeader>
@@ -173,18 +173,18 @@ export default function DevBillingPage() {
                       }}
                       placeholder="Enter secret key"
                       disabled={isLoading}
-                      className="bg-[#F5F5F5] border-0 h-11 pl-10"
+                      className="bg-gr-input-bg border-0 h-11 pl-10"
                     />
                   </div>
                   {keyError && (
-                    <p className="text-sm text-[#DC2626]">{keyError}</p>
+                    <p className="text-sm text-gr-error">{keyError}</p>
                   )}
                 </div>
                 <Button
                   type="button"
                   onClick={handleVerifyAccess}
                   disabled={isLoading || !secretKey}
-                  className="w-full h-11 bg-[#8DC63F] text-white hover:bg-[#7DB62F] font-semibold"
+                  className="w-full h-11 bg-gr-primary text-white hover:bg-gr-primary-hover font-semibold"
                 >
                   {isLoading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
@@ -225,14 +225,14 @@ export default function DevBillingPage() {
                           <Button
                             type="button"
                             variant="outline"
-                            className="h-11 bg-[#F5F5F5] border-0 hover:bg-[#EEEEEE] font-medium text-gray-900"
+                            className="h-11 bg-gr-input-bg border-0 hover:bg-gr-border font-medium text-gray-900"
                           >
-                            <CalendarDays className="w-4 h-4 mr-2 text-[#8DC63F]" />
+                            <CalendarDays className="w-4 h-4 mr-2 text-gr-primary" />
                             {appliedRangeLabel}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
-                          <div className="px-4 pt-4 pb-2 border-b border-[#EEEEEE]">
+                          <div className="px-4 pt-4 pb-2 border-b border-gr-border">
                             <div className="grid grid-cols-2 gap-3 text-sm">
                               <div>
                                 <p className="text-xs font-medium text-gray-500 mb-1">From Date</p>
@@ -260,7 +260,7 @@ export default function DevBillingPage() {
                             numberOfMonths={1}
                             disabled={{ after: new Date() }}
                           />
-                          <div className="flex items-center justify-between gap-2 border-t border-[#EEEEEE] p-3">
+                          <div className="flex items-center justify-between gap-2 border-t border-gr-border p-3">
                             <Button
                               type="button"
                               variant="outline"
@@ -272,7 +272,7 @@ export default function DevBillingPage() {
                             <Button
                               type="button"
                               size="sm"
-                              className="bg-[#8DC63F] hover:bg-[#7DB62F] text-white"
+                              className="bg-gr-primary hover:bg-gr-primary-hover text-white"
                               onClick={handleApplyDateRange}
                               disabled={!dateRange?.from || !dateRange?.to}
                             >
@@ -288,9 +288,9 @@ export default function DevBillingPage() {
                     </div>
                   </div>
 
-                  <div className="bg-[#8DC63F]/10 px-4 py-2 rounded-lg shrink-0">
+                  <div className="bg-gr-primary/10 px-4 py-2 rounded-lg shrink-0">
                     <span className="text-sm text-gray-600">Complete Processed: </span>
-                    <span className="text-lg font-bold text-[#8DC63F]">
+                    <span className="text-lg font-bold text-gr-primary">
                       {loadingApps ? '—' : applications.length}
                     </span>
                   </div>
@@ -311,7 +311,7 @@ export default function DevBillingPage() {
               <CardContent>
                 {loadingApps ? (
                   <div className="flex items-center justify-center py-12">
-                    <Loader2 className="w-8 h-8 animate-spin text-[#8DC63F]" />
+                    <Loader2 className="w-8 h-8 animate-spin text-gr-primary" />
                   </div>
                 ) : applications.length === 0 ? (
                   <div className="text-center py-12 text-gray-500">
@@ -364,10 +364,10 @@ export default function DevBillingPage() {
             </Card>
 
             <Card className="bg-white shadow-sm border-0 overflow-hidden">
-              <div className="h-1 bg-[#8DC63F]" />
+              <div className="h-1 bg-gr-primary" />
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                  <Receipt className="w-5 h-5 text-[#8DC63F]" />
+                  <Receipt className="w-5 h-5 text-gr-primary" />
                   Commission Summary — {appliedRangeLabel}
                 </CardTitle>
               </CardHeader>
@@ -385,7 +385,7 @@ export default function DevBillingPage() {
                     </p>
                   </div>
 
-                  <div className="rounded-xl bg-[#8DC63F]/10 border border-[#8DC63F]/20 p-4">
+                  <div className="rounded-xl bg-gr-primary/10 border border-gr-primary/20 p-4">
                     <p className="text-xs font-medium uppercase tracking-wide text-gray-500 mb-1">
                       Total Commission
                     </p>
@@ -399,11 +399,11 @@ export default function DevBillingPage() {
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-[#EEEEEE] overflow-hidden">
-                  <div className="bg-[#FAFAFA] px-4 py-3 border-b border-[#EEEEEE]">
+                <div className="rounded-xl border border-gr-border overflow-hidden">
+                  <div className="bg-gr-background px-4 py-3 border-b border-gr-border">
                     <p className="text-sm font-semibold text-gray-900">Commission Contract Reference</p>
                   </div>
-                  <div className="divide-y divide-[#EEEEEE]">
+                  <div className="divide-y divide-gr-border">
                     <div className="px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                       <div>
                         <p className="text-sm font-medium text-gray-900">C1. Base Platform Retainer</p>
@@ -431,7 +431,7 @@ export default function DevBillingPage() {
                               key={tier.label}
                               className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm ${
                                 isActive
-                                  ? 'bg-[#8DC63F]/15 border border-[#8DC63F]/40 font-semibold text-gray-900'
+                                  ? 'bg-gr-primary/15 border border-gr-primary/40 font-semibold text-gray-900'
                                   : 'bg-gray-50 text-gray-600'
                               }`}
                             >
@@ -467,7 +467,7 @@ export default function DevBillingPage() {
                   </div>
                   <div className="border-t border-gray-700 pt-3 flex items-center justify-between">
                     <span className="font-semibold">Total Commission Payable</span>
-                    <span className="text-xl font-bold text-[#8DC63F]">
+                    <span className="text-xl font-bold text-gr-primary">
                       {formatInr(commission.totalCommission)}
                     </span>
                   </div>

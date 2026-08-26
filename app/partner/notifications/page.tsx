@@ -39,12 +39,12 @@ function getNotificationIcon(type: string): {
       return {
         Icon: CheckCircle,
         wrapperClass: 'bg-[#E8F5D6]',
-        iconClass: 'text-[#8DC63F]',
+        iconClass: 'text-gr-primary',
       }
     default:
       return {
         Icon: FileText,
-        wrapperClass: 'bg-[#E0EEFF]',
+        wrapperClass: 'bg-gr-secondary/10',
         iconClass: 'text-blue-400',
       }
   }
@@ -164,7 +164,7 @@ export default function PartnerNotificationsPage() {
               type="button"
               onClick={handleMarkAllAsRead}
               disabled={isMarkingAllRead}
-              className="rounded-lg border border-[#8DC63F] px-4 py-2 text-sm font-medium text-[#8DC63F] hover:bg-green-50 transition-colors disabled:opacity-50"
+              className="rounded-lg border border-gr-primary px-4 py-2 text-sm font-medium text-gr-primary hover:bg-green-50 transition-colors disabled:opacity-50"
             >
               {isMarkingAllRead ? 'Marking...' : 'Mark all as read'}
             </button>
@@ -181,8 +181,8 @@ export default function PartnerNotificationsPage() {
                 onClick={() => setActiveFilter(tab.key)}
                 className={`rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap flex-shrink-0 ${
                   isActive
-                    ? 'bg-[#8DC63F] text-white'
-                    : 'bg-white border border-gray-200 text-gray-600 hover:border-[#8DC63F] hover:text-[#8DC63F]'
+                    ? 'bg-gr-primary text-white'
+                    : 'bg-white border border-gray-200 text-gray-600 hover:border-gr-primary hover:text-gr-primary'
                 }`}
               >
                 {tab.label} ({filterCounts[tab.key]})
@@ -196,12 +196,12 @@ export default function PartnerNotificationsPage() {
             {[0, 1, 2].map((index) => (
               <div
                 key={index}
-                className="border border-[#EEEEEE] rounded-2xl p-4 bg-white animate-pulse h-20"
+                className="border border-gr-border rounded-2xl p-4 bg-white animate-pulse h-20"
               />
             ))}
           </div>
         ) : filteredNotifications.length === 0 ? (
-          <div className="py-16 text-center bg-white border border-[#EEEEEE] rounded-2xl">
+          <div className="py-16 text-center bg-white border border-gr-border rounded-2xl">
             <Bell className="w-12 h-12 text-gray-300 mx-auto mb-3" />
             <p className="font-semibold text-gray-500">No notifications</p>
             <p className="text-sm text-gray-400">You&apos;re all caught up!</p>
@@ -218,9 +218,9 @@ export default function PartnerNotificationsPage() {
                   onClick={() => handleNotificationClick(notification)}
                   onDeleted={handleNotificationDeleted}
                   timestamp={formatRelativeTime(notification.created_at)}
-                  className={`border border-[#EEEEEE] rounded-2xl p-4 transition-colors ${
-                    !notification.is_read ? 'border-l-4 border-l-[#8DC63F] bg-white' : 'bg-white'
-                  } hover:border-[#8DC63F]`}
+                  className={`border border-gr-border rounded-2xl p-4 transition-colors ${
+                    !notification.is_read ? 'border-l-4 border-l-gr-primary bg-white' : 'bg-white'
+                  } hover:border-gr-primary`}
                 >
                   <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${wrapperClass}`}>
                     <Icon className={`w-5 h-5 ${iconClass}`} />

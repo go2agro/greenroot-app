@@ -69,7 +69,7 @@ export default function PartnerShell({
   }
 
   return (
-    <div className="flex h-screen bg-[#F9F9F9] overflow-hidden">
+    <div className="flex h-screen bg-gr-background overflow-hidden">
       <div className="hidden lg:block">
         <PartnerSidebar
           activePage={activePage}
@@ -80,7 +80,7 @@ export default function PartnerShell({
       </div>
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex-shrink-0">
+        <div className="bg-white border-b border-gr-border px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex-shrink-0">
           <div className="flex items-center justify-between gap-4">
             {pageTitle ? (
               <div className="min-w-0">
@@ -96,11 +96,11 @@ export default function PartnerShell({
             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 ml-auto">
               <div className="hidden sm:block text-right">
                 <p className="text-sm font-bold text-gray-900">{partnerName}</p>
-                <p className="text-sm text-[#8DC63F]">{myProfile?.unique_id || 'N/A'}</p>
+                <p className="text-sm text-gr-primary">{myProfile?.unique_id || 'N/A'}</p>
               </div>
               <Link
                 href="/partner/profile"
-                className="w-10 h-10 rounded-full bg-[#3B82F6] flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity"
+                className="w-10 h-10 rounded-full bg-gr-secondary flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity"
               >
                 {getAvatarInitials()}
               </Link>

@@ -17,7 +17,7 @@ export default function Footer() {
   const address = getFormattedAddress()
 
   return (
-    <footer className="w-full bg-[#F8F9FA] border-t border-gray-100 py-12">
+    <footer className="w-full bg-gr-background border-t border-gray-100 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
           <div className="lg:col-span-1 flex flex-col gap-4">
@@ -37,33 +37,33 @@ export default function Footer() {
 
           <div className="flex flex-col gap-3">
             <h3 className="font-bold text-gray-900">Explore</h3>
-            <Link href="/internships" className="text-sm text-gray-600 hover:text-[#8DC63F]">
+            <Link href="/internships" className="text-sm text-gray-600 hover:text-gr-primary">
               Opportunities
             </Link>
-            <Link href="/about" className="text-sm text-gray-600 hover:text-[#8DC63F]">
+            <Link href="/about" className="text-sm text-gray-600 hover:text-gr-primary">
               About Us
             </Link>
-            <Link href="/contact" className="text-sm text-gray-600 hover:text-[#8DC63F]">
+            <Link href="/contact" className="text-sm text-gray-600 hover:text-gr-primary">
               Contact
             </Link>
           </div>
 
           <div className="flex flex-col gap-3">
             <h3 className="font-bold text-gray-900">Account</h3>
-            <Link href="/login" className="text-sm text-gray-600 hover:text-[#8DC63F]">
+            <Link href="/login" className="text-sm text-gray-600 hover:text-gr-primary">
               Login
             </Link>
-            <Link href="/signup" className="text-sm text-gray-600 hover:text-[#8DC63F]">
+            <Link href="/signup" className="text-sm text-gray-600 hover:text-gr-primary">
               Signup
             </Link>
           </div>
 
           <div className="flex flex-col gap-3">
             <h3 className="font-bold text-gray-900">Legal</h3>
-            <Link href="/terms" className="text-sm text-gray-600 hover:text-[#8DC63F]">
+            <Link href="/terms" className="text-sm text-gray-600 hover:text-gr-primary">
               Terms & Conditions
             </Link>
-            <Link href="/privacy" className="text-sm text-gray-600 hover:text-[#8DC63F]">
+            <Link href="/privacy" className="text-sm text-gray-600 hover:text-gr-primary">
               Privacy Policy
             </Link>
           </div>
@@ -73,7 +73,7 @@ export default function Footer() {
             {supportEmail && (
               <a 
                 href={`mailto:${supportEmail}`} 
-                className="text-sm text-gray-600 hover:text-[#8DC63F] flex items-center gap-2"
+                className="text-sm text-gray-600 hover:text-gr-primary flex items-center gap-2"
               >
                 <Mail className="w-4 h-4" />
                 {supportEmail}
@@ -82,7 +82,7 @@ export default function Footer() {
             {primaryPhone && (
               <a 
                 href={`tel:${primaryPhone.tel}`} 
-                className="text-sm text-gray-600 hover:text-[#8DC63F] flex items-center gap-2"
+                className="text-sm text-gray-600 hover:text-gr-primary flex items-center gap-2"
               >
                 <Phone className="w-4 h-4" />
                 {primaryPhone.display}
@@ -99,7 +99,7 @@ export default function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-gray-600 hover:text-[#8DC63F]"
+                    className="text-sm text-gray-600 hover:text-gr-primary"
                   >
                     {social.label}
                   </Link>

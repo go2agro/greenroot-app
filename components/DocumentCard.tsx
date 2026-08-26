@@ -39,7 +39,7 @@ export function DocumentCard({
   return (
     <div
       className={`rounded-xl border p-4 flex items-center justify-between gap-3 ${
-        uploaded ? 'border-green-200 bg-green-50' : 'border-[#EEEEEE] bg-[#FAFAFA]'
+        uploaded ? 'border-green-200 bg-green-50' : 'border-gr-border bg-gr-background'
       }`}
     >
       <div className="min-w-0">
@@ -53,7 +53,7 @@ export function DocumentCard({
           type="button"
           onClick={handleView}
           disabled={loading}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#8DC63F] hover:text-[#7DB62F] disabled:opacity-50 flex-shrink-0"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-gr-primary hover:text-[#7DB62F] disabled:opacity-50 flex-shrink-0"
         >
           {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ExternalLink className="w-3.5 h-3.5" />}
           View

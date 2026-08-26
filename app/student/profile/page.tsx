@@ -418,7 +418,7 @@ export default function StudentProfile() {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#8DC63F] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <div className="w-16 h-16 border-4 border-gr-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-gray-600">Loading profile...</p>
         </div>
       </div>
@@ -452,11 +452,11 @@ export default function StudentProfile() {
                 <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">
                   {formData.first_name} {formData.last_name}
                 </p>
-                  <p className="text-xs text-[#3B82F6] font-medium">ID: {studentId || 'N/A'}</p>
+                  <p className="text-xs text-gr-secondary font-medium">ID: {studentId || 'N/A'}</p>
               </div>
               <Link
                 href="/student/profile"
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#8DC63F] flex items-center justify-center text-white font-bold text-sm sm:text-base cursor-pointer hover:opacity-80 transition-opacity"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gr-primary flex items-center justify-center text-white font-bold text-sm sm:text-base cursor-pointer hover:opacity-80 transition-opacity"
               >
                 {avatarInitials}
               </Link>
@@ -468,7 +468,7 @@ export default function StudentProfile() {
         <div className="flex-1 overflow-auto pb-24 lg:pb-20">
           <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto">
             {/* Profile Completion Card */}
-            <div ref={progressBarRef} className="bg-white rounded-2xl border border-[#EEEEEE] p-6 mb-6">
+            <div ref={progressBarRef} className="bg-white rounded-2xl border border-gr-border p-6 mb-6">
               <div className="flex items-center justify-between gap-6">
                 <div className="flex-1">
                   <h2 className="font-bold text-xl mb-1">
@@ -481,7 +481,7 @@ export default function StudentProfile() {
                   </p>
                   <div className="mt-4 h-3 bg-gray-200 rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-[#8DC63F] rounded-full transition-all duration-300"
+                      className="h-full bg-gr-primary rounded-full transition-all duration-300"
                       style={{ width: `${profileCompletion}%` }}
                     />
                   </div>
@@ -494,10 +494,10 @@ export default function StudentProfile() {
             </div>
 
             {/* Profile Header Card */}
-            <div className="bg-white rounded-2xl border border-[#EEEEEE] p-6 mb-6">
+            <div className="bg-white rounded-2xl border border-gr-border p-6 mb-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
                 {/* Avatar */}
-                <div className="w-24 h-24 rounded-full overflow-hidden bg-[#8DC63F] flex items-center justify-center">
+                <div className="w-24 h-24 rounded-full overflow-hidden bg-gr-primary flex items-center justify-center">
                   <span className="text-3xl font-bold text-white">
                     {avatarInitials}
                   </span>
@@ -528,7 +528,7 @@ export default function StudentProfile() {
                 {/* Student ID */}
                 <button
                   onClick={copyStudentId}
-                  className="border border-blue-400 text-blue-500 rounded-lg px-4 py-2 text-sm font-medium hover:bg-blue-50 transition-colors flex items-center gap-2"
+                  className="border border-gr-secondary text-gr-secondary rounded-lg px-4 py-2 text-sm font-medium hover:bg-gr-secondary/10 transition-colors flex items-center gap-2"
                 >
                   Student ID - {profile?.unique_id || 'N/A'}
                   {copiedId ? (
@@ -541,12 +541,12 @@ export default function StudentProfile() {
             </div>
 
             {/* Section A: Personal Information */}
-            <div className="bg-white rounded-2xl border border-[#EEEEEE] mb-6 overflow-hidden">
+            <div className="bg-white rounded-2xl border border-gr-border mb-6 overflow-hidden">
               <button
                 onClick={() => toggleSection('personal')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
-                <h2 className="text-lg font-bold text-gray-900">Section A: <span className="text-[#3B82F6]">Personal Information</span></h2>
+                <h2 className="text-lg font-bold text-gray-900">Section A: <span className="text-gr-secondary">Personal Information</span></h2>
                 {collapsedSections.personal ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
                 ) : (
@@ -568,7 +568,7 @@ export default function StudentProfile() {
                     type="text"
                     value={formData.first_name || ''}
                     onChange={(e) => handleChange('first_name', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     placeholder="John"
                   />
                 </div>
@@ -580,7 +580,7 @@ export default function StudentProfile() {
                     type="text"
                     value={formData.middle_name || ''}
                     onChange={(e) => handleChange('middle_name', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     placeholder="William"
                   />
                 </div>
@@ -592,7 +592,7 @@ export default function StudentProfile() {
                     type="text"
                     value={formData.last_name || ''}
                     onChange={(e) => handleChange('last_name', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     placeholder="Doe"
                   />
                 </div>
@@ -603,7 +603,7 @@ export default function StudentProfile() {
                   <select
                     value={formData.gender || ''}
                     onChange={(e) => handleChange('gender', e.target.value as 'male' | 'female' | 'other')}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                   >
                     <option value="">Select Gender</option>
                     <option value="male">Male</option>
@@ -619,7 +619,7 @@ export default function StudentProfile() {
                     type="date"
                     value={formData.date_of_birth || ''}
                     onChange={(e) => handleChange('date_of_birth', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                   />
                 </div>
                 <div>
@@ -630,7 +630,7 @@ export default function StudentProfile() {
                     type="text"
                     value={formData.nationality || ''}
                     onChange={(e) => handleChange('nationality', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     placeholder="Indian"
                   />
                 </div>
@@ -641,7 +641,7 @@ export default function StudentProfile() {
                   <select
                     value={formData.marital_status || ''}
                     onChange={(e) => handleChange('marital_status', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                   >
                     <option value="">Select Status</option>
                     <option value="single">Single</option>
@@ -654,7 +654,7 @@ export default function StudentProfile() {
                 <button
                   onClick={() => handleSave('personal')}
                   disabled={savingSection === 'personal'}
-                  className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-[#8DC63F] hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
+                  className="border border-gr-primary text-gr-primary rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-gr-primary hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
                 >
                   <Save className="w-4 h-4" />
                   {savingSection === 'personal' ? 'Saving...' : 'Save'}
@@ -665,12 +665,12 @@ export default function StudentProfile() {
             </div>
 
             {/* Section B: Contact Information */}
-            <div className="bg-white rounded-2xl border border-[#EEEEEE] mb-6 overflow-hidden">
+            <div className="bg-white rounded-2xl border border-gr-border mb-6 overflow-hidden">
               <button
                 onClick={() => toggleSection('contact')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
-                <h2 className="text-lg font-bold text-gray-900">Section B: <span className="text-[#3B82F6]">Contact Information</span></h2>
+                <h2 className="text-lg font-bold text-gray-900">Section B: <span className="text-gr-secondary">Contact Information</span></h2>
                 {collapsedSections.contact ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
                 ) : (
@@ -692,7 +692,7 @@ export default function StudentProfile() {
                     type="email"
                     value={formData.email || ''}
                     onChange={(e) => handleChange('email', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     placeholder="john.doe@example.com"
                   />
                 </div>
@@ -704,7 +704,7 @@ export default function StudentProfile() {
                     type="tel"
                     value={formData.mobile_number || ''}
                     onChange={(e) => handleChange('mobile_number', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     placeholder="+91 9876543210"
                   />
                 </div>
@@ -716,7 +716,7 @@ export default function StudentProfile() {
                     type="email"
                     value={formData.alternate_email || ''}
                     onChange={(e) => handleChange('alternate_email', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     placeholder="alternate@example.com"
                   />
                 </div>
@@ -728,7 +728,7 @@ export default function StudentProfile() {
                     type="tel"
                     value={formData.alternate_phone || ''}
                     onChange={(e) => handleChange('alternate_phone', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     placeholder="+91 9876543211"
                   />
                 </div>
@@ -740,7 +740,7 @@ export default function StudentProfile() {
                     type="tel"
                     value={formData.whatsapp_number || ''}
                     onChange={(e) => handleChange('whatsapp_number', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     placeholder="+91 9876543210"
                   />
                 </div>
@@ -752,7 +752,7 @@ export default function StudentProfile() {
                     type="tel"
                     value={formData.emergency_contact_number || ''}
                     onChange={(e) => handleChange('emergency_contact_number', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     placeholder="+91 9876543212"
                   />
                 </div>
@@ -761,7 +761,7 @@ export default function StudentProfile() {
                 <button
                   onClick={() => handleSave('contact')}
                   disabled={savingSection === 'contact'}
-                  className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-[#8DC63F] hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
+                  className="border border-gr-primary text-gr-primary rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-gr-primary hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
                 >
                   <Save className="w-4 h-4" />
                   {savingSection === 'contact' ? 'Saving...' : 'Save'}
@@ -772,12 +772,12 @@ export default function StudentProfile() {
             </div>
 
             {/* Section C: Address Details */}
-            <div className="bg-white rounded-2xl border border-[#EEEEEE] mb-6 overflow-hidden">
+            <div className="bg-white rounded-2xl border border-gr-border mb-6 overflow-hidden">
               <button
                 onClick={() => toggleSection('address')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
-                <h2 className="text-lg font-bold text-gray-900">Section C: <span className="text-[#3B82F6]">Address Details</span></h2>
+                <h2 className="text-lg font-bold text-gray-900">Section C: <span className="text-gr-secondary">Address Details</span></h2>
                 {collapsedSections.address ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
                 ) : (
@@ -799,7 +799,7 @@ export default function StudentProfile() {
                     <select
                       value={formData.country || ''}
                       onChange={(e) => handleChange('country', e.target.value)}
-                      className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                      className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     >
                       <option value="">Select Country</option>
                       {countries.map(country => (
@@ -814,7 +814,7 @@ export default function StudentProfile() {
                     <select
                       value={formData.state || ''}
                       onChange={(e) => handleChange('state', e.target.value)}
-                      className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                      className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     >
                       <option value="">Select State</option>
                       {indianStates.map(state => (
@@ -832,7 +832,7 @@ export default function StudentProfile() {
                       type="text"
                       value={formData.city || ''}
                       onChange={(e) => handleChange('city', e.target.value)}
-                      className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                      className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                       placeholder="Mumbai"
                     />
                   </div>
@@ -844,7 +844,7 @@ export default function StudentProfile() {
                       type="text"
                       value={formData.district || ''}
                       onChange={(e) => handleChange('district', e.target.value)}
-                      className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                      className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                       placeholder="Mumbai Suburban"
                     />
                   </div>
@@ -857,7 +857,7 @@ export default function StudentProfile() {
                     type="text"
                     value={formData.address_line_1 || ''}
                     onChange={(e) => handleChange('address_line_1', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     placeholder="123, Green Valley Road"
                   />
                 </div>
@@ -869,7 +869,7 @@ export default function StudentProfile() {
                     type="text"
                     value={formData.address_line_2 || ''}
                     onChange={(e) => handleChange('address_line_2', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     placeholder="Near City Center"
                   />
                 </div>
@@ -881,7 +881,7 @@ export default function StudentProfile() {
                     type="text"
                     value={formData.pincode || ''}
                     onChange={(e) => handleChange('pincode', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     placeholder="400001"
                   />
                 </div>
@@ -894,7 +894,7 @@ export default function StudentProfile() {
                     value={formData.current_residential_address || ''}
                     onChange={(e) => handleChange('current_residential_address', e.target.value)}
                     disabled={sameAsPermanent}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm disabled:opacity-50"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm disabled:opacity-50"
                     placeholder="123, Green Valley Road"
                   />
                 </div>
@@ -904,7 +904,7 @@ export default function StudentProfile() {
                     id="sameAddress"
                     checked={sameAsPermanent}
                     onChange={(e) => handleSameAsPermanent(e.target.checked)}
-                    className="w-4 h-4 accent-[#8DC63F]"
+                    className="w-4 h-4 accent-gr-primary"
                   />
                   <label htmlFor="sameAddress" className="text-sm text-gray-600">
                     Same as Permanent Address
@@ -915,7 +915,7 @@ export default function StudentProfile() {
                 <button
                   onClick={() => handleSave('address')}
                   disabled={savingSection === 'address'}
-                  className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-[#8DC63F] hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
+                  className="border border-gr-primary text-gr-primary rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-gr-primary hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
                 >
                   <Save className="w-4 h-4" />
                   {savingSection === 'address' ? 'Saving...' : 'Save'}
@@ -926,12 +926,12 @@ export default function StudentProfile() {
             </div>
 
             {/* Section D: Identity Documents */}
-            <div className="bg-white rounded-2xl border border-[#EEEEEE] mb-6 overflow-hidden">
+            <div className="bg-white rounded-2xl border border-gr-border mb-6 overflow-hidden">
               <button
                 onClick={() => toggleSection('identity')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
-                <h2 className="text-lg font-bold text-gray-900">Section D: <span className="text-[#3B82F6]">Identity Documents</span></h2>
+                <h2 className="text-lg font-bold text-gray-900">Section D: <span className="text-gr-secondary">Identity Documents</span></h2>
                 {collapsedSections.identity ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
                 ) : (
@@ -957,7 +957,7 @@ export default function StudentProfile() {
                       type="text"
                       value={formData.passport_number || ''}
                       onChange={(e) => handleChange('passport_number', e.target.value)}
-                      className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                      className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                       placeholder="A12345678"
                     />
                   </div>
@@ -969,7 +969,7 @@ export default function StudentProfile() {
                       type="date"
                       value={formData.passport_expiry_date || ''}
                       onChange={(e) => handleChange('passport_expiry_date', e.target.value)}
-                      className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                      className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     />
                   </div>
                 </div>
@@ -982,7 +982,7 @@ export default function StudentProfile() {
                       type="date"
                       value={formData.passport_issue_date || ''}
                       onChange={(e) => handleChange('passport_issue_date', e.target.value)}
-                      className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                      className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     />
                   </div>
                   <div>
@@ -992,7 +992,7 @@ export default function StudentProfile() {
                     <select
                       value={formData.passport_country_of_issue || ''}
                       onChange={(e) => handleChange('passport_country_of_issue', e.target.value)}
-                      className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                      className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     >
                       <option value="">Select Country</option>
                       {countries.map(country => (
@@ -1010,7 +1010,7 @@ export default function StudentProfile() {
                       type="text"
                       value={formData.aadhar_number || ''}
                       onChange={(e) => handleChange('aadhar_number', e.target.value)}
-                      className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                      className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                       placeholder="1234 5678 9012"
                     />
                   </div>
@@ -1022,7 +1022,7 @@ export default function StudentProfile() {
                       type="text"
                       value={formData.pan_number || ''}
                       onChange={(e) => handleChange('pan_number', e.target.value)}
-                      className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                      className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                       placeholder="ABCDE1234F"
                     />
                   </div>
@@ -1035,7 +1035,7 @@ export default function StudentProfile() {
                     type="text"
                     value={formData.driving_license_number || ''}
                     onChange={(e) => handleChange('driving_license_number', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     placeholder="DL1234567890"
                   />
                 </div>
@@ -1052,7 +1052,7 @@ export default function StudentProfile() {
                       <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
                         studentProfile?.passport_url 
                           ? 'bg-green-50 border-green-300' 
-                          : 'bg-[#F5F5F5] border-gray-300'
+                          : 'bg-gr-input-bg border-gray-300'
                       }`}>
                         {studentProfile?.passport_url ? (
                           <div className="flex items-center justify-between">
@@ -1079,7 +1079,7 @@ export default function StudentProfile() {
                             />
                             <label
                               htmlFor="passport-upload"
-                              className="cursor-pointer text-sm text-[#8DC63F] hover:underline"
+                              className="cursor-pointer text-sm text-gr-primary hover:underline"
                             >
                               {uploadingDoc === 'passport' ? 'Uploading...' : 'Upload Passport'}
                             </label>
@@ -1096,7 +1096,7 @@ export default function StudentProfile() {
                       <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
                         studentProfile?.passport_photo_url 
                           ? 'bg-green-50 border-green-300' 
-                          : 'bg-[#F5F5F5] border-gray-300'
+                          : 'bg-gr-input-bg border-gray-300'
                       }`}>
                         {studentProfile?.passport_photo_url ? (
                           <div className="flex items-center justify-between">
@@ -1123,7 +1123,7 @@ export default function StudentProfile() {
                             />
                             <label
                               htmlFor="passport-photo-upload"
-                              className="cursor-pointer text-sm text-[#8DC63F] hover:underline"
+                              className="cursor-pointer text-sm text-gr-primary hover:underline"
                             >
                               {uploadingDoc === 'passport_photo' ? 'Uploading...' : 'Upload Photo'}
                             </label>
@@ -1140,7 +1140,7 @@ export default function StudentProfile() {
                       <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
                         studentProfile?.aadhar_front_url 
                           ? 'bg-green-50 border-green-300' 
-                          : 'bg-[#F5F5F5] border-gray-300'
+                          : 'bg-gr-input-bg border-gray-300'
                       }`}>
                         {studentProfile?.aadhar_front_url ? (
                           <div className="flex items-center justify-between">
@@ -1167,7 +1167,7 @@ export default function StudentProfile() {
                             />
                             <label
                               htmlFor="aadhar-front-upload"
-                              className="cursor-pointer text-sm text-[#8DC63F] hover:underline"
+                              className="cursor-pointer text-sm text-gr-primary hover:underline"
                             >
                               {uploadingDoc === 'aadhar_front' ? 'Uploading...' : 'Upload Aadhar Front'}
                             </label>
@@ -1184,7 +1184,7 @@ export default function StudentProfile() {
                       <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
                         studentProfile?.aadhar_back_url 
                           ? 'bg-green-50 border-green-300' 
-                          : 'bg-[#F5F5F5] border-gray-300'
+                          : 'bg-gr-input-bg border-gray-300'
                       }`}>
                         {studentProfile?.aadhar_back_url ? (
                           <div className="flex items-center justify-between">
@@ -1211,7 +1211,7 @@ export default function StudentProfile() {
                             />
                             <label
                               htmlFor="aadhar-back-upload"
-                              className="cursor-pointer text-sm text-[#8DC63F] hover:underline"
+                              className="cursor-pointer text-sm text-gr-primary hover:underline"
                             >
                               {uploadingDoc === 'aadhar_back' ? 'Uploading...' : 'Upload Aadhar Back'}
                             </label>
@@ -1228,7 +1228,7 @@ export default function StudentProfile() {
                       <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
                         studentProfile?.pan_url 
                           ? 'bg-green-50 border-green-300' 
-                          : 'bg-[#F5F5F5] border-gray-300'
+                          : 'bg-gr-input-bg border-gray-300'
                       }`}>
                         {studentProfile?.pan_url ? (
                           <div className="flex items-center justify-between">
@@ -1255,7 +1255,7 @@ export default function StudentProfile() {
                             />
                             <label
                               htmlFor="pan-upload"
-                              className="cursor-pointer text-sm text-[#8DC63F] hover:underline"
+                              className="cursor-pointer text-sm text-gr-primary hover:underline"
                             >
                               {uploadingDoc === 'pan' ? 'Uploading...' : 'Upload PAN Card'}
                             </label>
@@ -1272,7 +1272,7 @@ export default function StudentProfile() {
                       <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
                         studentProfile?.digital_signature_url 
                           ? 'bg-green-50 border-green-300' 
-                          : 'bg-[#F5F5F5] border-gray-300'
+                          : 'bg-gr-input-bg border-gray-300'
                       }`}>
                         {studentProfile?.digital_signature_url ? (
                           <div className="flex items-center justify-between">
@@ -1299,7 +1299,7 @@ export default function StudentProfile() {
                             />
                             <label
                               htmlFor="signature-upload"
-                              className="cursor-pointer text-sm text-[#8DC63F] hover:underline"
+                              className="cursor-pointer text-sm text-gr-primary hover:underline"
                             >
                               {uploadingDoc === 'digital_signature' ? 'Uploading...' : 'Upload Signature'}
                             </label>
@@ -1316,7 +1316,7 @@ export default function StudentProfile() {
                       <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
                         studentProfile?.driving_license_url 
                           ? 'bg-green-50 border-green-300' 
-                          : 'bg-[#F5F5F5] border-gray-300'
+                          : 'bg-gr-input-bg border-gray-300'
                       }`}>
                         {studentProfile?.driving_license_url ? (
                           <div className="flex items-center justify-between">
@@ -1343,7 +1343,7 @@ export default function StudentProfile() {
                             />
                             <label
                               htmlFor="license-upload"
-                              className="cursor-pointer text-sm text-[#8DC63F] hover:underline"
+                              className="cursor-pointer text-sm text-gr-primary hover:underline"
                             >
                               {uploadingDoc === 'driving_license' ? 'Uploading...' : 'Upload License'}
                             </label>
@@ -1358,7 +1358,7 @@ export default function StudentProfile() {
                 <button
                   onClick={() => handleSave('identity')}
                   disabled={savingSection === 'identity'}
-                  className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-[#8DC63F] hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
+                  className="border border-gr-primary text-gr-primary rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-gr-primary hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
                 >
                   <Save className="w-4 h-4" />
                   {savingSection === 'identity' ? 'Saving...' : 'Save'}
@@ -1369,12 +1369,12 @@ export default function StudentProfile() {
             </div>
 
             {/* Section E: Academic Information */}
-            <div className="bg-white rounded-2xl border border-[#EEEEEE] mb-6 overflow-hidden">
+            <div className="bg-white rounded-2xl border border-gr-border mb-6 overflow-hidden">
               <button
                 onClick={() => toggleSection('academic')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
-                <h2 className="text-lg font-bold text-gray-900">Section E: <span className="text-[#3B82F6]">Academic Information</span></h2>
+                <h2 className="text-lg font-bold text-gray-900">Section E: <span className="text-gr-secondary">Academic Information</span></h2>
                 {collapsedSections.academic ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
                 ) : (
@@ -1396,7 +1396,7 @@ export default function StudentProfile() {
                     type="text"
                     value={formData.university_name || ''}
                     onChange={(e) => handleChange('university_name', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     placeholder="Indian Agricultural Research Institute"
                   />
                 </div>
@@ -1408,7 +1408,7 @@ export default function StudentProfile() {
                     type="text"
                     value={formData.college_name || ''}
                     onChange={(e) => handleChange('college_name', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     placeholder="College of Agriculture"
                   />
                 </div>
@@ -1420,7 +1420,7 @@ export default function StudentProfile() {
                     type="text"
                     value={formData.degree_name || ''}
                     onChange={(e) => handleChange('degree_name', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     placeholder="B.Sc Agriculture"
                   />
                 </div>
@@ -1432,7 +1432,7 @@ export default function StudentProfile() {
                     type="text"
                     value={formData.branch_specialization || ''}
                     onChange={(e) => handleChange('branch_specialization', e.target.value)}
-                    className="bg-[#F5F5F5] rounded-lg py-3 px-4 w-full outline-none text-sm"
+                    className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
                     placeholder="Agronomy"
                   />
                 </div>
@@ -1441,7 +1441,7 @@ export default function StudentProfile() {
                 <button
                   onClick={() => handleSave('academic')}
                   disabled={savingSection === 'academic'}
-                  className="border border-[#8DC63F] text-[#8DC63F] rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-[#8DC63F] hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
+                  className="border border-gr-primary text-gr-primary rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-gr-primary hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
                 >
                   <Save className="w-4 h-4" />
                   {savingSection === 'academic' ? 'Saving...' : 'Save'}
@@ -1452,7 +1452,7 @@ export default function StudentProfile() {
             </div>
 
             {/* Logout Section */}
-            <div className="mt-8 bg-white rounded-2xl border border-[#EEEEEE] p-6">
+            <div className="mt-8 bg-white rounded-2xl border border-gr-border p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-semibold text-base text-gray-900 mb-1">Logout</h3>
@@ -1461,7 +1461,7 @@ export default function StudentProfile() {
                 <button
                   onClick={() => setShowLogoutDialog(true)}
                   disabled={isLoggingOut}
-                  className="border border-red-500 text-red-500 rounded-lg px-6 py-2.5 flex items-center gap-2 hover:bg-red-500 hover:text-white transition-colors disabled:opacity-50"
+                  className="border border-gr-error text-red-500 rounded-lg px-6 py-2.5 flex items-center gap-2 hover:bg-red-500 hover:text-white transition-colors disabled:opacity-50"
                 >
                   <LogOut className="w-4 h-4" />
                   {isLoggingOut ? 'Logging out...' : 'Logout'}
@@ -1470,7 +1470,7 @@ export default function StudentProfile() {
             </div>
 
             {/* Delete Account Section */}
-            <div className="mt-4 bg-white rounded-2xl border border-[#EEEEEE] p-6">
+            <div className="mt-4 bg-white rounded-2xl border border-gr-border p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-semibold text-base text-gray-900 mb-1">Delete Account</h3>
@@ -1479,7 +1479,7 @@ export default function StudentProfile() {
                 <button
                   onClick={() => setShowDeleteDialog(true)}
                   disabled={isDeletingAccount}
-                  className="border border-red-500 text-red-500 rounded-lg px-6 py-2.5 flex items-center gap-2 hover:bg-red-500 hover:text-white transition-colors disabled:opacity-50"
+                  className="border border-gr-error text-red-500 rounded-lg px-6 py-2.5 flex items-center gap-2 hover:bg-red-500 hover:text-white transition-colors disabled:opacity-50"
                 >
                   <Trash2 className="w-4 h-4" />
                   {isDeletingAccount ? 'Deleting...' : 'Delete Account'}

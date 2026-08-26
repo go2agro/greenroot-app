@@ -312,10 +312,10 @@ export default function AdminApplicationDetails({
     canScreen || showPartnerSection || canFinalDecision ? (
       <div className="space-y-5">
         {canScreen && (
-          <div className="relative border-2 border-[#8DC63F] bg-[#F4FBE8] p-4 sm:p-5 shadow-[0_0_0_4px_rgba(141,198,63,0.15)]">
-            <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#8DC63F]" />
+          <div className="relative border-2 border-gr-primary bg-[#F4FBE8] p-4 sm:p-5 shadow-[0_0_0_4px_rgba(141,198,63,0.15)]">
+            <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gr-primary" />
             <div className="pl-2">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-sm bg-[#8DC63F] px-2.5 py-1">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-sm bg-gr-primary px-2.5 py-1">
                 <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-white">
                   Screening Required
                 </span>
@@ -352,7 +352,7 @@ export default function AdminApplicationDetails({
                 <button
                   type="button"
                   onClick={() => setActionDialog('accept')}
-                  className="inline-flex items-center gap-2 rounded-sm bg-[#8DC63F] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#7DB62F] transition-colors"
+                  className="inline-flex items-center gap-2 rounded-sm bg-gr-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-gr-primary-hover transition-colors"
                 >
                   <CheckCircle className="w-4 h-4" />
                   Accept
@@ -365,7 +365,7 @@ export default function AdminApplicationDetails({
         {showPartnerSection && !canFinalDecision && (
           <div ref={partnerSectionRef} className="border-t border-[#DDD9D0] pt-5">
             <div className="mb-3">
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#8DC63F]">
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-gr-primary">
                 Next Step
               </p>
               <h3 className="text-base font-bold text-gray-900 mt-1">
@@ -386,19 +386,19 @@ export default function AdminApplicationDetails({
           <div
             className={`relative border-2 p-4 sm:p-5 mb-5 ${
               application.partner_decision === 'approve'
-                ? 'border-[#8DC63F] bg-[#F4FBE8]'
+                ? 'border-gr-primary bg-[#F4FBE8]'
                 : 'border-red-300 bg-red-50'
             }`}
           >
             <div
               className={`absolute left-0 top-0 bottom-0 w-1.5 ${
-                application.partner_decision === 'approve' ? 'bg-[#8DC63F]' : 'bg-red-400'
+                application.partner_decision === 'approve' ? 'bg-gr-primary' : 'bg-red-400'
               }`}
             />
             <div className="pl-2">
               <div
                 className={`mb-3 inline-flex items-center gap-2 rounded-sm px-2.5 py-1 ${
-                  application.partner_decision === 'approve' ? 'bg-[#8DC63F]' : 'bg-red-500'
+                  application.partner_decision === 'approve' ? 'bg-gr-primary' : 'bg-red-500'
                 }`}
               >
                 <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-white">
@@ -408,7 +408,7 @@ export default function AdminApplicationDetails({
 
               <div className="flex items-center gap-2 mb-3">
                 {application.partner_decision === 'approve' ? (
-                  <CheckCircle className="w-5 h-5 text-[#8DC63F]" />
+                  <CheckCircle className="w-5 h-5 text-gr-primary" />
                 ) : (
                   <XCircle className="w-5 h-5 text-red-500" />
                 )}
@@ -472,7 +472,7 @@ export default function AdminApplicationDetails({
                   type="button"
                   onClick={() => setActionDialog('approve')}
                   disabled={!finalRemarks.trim()}
-                  className="inline-flex items-center gap-2 rounded-sm bg-[#8DC63F] px-3.5 py-2 text-sm font-semibold text-white hover:bg-[#7DB62F] disabled:opacity-50"
+                  className="inline-flex items-center gap-2 rounded-sm bg-gr-primary px-3.5 py-2 text-sm font-semibold text-white hover:bg-gr-primary-hover disabled:opacity-50"
                 >
                   <CheckCircle className="w-4 h-4" />
                   Approve
@@ -490,7 +490,7 @@ export default function AdminApplicationDetails({
         <div className="relative flex items-center justify-center">
           <Link
             href="/admin/applications"
-            className="absolute left-0 flex items-center gap-2 text-gray-600 hover:text-[#8DC63F] transition-colors"
+            className="absolute left-0 flex items-center gap-2 text-gray-600 hover:text-gr-primary transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
             <span className="font-medium">Back</span>
@@ -512,13 +512,13 @@ export default function AdminApplicationDetails({
               <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">
                 {adminName}
               </p>
-              <p className="text-xs text-[#8DC63F] font-medium">
+              <p className="text-xs text-gr-primary font-medium">
                 ID: {(myProfile as Profile | null)?.unique_id || 'N/A'}
               </p>
             </div>
             <Link
               href="/admin/profile"
-              className="w-10 h-10 rounded-full bg-[#3B82F6] flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity flex-shrink-0"
+              className="w-10 h-10 rounded-full bg-gr-secondary flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity flex-shrink-0"
             >
               {getAvatarInitials()}
             </Link>
@@ -534,7 +534,7 @@ export default function AdminApplicationDetails({
             <p className="text-gray-500 mb-4">Application not found.</p>
             <Link
               href="/admin/applications"
-              className="text-sm font-semibold text-[#8DC63F] hover:underline"
+              className="text-sm font-semibold text-gr-primary hover:underline"
             >
               Back to Applications
             </Link>
@@ -543,7 +543,7 @@ export default function AdminApplicationDetails({
           <div className={`${PAGE_CLASS} p-4 sm:p-6 lg:p-8 space-y-5`}>
             {application.status === 'accepted' ? (
               <>
-                <div className="bg-gradient-to-r from-[#3B82F6] to-[#8DC63F] border border-[#7DB62F] rounded-xl p-5 shadow-sm">
+                <div className="bg-gradient-to-r from-gr-secondary to-gr-primary border border-gr-primary-hover rounded-xl p-5 shadow-sm">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0 border border-white/30">
                       <CheckCircle className="w-7 h-7 text-white" />
@@ -561,7 +561,7 @@ export default function AdminApplicationDetails({
                       
                       {latestStage ? (
                         <div className="mt-3 bg-white rounded-lg p-3 border border-white/40 shadow-sm">
-                          <p className="text-xs font-semibold text-[#3B82F6] uppercase tracking-wide mb-1">
+                          <p className="text-xs font-semibold text-gr-secondary uppercase tracking-wide mb-1">
                             Latest Update
                           </p>
                           <p className="text-sm font-medium text-gray-900">
@@ -660,7 +660,7 @@ export default function AdminApplicationDetails({
               <div className="flex justify-center pt-2 pb-10">
                 <Link
                   href="/admin/applications"
-                  className="inline-flex items-center justify-center rounded-xl bg-[#8DC63F] px-8 py-3 text-sm font-semibold text-white hover:bg-[#7DB62F] transition-colors"
+                  className="inline-flex items-center justify-center rounded-xl bg-gr-primary px-8 py-3 text-sm font-semibold text-white hover:bg-gr-primary-hover transition-colors"
                 >
                   Go to Applications
                 </Link>

@@ -13,8 +13,8 @@ interface UserAvatarProps {
 }
 
 const avatarBgByRole = {
-  admin: 'bg-[#3B82F6]',
-  student: 'bg-[#8DC63F]',
+  admin: 'bg-gr-secondary',
+  student: 'bg-gr-primary',
 } as const
 
 export default function UserAvatar({ 

@@ -55,7 +55,7 @@ export default async function About() {
                 </p>
                 <h1 className="font-bold text-4xl sm:text-5xl lg:text-[3.25rem] text-[#1F2A14] leading-[1.08] tracking-tight">
                   {hero.heading}{' '}
-                  <span className="text-[#A3D32F]">{hero.headingHighlight}</span>
+                  <span className="text-gr-primary">{hero.headingHighlight}</span>
                   {' '}{hero.headingSuffix}
                 </h1>
                 <p className="text-base md:text-lg text-[#5A6750] leading-relaxed max-w-lg">
@@ -64,14 +64,14 @@ export default async function About() {
                 <div className="flex flex-col sm:flex-row gap-3 pt-1">
                   <Link
                     href={hero.primaryCta.href}
-                    className="inline-flex items-center justify-center gap-2 bg-[#A3D32F] text-[#1F2A14] rounded-2xl px-6 py-3.5 text-sm font-semibold hover:bg-[#92C120] transition-colors"
+                    className="inline-flex items-center justify-center gap-2 bg-gr-primary text-[#1F2A14] rounded-2xl px-6 py-3.5 text-sm font-semibold hover:bg-gr-primary-hover transition-colors"
                   >
                     {hero.primaryCta.label}
                     <ArrowUpRight className="w-4 h-4" />
                   </Link>
                   <Link
                     href={hero.secondaryCta.href}
-                    className="inline-flex items-center justify-center rounded-2xl px-6 py-3.5 text-sm font-medium text-[#3D4A32] bg-white/80 border border-[#D5E0C8] hover:border-[#A3D32F] transition-colors"
+                    className="inline-flex items-center justify-center rounded-2xl px-6 py-3.5 text-sm font-medium text-[#3D4A32] bg-white/80 border border-[#D5E0C8] hover:border-gr-primary transition-colors"
                   >
                     {hero.secondaryCta.label}
                   </Link>
@@ -98,7 +98,7 @@ export default async function About() {
                     sizes="(max-width: 1024px) 50vw, 25vw"
                   />
                 </div>
-                <div className="rounded-3xl bg-[#A3D32F] p-5 flex flex-col justify-between">
+                <div className="rounded-3xl bg-gr-primary p-5 flex flex-col justify-between">
                   <Sprout className="w-6 h-6 text-[#1F2A14]" />
                   <div>
                     <p className="font-bold text-3xl text-[#1F2A14] tracking-tight">
@@ -172,9 +172,9 @@ export default async function About() {
                 >
                   <div className="flex items-center justify-between mb-6">
                     <div className="w-11 h-11 rounded-2xl bg-white flex items-center justify-center border border-[#DCE6D0]/80">
-                      <Icon className="w-5 h-5 text-[#A3D32F]" />
+                      <Icon className="w-5 h-5 text-gr-primary" />
                     </div>
-                    <span className="text-sm font-bold text-[#A3D32F] tabular-nums">
+                    <span className="text-sm font-bold text-gr-primary tabular-nums">
                       {chapter.step}
                     </span>
                   </div>
@@ -195,7 +195,7 @@ export default async function About() {
 
         {/* Pillars */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 md:pb-20">
-          <div className="rounded-3xl bg-[#A3D32F] px-6 py-8 sm:px-8 sm:py-9 mb-5">
+          <div className="rounded-3xl bg-gr-primary px-6 py-8 sm:px-8 sm:py-9 mb-5">
             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#1F2A14]/70 mb-2">
               {pillars.eyebrow}
             </p>
@@ -218,7 +218,7 @@ export default async function About() {
                   className="rounded-3xl p-6 sm:p-7 bg-white border border-[#DCE6D0] flex flex-col h-full"
                 >
                   <div className="w-11 h-11 rounded-2xl bg-[#F0F7E0] flex items-center justify-center mb-5">
-                    <Icon className="w-5 h-5 text-[#A3D32F]" />
+                    <Icon className="w-5 h-5 text-gr-primary" />
                   </div>
                   <h3 className="font-bold text-xl text-[#1F2A14] mb-2">
                     {pillar.title}
@@ -271,7 +271,7 @@ export default async function About() {
                     <h3 className="font-bold text-2xl md:text-3xl text-[#1F2A14]">
                       {person.name}
                     </h3>
-                    <p className="text-sm md:text-base font-medium text-[#A3D32F] mt-1 mb-5">
+                    <p className="text-sm md:text-base font-medium text-gr-primary mt-1 mb-5">
                       {person.role}
                     </p>
                     <div className="space-y-1.5 pt-4 border-t border-[#DCE6D0] max-w-sm">
@@ -311,11 +311,11 @@ export default async function About() {
                     </div>
                   ) : advisor.icon === 'briefcase' ? (
                     <div className="w-14 h-14 shrink-0 rounded-xl bg-[#EAF5D4] flex items-center justify-center">
-                      <Briefcase className="w-5 h-5 text-[#A3D32F]" />
+                      <Briefcase className="w-5 h-5 text-gr-primary" />
                     </div>
                   ) : (
                     <div className="w-14 h-14 shrink-0 rounded-xl bg-[#E4F0FA] flex items-center justify-center">
-                      <Scale className="w-5 h-5 text-[#549FE3]" />
+                      <Scale className="w-5 h-5 text-gr-secondary" />
                     </div>
                   )}
                   <div className="min-w-0">
@@ -329,7 +329,7 @@ export default async function About() {
                       {advisor.roleLine1}
                     </p>
                     {advisor.roleLine2 && (
-                      <p className="text-xs text-[#A3D32F] font-medium mt-0.5">
+                      <p className="text-xs text-gr-primary font-medium mt-0.5">
                         {advisor.roleLine2}
                       </p>
                     )}
@@ -358,7 +358,7 @@ export default async function About() {
                     <h3 className="font-semibold text-[#1F2A14] text-sm leading-snug">
                       {person.name}
                     </h3>
-                    <p className="text-xs text-[#A3D32F] font-medium mt-1">
+                    <p className="text-xs text-gr-primary font-medium mt-1">
                       {person.role}
                     </p>
                   </div>
@@ -405,9 +405,9 @@ export default async function About() {
                   >
                     <div className="flex items-center justify-between mb-4">
                       <div className="w-11 h-11 rounded-2xl bg-[#F0F7E0] flex items-center justify-center">
-                        <Icon className="w-5 h-5 text-[#A3D32F]" />
+                        <Icon className="w-5 h-5 text-gr-primary" />
                       </div>
-                      <span className="text-xs font-bold text-[#A3D32F] tabular-nums">
+                      <span className="text-xs font-bold text-gr-primary tabular-nums">
                         0{index + 1}
                       </span>
                     </div>
@@ -427,8 +427,8 @@ export default async function About() {
         {/* CTA */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 md:pb-20">
           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#EAF5D4] via-[#F7FAF2] to-[#D6EAF8] border border-[#DCE6D0]">
-            <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-[#A3D32F]/25 blur-3xl pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-56 h-56 rounded-full bg-[#549FE3]/20 blur-3xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-gr-primary/25 blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-56 h-56 rounded-full bg-gr-secondary/20 blur-3xl pointer-events-none" />
 
             <div className="relative grid lg:grid-cols-2 gap-8 items-center p-8 sm:p-10 md:p-12">
               <div>
@@ -444,14 +444,14 @@ export default async function About() {
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Link
                     href={cta.primaryCta.href}
-                    className="inline-flex items-center justify-center gap-2 bg-[#A3D32F] text-[#1F2A14] rounded-2xl px-6 py-3.5 text-sm font-semibold hover:bg-[#92C120] transition-colors"
+                    className="inline-flex items-center justify-center gap-2 bg-gr-primary text-[#1F2A14] rounded-2xl px-6 py-3.5 text-sm font-semibold hover:bg-gr-primary-hover transition-colors"
                   >
                     {cta.primaryCta.label}
                     <ArrowUpRight className="w-4 h-4" />
                   </Link>
                   <Link
                     href={cta.secondaryCta.href}
-                    className="inline-flex items-center justify-center rounded-2xl px-6 py-3.5 text-sm font-medium text-[#3D4A32] bg-white border border-[#D5E0C8] hover:border-[#A3D32F] transition-colors"
+                    className="inline-flex items-center justify-center rounded-2xl px-6 py-3.5 text-sm font-medium text-[#3D4A32] bg-white border border-[#D5E0C8] hover:border-gr-primary transition-colors"
                   >
                     {cta.secondaryCta.label}
                   </Link>

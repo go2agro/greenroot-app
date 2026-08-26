@@ -351,12 +351,12 @@ export default function AdminStudentDetails({ params }: { params: Promise<{ id: 
   const applicationList = (applications as Application[] | undefined) ?? []
 
   return (
-    <div className="min-h-screen bg-[#F9F9F9] flex flex-col">
-      <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4 flex-shrink-0">
+    <div className="min-h-screen bg-gr-background flex flex-col">
+      <div className="bg-white border-b border-gr-border px-4 sm:px-6 lg:px-8 py-4 flex-shrink-0">
         <div className="relative flex items-center justify-center">
           <Link
             href="/admin/students"
-            className="absolute left-0 flex items-center gap-2 text-gray-600 hover:text-[#8DC63F] transition-colors"
+            className="absolute left-0 flex items-center gap-2 text-gray-600 hover:text-gr-primary transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
             <span className="font-medium">Back</span>
@@ -376,13 +376,13 @@ export default function AdminStudentDetails({ params }: { params: Promise<{ id: 
           <div className="absolute right-0 flex items-center gap-2 sm:gap-3">
             <div className="hidden sm:block text-right">
               <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">{adminName}</p>
-              <p className="text-xs text-[#8DC63F] font-medium">
+              <p className="text-xs text-gr-primary font-medium">
                 ID: {(myProfile as Profile | null)?.unique_id || 'N/A'}
               </p>
             </div>
             <Link
               href="/admin/profile"
-              className="w-10 h-10 rounded-full bg-[#3B82F6] flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity flex-shrink-0"
+              className="w-10 h-10 rounded-full bg-gr-secondary flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity flex-shrink-0"
             >
               {getAvatarInitials()}
             </Link>
@@ -398,14 +398,14 @@ export default function AdminStudentDetails({ params }: { params: Promise<{ id: 
             <p className="text-gray-500 mb-4">Student not found.</p>
             <Link
               href="/admin/students"
-              className="text-sm font-semibold text-[#8DC63F] hover:underline"
+              className="text-sm font-semibold text-gr-primary hover:underline"
             >
               Back to Students
             </Link>
           </div>
         ) : (
           <div className={`${PAGE_CLASS} p-4 sm:p-6 lg:p-8 space-y-6`}>
-            <div className="relative overflow-hidden rounded-2xl border border-[#EEEEEE] bg-gradient-to-br from-[#8DC63F] via-[#6BA82E] to-[#3B82F6]">
+            <div className="relative overflow-hidden rounded-2xl border border-gr-border bg-gradient-to-br from-gr-primary via-[#6BA82E] to-gr-secondary">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_55%)]" />
               <div className="relative p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-5">
                 <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center text-white text-2xl sm:text-3xl font-bold flex-shrink-0">
@@ -465,7 +465,7 @@ export default function AdminStudentDetails({ params }: { params: Promise<{ id: 
               ].map(({ icon: Icon, label, value }) => (
                 <div
                   key={label}
-                  className="bg-white border border-[#EEEEEE] rounded-xl p-3 flex items-center gap-3"
+                  className="bg-white border border-gr-border rounded-xl p-3 flex items-center gap-3"
                 >
                   <div className="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0">
                     <Icon className="w-4 h-4 text-white" />
@@ -557,7 +557,7 @@ export default function AdminStudentDetails({ params }: { params: Promise<{ id: 
               icon={Briefcase}
             >
               {applicationList.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-[#EEEEEE] bg-[#FAFAFA] p-8 text-center">
+                <div className="rounded-xl border border-dashed border-gr-border bg-gr-background p-8 text-center">
                   <Briefcase className="w-10 h-10 text-gray-300 mx-auto mb-2" />
                   <p className="text-sm font-medium text-gray-500">No applications yet</p>
                   <p className="text-xs text-gray-400 mt-1">
@@ -570,7 +570,7 @@ export default function AdminStudentDetails({ params }: { params: Promise<{ id: 
                     <Link
                       key={application.id}
                       href={`/admin/applications/${application.id}`}
-                      className="group flex items-center justify-between gap-4 rounded-xl border border-[#EEEEEE] p-4 hover:border-[#8DC63F] hover:bg-green-50/40 transition-colors"
+                      className="group flex items-center justify-between gap-4 rounded-xl border border-gr-border p-4 hover:border-gr-primary hover:bg-green-50/40 transition-colors"
                     >
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2 mb-1">
@@ -595,7 +595,7 @@ export default function AdminStudentDetails({ params }: { params: Promise<{ id: 
                             : ''}
                         </p>
                       </div>
-                      <div className="w-8 h-8 rounded-lg bg-[#F5F5F5] flex items-center justify-center text-gray-500 group-hover:bg-[#8DC63F] group-hover:text-white transition-colors flex-shrink-0">
+                      <div className="w-8 h-8 rounded-lg bg-gr-input-bg flex items-center justify-center text-gray-500 group-hover:bg-gr-primary group-hover:text-white transition-colors flex-shrink-0">
                         <ChevronRight className="w-4 h-4" />
                       </div>
                     </Link>
@@ -604,7 +604,7 @@ export default function AdminStudentDetails({ params }: { params: Promise<{ id: 
               )}
             </DetailSection>
 
-            <div className={`${CARD_CLASS} bg-[#FAFAFA]`}>
+            <div className={`${CARD_CLASS} bg-gr-background`}>
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold text-gray-900">Account Metadata</p>

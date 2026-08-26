@@ -92,10 +92,10 @@ export default function ForgotPassword() {
             // STATE 1: Form State
             <>
               {/* Heading */}
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-2">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gr-text-dark mb-2">
                 Forgot your password?
               </h2>
-              <p className="text-sm text-[#333333] mb-6">
+              <p className="text-sm text-gr-text-dark mb-6">
                 Don't worry! Enter the registered Email address below and we'll send you a link to reset your password.
               </p>
 
@@ -119,13 +119,13 @@ export default function ForgotPassword() {
                       }}
                       placeholder="example@email.com"
                       disabled={isLoading}
-                      className={`w-full bg-[#F5F5F5] rounded-lg py-3 pl-12 pr-4 text-sm sm:text-base outline-none transition-all ${
-                        emailError ? 'border-2 border-red-500' : 'border-0'
+                      className={`w-full bg-gr-input-bg rounded-lg py-3 pl-12 pr-4 text-sm sm:text-base outline-none transition-all ${
+                        emailError ? 'border-2 border-gr-error' : 'border-0'
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
                     />
                   </div>
                   {emailError && (
-                    <p className="text-[#DC2626] text-sm mt-1">{emailError}</p>
+                    <p className="text-gr-error text-sm mt-1">{emailError}</p>
                   )}
                 </div>
 
@@ -133,7 +133,7 @@ export default function ForgotPassword() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-[#8DC63F] text-white rounded-lg py-3 text-base font-semibold hover:bg-[#7DB62F] transition-colors disabled:opacity-80 disabled:cursor-not-allowed flex items-center justify-center"
+                  className="w-full bg-gr-primary text-white rounded-lg py-3 text-base font-semibold hover:bg-gr-primary-hover transition-colors disabled:opacity-80 disabled:cursor-not-allowed flex items-center justify-center"
                 >
                   {isLoading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
@@ -144,7 +144,7 @@ export default function ForgotPassword() {
 
                 {/* General Error */}
                 {generalError && (
-                  <p className="text-[#DC2626] text-sm text-center">{generalError}</p>
+                  <p className="text-gr-error text-sm text-center">{generalError}</p>
                 )}
               </form>
             </>
@@ -152,17 +152,17 @@ export default function ForgotPassword() {
             // STATE 2: Success State
             <>
               {/* Success Heading */}
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-2">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gr-text-dark mb-2">
                 Password reset link sent!
               </h2>
-              <p className="text-sm text-[#333333] mb-6">
+              <p className="text-sm text-gr-text-dark mb-6">
                 {getMessage('success', 'passwordReset')}
               </p>
 
               {/* Back to Login Button */}
               <button
                 onClick={handleBackToLogin}
-                className="w-full bg-[#8DC63F] text-white rounded-lg py-3 text-base font-semibold hover:bg-[#7DB62F] transition-colors"
+                className="w-full bg-gr-primary text-white rounded-lg py-3 text-base font-semibold hover:bg-gr-primary-hover transition-colors"
               >
                 {BTN_LOGIN}
               </button>

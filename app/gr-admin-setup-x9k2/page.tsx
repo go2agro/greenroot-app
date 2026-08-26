@@ -143,8 +143,8 @@ export default function AdminSetupPage() {
                 />
                 <span className="text-2xl font-bold text-gray-900">GreenRoot</span>
               </div>
-              <CardTitle className="text-xl font-bold text-[#1A1A1A] flex items-center gap-2 justify-center">
-                <ShieldAlert className="w-5 h-5 text-[#8DC63F]" />
+              <CardTitle className="text-xl font-bold text-gr-text-dark flex items-center gap-2 justify-center">
+                <ShieldAlert className="w-5 h-5 text-gr-primary" />
                 Restricted Access
               </CardTitle>
             </CardHeader>
@@ -163,18 +163,18 @@ export default function AdminSetupPage() {
                     }}
                     placeholder="Enter secret key"
                     disabled={isLoading}
-                    className="bg-[#F5F5F5] border-0 h-11 pl-10"
+                    className="bg-gr-input-bg border-0 h-11 pl-10"
                   />
                 </div>
                 {keyError && (
-                  <p className="text-sm text-[#DC2626]">{keyError}</p>
+                  <p className="text-sm text-gr-error">{keyError}</p>
                 )}
               </div>
               <Button
                 type="button"
                 onClick={handleVerifyAccess}
                 disabled={isLoading || !secretKey}
-                className="w-full h-11 bg-[#8DC63F] text-white hover:bg-[#7DB62F] font-semibold"
+                className="w-full h-11 bg-gr-primary text-white hover:bg-gr-primary-hover font-semibold"
               >
                 {isLoading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -187,11 +187,11 @@ export default function AdminSetupPage() {
         ) : success ? (
           <Card className="bg-white shadow-lg border-0 ring-0">
             <CardContent className="pt-8 pb-6 text-center space-y-6">
-              <CheckCircle2 className="w-16 h-16 text-[#8DC63F] mx-auto" />
-              <h2 className="text-2xl font-bold text-[#1A1A1A]">
+              <CheckCircle2 className="w-16 h-16 text-gr-primary mx-auto" />
+              <h2 className="text-2xl font-bold text-gr-text-dark">
                 {accountType === 'admin' ? 'Admin' : 'Partner'} Account Created!
               </h2>
-              <div className="bg-[#F5F5F5] rounded-lg p-4 text-left space-y-3">
+              <div className="bg-gr-input-bg rounded-lg p-4 text-left space-y-3">
                 <div>
                   <p className="text-xs text-gray-500 uppercase tracking-wide">Name</p>
                   <p className="text-sm font-medium text-gray-900">{fullName}</p>
@@ -217,7 +217,7 @@ export default function AdminSetupPage() {
               <Button
                 type="button"
                 onClick={resetForm}
-                className="w-full h-11 bg-[#8DC63F] text-white hover:bg-[#7DB62F] font-semibold"
+                className="w-full h-11 bg-gr-primary text-white hover:bg-gr-primary-hover font-semibold"
               >
                 Create Another Account
               </Button>
@@ -235,12 +235,12 @@ export default function AdminSetupPage() {
                 />
                 <span className="text-xl font-bold text-gray-900">GreenRoot</span>
               </div>
-              <CardTitle className="text-xl font-bold text-[#1A1A1A]">
+              <CardTitle className="text-xl font-bold text-gr-text-dark">
                 Create Account
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="w-full bg-[#F0F0F0] rounded-lg p-1 mb-6">
+              <div className="w-full bg-gr-input-bg rounded-lg p-1 mb-6">
                 <div className="grid grid-cols-2 gap-1">
                   {(['admin', 'partner'] as const).map((type) => (
                     <button
@@ -250,7 +250,7 @@ export default function AdminSetupPage() {
                       disabled={isLoading}
                       className={`py-2.5 rounded-md text-sm font-medium transition-colors ${
                         accountType === type
-                          ? 'bg-[#8DC63F] text-white'
+                          ? 'bg-gr-primary text-white'
                           : 'text-gray-500 hover:text-gray-700'
                       }`}
                     >
@@ -270,7 +270,7 @@ export default function AdminSetupPage() {
                       onChange={(e) => setFirstName(e.target.value)}
                       placeholder="First"
                       disabled={isLoading}
-                      className="bg-[#F5F5F5] border-0 h-11"
+                      className="bg-gr-input-bg border-0 h-11"
                     />
                   </div>
                   <div className="space-y-2">
@@ -281,7 +281,7 @@ export default function AdminSetupPage() {
                       onChange={(e) => setMiddleName(e.target.value)}
                       placeholder="Optional"
                       disabled={isLoading}
-                      className="bg-[#F5F5F5] border-0 h-11"
+                      className="bg-gr-input-bg border-0 h-11"
                     />
                   </div>
                   <div className="space-y-2">
@@ -292,7 +292,7 @@ export default function AdminSetupPage() {
                       onChange={(e) => setLastName(e.target.value)}
                       placeholder="Last"
                       disabled={isLoading}
-                      className="bg-[#F5F5F5] border-0 h-11"
+                      className="bg-gr-input-bg border-0 h-11"
                     />
                   </div>
                 </div>
@@ -306,7 +306,7 @@ export default function AdminSetupPage() {
                     onChange={(e) => setOfficialEmail(e.target.value)}
                     placeholder={accountType === 'admin' ? 'admin@greenroot.com' : 'partner@greenroot.com'}
                     disabled={isLoading}
-                    className="bg-[#F5F5F5] border-0 h-11"
+                    className="bg-gr-input-bg border-0 h-11"
                   />
                   <p className="text-xs text-gray-500">Used for login</p>
                 </div>
@@ -320,7 +320,7 @@ export default function AdminSetupPage() {
                     onChange={(e) => setPersonalEmail(e.target.value)}
                     placeholder="optional@email.com"
                     disabled={isLoading}
-                    className="bg-[#F5F5F5] border-0 h-11"
+                    className="bg-gr-input-bg border-0 h-11"
                   />
                 </div>
 
@@ -333,7 +333,7 @@ export default function AdminSetupPage() {
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+1 (555) 000-0000"
                     disabled={isLoading}
-                    className="bg-[#F5F5F5] border-0 h-11"
+                    className="bg-gr-input-bg border-0 h-11"
                   />
                 </div>
 
@@ -348,7 +348,7 @@ export default function AdminSetupPage() {
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Min 8 characters"
                       disabled={isLoading}
-                      className="bg-[#F5F5F5] border-0 h-11 pl-10 pr-10"
+                      className="bg-gr-input-bg border-0 h-11 pl-10 pr-10"
                     />
                     <button
                       type="button"
@@ -377,7 +377,7 @@ export default function AdminSetupPage() {
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="Re-enter password"
                       disabled={isLoading}
-                      className="bg-[#F5F5F5] border-0 h-11 pl-10 pr-10"
+                      className="bg-gr-input-bg border-0 h-11 pl-10 pr-10"
                     />
                     <button
                       type="button"
@@ -396,13 +396,13 @@ export default function AdminSetupPage() {
                 </div>
 
                 {error && (
-                  <p className="text-sm text-[#DC2626] text-center">{error}</p>
+                  <p className="text-sm text-gr-error text-center">{error}</p>
                 )}
 
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full h-11 bg-[#8DC63F] text-white hover:bg-[#7DB62F] font-semibold"
+                  className="w-full h-11 bg-gr-primary text-white hover:bg-gr-primary-hover font-semibold"
                 >
                   {isLoading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />

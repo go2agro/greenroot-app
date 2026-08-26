@@ -57,7 +57,7 @@ export default function InternshipCard({
 
       {/* Badge - Optional, can be shown if needed */}
       {badge && (
-        <div className="absolute top-3 left-3 bg-[#8DC63F] text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
+        <div className="absolute top-3 left-3 bg-gr-primary text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
           {badge}
         </div>
       )}

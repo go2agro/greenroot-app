@@ -65,22 +65,22 @@ export default function LegalDocument({ data, variant }: LegalDocumentProps) {
   const Icon = variant === 'privacy' ? Shield : FileText
 
   return (
-    <div className="min-h-screen bg-[#F9F9F9] flex flex-col">
+    <div className="min-h-screen bg-gr-background flex flex-col">
       <Navbar />
 
       <main className="flex-1">
-        <div className="border-b border-[#EEEEEE] bg-white">
+        <div className="border-b border-gr-border bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
             <Link
               href="/"
-              className="text-sm text-[#8DC63F] hover:underline mb-6 inline-block"
+              className="text-sm text-gr-primary hover:underline mb-6 inline-block"
             >
               ← Back to Home
             </Link>
 
             <div className="flex items-start gap-4">
-              <div className="hidden sm:flex w-12 h-12 rounded-2xl bg-[#F0F7E6] items-center justify-center shrink-0">
-                <Icon className="w-6 h-6 text-[#8DC63F]" />
+              <div className="hidden sm:flex w-12 h-12 rounded-2xl bg-gr-primary-light items-center justify-center shrink-0">
+                <Icon className="w-6 h-6 text-gr-primary" />
               </div>
               <div>
                 <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
@@ -88,7 +88,7 @@ export default function LegalDocument({ data, variant }: LegalDocumentProps) {
                 </h1>
                 <p className="text-sm text-gray-500 mb-4">{data.subtitle}</p>
                 <div className="flex flex-wrap gap-2">
-                  <span className="inline-flex items-center rounded-full bg-[#F0F7E6] px-3 py-1 text-xs font-medium text-[#5A7A2E]">
+                  <span className="inline-flex items-center rounded-full bg-gr-primary-light px-3 py-1 text-xs font-medium text-gr-primary">
                     Effective: {data.effectiveNote}
                   </span>
                   <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
@@ -103,7 +103,7 @@ export default function LegalDocument({ data, variant }: LegalDocumentProps) {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
           <div className="grid grid-cols-1 lg:grid-cols-[240px_minmax(0,1fr)] gap-8 lg:gap-12">
             <aside className="lg:sticky lg:top-24 lg:self-start">
-              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
+              <div className="bg-white border border-gr-border rounded-2xl p-5">
                 <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-3">
                   On this page
                 </p>
@@ -112,7 +112,7 @@ export default function LegalDocument({ data, variant }: LegalDocumentProps) {
                     <a
                       key={section.id}
                       href={`#${section.id}`}
-                      className="text-sm text-gray-600 hover:text-[#8DC63F] hover:bg-[#F0F7E6] rounded-lg px-2 py-1.5 transition-colors"
+                      className="text-sm text-gray-600 hover:text-gr-primary hover:bg-gr-primary-light rounded-lg px-2 py-1.5 transition-colors"
                     >
                       {section.title}
                     </a>
@@ -121,16 +121,16 @@ export default function LegalDocument({ data, variant }: LegalDocumentProps) {
               </div>
             </aside>
 
-            <article className="bg-white border border-[#EEEEEE] rounded-2xl p-6 sm:p-10 space-y-10">
+            <article className="bg-white border border-gr-border rounded-2xl p-6 sm:p-10 space-y-10">
               {data.intro && (
-                <p className="text-sm sm:text-[15px] text-gray-600 leading-relaxed border-l-4 border-[#8DC63F] pl-4 bg-[#FAFBF7] py-3 rounded-r-lg">
+                <p className="text-sm sm:text-[15px] text-gray-600 leading-relaxed border-l-4 border-gr-primary pl-4 bg-gr-primary-light py-3 rounded-r-lg">
                   {data.intro}
                 </p>
               )}
 
               {data.sections.map((section) => (
                 <section key={section.id} id={section.id} className="scroll-mt-28">
-                  <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-[#EEEEEE]">
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gr-border">
                     {section.title}
                   </h2>
                   <div className="space-y-4">

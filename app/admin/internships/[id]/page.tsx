@@ -80,11 +80,11 @@ type Profile = {
   unique_id?: string
 }
 
-const CARD_CLASS = 'bg-white border border-[#EEEEEE] rounded-2xl p-6'
+const CARD_CLASS = 'bg-white border border-gr-border rounded-2xl p-6'
 const FIELD_CLASS =
-  'border-[#EEEEEE] rounded-xl h-10 focus-visible:ring-[#8DC63F] focus-visible:border-[#8DC63F]'
+  'border-gr-border rounded-xl h-10 focus-visible:ring-gr-primary focus-visible:border-gr-primary'
 const TEXTAREA_CLASS =
-  'border-[#EEEEEE] rounded-xl min-h-[100px] focus-visible:ring-[#8DC63F] focus-visible:border-[#8DC63F]'
+  'border-gr-border rounded-xl min-h-[100px] focus-visible:ring-gr-primary focus-visible:border-gr-primary'
 
 const fetcher = (fn: () => Promise<{ data: unknown }>) => fn().then((res) => res.data)
 
@@ -251,7 +251,7 @@ function ImageUrlField({
           placeholder={placeholder}
           className={`${FIELD_CLASS} flex-1 min-w-0`}
         />
-        <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-[#EEEEEE] flex-shrink-0 bg-gray-100">
+        <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-gr-border flex-shrink-0 bg-gray-100">
           {trimmedValue && !previewError ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -400,12 +400,12 @@ export default function AdminInternshipDetails({ params }: { params: Promise<{ i
   }
 
   return (
-    <div className="min-h-screen bg-[#F9F9F9] flex flex-col">
-      <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4 flex-shrink-0">
+    <div className="min-h-screen bg-gr-background flex flex-col">
+      <div className="bg-white border-b border-gr-border px-4 sm:px-6 lg:px-8 py-4 flex-shrink-0">
         <div className="relative flex items-center justify-center">
           <Link
             href="/admin/internships"
-            className="absolute left-0 flex items-center gap-2 text-gray-600 hover:text-[#8DC63F] transition-colors"
+            className="absolute left-0 flex items-center gap-2 text-gray-600 hover:text-gr-primary transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
             <span className="font-medium">Back</span>
@@ -425,13 +425,13 @@ export default function AdminInternshipDetails({ params }: { params: Promise<{ i
           <div className="absolute right-0 flex items-center gap-2 sm:gap-3">
             <div className="hidden sm:block text-right">
               <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">{adminName}</p>
-              <p className="text-xs text-[#8DC63F] font-medium">
+              <p className="text-xs text-gr-primary font-medium">
                 ID: {profileMeta?.unique_id || 'N/A'}
               </p>
             </div>
             <Link
               href="/admin/profile"
-              className="w-10 h-10 rounded-full bg-[#3B82F6] flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity flex-shrink-0"
+              className="w-10 h-10 rounded-full bg-gr-secondary flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity flex-shrink-0"
             >
               {getAvatarInitials()}
             </Link>
@@ -447,14 +447,14 @@ export default function AdminInternshipDetails({ params }: { params: Promise<{ i
               <p className="text-gray-500 mb-4">Internship not found.</p>
               <Link
                 href="/admin/internships"
-                className="text-sm font-semibold text-[#8DC63F] hover:underline"
+                className="text-sm font-semibold text-gr-primary hover:underline"
               >
                 Back to Internships
               </Link>
             </div>
           ) : (
             <div className={`${PAGE_CLASS} p-4 sm:p-6 lg:p-8 space-y-6`}>
-              <div className="relative h-48 sm:h-56 rounded-2xl overflow-hidden border border-[#EEEEEE]">
+              <div className="relative h-48 sm:h-56 rounded-2xl overflow-hidden border border-gr-border">
                 <Image
                   src={form.image_url || `https://picsum.photos/seed/${id}/1200/600`}
                   alt={form.title || 'Internship cover'}
@@ -464,7 +464,7 @@ export default function AdminInternshipDetails({ params }: { params: Promise<{ i
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6">
                   {form.badge && (
-                    <span className="inline-block bg-[#8DC63F] text-white text-xs font-bold px-3 py-1 rounded-full uppercase mb-2">
+                    <span className="inline-block bg-gr-primary text-white text-xs font-bold px-3 py-1 rounded-full uppercase mb-2">
                       {form.badge}
                     </span>
                   )}
@@ -508,7 +508,7 @@ export default function AdminInternshipDetails({ params }: { params: Promise<{ i
                 ].map(({ icon: Icon, label, value }) => (
                   <div
                     key={label}
-                    className="bg-white border border-[#EEEEEE] rounded-xl p-3 flex items-center gap-3"
+                    className="bg-white border border-gr-border rounded-xl p-3 flex items-center gap-3"
                   >
                     <div className="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0">
                       <Icon className="w-4 h-4 text-white" />
@@ -589,7 +589,7 @@ export default function AdminInternshipDetails({ params }: { params: Promise<{ i
                     <select
                       value={form.work_mode}
                       onChange={(e) => updateField('work_mode', e.target.value)}
-                      className="w-full h-10 border border-[#EEEEEE] rounded-xl px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+                      className="w-full h-10 border border-gr-border rounded-xl px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent"
                     >
                       <option value="">Select work mode</option>
                       <option value="onsite">Onsite</option>
@@ -736,7 +736,7 @@ export default function AdminInternshipDetails({ params }: { params: Promise<{ i
                   type="button"
                   onClick={handleSave}
                   disabled={saving || deleting}
-                  className="inline-flex items-center justify-center gap-2 bg-[#8DC63F] text-white rounded-xl px-6 py-3 font-semibold hover:bg-[#7DB62F] transition-colors disabled:opacity-50"
+                  className="inline-flex items-center justify-center gap-2 bg-gr-primary text-white rounded-xl px-6 py-3 font-semibold hover:bg-gr-primary-hover transition-colors disabled:opacity-50"
                 >
                   {saving ? (
                     <Loader2 className="w-4 h-4 animate-spin" />

@@ -132,7 +132,7 @@ export default function StudentDashboard() {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#8DC63F] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <div className="w-16 h-16 border-4 border-gr-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-gray-600">Loading dashboard...</p>
         </div>
       </div>
@@ -227,7 +227,7 @@ export default function StudentDashboard() {
                       cx="50%"
                       cy="50%"
                       r="18"
-                      stroke="#E5E7EB"
+                      stroke="var(--gr-border)"
                       strokeWidth="4"
                       fill="none"
                     />
@@ -235,7 +235,7 @@ export default function StudentDashboard() {
                       cx="50%"
                       cy="50%"
                       r="18"
-                      stroke="#8DC63F"
+                      stroke="var(--gr-primary)"
                       strokeWidth="4"
                       fill="none"
                       strokeDasharray={`${2 * Math.PI * 18}`}
@@ -251,7 +251,7 @@ export default function StudentDashboard() {
                   <p className="text-xs text-gray-500">Profile Strength</p>
                   <Link 
                     href="/student/profile"
-                    className="text-xs text-[#8DC63F] font-semibold hover:underline flex items-center gap-1"
+                    className="text-xs text-gr-primary font-semibold hover:underline flex items-center gap-1"
                   >
                     Complete Profile
                     <ArrowRight className="w-3 h-3" />
@@ -266,11 +266,11 @@ export default function StudentDashboard() {
                   <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">
                     {profileData?.first_name} {profileData?.last_name}
                   </p>
-                  <p className="text-xs text-[#3B82F6] font-medium">ID: {studentId || 'N/A'}</p>
+                  <p className="text-xs text-gr-secondary font-medium">ID: {studentId || 'N/A'}</p>
                 </div>
                 <Link
                   href="/student/profile"
-                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#8DC63F] flex items-center justify-center text-white font-bold text-sm sm:text-base cursor-pointer hover:opacity-80 transition-opacity"
+                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gr-primary flex items-center justify-center text-white font-bold text-sm sm:text-base cursor-pointer hover:opacity-80 transition-opacity"
                 >
                   {avatarInitials}
                 </Link>
@@ -296,41 +296,41 @@ export default function StudentDashboard() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {/* Drafts */}
-              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
+              <div className="bg-white border border-gr-border rounded-2xl p-5">
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="text-sm text-gray-500 font-medium">Drafts</div>
-                    <div className="text-4xl font-bold text-[#3B82F6] mt-2">
+                    <div className="text-4xl font-bold text-gr-secondary mt-2">
                       {counts.drafts.toString().padStart(2, '0')}
                     </div>
                   </div>
-                  <FileText className="w-6 h-6 text-[#8DC63F]" />
+                  <FileText className="w-6 h-6 text-gr-primary" />
                 </div>
               </div>
 
               {/* Submitted */}
-              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
+              <div className="bg-white border border-gr-border rounded-2xl p-5">
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="text-sm text-gray-500 font-medium">In Review</div>
-                    <div className="text-4xl font-bold text-[#3B82F6] mt-2">
+                    <div className="text-4xl font-bold text-gr-secondary mt-2">
                       {counts.submitted.toString().padStart(2, '0')}
                     </div>
                   </div>
-                  <Send className="w-6 h-6 text-[#8DC63F]" />
+                  <Send className="w-6 h-6 text-gr-primary" />
                 </div>
               </div>
 
               {/* Approved */}
-              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
+              <div className="bg-white border border-gr-border rounded-2xl p-5">
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="text-sm text-gray-500 font-medium">Approved</div>
-                    <div className="text-4xl font-bold text-[#3B82F6] mt-2">
+                    <div className="text-4xl font-bold text-gr-secondary mt-2">
                       {counts.approved.toString().padStart(2, '0')}
                     </div>
                   </div>
-                  <CheckCircle className="w-6 h-6 text-[#8DC63F]" />
+                  <CheckCircle className="w-6 h-6 text-gr-primary" />
                 </div>
               </div>
             </div>
@@ -343,13 +343,13 @@ export default function StudentDashboard() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <h2 className="text-lg sm:text-xl font-bold text-gray-900">Active Applications</h2>
-                  <span className="inline-flex items-center justify-center min-w-[2rem] h-7 px-2 rounded-full bg-[#8DC63F]/10 text-[#8DC63F] text-sm font-bold">
+                  <span className="inline-flex items-center justify-center min-w-[2rem] h-7 px-2 rounded-full bg-gr-primary/10 text-gr-primary text-sm font-bold">
                     {activeCount.toString().padStart(2, '0')}
                   </span>
                 </div>
                 <Link 
                   href="/student/applications"
-                  className="text-sm text-[#8DC63F] font-semibold hover:underline"
+                  className="text-sm text-gr-primary font-semibold hover:underline"
                 >
                   View All
                 </Link>
@@ -385,7 +385,7 @@ export default function StudentDashboard() {
                           </div>
                           <button
                             onClick={() => router.push(`/student/applications/${app.id}`)}
-                            className="min-w-[6.5rem] px-4 py-2 text-sm text-white bg-[#8DC63F] rounded-lg hover:bg-[#7DB62F] transition-colors font-semibold whitespace-nowrap flex-shrink-0 text-center"
+                            className="min-w-[6.5rem] px-4 py-2 text-sm text-white bg-gr-primary rounded-lg hover:bg-gr-primary-hover transition-colors font-semibold whitespace-nowrap flex-shrink-0 text-center"
                           >
                             View
                           </button>
@@ -406,13 +406,13 @@ export default function StudentDashboard() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <h2 className="text-lg sm:text-xl font-bold text-gray-900">Saved drafts</h2>
-                  <span className="inline-flex items-center justify-center min-w-[2rem] h-7 px-2 rounded-full bg-[#3B82F6]/10 text-[#3B82F6] text-sm font-bold">
+                  <span className="inline-flex items-center justify-center min-w-[2rem] h-7 px-2 rounded-full bg-gr-secondary/10 text-gr-secondary text-sm font-bold">
                     {counts.drafts.toString().padStart(2, '0')}
                   </span>
                 </div>
                 <Link 
                   href="/student/applications"
-                  className="text-sm text-[#8DC63F] font-semibold hover:underline"
+                  className="text-sm text-gr-primary font-semibold hover:underline"
                 >
                   View All
                 </Link>
@@ -448,7 +448,7 @@ export default function StudentDashboard() {
                           </div>
                           <button 
                             onClick={() => router.push(`/student/applications/${app.id}`)}
-                            className="min-w-[6.5rem] px-4 py-2 text-sm text-white bg-[#8DC63F] rounded-lg hover:bg-[#7DB62F] transition-colors font-semibold whitespace-nowrap flex-shrink-0 text-center"
+                            className="min-w-[6.5rem] px-4 py-2 text-sm text-white bg-gr-primary rounded-lg hover:bg-gr-primary-hover transition-colors font-semibold whitespace-nowrap flex-shrink-0 text-center"
                           >
                             Resume
                           </button>
@@ -500,14 +500,14 @@ export default function StudentDashboard() {
             <div className="relative z-10 max-w-2xl">
               <div className="flex items-center gap-2 mb-4">
                 <div className="p-2 bg-white rounded-lg">
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-[#8DC63F]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gr-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
               </div>
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                 Browse Internships,<br />
-                <span className="text-[#8DC63F]">Grow Your Future</span>
+                <span className="text-gr-primary">Grow Your Future</span>
               </h2>
               <p className="text-sm sm:text-base text-gray-600 mb-6">
                 Explore global agricultural internships<br className="hidden sm:block" />
@@ -515,7 +515,7 @@ export default function StudentDashboard() {
               </p>
               <Link
                 href="/student/internships"
-                className="inline-flex items-center gap-2 bg-[#8DC63F] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#7DB62F] transition-colors text-sm sm:text-base"
+                className="inline-flex items-center gap-2 bg-gr-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-gr-primary-hover transition-colors text-sm sm:text-base"
               >
                 Browse Internships
                 <ArrowRight className="w-5 h-5" />
@@ -525,8 +525,8 @@ export default function StudentDashboard() {
             {/* Illustration */}
             <div className="absolute right-0 sm:right-8 bottom-0 w-60 h-60 sm:w-80 sm:h-80 opacity-30 sm:opacity-50">
               <div className="relative w-full h-full">
-                <div className="absolute bottom-0 right-0 w-48 h-48 sm:w-64 sm:h-64 bg-gradient-to-br from-[#8DC63F]/20 to-blue-400/20 rounded-full blur-3xl" />
-                <Search className="absolute bottom-8 sm:bottom-12 right-8 sm:right-12 w-16 h-16 sm:w-24 sm:h-24 text-[#8DC63F]/30" />
+                <div className="absolute bottom-0 right-0 w-48 h-48 sm:w-64 sm:h-64 bg-gradient-to-br from-gr-primary/20 to-blue-400/20 rounded-full blur-3xl" />
+                <Search className="absolute bottom-8 sm:bottom-12 right-8 sm:right-12 w-16 h-16 sm:w-24 sm:h-24 text-gr-primary/30" />
               </div>
             </div>
           </div>
