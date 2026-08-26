@@ -17,8 +17,7 @@ import AdminBottomNavigation from '@/components/AdminBottomNavigation'
 import { getAllPartners } from '@/lib/adminPartners'
 import { getMyAdminProfile } from '@/lib/adminProfiles'
 import { getMyProfile } from '@/lib/profiles'
-
-const ITEMS_PER_PAGE = 5
+import { ITEMS_PER_PAGE } from '@/lib/appConfig'
 
 const TABLE_GRID_CLASS =
   'md:grid md:grid-cols-5 md:gap-4 md:items-center md:px-6 md:py-4'
