@@ -1,9 +1,9 @@
 {
   "title": "Privacy Policy",
-  "subtitle": "GreenRoot Student Internship Portal",
+  "subtitle": "{{platformDescription}}",
   "effectiveNote": "Upon publication",
   "lastUpdated": "August 2026",
-  "intro": "This Privacy Policy explains how Go2Agro Services LLP (\"Go2Agro\", \"we\", \"us\", or \"our\") collects, uses, stores, shares, and protects personal data through the GreenRoot platform at greenroot.co.in (the \"Platform\"). We are committed to handling your information responsibly and in compliance with applicable Indian laws, including the Digital Personal Data Protection Act, 2023 (\"DPDP Act\"), the Information Technology Act, 2000, and the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011 (\"SPDI Rules\").",
+  "intro": "This Privacy Policy explains how {{operatorName}} (\"{{operatorShortName}}\", \"we\", \"us\", or \"our\") collects, uses, stores, shares, and protects personal data through the {{platformName}} platform at {{platformHost}} (the \"Platform\"). We are committed to handling your information responsibly and in compliance with applicable Indian laws, including the Digital Personal Data Protection Act, 2023 (\"DPDP Act\"), the Information Technology Act, 2000, and the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011 (\"SPDI Rules\").",
   "sections": [
     {
       "id": "scope",
@@ -11,11 +11,11 @@
       "blocks": [
         {
           "type": "p",
-          "text": "This Privacy Policy applies to all personal data collected through the GreenRoot Platform, including data provided by Students, Admins, and Partners. GreenRoot is the technology platform; Go2Agro Services LLP acts as the data fiduciary responsible for determining the purposes and means of processing personal data collected through the Platform."
+          "text": "This Privacy Policy applies to all personal data collected through the {{platformName}} Platform, including data provided by Students, Admins, and Partners. {{platformName}} is the technology platform; {{operatorName}} acts as the data fiduciary responsible for determining the purposes and means of processing personal data collected through the Platform."
         },
         {
           "type": "p",
-          "text": "This Policy covers the GreenRoot web platform only. Offline services provided by Go2Agro staff — such as visa counselling, travel coordination, or in-person training — may involve additional data handling practices communicated separately during those engagements."
+          "text": "This Policy covers the {{platformName}} web platform only. Offline services provided by {{operatorShortName}} staff — such as visa counselling, travel coordination, or in-person training — may involve additional data handling practices communicated separately during those engagements."
         },
         {
           "type": "p",
@@ -136,7 +136,7 @@
         },
         {
           "type": "p",
-          "text": "We do not currently collect bank account details or payment card information through the GreenRoot Platform. Any fee payments are handled outside the Platform through separate channels communicated by Go2Agro."
+          "text": "We do not currently collect bank account details or payment card information through the {{platformName}} Platform. Any fee payments are handled outside the Platform through separate channels communicated by {{operatorShortName}}."
         }
       ]
     },
@@ -157,7 +157,7 @@
             "Health and eligibility assessment — to determine whether you are medically fit for international agricultural work and to inform host organisations (consent and legitimate use).",
             "Application review and placement facilitation — to evaluate Applications, communicate with you, and coordinate with Partners (contractual necessity and legitimate use).",
             "Sharing with programme coordinators and overseas Partners — to enable selection, verification, and placement of eligible candidates (consent, provided at application submission).",
-            "Visa and immigration support — to assist Go2Agro staff in preparing documentation for overseas travel (consent and legitimate use).",
+            "Visa and immigration support — to assist {{operatorShortName}} staff in preparing documentation for overseas travel (consent and legitimate use).",
             "Platform administration — to manage listings, monitor application pipelines, send operational notifications, and maintain records (legitimate use).",
             "Security and fraud prevention — to detect false documents, unauthorised access, and misuse of the Platform (legitimate use and legal obligation).",
             "Analytics and platform improvement — to understand usage patterns and improve the Platform experience (consent, where required; legitimate use for aggregated analytics).",
@@ -207,7 +207,7 @@
           "items": [
             "Supabase — cloud database, authentication, and file storage (hosted in India region)",
             "PostHog — website analytics and product usage insights",
-            "Email and communication services used by Go2Agro staff (where applicable)"
+            "Email and communication services used by {{operatorShortName}} staff (where applicable)"
           ]
         },
         {
@@ -220,7 +220,7 @@
         },
         {
           "type": "p",
-          "text": "We may disclose personal data where required by law, court order, government authority, or to protect the rights, safety, and property of Go2Agro, Users, or the public."
+          "text": "We may disclose personal data where required by law, court order, government authority, or to protect the rights, safety, and property of {{operatorShortName}}, Users, or the public."
         },
         {
           "type": "h3",
@@ -228,7 +228,7 @@
         },
         {
           "type": "p",
-          "text": "Authorised Go2Agro Admins have access to Student profiles, Applications, and associated documents for operational purposes including review, status updates, data correction, and forwarding to Partners."
+          "text": "Authorised {{operatorShortName}} Admins have access to Student profiles, Applications, and associated documents for operational purposes including review, status updates, data correction, and forwarding to Partners."
         }
       ]
     },
@@ -274,7 +274,7 @@
         },
         {
           "type": "p",
-          "text": "If you wish to request deletion of your account and associated data, please contact us at support@greenroot.in. Deletion requests will be processed subject to legal retention requirements and ongoing application or placement obligations."
+          "text": "If you wish to request deletion of your account and associated data, please contact us at {{supportEmail}}. Deletion requests will be processed subject to legal retention requirements and ongoing application or placement obligations."
         }
       ]
     },
@@ -299,7 +299,7 @@
         },
         {
           "type": "p",
-          "text": "To exercise any of these rights, contact us at support@greenroot.in with your registered email address and a description of your request. We will respond within the timeframe required by applicable law (generally within thirty (30) days under the DPDP Act). We may request identity verification before processing your request."
+          "text": "To exercise any of these rights, contact us at {{supportEmail}} with your registered email address and a description of your request. We will respond within the timeframe required by applicable law (generally within thirty (30) days under the DPDP Act). We may request identity verification before processing your request."
         },
         {
           "type": "p",
@@ -313,7 +313,7 @@
       "blocks": [
         {
           "type": "p",
-          "text": "The Platform is designed for agriculture students, who may include individuals under the age of eighteen (18). Where a User is a minor under applicable law, registration and use of the Platform should be undertaken with the knowledge and consent of a parent or legal guardian. Go2Agro reserves the right to request parental or guardian consent where required."
+          "text": "The Platform is designed for agriculture students, who may include individuals under the age of eighteen (18). Where a User is a minor under applicable law, registration and use of the Platform should be undertaken with the knowledge and consent of a parent or legal guardian. {{operatorShortName}} reserves the right to request parental or guardian consent where required."
         },
         {
           "type": "p",
@@ -379,7 +379,7 @@
         },
         {
           "type": "p",
-          "text": "If you become aware of any unauthorised access to your account or suspect a security incident, please contact us immediately at support@greenroot.in."
+          "text": "If you become aware of any unauthorised access to your account or suspect a security incident, please contact us immediately at {{supportEmail}}."
         }
       ]
     },
@@ -389,16 +389,16 @@
       "blocks": [
         {
           "type": "p",
-          "text": "In accordance with the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021 and the DPDP Act, Go2Agro Services LLP has designated the following contact for privacy and data protection grievances. The Grievance Officer will be formally appointed and their details updated on this page:"
+          "text": "In accordance with the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021 and the DPDP Act, {{operatorName}} has designated the following contact for privacy and data protection grievances. The Grievance Officer will be formally appointed and their details updated on this page:"
         },
         {
           "type": "ul",
           "items": [
-            "Name: [To Be Appointed]",
+            "Name: {{grievanceOfficerName}}",
             "Designation: Grievance Officer / Data Protection Contact",
-            "Email: support@greenroot.in",
-            "Phone: +91 79729 37388",
-            "Address: 42 Agro Business Park, Baner Road, Baner, Pune, Maharashtra 411045, India",
+            "Email: {{supportEmail}}",
+            "Phone: {{supportPhone}}",
+            "Address: {{correspondenceAddress}}",
             "Office hours: Monday to Friday, 10:00 AM to 6:00 PM IST"
           ]
         },
@@ -433,14 +433,14 @@
         {
           "type": "ul",
           "items": [
-            "Platform: GreenRoot — greenroot.co.in",
-            "Data Fiduciary: Go2Agro Services LLP",
-            "Privacy contact: support@greenroot.in",
-            "General enquiries: info@greenroot.in",
-            "Phone: +91 79729 37388",
-            "Correspondence address: 42 Agro Business Park, Baner Road, Baner, Pune, Maharashtra 411045, India",
-            "Registered office: [To Be Updated]",
-            "LLPIN: [To Be Updated]"
+            "Platform: {{platformName}} — {{platformHost}}",
+            "Data Fiduciary: {{operatorName}}",
+            "Privacy contact: {{supportEmail}}",
+            "General enquiries: {{generalEmail}}",
+            "Phone: {{supportPhone}}",
+            "Correspondence address: {{correspondenceAddress}}",
+            "Registered office: {{registeredOffice}}",
+            "LLPIN: {{registeredOffice}}"
           ]
         }
       ]

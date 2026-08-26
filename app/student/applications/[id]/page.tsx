@@ -45,10 +45,15 @@ import { getMyProfile } from '@/lib/profiles'
 import { formatStudentStatusLabel, formatApplicationReferenceId } from '@/lib/utils'
 import {
   APPLICATION_STEPS_COUNT,
+  BTN_NEXT_STEP,
+  BTN_PREV_STEP,
+  BTN_SAVE_DRAFT,
+  BTN_SUBMIT_APPLICATION,
   MAX_FILE_UPLOAD_BYTES,
   MAX_FILE_UPLOAD_ERROR,
   MAX_FILE_UPLOAD_MB,
 } from '@/lib/appConfig'
+import { getMessage } from '@/lib/messages'
 
 type ApplicationData = ApplicationPaperData & {
   internships?: ApplicationPaperInternship & {
@@ -1454,10 +1459,10 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                       {isSubmitting ? (
                         <>
                           <Loader2 className="w-5 h-5 animate-spin" />
-                          Submitting...
+                          {getMessage('loading', 'submitting')}
                         </>
                       ) : (
-                        'Submit Application'
+                        BTN_SUBMIT_APPLICATION
                       )}
                     </button>
                   </div>
@@ -1476,7 +1481,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
               className="border border-gray-300 text-gray-600 rounded-lg px-6 py-2.5 font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               <ChevronLeft className="w-4 h-4" />
-              Previous
+              {BTN_PREV_STEP}
             </button>
           )}
           
@@ -1492,10 +1497,10 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                 {isSaving ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Saving...
+                    {getMessage('loading', 'saving')}
                   </>
                 ) : (
-                  'Save Draft'
+                  BTN_SAVE_DRAFT
                 )}
               </button>
             )}
@@ -1509,16 +1514,16 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                 {isSaving ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Processing...
+                    {getMessage('loading', 'processing')}
                   </>
                 ) : isReadOnly ? (
                   <>
-                    View Next
+                    View {BTN_NEXT_STEP}
                     <ChevronRight className="w-4 h-4" />
                   </>
                 ) : (
                   <>
-                    Next
+                    {BTN_NEXT_STEP}
                     <ChevronRight className="w-4 h-4" />
                   </>
                 )}

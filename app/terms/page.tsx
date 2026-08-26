@@ -1,6 +1,6 @@
-import LegalDocument, { type LegalDocumentData } from '@/components/LegalDocument'
-import termsData from '@/config/legal/terms.json'
+import LegalDocument from '@/components/LegalDocument'
+import { getTermsDocument } from '@/lib/legal'
 
 export default function TermsPage() {
-  return <LegalDocument data={termsData as LegalDocumentData} variant="terms" />
+  return <LegalDocument data={getTermsDocument()} variant="terms" />
 }

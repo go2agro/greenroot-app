@@ -7,7 +7,14 @@ import { Search, MapPin, Clock, Banknote, ChevronLeft, ChevronRight, X } from 'l
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { getAllInternships } from '@/lib/internships'
-import { ITEMS_PER_PAGE } from '@/lib/appConfig'
+import {
+  BTN_APPLY_NOW,
+  DEFAULT_INTERNSHIP_IMAGE,
+  INTERNSHIPS_PAGE_HEADING,
+  INTERNSHIPS_PAGE_SUBHEADING,
+  ITEMS_PER_PAGE,
+  LABEL_LOADING,
+} from '@/lib/appConfig'
 
 type Internship = {
   id: string
@@ -225,9 +232,9 @@ export default function PublicInternships() {
 
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
           <div>
-            <h1 className="font-bold text-2xl text-gray-900 mb-1">Agricultural Internships</h1>
+            <h1 className="font-bold text-2xl text-gray-900 mb-1">{INTERNSHIPS_PAGE_HEADING}</h1>
             <p className="text-sm text-gray-500">
-              Showing {filteredInternships.length} opportunities worldwide
+              {INTERNSHIPS_PAGE_SUBHEADING} · Showing {filteredInternships.length} opportunities worldwide
             </p>
           </div>
           
@@ -249,7 +256,7 @@ export default function PublicInternships() {
         </div>
 
         {isLoading ? (
-          <div className="text-center py-12 text-gray-500">Loading internships...</div>
+          <div className="text-center py-12 text-gray-500">{LABEL_LOADING}</div>
         ) : paginatedInternships.length === 0 ? (
           <div className="text-center py-12 text-gray-500">No internships found</div>
         ) : (

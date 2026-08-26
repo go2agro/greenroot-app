@@ -18,6 +18,9 @@ import contactConfig from '@/config/contact.json'
 import landingConfig from '@/config/pages/landing.json'
 import aboutConfig from '@/config/pages/about.json'
 
+// Legal entity (shared placeholders for terms/privacy)
+import entityConfig from '@/config/legal/entity.json'
+
 // UI strings
 import messagesConfig from '@/config/ui/messages.json'
 
@@ -27,6 +30,7 @@ export type ContactConfig = typeof contactConfig
 export type LandingConfig = typeof landingConfig
 export type AboutConfig = typeof aboutConfig
 export type MessagesConfig = typeof messagesConfig
+export type LegalEntityConfig = typeof entityConfig
 
 // Unified config object
 export const config = {
@@ -35,10 +39,18 @@ export const config = {
   landing: landingConfig,
   about: aboutConfig,
   messages: messagesConfig,
+  legalEntity: entityConfig,
 } as const
 
 // Individual exports for convenience
-export { appConfig, contactConfig, landingConfig, aboutConfig, messagesConfig }
+export {
+  appConfig,
+  contactConfig,
+  landingConfig,
+  aboutConfig,
+  messagesConfig,
+  entityConfig,
+}
 
 // Helper functions
 export function getAppConfig<K extends keyof AppConfig>(key: K): AppConfig[K] {
@@ -50,7 +62,7 @@ export function getMessage(
   key: string
 ): string {
   const messages = messagesConfig[type] as Record<string, string>
-  return messages[key] || messagesConfig.error.generic
+  return messages[key] ?? messagesConfig.error.generic
 }
 
 /** Primary support email — matches Contact page "Support" entry */

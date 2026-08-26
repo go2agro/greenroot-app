@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AtSign, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { signUp } from '@/lib/auth'
+import { BTN_SIGNUP } from '@/lib/appConfig'
+import { getMessage } from '@/lib/messages'
 import Image from 'next/image'
 import Link from 'next/link'
 import AuthLeftPanel from '@/components/AuthLeftPanel'
@@ -57,7 +59,7 @@ export default function Signup() {
       const { data, error } = await signUp(email, password)
       
       if (error) {
-        setPasswordError(error.message || 'An error occurred during signup')
+        setPasswordError(error.message || getMessage('error', 'signup'))
         setIsLoading(false)
         return
       }
@@ -66,7 +68,7 @@ export default function Signup() {
         router.push('/student/dashboard')
       }
     } catch (error) {
-      setPasswordError('An error occurred. Please try again.')
+      setPasswordError(getMessage('error', 'generic'))
       setIsLoading(false)
     }
   }
@@ -208,7 +210,7 @@ export default function Signup() {
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                'Create Account'
+                BTN_SIGNUP
               )}
             </button>
           </form>

@@ -7,7 +7,6 @@ import {
   Globe, 
   Settings, 
   Briefcase, 
-  UserCheck, 
   User, 
   CheckCircle, 
   CircleHelp
@@ -23,6 +22,13 @@ import Footer from '@/components/Footer';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import { getTopPaidInternships } from '@/lib/internships';
 import landingConfig from '@/config/pages/landing.json';
+import { BTN_APPLY_NOW } from '@/lib/appConfig';
+
+const FEATURE_ICONS: Record<string, typeof Globe> = {
+  'global-network': Globe,
+  'visa-support': Settings,
+  'career-growth': Briefcase,
+};
 
 type FeaturedInternship = {
   id: string
@@ -158,11 +164,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* WHY CHOOSE GREENROOT */}
+      {/* WHY CHOOSE — from landing config */}
       <section id="about" className="w-full py-12 md:py-20 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-            {/* Left - Image */}
             <div className="relative h-[300px] md:h-[400px] rounded-xl overflow-hidden">
               <Image 
                 src="https://picsum.photos/400/600?random=4" 
@@ -172,40 +177,26 @@ export default function Home() {
               />
             </div>
 
-            {/* Right - Content */}
             <div className="flex flex-col gap-6">
               <h2 className="font-bold text-2xl md:text-3xl text-[#1A1A1A]">
-                Why Choose <span className="text-[#A3D32F]">GreenRoot?</span>
+                {landingConfig.features.heading}
               </h2>
+              <p className="text-sm text-gray-600">{landingConfig.features.subheading}</p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Card 1 */}
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                  <Globe className="w-8 h-8 text-[#A3D32F] mb-3" />
-                  <h3 className="font-bold text-gray-900 mb-1">International Experience</h3>
-                  <p className="text-sm text-gray-600">Work with global agricultural organizations.</p>
-                </div>
-
-                {/* Card 2 */}
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                  <Settings className="w-8 h-8 text-[#A3D32F] mb-3" />
-                  <h3 className="font-bold text-gray-900 mb-1">Modern Agriculture</h3>
-                  <p className="text-sm text-gray-600">Learn advanced farming technologies.</p>
-                </div>
-
-                {/* Card 3 */}
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                  <Briefcase className="w-8 h-8 text-[#A3D32F] mb-3" />
-                  <h3 className="font-bold text-gray-900 mb-1">Career Growth</h3>
-                  <p className="text-sm text-gray-600">Build valuable industry experience.</p>
-                </div>
-
-                {/* Card 4 */}
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                  <UserCheck className="w-8 h-8 text-[#A3D32F] mb-3" />
-                  <h3 className="font-bold text-gray-900 mb-1">Expert Guidance</h3>
-                  <p className="text-sm text-gray-600">Support throughout the process.</p>
-                </div>
+                {landingConfig.features.items.map((item) => {
+                  const Icon = FEATURE_ICONS[item.id] ?? Globe
+                  return (
+                    <div
+                      key={item.id}
+                      className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+                    >
+                      <Icon className="w-8 h-8 text-[#A3D32F] mb-3" />
+                      <h3 className="font-bold text-gray-900 mb-1">{item.title}</h3>
+                      <p className="text-sm text-gray-600">{item.description}</p>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           </div>
@@ -340,7 +331,7 @@ export default function Home() {
                     href={`/internships/${internship.id}`}
                     className="w-full block text-center bg-[#A3D32F] text-white rounded-lg py-2 hover:bg-[#92C120] transition-colors font-semibold"
                   >
-                    Apply Now
+                    {BTN_APPLY_NOW}
                   </Link>
                 </div>
               </div>
@@ -489,30 +480,27 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA BANNER */}
+      {/* CTA — from landing config */}
       <section className="w-full py-12 md:py-20 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-            {/* Left Content */}
             <div className="flex flex-col gap-6">
               <h2 className="font-bold text-3xl md:text-4xl text-[#1A1A1A] leading-tight">
-                Ready to Start Your{' '}
-                <span className="text-[#A3D32F]">Global Agriculture Journey?</span>
+                {landingConfig.cta.heading}
               </h2>
               <p className="text-sm md:text-base text-gray-600">
-                Join thousands of students and companies growing the future of agriculture.
+                {landingConfig.cta.subheading}
               </p>
               <div>
                 <Link 
-                  href="/internships"
+                  href={landingConfig.cta.button_link}
                   className="inline-block bg-[#A3D32F] text-white rounded-lg px-6 py-3 font-semibold hover:bg-[#92C120] transition-colors"
                 >
-                  Browse Internships
+                  {landingConfig.cta.button_text}
                 </Link>
               </div>
             </div>
 
-            {/* Right Image - Hidden on mobile */}
             <div className="hidden md:block relative h-[300px] rounded-xl overflow-hidden">
               <Image 
                 src="https://picsum.photos/400/300?random=8" 

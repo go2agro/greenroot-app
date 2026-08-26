@@ -6,6 +6,8 @@ import { AtSign, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { loginUser, signOut } from '@/lib/auth'
 import { getMyProfile } from '@/lib/profiles'
+import { BTN_LOGIN } from '@/lib/appConfig'
+import { getMessage } from '@/lib/messages'
 import Image from 'next/image'
 import Link from 'next/link'
 import AuthLeftPanel from '@/components/AuthLeftPanel'
@@ -67,10 +69,10 @@ export default function Login() {
       const { data, error } = await loginUser(email, password)
 
       if (error) {
-        const message = error.message || 'Invalid email or password. Please try again.'
+        const message = error.message || getMessage('error', 'login')
         setGeneralError(
           message.toLowerCase().includes('invalid login credentials')
-            ? 'Invalid email or password. Please try again.'
+            ? getMessage('error', 'login')
             : message
         )
         setIsLoading(false)
@@ -251,7 +253,7 @@ export default function Login() {
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                'Login'
+                BTN_LOGIN
               )}
             </button>
           </form>

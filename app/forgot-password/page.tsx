@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AtSign, X, Loader2 } from 'lucide-react'
 import { resetPassword } from '@/lib/auth'
+import { BTN_LOGIN } from '@/lib/appConfig'
+import { getMessage } from '@/lib/messages'
 import Image from 'next/image'
 import AuthLeftPanel from '@/components/AuthLeftPanel'
 
@@ -37,7 +39,7 @@ export default function ForgotPassword() {
       const { error } = await resetPassword(email)
       
       if (error) {
-        setGeneralError('Something went wrong. Please try again.')
+        setGeneralError(getMessage('error', 'generic'))
         setIsLoading(false)
         return
       }
@@ -46,7 +48,7 @@ export default function ForgotPassword() {
       setIsSuccess(true)
       setIsLoading(false)
     } catch (error) {
-      setGeneralError('Something went wrong. Please try again.')
+      setGeneralError(getMessage('error', 'generic'))
       setIsLoading(false)
     }
   }
@@ -154,8 +156,7 @@ export default function ForgotPassword() {
                 Password reset link sent!
               </h2>
               <p className="text-sm text-[#333333] mb-6">
-                Kindly check the inbox of the registered email address.<br />
-                If you still can't find the email then please check the Spam folder.
+                {getMessage('success', 'passwordReset')}
               </p>
 
               {/* Back to Login Button */}
@@ -163,7 +164,7 @@ export default function ForgotPassword() {
                 onClick={handleBackToLogin}
                 className="w-full bg-[#8DC63F] text-white rounded-lg py-3 text-base font-semibold hover:bg-[#7DB62F] transition-colors"
               >
-                Back to Login
+                {BTN_LOGIN}
               </button>
             </>
           )}

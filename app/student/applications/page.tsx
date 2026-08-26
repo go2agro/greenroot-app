@@ -26,7 +26,8 @@ import { invalidateAllApplicationData } from '@/lib/cache'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
 import { getApplicationStatusTimestamp, formatApplicationReferenceId } from '@/lib/utils'
-import { ITEMS_PER_PAGE } from '@/lib/appConfig'
+import { BTN_DELETE, ITEMS_PER_PAGE } from '@/lib/appConfig'
+import { getMessage } from '@/lib/messages'
 
 type ApplicationStatus = 'draft' | 'submitted' | 'under_review' | 'admin_accepted' | 'forwarded_to_partner' | 'partner_review' | 'approved' | 'rejected' | 'accepted' | 'closed' | 'withdrawn'
 
@@ -586,10 +587,10 @@ export default function StudentApplications() {
         icon={<Trash2 strokeWidth={1.5} />}
         title="Delete Application?"
         description={deleteDialogDescription}
-        confirmText="Delete"
+        confirmText={BTN_DELETE}
         onConfirm={confirmDeleteApplication}
         isLoading={Boolean(deletingId)}
-        loadingText="Deleting..."
+        loadingText={getMessage('loading', 'processing')}
       />
     </div>
   )

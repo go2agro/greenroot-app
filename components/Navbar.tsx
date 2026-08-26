@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Menu, X } from 'lucide-react'
 import { useState } from 'react'
+import { APP_LOGO, APP_NAME, BTN_LOGIN, BTN_SIGNUP } from '@/lib/appConfig'
 
 interface NavbarProps {
   activeLink?: 'about' | 'opportunities' | 'contact'
@@ -23,13 +24,13 @@ export default function Navbar({ activeLink }: NavbarProps) {
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center gap-2">
             <Image 
-              src="/greenroot-logo.svg" 
-              alt="GreenRoot" 
+              src={APP_LOGO} 
+              alt={APP_NAME} 
               width={32} 
               height={32}
               priority
             />
-            <span className="text-xl font-bold text-gray-900">GreenRoot</span>
+            <span className="text-xl font-bold text-gray-900">{APP_NAME}</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
@@ -49,13 +50,13 @@ export default function Navbar({ activeLink }: NavbarProps) {
               href="/login" 
               className="bg-[#8DC63F] text-white rounded-lg px-4 py-2 hover:bg-[#7AB62F] transition-colors font-semibold"
             >
-              Login
+              {BTN_LOGIN}
             </Link>
             <Link 
               href="/signup" 
               className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 hover:border-[#8DC63F] transition-colors"
             >
-              Signup
+              {BTN_SIGNUP}
             </Link>
           </div>
 
@@ -96,13 +97,13 @@ export default function Navbar({ activeLink }: NavbarProps) {
                   href="/login" 
                   className="bg-[#8DC63F] text-white rounded-lg px-4 py-2 text-center font-semibold"
                 >
-                  Login
+                  {BTN_LOGIN}
                 </Link>
                 <Link 
                   href="/signup" 
                   className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 text-center"
                 >
-                  Signup
+                  {BTN_SIGNUP}
                 </Link>
               </div>
             </div>

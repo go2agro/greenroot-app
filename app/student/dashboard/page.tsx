@@ -13,6 +13,7 @@ import InternshipCard from '@/components/InternshipCard'
 import { getMyProfile } from '@/lib/profiles'
 import { getMyStudentProfile, checkProfileCompletion } from '@/lib/studentProfiles'
 import { getApplicationCounts, getActiveApplications, getDraftApplications } from '@/lib/studentApplications'
+import { DEFAULT_INTERNSHIP_IMAGE } from '@/lib/appConfig'
 import { getRecentInternships } from '@/lib/internships'
 import { getApplicationStatusTimestamp } from '@/lib/utils'
 
@@ -360,13 +361,13 @@ export default function StudentDashboard() {
                       <div className="flex items-center gap-4">
                         <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                           <Image
-                            src={app.internships?.image_url || '/images/placeholder.png'}
+                            src={app.internships?.image_url || DEFAULT_INTERNSHIP_IMAGE}
                             alt={app.internships?.title || 'Internship'}
                             fill
                             className="object-cover"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement
-                              target.src = '/images/placeholder.png'
+                              target.src = DEFAULT_INTERNSHIP_IMAGE
                             }}
                           />
                         </div>
@@ -423,13 +424,13 @@ export default function StudentDashboard() {
                       <div className="flex items-center gap-4">
                         <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                           <Image
-                            src={app.internships.image_url || '/images/placeholder.png'}
+                            src={app.internships.image_url || DEFAULT_INTERNSHIP_IMAGE}
                             alt={app.internships.title}
                             fill
                             className="object-cover"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement
-                              target.src = '/images/placeholder.png'
+                              target.src = DEFAULT_INTERNSHIP_IMAGE
                             }}
                           />
                         </div>

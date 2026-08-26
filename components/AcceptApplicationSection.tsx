@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { getMessage } from '@/lib/messages'
+import { BTN_ACCEPT_OFFER } from '@/lib/appConfig'
 import { CheckCircle2, Loader2, AlertCircle, Info } from 'lucide-react'
 import { acceptApplication } from '@/lib/studentApplications'
 import { formatApplicationReferenceId } from '@/lib/utils'
@@ -59,7 +61,7 @@ export function AcceptApplicationSection({
             </div>
             <div>
               <h3 className="font-bold text-lg text-green-800">Application Accepted</h3>
-              <p className="text-sm text-green-600">You have successfully accepted this application</p>
+              <p className="text-sm text-green-600">{getMessage('success', 'offerAccept')}</p>
             </div>
           </div>
         </div>
@@ -174,12 +176,12 @@ export function AcceptApplicationSection({
           {isSubmitting ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin" />
-              Processing...
+              {getMessage('loading', 'processing')}
             </>
           ) : (
             <>
               <CheckCircle2 className="w-5 h-5" />
-              Accept & Proceed
+              {BTN_ACCEPT_OFFER}
             </>
           )}
         </button>

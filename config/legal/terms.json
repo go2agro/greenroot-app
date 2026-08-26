@@ -1,9 +1,9 @@
 {
   "title": "Terms & Conditions",
-  "subtitle": "GreenRoot Student Internship Portal",
+  "subtitle": "{{platformDescription}}",
   "effectiveNote": "Upon publication",
   "lastUpdated": "August 2026",
-  "intro": "These Terms & Conditions (\"Terms\") govern your access to and use of the GreenRoot platform at greenroot.co.in (the \"Platform\"), operated for and on behalf of Go2Agro Services LLP (\"Go2Agro\", \"we\", \"us\", or \"our\"). By creating an account, browsing listings, or submitting an application, you agree to be bound by these Terms together with our Privacy Policy.",
+  "intro": "These Terms & Conditions (\"Terms\") govern your access to and use of the {{platformName}} platform at {{platformHost}} (the \"Platform\"), operated for and on behalf of {{operatorName}} (\"{{operatorShortName}}\", \"we\", \"us\", or \"our\"). By creating an account, browsing listings, or submitting an application, you agree to be bound by these Terms together with our Privacy Policy.",
   "sections": [
     {
       "id": "definitions",
@@ -16,17 +16,17 @@
         {
           "type": "ul",
           "items": [
-            "\"Platform\" means the GreenRoot website, web application, and related digital services accessible at greenroot.co.in.",
-            "\"Go2Agro\" means Go2Agro Services LLP, the organisation that facilitates international agriculture internships and related services.",
-            "\"GreenRoot\" means the software platform through which internship listings, applications, and related workflows are managed.",
+            "\"Platform\" means the {{platformName}} website, web application, and related digital services accessible at {{platformHost}}.",
+            "\"{{operatorShortName}}\" means {{operatorName}}, the organisation that facilitates international agriculture internships and related services.",
+            "\"{{platformName}}\" means the software platform through which internship listings, applications, and related workflows are managed.",
             "\"User\", \"you\", or \"your\" means any person who accesses or uses the Platform, including Students, Admins, and Partners.",
             "\"Student\" means a registered user who browses internship opportunities and submits applications through the Platform.",
-            "\"Admin\" means an authorised Go2Agro representative with administrative access to manage listings, applications, users, and platform content.",
+            "\"Admin\" means an authorised {{operatorShortName}} representative with administrative access to manage listings, applications, users, and platform content.",
             "\"Partner\" means an authorised overseas farm, organisation, or programme coordinator with limited access to review applications forwarded to them.",
             "\"Internship\" or \"Programme\" means an agriculture internship or training opportunity listed on the Platform.",
             "\"Application\" means a student's formal submission for a specific Internship through the Platform.",
             "\"Application Data\" means the information and documents submitted as part of an Application, including data drawn from a Student's profile.",
-            "\"Placement Fees\" means fees payable to Go2Agro for application processing, placement facilitation, or related services, as communicated separately from Platform access."
+            "\"Placement Fees\" means fees payable to {{operatorShortName}} for application processing, placement facilitation, or related services, as communicated separately from Platform access."
           ]
         }
       ]
@@ -41,7 +41,7 @@
         },
         {
           "type": "p",
-          "text": "When a Student registers on GreenRoot and submits an Application, the Student enters into a contractual relationship with both GreenRoot (as the technology platform) and Go2Agro (as the internship facilitation organisation). These Terms apply to all Users regardless of role."
+          "text": "When a Student registers on {{platformName}} and submits an Application, the Student enters into a contractual relationship with both {{platformName}} (as the technology platform) and {{operatorShortName}} (as the internship facilitation organisation). These Terms apply to all Users regardless of role."
         },
         {
           "type": "p",
@@ -55,7 +55,7 @@
       "blocks": [
         {
           "type": "p",
-          "text": "The Platform is primarily intended for Indian agriculture students seeking international internship opportunities. Registration is open to eligible individuals; however, Go2Agro reserves the sole discretion to accept or decline registration requests from users outside India."
+          "text": "The Platform is primarily intended for Indian agriculture students seeking international internship opportunities. Registration is open to eligible individuals; however, {{operatorShortName}} reserves the sole discretion to accept or decline registration requests from users outside India."
         },
         {
           "type": "p",
@@ -67,7 +67,7 @@
         },
         {
           "type": "p",
-          "text": "Go2Agro may refuse, suspend, or terminate access to any User who violates these Terms, submits fraudulent information, misuses the Platform, or engages in conduct harmful to Go2Agro, Partners, or other Users."
+          "text": "{{operatorShortName}} may refuse, suspend, or terminate access to any User who violates these Terms, submits fraudulent information, misuses the Platform, or engages in conduct harmful to {{operatorShortName}}, Partners, or other Users."
         }
       ]
     },
@@ -77,20 +77,20 @@
       "blocks": [
         {
           "type": "p",
-          "text": "GreenRoot is a technology platform that enables Students to discover Internship opportunities, complete profiles, submit Applications, and track application status. Go2Agro uses GreenRoot to list and manage Internships and coordinate the application process."
+          "text": "{{platformName}} is a technology platform that enables Students to discover Internship opportunities, complete profiles, submit Applications, and track application status. {{operatorShortName}} uses {{platformName}} to list and manage Internships and coordinate the application process."
         },
         {
           "type": "p",
-          "text": "These Terms relate specifically to use of the GreenRoot Platform. Visa assistance, travel arrangements, insurance, accommodation, pre-departure training, and other facilitation services are provided by Go2Agro and its staff outside the scope of the Platform itself, subject to separate communications and agreements."
+          "text": "These Terms relate specifically to use of the {{platformName}} Platform. Visa assistance, travel arrangements, insurance, accommodation, pre-departure training, and other facilitation services are provided by {{operatorShortName}} and its staff outside the scope of the Platform itself, subject to separate communications and agreements."
         },
         {
           "type": "ul",
           "items": [
             "Browsing Internship listings on the Platform is free of charge for Students.",
-            "Application processing fees and Placement Fees, where applicable, are payable to Go2Agro as communicated during the application or placement process. Such fees are separate from free Platform access.",
-            "Internships listed on the Platform may be paid positions (stipend-bearing); however, GreenRoot does not process, collect, or disburse stipend payments. Stipend terms are determined by the host organisation and communicated separately.",
-            "Go2Agro does not guarantee placement, selection, visa approval, or departure for any Internship. Listing an opportunity on the Platform does not constitute a promise of acceptance.",
-            "If a Partner or host organisation cancels an Internship, the listing will be updated on the Platform and all associated Applications will be automatically closed. Go2Agro will endeavour to inform affected Students but is not liable for decisions made by third-party hosts."
+            "Application processing fees and Placement Fees, where applicable, are payable to {{operatorShortName}} as communicated during the application or placement process. Such fees are separate from free Platform access.",
+            "Internships listed on the Platform may be paid positions (stipend-bearing); however, {{platformName}} does not process, collect, or disburse stipend payments. Stipend terms are determined by the host organisation and communicated separately.",
+            "{{operatorShortName}} does not guarantee placement, selection, visa approval, or departure for any Internship. Listing an opportunity on the Platform does not constitute a promise of acceptance.",
+            "If a Partner or host organisation cancels an Internship, the listing will be updated on the Platform and all associated Applications will be automatically closed. {{operatorShortName}} will endeavour to inform affected Students but is not liable for decisions made by third-party hosts."
           ]
         }
       ]
@@ -109,8 +109,8 @@
             "Provide truthful, accurate, and complete information in your profile and Applications, including identity documents (Aadhaar, PAN, passport), academic records, health disclosures, and any other required data.",
             "Upload only genuine documents that belong to you or that you are authorised to submit.",
             "Understand that false, misleading, or forged information may result in disqualification, Application rejection, account suspension, and potential legal action.",
-            "Complete all required Application steps before submission and respond promptly to requests for additional information from Go2Agro or Partners.",
-            "Disclose relevant health information honestly so that Go2Agro and Partners can assess your fitness for international agricultural work.",
+            "Complete all required Application steps before submission and respond promptly to requests for additional information from {{operatorShortName}} or Partners.",
+            "Disclose relevant health information honestly so that {{operatorShortName}} and Partners can assess your fitness for international agricultural work.",
             "Not share your account credentials or allow another person to apply on your behalf without authorisation.",
             "Use the Platform only for lawful purposes related to internship applications and not for scraping, spamming, or unauthorised data collection."
           ]
@@ -131,7 +131,7 @@
         },
         {
           "type": "p",
-          "text": "Authorised Admins may create and manage Internship listings, review Applications, update application status, modify Student data where necessary for processing, forward Applications to Partners, approve or reject Applications, and perform other operational functions required to run the Platform. Admin actions must be carried out in good faith and in accordance with Go2Agro policies."
+          "text": "Authorised Admins may create and manage Internship listings, review Applications, update application status, modify Student data where necessary for processing, forward Applications to Partners, approve or reject Applications, and perform other operational functions required to run the Platform. Admin actions must be carried out in good faith and in accordance with {{operatorShortName}} policies."
         },
         {
           "type": "h3",
@@ -143,7 +143,7 @@
         },
         {
           "type": "p",
-          "text": "Partners must use Application Data solely for recruitment and selection purposes, maintain confidentiality, and not disclose Student information to unauthorised third parties. Partner access may be revoked at Go2Agro's discretion."
+          "text": "Partners must use Application Data solely for recruitment and selection purposes, maintain confidentiality, and not disclose Student information to unauthorised third parties. Partner access may be revoked at {{operatorShortName}}'s discretion."
         },
         {
           "type": "h3",
@@ -151,7 +151,7 @@
         },
         {
           "type": "p",
-          "text": "Go2Agro may, now or in the future, list Internships managed by third-party coordinators or overseas partners. Where this occurs, relevant Application Data will be shared only to the extent necessary for programme coordination, subject to these Terms and our Privacy Policy."
+          "text": "{{operatorShortName}} may, now or in the future, list Internships managed by third-party coordinators or overseas partners. Where this occurs, relevant Application Data will be shared only to the extent necessary for programme coordination, subject to these Terms and our Privacy Policy."
         }
       ]
     },
@@ -161,11 +161,11 @@
       "blocks": [
         {
           "type": "p",
-          "text": "Access to the GreenRoot Platform is free for Students. However, Go2Agro may charge Application processing fees, Placement Fees, or other service fees in connection with internship facilitation. Fee amounts, payment timelines, and accepted payment methods will be communicated to you separately during the application or placement process."
+          "text": "Access to the {{platformName}} Platform is free for Students. However, {{operatorShortName}} may charge Application processing fees, Placement Fees, or other service fees in connection with internship facilitation. Fee amounts, payment timelines, and accepted payment methods will be communicated to you separately during the application or placement process."
         },
         {
           "type": "p",
-          "text": "Unless expressly stated in writing by Go2Agro, all fees paid are non-refundable. Go2Agro does not currently publish a standard refund policy. Any refund consideration will be assessed on a case-by-case basis at Go2Agro's sole discretion, including in circumstances such as programme cancellation by the host, visa denial, or other events outside the Student's control."
+          "text": "Unless expressly stated in writing by {{operatorShortName}}, all fees paid are non-refundable. {{operatorShortName}} does not currently publish a standard refund policy. Any refund consideration will be assessed on a case-by-case basis at {{operatorShortName}}'s sole discretion, including in circumstances such as programme cancellation by the host, visa denial, or other events outside the Student's control."
         },
         {
           "type": "p",
@@ -179,11 +179,11 @@
       "blocks": [
         {
           "type": "p",
-          "text": "All rights in the GreenRoot Platform — including software, design, logos, text, graphics, and layout — are owned by or licensed to Go2Agro and/or GreenRoot. You may not copy, modify, distribute, reverse-engineer, or create derivative works from the Platform without prior written consent."
+          "text": "All rights in the {{platformName}} Platform — including software, design, logos, text, graphics, and layout — are owned by or licensed to {{operatorShortName}} and/or {{platformName}}. You may not copy, modify, distribute, reverse-engineer, or create derivative works from the Platform without prior written consent."
         },
         {
           "type": "p",
-          "text": "You retain ownership of content you upload (documents, photographs, signatures, and application responses). By submitting content through the Platform, you grant Go2Agro and GreenRoot a non-exclusive, royalty-free, worldwide licence to use, store, reproduce, and share such content solely for purposes of operating the Platform, processing Applications, sharing with authorised Partners and programme coordinators, and complying with applicable law."
+          "text": "You retain ownership of content you upload (documents, photographs, signatures, and application responses). By submitting content through the Platform, you grant {{operatorShortName}} and {{platformName}} a non-exclusive, royalty-free, worldwide licence to use, store, reproduce, and share such content solely for purposes of operating the Platform, processing Applications, sharing with authorised Partners and programme coordinators, and complying with applicable law."
         },
         {
           "type": "p",
@@ -206,7 +206,7 @@
             "Attempt to gain unauthorised access to other Users' accounts, Admin panels, or Partner portals.",
             "Interfere with or disrupt the Platform's security, servers, or networks.",
             "Use automated tools to scrape, harvest, or extract data from the Platform.",
-            "Harass, threaten, or abuse Go2Agro staff, Admins, Partners, or other Users.",
+            "Harass, threaten, or abuse {{operatorShortName}} staff, Admins, Partners, or other Users.",
             "Upload malware, viruses, or harmful code.",
             "Use the Platform for any unlawful purpose or in violation of applicable Indian or international law."
           ]
@@ -219,15 +219,15 @@
       "blocks": [
         {
           "type": "p",
-          "text": "The Platform and all Internship listings are provided on an \"as is\" and \"as available\" basis. To the fullest extent permitted by law, Go2Agro and GreenRoot disclaim all warranties, whether express or implied, including warranties of merchantability, fitness for a particular purpose, and non-infringement."
+          "text": "The Platform and all Internship listings are provided on an \"as is\" and \"as available\" basis. To the fullest extent permitted by law, {{operatorShortName}} and {{platformName}} disclaim all warranties, whether express or implied, including warranties of merchantability, fitness for a particular purpose, and non-infringement."
         },
         {
           "type": "p",
-          "text": "Go2Agro does not warrant that: (a) the Platform will be uninterrupted or error-free; (b) any Internship listing is accurate, complete, or currently available; (c) any Student will be selected, placed, or receive a visa; or (d) any host organisation will fulfil stipend or employment commitments."
+          "text": "{{operatorShortName}} does not warrant that: (a) the Platform will be uninterrupted or error-free; (b) any Internship listing is accurate, complete, or currently available; (c) any Student will be selected, placed, or receive a visa; or (d) any host organisation will fulfil stipend or employment commitments."
         },
         {
           "type": "p",
-          "text": "Information about Internships — including duration, location, stipend, and requirements — is provided by Go2Agro or Partners and may change without notice. Students are responsible for verifying critical details before committing to any programme."
+          "text": "Information about Internships — including duration, location, stipend, and requirements — is provided by {{operatorShortName}} or Partners and may change without notice. Students are responsible for verifying critical details before committing to any programme."
         }
       ]
     },
@@ -237,15 +237,15 @@
       "blocks": [
         {
           "type": "p",
-          "text": "To the maximum extent permitted by applicable law, Go2Agro, GreenRoot, their directors, partners, employees, agents, and affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the Platform, including loss of profits, data, opportunities, or goodwill."
+          "text": "To the maximum extent permitted by applicable law, {{operatorShortName}}, {{platformName}}, their directors, partners, employees, agents, and affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the Platform, including loss of profits, data, opportunities, or goodwill."
         },
         {
           "type": "p",
-          "text": "Go2Agro's total aggregate liability to you for any claim arising out of or relating to these Terms or the Platform shall not exceed the total Placement Fees or application fees actually paid by you to Go2Agro in the twelve (12) months preceding the claim, or INR 5,000, whichever is greater."
+          "text": "{{operatorShortName}}'s total aggregate liability to you for any claim arising out of or relating to these Terms or the Platform shall not exceed the total Placement Fees or application fees actually paid by you to {{operatorShortName}} in the twelve (12) months preceding the claim, or INR 5,000, whichever is greater."
         },
         {
           "type": "p",
-          "text": "Go2Agro is not responsible for acts or omissions of Partners, host farms, visa authorities, airlines, insurers, or any other third party involved in an Internship programme."
+          "text": "{{operatorShortName}} is not responsible for acts or omissions of Partners, host farms, visa authorities, airlines, insurers, or any other third party involved in an Internship programme."
         }
       ]
     },
@@ -255,7 +255,7 @@
       "blocks": [
         {
           "type": "p",
-          "text": "You agree to indemnify, defend, and hold harmless Go2Agro, GreenRoot, and their officers, partners, employees, and agents from any claims, damages, losses, liabilities, and expenses (including reasonable legal fees) arising from: (a) your breach of these Terms; (b) your submission of false or fraudulent information; (c) your misuse of the Platform; or (d) your violation of any third-party rights."
+          "text": "You agree to indemnify, defend, and hold harmless {{operatorShortName}}, {{platformName}}, and their officers, partners, employees, and agents from any claims, damages, losses, liabilities, and expenses (including reasonable legal fees) arising from: (a) your breach of these Terms; (b) your submission of false or fraudulent information; (c) your misuse of the Platform; or (d) your violation of any third-party rights."
         }
       ]
     },
@@ -265,7 +265,7 @@
       "blocks": [
         {
           "type": "p",
-          "text": "Go2Agro shall not be liable for any failure or delay in performing its obligations where such failure results from events beyond its reasonable control, including but not limited to natural disasters, pandemics, epidemics, war, terrorism, government actions, visa policy changes, travel restrictions, strikes, internet outages, or failures of third-party service providers."
+          "text": "{{operatorShortName}} shall not be liable for any failure or delay in performing its obligations where such failure results from events beyond its reasonable control, including but not limited to natural disasters, pandemics, epidemics, war, terrorism, government actions, visa policy changes, travel restrictions, strikes, internet outages, or failures of third-party service providers."
         }
       ]
     },
@@ -275,7 +275,7 @@
       "blocks": [
         {
           "type": "p",
-          "text": "Go2Agro may suspend or terminate your access to the Platform at any time, with or without notice, if you breach these Terms, submit fraudulent information, or if continued access is deemed harmful to the Platform or other Users."
+          "text": "{{operatorShortName}} may suspend or terminate your access to the Platform at any time, with or without notice, if you breach these Terms, submit fraudulent information, or if continued access is deemed harmful to the Platform or other Users."
         },
         {
           "type": "p",
@@ -297,7 +297,7 @@
         },
         {
           "type": "p",
-          "text": "Before initiating legal proceedings, you agree to contact us at support@greenroot.in to attempt good-faith resolution of any dispute. Go2Agro will endeavour to respond within fifteen (15) business days."
+          "text": "Before initiating legal proceedings, you agree to contact us at {{supportEmail}} to attempt good-faith resolution of any dispute. {{operatorShortName}} will endeavour to respond within fifteen (15) business days."
         }
       ]
     },
@@ -309,9 +309,9 @@
           "type": "ul",
           "items": [
             "Severability: If any provision of these Terms is held invalid or unenforceable, the remaining provisions remain in full force.",
-            "Entire Agreement: These Terms, together with the Privacy Policy, constitute the entire agreement between you and Go2Agro regarding the Platform.",
+            "Entire Agreement: These Terms, together with the Privacy Policy, constitute the entire agreement between you and {{operatorShortName}} regarding the Platform.",
             "Waiver: Failure to enforce any right or provision does not constitute a waiver of that right.",
-            "Assignment: Go2Agro may assign its rights under these Terms. You may not assign your rights without prior written consent.",
+            "Assignment: {{operatorShortName}} may assign its rights under these Terms. You may not assign your rights without prior written consent.",
             "Language: These Terms are published in English. In case of conflict with any translated version, the English version prevails."
           ]
         }
@@ -328,14 +328,14 @@
         {
           "type": "ul",
           "items": [
-            "Platform: GreenRoot — greenroot.co.in",
-            "Operator: Go2Agro Services LLP",
-            "Email: support@greenroot.in",
-            "General enquiries: info@greenroot.in",
-            "Phone: +91 79729 37388",
-            "Correspondence address: 42 Agro Business Park, Baner Road, Baner, Pune, Maharashtra 411045, India",
-            "Registered office: [To Be Updated]",
-            "LLPIN: [To Be Updated]"
+            "Platform: {{platformName}} — {{platformHost}}",
+            "Operator: {{operatorName}}",
+            "Email: {{supportEmail}}",
+            "General enquiries: {{generalEmail}}",
+            "Phone: {{supportPhone}}",
+            "Correspondence address: {{correspondenceAddress}}",
+            "Registered office: {{registeredOffice}}",
+            "LLPIN: {{registeredOffice}}"
           ]
         }
       ]

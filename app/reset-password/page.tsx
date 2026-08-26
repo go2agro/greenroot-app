@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase-browser'
 import { updatePassword } from '@/lib/auth'
+import { BTN_LOGIN } from '@/lib/appConfig'
+import { getMessage } from '@/lib/messages'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Eye, EyeOff, Lock, CheckCircle2 } from 'lucide-react'
@@ -53,7 +55,7 @@ export default function ResetPasswordPage() {
     const { error } = await updatePassword(password)
 
     if (error) {
-      setError('Something went wrong. Please try again.')
+      setError(getMessage('error', 'generic'))
       setIsLoading(false)
       return
     }
@@ -72,7 +74,7 @@ export default function ResetPasswordPage() {
             href="/login" 
             className="inline-block bg-[#A3D32F] text-white rounded-lg px-6 py-2 font-semibold hover:bg-[#92C120] transition-colors"
           >
-            Back to Login
+            {BTN_LOGIN}
           </Link>
         </div>
       </div>
@@ -127,7 +129,7 @@ export default function ResetPasswordPage() {
               </h1>
               
               <p className="text-gray-600 mb-2">
-                Your password has been updated successfully.
+                {getMessage('success', 'passwordUpdate')}
               </p>
               <p className="text-gray-600 mb-8">
                 You can now sign in using your new password.
@@ -137,7 +139,7 @@ export default function ResetPasswordPage() {
                 href="/login" 
                 className="w-full block text-center bg-[#A3D32F] text-white rounded-lg px-6 py-3 font-semibold hover:bg-[#92C120] transition-colors"
               >
-                Continue to Login
+                {BTN_LOGIN}
               </Link>
             </div>
 

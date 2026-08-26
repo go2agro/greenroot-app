@@ -13,7 +13,12 @@ import { Search, MapPin, Clock, Banknote, ChevronLeft, ChevronRight, X, RefreshC
 import { getAllInternships } from '@/lib/internships'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
-import { ITEMS_PER_PAGE } from '@/lib/appConfig'
+import {
+  INTERNSHIPS_PAGE_HEADING,
+  INTERNSHIPS_PAGE_SUBHEADING,
+  ITEMS_PER_PAGE,
+  LABEL_LOADING,
+} from '@/lib/appConfig'
 
 type Internship = {
   id: string
@@ -285,7 +290,7 @@ export default function StudentInternships() {
 
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
               <div>
-                <h1 className="font-bold text-xl text-gray-900">Agricultural Internships</h1>
+                <h1 className="font-bold text-xl text-gray-900">{INTERNSHIPS_PAGE_HEADING}</h1>
                 <p className="text-sm text-gray-500">
                   Showing {filteredInternships.length} relevant opportunities
                 </p>
@@ -320,7 +325,7 @@ export default function StudentInternships() {
             </div>
 
             {isLoading ? (
-              <div className="text-center py-12 text-gray-500">Loading internships...</div>
+              <div className="text-center py-12 text-gray-500">{LABEL_LOADING}</div>
             ) : paginatedInternships.length === 0 ? (
               <div className="text-center py-12 text-gray-500">No internships found</div>
             ) : (

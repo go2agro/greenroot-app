@@ -22,6 +22,8 @@ import {
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { getInternshipById } from '@/lib/internships'
+import { BTN_APPLY_NOW, LABEL_LOADING } from '@/lib/appConfig'
+import { getMessage } from '@/lib/messages'
 import { stripRequiredDocumentsBlock } from '@/lib/internshipContent'
 
 interface Internship {
@@ -109,7 +111,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
       <div className="min-h-screen bg-white">
         <Navbar activeLink="opportunities" />
         <div className="flex items-center justify-center h-96">
-          <div className="text-gray-400">Loading...</div>
+          <div className="text-gray-400">{LABEL_LOADING}</div>
         </div>
       </div>
     )
@@ -174,7 +176,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
               onClick={() => router.push('/login')}
               className="bg-[#8DC63F] text-white rounded-lg px-8 py-3 font-semibold hover:bg-[#7AB62F] transition-colors"
             >
-              Apply Now
+              {BTN_APPLY_NOW}
             </button>
           </div>
         </div>
@@ -334,7 +336,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
             onClick={() => router.push('/login')}
             className="bg-[#8DC63F] text-white rounded-lg px-6 py-3 font-semibold hover:bg-[#7AB62F] transition-colors whitespace-nowrap w-full md:w-auto"
           >
-            Apply Now
+            {BTN_APPLY_NOW}
           </button>
         </div>
       </div>
