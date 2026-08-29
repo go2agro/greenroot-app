@@ -50,6 +50,8 @@ export async function proxy(request: NextRequest) {
 
     if (profile?.role === 'admin') {
       return NextResponse.redirect(new URL('/admin/dashboard', request.url))
+    } else if (profile?.role === 'partner') {
+      return NextResponse.redirect(new URL('/partner/dashboard', request.url))
     } else {
       return NextResponse.redirect(new URL('/student/dashboard', request.url))
     }
@@ -70,6 +72,9 @@ export async function proxy(request: NextRequest) {
       .single()
 
     if (profile?.role !== 'student') {
+      if (profile?.role === 'partner') {
+        return NextResponse.redirect(new URL('/partner/dashboard', request.url))
+      }
       return NextResponse.redirect(new URL('/admin/dashboard', request.url))
     }
   }
@@ -89,6 +94,31 @@ export async function proxy(request: NextRequest) {
       .single()
 
     if (profile?.role !== 'admin') {
+      if (profile?.role === 'partner') {
+        return NextResponse.redirect(new URL('/partner/dashboard', request.url))
+      }
+      return NextResponse.redirect(new URL('/student/dashboard', request.url))
+    }
+  }
+
+  // ─────────────────────────────────────────
+  // RULE 4 — Protect partner routes
+  // ─────────────────────────────────────────
+  if (path.startsWith('/partner')) {
+    if (!user) {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (profile?.role !== 'partner') {
+      if (profile?.role === 'admin') {
+        return NextResponse.redirect(new URL('/admin/dashboard', request.url))
+      }
       return NextResponse.redirect(new URL('/student/dashboard', request.url))
     }
   }
@@ -103,6 +133,7 @@ export async function proxy(request: NextRequest) {
     matcher: [
       '/student/:path*',
       '/admin/:path*',
+      '/partner/:path*',
       '/login',
       '/signup',
     ]

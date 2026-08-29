@@ -1,6 +1,10 @@
 "use server"
 
 import { createClient } from './supabase'
+import { getAdminDbClient } from './adminAuth'
+import { listAllStoragePaths } from './supabase-admin'
+import { recordApplicationEvent } from '@/lib/applicationEvents'
+import { createNotification } from '@/lib/notifications'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // ─────────────────────────────────────────
@@ -13,7 +17,9 @@ export async function getAllApplications(filters?: {
   internship_id?: string
   student_id?: string
 }) {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
+
   let query = supabase
     .from('applications')
     .select(`
@@ -22,14 +28,11 @@ export async function getAllApplications(filters?: {
         title,
         city,
         country,
-        badge
+        badge,
+        flag_emoji
       ),
-      student_profiles (
-        first_name,
-        last_name,
-        email,
-        university_name,
-        degree
+      profiles (
+        unique_id
       )
     `)
     .order('started_at', { ascending: false })
@@ -38,91 +41,294 @@ export async function getAllApplications(filters?: {
   if (filters?.internship_id) query = query.eq('internship_id', filters.internship_id)
   if (filters?.student_id)    query = query.eq('student_id', filters.student_id)
 
-  const { data, error } = await query
+  const { data: applications, error } = await query
+  if (error) return toPlainResponse(null, error)
+  if (!applications?.length) return toPlainResponse([], null)
 
-  // Filter by student name search (client side)
-  if (filters?.search && data) {
+  const studentIds = [
+    ...new Set(
+      applications
+        .map((app: { student_id?: string }) => app.student_id)
+        .filter(Boolean) as string[]
+    ),
+  ]
+
+  const { data: studentProfiles, error: studentProfilesError } = await supabase
+    .from('student_profiles')
+    .select('id, first_name, last_name, email, university_name, degree')
+    .in('id', studentIds)
+
+  if (studentProfilesError) return toPlainResponse(null, studentProfilesError)
+
+  const studentProfileMap = new Map(
+    (studentProfiles ?? []).map((profile) => [profile.id, profile])
+  )
+
+  let merged = applications.map((app: any) => {
+    const studentProfile = studentProfileMap.get(app.student_id)
+    const profile = Array.isArray(app.profiles) ? app.profiles[0] : app.profiles
+
+    return {
+      ...app,
+      profiles: undefined,
+      student_profiles: studentProfile
+        ? {
+            ...studentProfile,
+            profiles: profile ? { unique_id: profile.unique_id } : null,
+          }
+        : null,
+    }
+  })
+
+  if (filters?.search) {
     const search = filters.search.toLowerCase()
-    const filtered = data.filter((app: any) =>
+    merged = merged.filter((app: any) =>
       app.student_profiles?.first_name?.toLowerCase().includes(search) ||
       app.student_profiles?.last_name?.toLowerCase().includes(search) ||
       app.student_profiles?.email?.toLowerCase().includes(search)
     )
-    return toPlainResponse(filtered, error)
   }
 
-  return toPlainResponse(data, error)
+  return toPlainResponse(merged, null)
 }
 
 // ─────────────────────────────────────────
 // GET SINGLE APPLICATION (full details)
 // ─────────────────────────────────────────
 export async function getApplicationById(applicationId: string) {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
 
   const { data, error } = await supabase
     .from('applications')
     .select(`
       *,
       internships (*),
-      student_profiles (*),
-      application_answers (*)
+      application_answers (*),
+      profiles (
+        unique_id,
+        created_at,
+        role
+      )
     `)
     .eq('id', applicationId)
     .single()
 
-  return toPlainResponse(data, error)
+  if (error || !data) return toPlainResponse(null, error)
+
+  const { data: applicationAnswers, error: answersError } = await supabase
+    .from('application_answers')
+    .select('*')
+    .eq('application_id', applicationId)
+    .order('step_number', { ascending: true })
+
+  if (answersError) return toPlainResponse(null, answersError)
+
+  const { data: studentProfile, error: studentError } = await supabase
+    .from('student_profiles')
+    .select('*')
+    .eq('id', data.student_id)
+    .maybeSingle()
+
+  if (studentError) return toPlainResponse(null, studentError)
+
+  const profile = Array.isArray(data.profiles) ? data.profiles[0] : data.profiles
+
+  return toPlainResponse(
+    {
+      ...data,
+      profiles: undefined,
+      application_answers: applicationAnswers ?? data.application_answers ?? [],
+      student_profiles: studentProfile
+        ? {
+            ...studentProfile,
+            profiles: profile
+              ? {
+                  unique_id: profile.unique_id,
+                  created_at: profile.created_at,
+                  role: profile.role,
+                }
+              : null,
+          }
+        : null,
+    },
+    null
+  )
 }
 
 // ─────────────────────────────────────────
-// MARK APPLICATION UNDER REVIEW
+// ACCEPT APPLICATION (admin screening gate)
 // ─────────────────────────────────────────
-export async function markUnderReview(applicationId: string) {
-  const supabase = await createClient()
+export async function acceptApplicationScreening(
+  applicationId: string,
+  remarks?: string
+) {
+  const { client: supabase, error: authError, userId } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
+
+  const now = new Date().toISOString()
+  const trimmedRemarks = remarks?.trim()
 
   const { data, error } = await supabase
     .from('applications')
     .update({
       status: 'under_review',
-      reviewed_at: new Date().toISOString()
+      reviewed_at: now,
+      admin_remarks: trimmedRemarks || null,
     })
     .eq('id', applicationId)
+    .eq('status', 'submitted')
+    .select()
+    .single()
+
+  if (!error && data) {
+    await recordApplicationEvent({
+      applicationId,
+      eventType: 'admin_accepted',
+      actorId: userId ?? undefined,
+      actorRole: 'admin',
+      message: trimmedRemarks,
+    })
+  }
 
   return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
-// APPROVE APPLICATION
+// APPROVE APPLICATION (final decision)
 // ─────────────────────────────────────────
-export async function approveApplication(applicationId: string, remarks?: string) {
-  const supabase = await createClient()
+export async function approveApplication(applicationId: string, remarks: string) {
+  const { client: supabase, error: authError, userId } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
+
+  if (!remarks.trim()) {
+    return toPlainResponse(null, { message: 'Administrative remarks are required' })
+  }
+
+  const now = new Date().toISOString()
 
   const { data, error } = await supabase
     .from('applications')
     .update({
       status: 'approved',
-      decided_at: new Date().toISOString(),
-      admin_remarks: remarks || null
+      decided_at: now,
+      admin_remarks: remarks.trim(),
     })
     .eq('id', applicationId)
+    .in('status', ['partner_review', 'forwarded_to_partner', 'admin_accepted', 'under_review'])
+    .select()
+    .single()
+
+  if (!error && data) {
+    const { data: app } = await supabase
+      .from('applications')
+      .select('student_id')
+      .eq('id', applicationId)
+      .single()
+    const studentId = app?.student_id
+
+    await recordApplicationEvent({
+      applicationId,
+      eventType: 'final_approved',
+      actorId: userId ?? undefined,
+      actorRole: 'admin',
+      message: remarks.trim(),
+    })
+
+    if (studentId) {
+      await createNotification({
+        userId: studentId,
+        type: 'application_approved',
+        title: 'Application Approved! 🎉',
+        message: 'Congratulations! Your application has been approved.',
+        relatedId: applicationId,
+        relatedType: 'application',
+        category: 'application',
+      })
+    }
+  }
 
   return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
-// REJECT APPLICATION
+// REJECT APPLICATION (screening or final)
 // ─────────────────────────────────────────
-export async function rejectApplication(applicationId: string, remarks: string) {
-  const supabase = await createClient()
+export async function rejectApplication(
+  applicationId: string,
+  rejectionMessage: string
+) {
+  const { client: supabase, error: authError, userId } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
+
+  if (!rejectionMessage.trim()) {
+    return toPlainResponse(null, { message: 'A rejection message is required' })
+  }
+
+  const now = new Date().toISOString()
+  const trimmedMessage = rejectionMessage.trim()
+
+  const { data: existing, error: fetchError } = await supabase
+    .from('applications')
+    .select('status, student_id')
+    .eq('id', applicationId)
+    .single()
+
+  if (fetchError || !existing) {
+    return toPlainResponse(null, fetchError || { message: 'Application not found' })
+  }
+
+  const isScreeningRejection = existing.status === 'submitted'
+  const allowedStatuses = isScreeningRejection
+    ? ['submitted']
+    : ['partner_review', 'forwarded_to_partner', 'admin_accepted', 'under_review']
 
   const { data, error } = await supabase
     .from('applications')
     .update({
       status: 'rejected',
-      decided_at: new Date().toISOString(),
-      admin_remarks: remarks
+      decided_at: now,
+      admin_remarks: trimmedMessage,
+      partner_id: null,
     })
     .eq('id', applicationId)
+    .in('status', allowedStatuses)
+    .select()
+    .single()
+
+  if (!error && data) {
+    const studentId = existing.student_id
+
+    await recordApplicationEvent({
+      applicationId,
+      eventType: isScreeningRejection ? 'admin_rejected' : 'final_rejected',
+      actorId: userId ?? undefined,
+      actorRole: 'admin',
+      message: trimmedMessage,
+    })
+
+    if (isScreeningRejection) {
+      await recordApplicationEvent({
+        applicationId,
+        eventType: 'closed',
+        actorId: userId ?? undefined,
+        actorRole: 'admin',
+        message: trimmedMessage,
+      })
+    }
+
+    if (studentId) {
+      await createNotification({
+        userId: studentId,
+        type: 'application_rejected',
+        title: 'Application Update',
+        message: trimmedMessage,
+        relatedId: applicationId,
+        relatedType: 'application',
+        category: 'application',
+      })
+    }
+  }
 
   return toPlainResponse(data, error)
 }
@@ -131,7 +337,8 @@ export async function rejectApplication(applicationId: string, remarks: string) 
 // GET APPLICATION FILE (signed url)
 // ─────────────────────────────────────────
 export async function getApplicationFile(filePath: string) {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
 
   const { data, error } = await supabase.storage
     .from('application-documents')
@@ -189,49 +396,85 @@ export async function getApplicationsByStudent(studentId: string) {
 }
 
 // ─────────────────────────────────────────
-// UPLOAD OFFER LETTER (admin only)
+// DELETE APPLICATION (admin — any status)
 // ─────────────────────────────────────────
-export async function uploadOfferLetter(
-  applicationId: string,
-  file: File
-) {
-  const supabase = await createClient()
+export async function deleteApplication(applicationId: string) {
+  const { client: supabase, error: authError, userId } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
 
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+  const { data: application, error: fetchError } = await supabase
+    .from('applications')
+    .select('id, student_id')
+    .eq('id', applicationId)
+    .single()
 
-  // Check file size (max 1MB)
-  if (file.size > 1024 * 1024) {
-    return toPlainResponse(null, { message: 'File size must be under 1MB' })
+  if (fetchError || !application) {
+    return toPlainResponse(null, fetchError || { message: 'Application not found' })
   }
 
-  // Upload to storage
-  const filePath = `offer-letters/${applicationId}/offer-letter.pdf`
+  await recordApplicationEvent({
+    applicationId,
+    eventType: 'deleted',
+    actorId: userId ?? undefined,
+    actorRole: 'admin',
+    message: 'Application permanently deleted by admin',
+  })
 
-  const { error: uploadError } = await supabase.storage
-    .from('application-documents')
-    .upload(filePath, file, { upsert: true })
+  const { data: answers, error: answersFetchError } = await supabase
+    .from('application_answers')
+    .select('file_url')
+    .eq('application_id', applicationId)
 
-  if (uploadError) return toPlainResponse(null, uploadError)
+  if (answersFetchError) {
+    return toPlainResponse(null, answersFetchError)
+  }
 
-  // Save path to application
-  const { data, error } = await supabase
+  const answerFilePaths =
+    answers
+      ?.map((answer) => answer.file_url)
+      .filter((path): path is string => Boolean(path)) ?? []
+
+  const folderFilePaths = await listAllStoragePaths(
+    supabase,
+    'application-documents',
+    `${application.student_id}/${applicationId}`
+  )
+
+  const filePaths = [...new Set([...answerFilePaths, ...folderFilePaths])]
+
+  if (filePaths.length > 0) {
+    const { error: storageError } = await supabase.storage
+      .from('application-documents')
+      .remove(filePaths)
+
+    if (storageError) {
+      return toPlainResponse(null, storageError)
+    }
+  }
+
+  const { error: deleteAnswersError } = await supabase
+    .from('application_answers')
+    .delete()
+    .eq('application_id', applicationId)
+
+  if (deleteAnswersError) {
+    return toPlainResponse(null, deleteAnswersError)
+  }
+
+  const { data: deleted, error: deleteAppError } = await supabase
     .from('applications')
-    .update({ offer_letter_url: filePath })
+    .delete()
     .eq('id', applicationId)
+    .select('id')
+    .single()
 
-  return toPlainResponse(data, error)
-}
+  if (deleteAppError) {
+    return toPlainResponse(null, deleteAppError)
+  }
 
-// ─────────────────────────────────────────
-// GET OFFER LETTER SIGNED URL (admin only)
-// ─────────────────────────────────────────
-export async function getOfferLetterUrl(filePath: string) {
-  const supabase = await createClient()
+  if (!deleted) {
+    return toPlainResponse(null, { message: 'Failed to delete application' })
+  }
 
-  const { data, error } = await supabase.storage
-    .from('application-documents')
-    .createSignedUrl(filePath, 60 * 60)
-
-  return toPlainResponse(data, error)
+  return toPlainResponse({ id: applicationId }, null)
 }

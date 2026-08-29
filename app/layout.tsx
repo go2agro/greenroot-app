@@ -1,6 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Montserrat, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import appConfig from '@/config/appConfig.json';
+import MaintenancePage from '@/components/MaintenancePage';
+import OfflineBanner from '@/components/OfflineBanner';
+import ThemeVariables from '@/components/ThemeVariables';
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -32,6 +36,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isMaintenanceMode = appConfig.maintenance_mode === true;
+
   return (
     <html
       lang="en"
@@ -39,8 +45,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
-          {children}
-        </body>
+        <ThemeVariables />
+        <OfflineBanner />
+        {isMaintenanceMode ? <MaintenancePage /> : children}
+      </body>
     </html>
   );
 }

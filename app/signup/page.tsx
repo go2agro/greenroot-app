@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AtSign, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { signUp } from '@/lib/auth'
+import { BTN_SIGNUP } from '@/lib/appConfig'
+import { getMessage } from '@/lib/messages'
 import Image from 'next/image'
 import Link from 'next/link'
 import AuthLeftPanel from '@/components/AuthLeftPanel'
@@ -57,7 +59,7 @@ export default function Signup() {
       const { data, error } = await signUp(email, password)
       
       if (error) {
-        setPasswordError(error.message || 'An error occurred during signup')
+        setPasswordError(error.message || getMessage('error', 'signup'))
         setIsLoading(false)
         return
       }
@@ -66,7 +68,7 @@ export default function Signup() {
         router.push('/student/dashboard')
       }
     } catch (error) {
-      setPasswordError('An error occurred. Please try again.')
+      setPasswordError(getMessage('error', 'generic'))
       setIsLoading(false)
     }
   }
@@ -90,7 +92,7 @@ export default function Signup() {
           </div>
 
           {/* Heading */}
-          <h2 className="text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-2">Create Your Account</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gr-text-dark mb-2">Create Your Account</h2>
           <p className="text-sm text-gray-500 mb-6">
             Start your journey in international paid internship today.
           </p>
@@ -114,13 +116,13 @@ export default function Signup() {
                   }}
                   placeholder="example@email.com"
                   disabled={isLoading}
-                  className={`w-full bg-[#F5F5F5] rounded-lg py-3 pl-12 pr-4 text-sm sm:text-base outline-none transition-all ${
-                    emailError ? 'border-2 border-red-500' : 'border-0'
+                  className={`w-full bg-gr-input-bg rounded-lg py-3 pl-12 pr-4 text-sm sm:text-base outline-none transition-all ${
+                    emailError ? 'border-2 border-gr-error' : 'border-0'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 />
               </div>
               {emailError && (
-                <p className="text-[#DC2626] text-sm mt-1">{emailError}</p>
+                <p className="text-gr-error text-sm mt-1">{emailError}</p>
               )}
             </div>
 
@@ -130,7 +132,7 @@ export default function Signup() {
                 <label htmlFor="password" className="text-sm font-medium text-gray-700">
                   Password
                 </label>
-                <span className="text-xs text-[#DC2626]">
+                <span className="text-xs text-gr-error">
                   (Must contain at least 8 characters)*
                 </span>
               </div>
@@ -146,8 +148,8 @@ export default function Signup() {
                   }}
                   placeholder="••••••••"
                   disabled={isLoading}
-                  className={`w-full bg-[#F5F5F5] rounded-lg py-3 pl-12 pr-12 text-sm sm:text-base outline-none transition-all ${
-                    passwordError ? 'border-2 border-red-500' : 'border-0'
+                  className={`w-full bg-gr-input-bg rounded-lg py-3 pl-12 pr-12 text-sm sm:text-base outline-none transition-all ${
+                    passwordError ? 'border-2 border-gr-error' : 'border-0'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 />
                 <button
@@ -160,7 +162,7 @@ export default function Signup() {
                 </button>
               </div>
               {passwordError && (
-                <p className="text-[#DC2626] text-sm mt-1">{passwordError}</p>
+                <p className="text-gr-error text-sm mt-1">{passwordError}</p>
               )}
             </div>
 
@@ -181,8 +183,8 @@ export default function Signup() {
                   }}
                   placeholder="••••••••"
                   disabled={isLoading}
-                  className={`w-full bg-[#F5F5F5] rounded-lg py-3 pl-12 pr-12 text-sm sm:text-base outline-none transition-all ${
-                    confirmPasswordError ? 'border-2 border-red-500' : 'border-0'
+                  className={`w-full bg-gr-input-bg rounded-lg py-3 pl-12 pr-12 text-sm sm:text-base outline-none transition-all ${
+                    confirmPasswordError ? 'border-2 border-gr-error' : 'border-0'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 />
                 <button
@@ -195,7 +197,7 @@ export default function Signup() {
                 </button>
               </div>
               {confirmPasswordError && (
-                <p className="text-[#DC2626] text-sm mt-1">{confirmPasswordError}</p>
+                <p className="text-gr-error text-sm mt-1">{confirmPasswordError}</p>
               )}
             </div>
 
@@ -203,12 +205,12 @@ export default function Signup() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#8DC63F] text-white rounded-lg py-3 text-base font-semibold hover:bg-[#7DB62F] transition-colors disabled:opacity-80 disabled:cursor-not-allowed flex items-center justify-center"
+              className="w-full bg-gr-primary text-white rounded-lg py-3 text-base font-semibold hover:bg-gr-primary-hover transition-colors disabled:opacity-80 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                'Create Account'
+                BTN_SIGNUP
               )}
             </button>
           </form>
@@ -216,7 +218,7 @@ export default function Signup() {
           {/* Login Link */}
           <p className="text-center mt-6 text-sm">
             <span className="text-gray-600">Already have an account? </span>
-            <Link href="/login" className="text-[#8DC63F] hover:underline">
+            <Link href="/login" className="text-gr-primary hover:underline">
               Login here.
             </Link>
           </p>

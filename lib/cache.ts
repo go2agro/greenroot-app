@@ -32,6 +32,16 @@ export function invalidateAllApplicationData() {
   mutate('draftApplications')
 }
 
+// Invalidate admin application list + KPIs derived from it
+export function invalidateAdminApplications() {
+  mutate('adminAllApplications')
+  mutate(
+    (key) => Array.isArray(key) && key[0] === 'adminStudentApplications',
+    undefined,
+    { revalidate: true }
+  )
+}
+
 // Invalidate internships cache
 export function invalidateInternships() {
   mutate('recentInternships')

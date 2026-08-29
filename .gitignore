@@ -31,6 +31,7 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
+# Never commit SUPABASE_SERVICE_ROLE_KEY or ADMIN_SETUP_SECRET — server-side secrets only.
 .env*
 
 # vercel

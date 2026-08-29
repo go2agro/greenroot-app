@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 export default function AuthLeftPanel() {
   return (
-    <div className="hidden lg:block relative lg:w-[40%] h-full bg-gradient-to-br from-green-600 to-green-800">
+    <div className="hidden lg:block relative lg:w-[40%] h-full bg-gradient-to-br from-gray-600 to-gray-800">
       <div className="relative w-full h-full">
         <Image 
           src="/images/login-bg.jpg" 

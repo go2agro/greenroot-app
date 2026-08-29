@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -14,23 +14,22 @@ import {
   Clock, 
   Banknote, 
   ChevronRight, 
-  Send, 
-  CheckCircle, 
   SlidersHorizontal,
   FileText,
   ChevronLeft,
-  Loader2
+  Loader2,
+  Trash2,
 } from 'lucide-react'
-import { toast } from 'sonner'
-import { getMyApplications, getApplicationCounts, deleteStudentApplication } from '@/lib/studentApplications'
+import { ConfirmationDialog } from '@/components/ConfirmationDialog'
+import { getMyApplications, deleteStudentApplication } from '@/lib/studentApplications'
 import { invalidateAllApplicationData } from '@/lib/cache'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
-import { getApplicationStatusTimestamp } from '@/lib/utils'
+import { getApplicationStatusTimestamp, formatApplicationReferenceId } from '@/lib/utils'
+import { BTN_DELETE, ITEMS_PER_PAGE, LABEL_SEARCH_PLACEHOLDER } from '@/lib/appConfig'
+import { getMessage } from '@/lib/messages'
 
-const ITEMS_PER_PAGE = 8
-
-type ApplicationStatus = 'draft' | 'submitted' | 'under_review' | 'approved' | 'rejected' | 'accepted' | 'closed'
+type ApplicationStatus = 'draft' | 'submitted' | 'under_review' | 'admin_accepted' | 'forwarded_to_partner' | 'partner_review' | 'approved' | 'rejected' | 'accepted' | 'closed' | 'withdrawn'
 
 type Application = {
   id: string
@@ -56,9 +55,11 @@ const getStatusBadgeColor = (status: ApplicationStatus) => {
     case 'draft':
       return 'bg-gray-100 text-gray-700 border-gray-200'
     case 'submitted':
-      return 'bg-blue-50 text-blue-700 border-blue-200'
     case 'under_review':
-      return 'bg-amber-50 text-amber-700 border-amber-200'
+    case 'admin_accepted':
+    case 'forwarded_to_partner':
+    case 'partner_review':
+      return 'bg-blue-50 text-blue-700 border-blue-200'
     case 'approved':
       return 'bg-green-50 text-green-700 border-green-200'
     case 'rejected':
@@ -66,20 +67,28 @@ const getStatusBadgeColor = (status: ApplicationStatus) => {
     case 'accepted':
       return 'bg-purple-50 text-purple-700 border-purple-200'
     case 'closed':
+    case 'withdrawn':
       return 'bg-gray-50 text-gray-500 border-gray-200'
     default:
-      return 'bg-gray-100 text-gray-700 border-gray-200'
+      return 'bg-blue-50 text-blue-700 border-blue-200'
   }
 }
 
-const canDeleteApplication = (status: ApplicationStatus) => {
-  return status === 'draft' || status === 'submitted'
-}
-
 const formatStatusText = (status: ApplicationStatus) => {
-  return status.split('_').map(word => 
-    word.charAt(0).toUpperCase() + word.slice(1)
-  ).join(' ')
+  const studentLabels: Record<string, string> = {
+    draft: 'Draft',
+    submitted: 'Under Review',
+    under_review: 'Under Review',
+    admin_accepted: 'Under Review',
+    forwarded_to_partner: 'Under Review',
+    partner_review: 'Under Review',
+    approved: 'Approved',
+    rejected: 'Rejected',
+    accepted: 'Accepted',
+    closed: 'Closed',
+    withdrawn: 'Withdrawn',
+  }
+  return studentLabels[status] || 'Under Review'
 }
 
 const getCountryFlag = (country: string) => {
@@ -142,27 +151,23 @@ export default function StudentApplications() {
   const [searchQuery, setSearchQuery] = useState('')
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [showFilterDropdown, setShowFilterDropdown] = useState(false)
+  const filterDropdownRef = useRef<HTMLDivElement>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [filteredApplications, setFilteredApplications] = useState<Application[]>([])
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [pendingDelete, setPendingDelete] = useState<{
+    id: string
+    status: ApplicationStatus
+  } | null>(null)
 
   const { data: applications, isLoading: applicationsLoading, mutate: refreshApplications } = useSWR(
     'myApplications',
     () => fetcher(getMyApplications),
     {
-      dedupingInterval: 300000,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  )
-
-  const { data: applicationCounts } = useSWR(
-    'applicationCounts',
-    () => fetcher(getApplicationCounts),
-    {
-      dedupingInterval: 300000,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
+      dedupingInterval: 30000,
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
     }
   )
 
@@ -196,10 +201,12 @@ export default function StudentApplications() {
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
-      result = result.filter(app => 
-        app.internships?.title?.toLowerCase().includes(query) ||
-        app.internships?.country?.toLowerCase().includes(query)
-      )
+      result = result.filter(app => {
+        const title = app.internships?.title?.toLowerCase() ?? ''
+        const country = app.internships?.country?.toLowerCase() ?? ''
+        const refId = `gr-${new Date(app.submitted_at || app.started_at).getFullYear()}-${(parseInt(app.id.replace(/-/g, '').slice(0, 8), 16) % 100000).toString().padStart(5, '0')}`.toLowerCase()
+        return title.includes(query) || country.includes(query) || refId.includes(query) || app.id.toLowerCase().includes(query)
+      })
     }
 
     if (filterStatus !== 'all') {
@@ -210,9 +217,18 @@ export default function StudentApplications() {
     setCurrentPage(1)
   }, [searchQuery, filterStatus, applications])
 
-  const draftsCount = applicationCounts?.drafts ?? 0
-  const submittedCount = applicationCounts?.submitted ?? 0
-  const approvedCount = applicationCounts?.approved ?? 0
+  useEffect(() => {
+    if (!showFilterDropdown) return
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filterDropdownRef.current && !filterDropdownRef.current.contains(event.target as Node)) {
+        setShowFilterDropdown(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [showFilterDropdown])
 
   const totalPages = Math.ceil(filteredApplications.length / ITEMS_PER_PAGE)
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
@@ -225,40 +241,46 @@ export default function StudentApplications() {
     }
   }
 
-  const handleDeleteApplication = async (applicationId: string, status: ApplicationStatus, event: React.MouseEvent) => {
+  const handleDeleteApplication = (
+    applicationId: string,
+    status: ApplicationStatus,
+    event: React.MouseEvent
+  ) => {
     event.stopPropagation()
+    setPendingDelete({ id: applicationId, status })
+    setShowDeleteDialog(true)
+  }
 
-    const message = status === 'submitted'
-      ? 'Are you sure you want to delete this submitted application? You can reapply to this internship afterwards.'
-      : 'Are you sure you want to delete this draft application?'
+  const confirmDeleteApplication = async () => {
+    if (!pendingDelete) return
 
-    if (!window.confirm(message)) {
-      return
-    }
-
-    setDeletingId(applicationId)
+    setDeletingId(pendingDelete.id)
 
     try {
-      const result = await deleteStudentApplication(applicationId)
+      const result = await deleteStudentApplication(pendingDelete.id)
 
       if (result.error) {
-        toast.error(result.error.message || 'Failed to delete application')
         return
       }
 
-      toast.success('Application deleted successfully')
       await refreshApplications(
-        (applications ?? []).filter((app) => app.id !== applicationId),
+        (applications ?? []).filter((app: Application) => app.id !== pendingDelete.id),
         { revalidate: true }
       )
       invalidateAllApplicationData()
+      setShowDeleteDialog(false)
+      setPendingDelete(null)
     } catch (error) {
       console.error('Error deleting application:', error)
-      toast.error('Failed to delete application')
     } finally {
       setDeletingId(null)
     }
   }
+
+  const deleteDialogDescription =
+    pendingDelete?.status === 'draft'
+      ? 'Are you sure you want to delete this draft application?'
+      : 'Are you sure you want to delete this application? You can reapply to this internship afterwards.'
 
   const renderPaginationNumbers = () => {
     const pages = []
@@ -295,7 +317,7 @@ export default function StudentApplications() {
   const isLoading = applicationsLoading
 
   return (
-    <div className="flex h-screen bg-[#F9F9F9]">
+    <div className="flex h-screen bg-gr-background">
       <div className="hidden lg:block">
         <StudentSidebar
           isCollapsed={isSidebarCollapsed}
@@ -304,13 +326,13 @@ export default function StudentApplications() {
       </div>
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="bg-white border-b border-[#EEEEEE] px-4 sm:px-6 lg:px-8 py-4">
+        <div className="bg-white border-b border-gr-border px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-3">
             <StudentMobileLogo />
             <div className="flex items-center gap-3 ml-auto">
               <div className="text-right">
                 <div className="font-bold text-gray-900">{userName}</div>
-                <div className="text-xs text-[#3B82F6] font-medium">ID: {myProfile?.unique_id || 'N/A'}</div>
+                <div className="text-xs text-gr-secondary font-medium">ID: {myProfile?.unique_id || 'N/A'}</div>
               </div>
               <Link href="/student/profile" className="cursor-pointer hover:opacity-80 transition-opacity">
                 <UserAvatar
@@ -332,66 +354,28 @@ export default function StudentApplications() {
               <p className="text-sm text-gray-500 mt-1">Track all your internship applications</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="text-sm text-gray-500 font-medium">Drafts</div>
-                    <div className="text-4xl font-bold text-[#3B82F6] mt-2">
-                      {draftsCount.toString().padStart(2, '0')}
-                    </div>
-                  </div>
-                  <FileText className="w-6 h-6 text-[#8DC63F]" />
-                </div>
-              </div>
-
-              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="text-sm text-gray-500 font-medium">In Review</div>
-                    <div className="text-4xl font-bold text-[#3B82F6] mt-2">
-                      {submittedCount.toString().padStart(2, '0')}
-                    </div>
-                  </div>
-                  <Send className="w-6 h-6 text-[#8DC63F]" />
-                </div>
-              </div>
-
-              <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="text-sm text-gray-500 font-medium">Approved</div>
-                    <div className="text-4xl font-bold text-[#3B82F6] mt-2">
-                      {approvedCount.toString().padStart(2, '0')}
-                    </div>
-                  </div>
-                  <CheckCircle className="w-6 h-6 text-[#8DC63F]" />
-                </div>
-              </div>
-            </div>
-
             <div className="flex gap-3 items-center mb-6">
               <div className="relative flex-1">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search internships (e.g. Soil Research)"
+                  placeholder={LABEL_SEARCH_PLACEHOLDER}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white border border-[#EEEEEE] rounded-xl py-3 px-4 pl-12 focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+                  className="w-full bg-white border border-gr-border rounded-xl py-3 px-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent"
                 />
               </div>
 
-              <div className="relative">
+              <div className="relative" ref={filterDropdownRef}>
                 <button
                   onClick={() => setShowFilterDropdown(!showFilterDropdown)}
-                  className="bg-[#8DC63F] text-white rounded-xl p-3 hover:bg-[#7DB62F] transition-colors"
+                  className="bg-gr-primary text-white rounded-xl p-3 hover:bg-gr-primary-hover transition-colors"
                 >
                   <SlidersHorizontal className="w-5 h-5" />
                 </button>
 
                 {showFilterDropdown && (
-                  <div className="absolute right-0 top-full mt-2 bg-white border border-[#EEEEEE] rounded-xl shadow-lg py-2 w-48 z-10">
+                  <div className="absolute right-0 top-full mt-2 bg-white border border-gr-border rounded-xl shadow-lg py-2 w-48 z-10">
                     {[
                       { value: 'all', label: 'All' },
                       { value: 'draft', label: 'Draft' },
@@ -399,8 +383,6 @@ export default function StudentApplications() {
                       { value: 'under_review', label: 'Under Review' },
                       { value: 'approved', label: 'Approved' },
                       { value: 'rejected', label: 'Rejected' },
-                      { value: 'accepted', label: 'Accepted' },
-                      { value: 'closed', label: 'Closed' },
                     ].map((option) => (
                       <button
                         key={option.value}
@@ -409,7 +391,7 @@ export default function StudentApplications() {
                           setShowFilterDropdown(false)
                         }}
                         className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${
-                          filterStatus === option.value ? 'bg-green-50 text-[#8DC63F] font-medium' : 'text-gray-700'
+                          filterStatus === option.value ? 'bg-green-50 text-gr-primary font-medium' : 'text-gray-700'
                         }`}
                       >
                         {option.label}
@@ -423,7 +405,7 @@ export default function StudentApplications() {
             {isLoading ? (
               <div className="space-y-3">
                 {[...Array(5)].map((_, i) => (
-                  <div key={i} className="bg-white border border-[#EEEEEE] rounded-2xl p-4 animate-pulse">
+                  <div key={i} className="bg-white border border-gr-border rounded-2xl p-4 animate-pulse">
                     <div className="flex items-center gap-4">
                       <div className="w-24 h-20 bg-gray-200 rounded-xl" />
                       <div className="flex-1 space-y-3">
@@ -443,7 +425,7 @@ export default function StudentApplications() {
                 <p className="text-sm text-gray-400 mb-4">Start browsing internships and apply!</p>
                 <button
                   onClick={() => router.push('/student/internships')}
-                  className="bg-[#8DC63F] text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#7DB62F] transition-colors"
+                  className="bg-gr-primary text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-gr-primary-hover transition-colors"
                 >
                   Browse Internships
                 </button>
@@ -454,7 +436,7 @@ export default function StudentApplications() {
                   {paginatedApplications.map((application, index) => (
                     <div
                       key={application.id}
-                      className="bg-white border border-[#EEEEEE] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 hover:shadow-md transition-shadow"
+                      className="bg-white border border-gr-border rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 hover:shadow-md transition-shadow"
                     >
                       <div className="flex items-center gap-4 flex-1 min-w-0">
                         <div className="relative w-24 h-20 rounded-xl overflow-hidden flex-shrink-0">
@@ -467,18 +449,18 @@ export default function StudentApplications() {
                         </div>
 
                         <div className="flex-1 min-w-0 flex flex-col gap-2">
-                          <h3 className="font-bold text-gray-900 text-base truncate">
-                            {application.internships?.title || 'Internship Program'}
-                          </h3>
-
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusBadgeColor(application.status)}`}>
-                              {formatStatusText(application.status)}
+                            <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#F0F9E8] text-[#5A9A2E] border border-green-200">
+                              {formatApplicationReferenceId(application.id, application.submitted_at)}
                             </span>
                             <span className="px-2.5 py-1 rounded-full text-xs font-medium border bg-slate-50 text-slate-600 border-slate-200">
                               {getApplicationStatusTimestamp(application)}
                             </span>
                           </div>
+
+                          <h3 className="font-bold text-gray-900 text-base truncate">
+                            {application.internships?.title || 'Internship Program'}
+                          </h3>
 
                           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
                             <div className="flex items-center gap-1.5">
@@ -511,14 +493,20 @@ export default function StudentApplications() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 flex-shrink-0 sm:flex-col sm:items-stretch sm:min-w-[100px]">
-                        <button
-                          onClick={() => router.push(`/student/applications/${application.id}`)}
-                          className="flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-medium bg-green-50 text-[#5A9A2E] border border-green-200 hover:bg-green-100 transition-colors"
+                      <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
+                        <span
+                          className={`px-2.5 py-1 rounded-full text-xs font-medium border whitespace-nowrap ${getStatusBadgeColor(application.status)}`}
                         >
-                          View
-                        </button>
-                        {canDeleteApplication(application.status) && (
+                          {formatStatusText(application.status)}
+                        </span>
+
+                        <div className="flex items-center gap-2 sm:flex-col sm:items-stretch sm:min-w-[100px]">
+                          <button
+                            onClick={() => router.push(`/student/applications/${application.id}`)}
+                            className="flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-medium bg-green-50 text-[#5A9A2E] border border-green-200 hover:bg-green-100 transition-colors"
+                          >
+                            View
+                          </button>
                           <button
                             onClick={(event) => handleDeleteApplication(application.id, application.status, event)}
                             disabled={deletingId === application.id}
@@ -533,7 +521,7 @@ export default function StudentApplications() {
                               'Delete'
                             )}
                           </button>
-                        )}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -544,7 +532,7 @@ export default function StudentApplications() {
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
-                      className="border border-[#EEEEEE] rounded-lg px-3 py-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="border border-gr-border rounded-lg px-3 py-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       <ChevronLeft className="w-5 h-5" />
                     </button>
@@ -560,8 +548,8 @@ export default function StudentApplications() {
                           onClick={() => handlePageChange(page as number)}
                           className={`min-w-[40px] px-3 py-2 rounded-lg font-medium transition-colors ${
                             currentPage === page
-                              ? 'bg-[#8DC63F] text-white'
-                              : 'border border-[#EEEEEE] hover:bg-gray-50'
+                              ? 'bg-gr-primary text-white'
+                              : 'border border-gr-border hover:bg-gray-50'
                           }`}
                         >
                           {page}
@@ -572,7 +560,7 @@ export default function StudentApplications() {
                     <button
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
-                      className="border border-[#EEEEEE] rounded-lg px-3 py-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="border border-gr-border rounded-lg px-3 py-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       <ChevronRight className="w-5 h-5" />
                     </button>
@@ -585,6 +573,25 @@ export default function StudentApplications() {
       </div>
 
       <BottomNavigation />
+
+      <ConfirmationDialog
+        open={showDeleteDialog}
+        onOpenChange={(open) => {
+          if (!deletingId) {
+            setShowDeleteDialog(open)
+            if (!open) {
+              setPendingDelete(null)
+            }
+          }
+        }}
+        icon={<Trash2 strokeWidth={1.5} />}
+        title="Delete Application?"
+        description={deleteDialogDescription}
+        confirmText={BTN_DELETE}
+        onConfirm={confirmDeleteApplication}
+        isLoading={Boolean(deletingId)}
+        loadingText={getMessage('loading', 'processing')}
+      />
     </div>
   )
 }

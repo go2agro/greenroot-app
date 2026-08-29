@@ -1,37 +1,61 @@
 "use client"
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, FileText, User, Bell, HelpCircle, Mail, Phone, ChevronLeft, ChevronRight, Briefcase } from 'lucide-react'
+import { LayoutDashboard, FileText, User, Bell, HelpCircle, ChevronLeft, ChevronRight, Briefcase } from 'lucide-react'
+import NotificationBadge from '@/components/NotificationBadge'
+import SidebarHelpContact from '@/components/SidebarHelpContact'
+import { getUnreadCount } from '@/lib/notifications'
 
 interface StudentSidebarProps {
   isCollapsed?: boolean
   onToggle?: () => void
+  activePage?: string
+  unreadRefreshKey?: number
 }
 
-export default function StudentSidebar({ isCollapsed = false, onToggle }: StudentSidebarProps) {
+export default function StudentSidebar({
+  isCollapsed = false,
+  onToggle,
+  activePage,
+  unreadRefreshKey = 0,
+}: StudentSidebarProps) {
   const pathname = usePathname()
-  const supportEmail = 'greenroot@gmail.com'
-  const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(supportEmail)}&su=${encodeURIComponent('GreenRoot Support')}`
+  const [unreadCount, setUnreadCount] = useState(0)
 
   const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', href: '/student/dashboard' },
-    { icon: Briefcase, label: 'Internships', href: '/student/internships' },
-    { icon: FileText, label: 'Applications', href: '/student/applications' },
-    { icon: User, label: 'Profile', href: '/student/profile' },
-    { icon: Bell, label: 'Notifications', href: '/student/notifications' },
+    { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', href: '/student/dashboard' },
+    { id: 'internships', icon: Briefcase, label: 'Internships', href: '/student/internships' },
+    { id: 'applications', icon: FileText, label: 'Applications', href: '/student/applications' },
+    { id: 'profile', icon: User, label: 'Profile', href: '/student/profile' },
+    { id: 'notifications', icon: Bell, label: 'Notifications', href: '/student/notifications' },
   ]
+
+  useEffect(() => {
+    let isActive = true
+
+    async function loadUnreadCount() {
+      const { data } = await getUnreadCount()
+      if (isActive) setUnreadCount(data?.count || 0)
+    }
+
+    loadUnreadCount()
+
+    return () => {
+      isActive = false
+    }
+  }, [unreadRefreshKey])
 
   return (
     <div 
-      className={`h-screen bg-white border-r border-[#EEEEEE] flex flex-col transition-all duration-300 ${
+      className={`h-screen bg-white border-r border-gr-border flex flex-col transition-all duration-300 ${
         isCollapsed ? 'w-20' : 'w-[220px]'
       }`}
     >
       {/* Logo and Toggle */}
-      <div className="p-4 border-b border-[#EEEEEE]">
+      <div className="p-4 border-b border-gr-border">
         {isCollapsed ? (
           <div className="flex flex-col items-center gap-3">
             {onToggle && (
@@ -61,7 +85,7 @@ export default function StudentSidebar({ isCollapsed = false, onToggle }: Studen
                 width={32} 
                 height={32}
               />
-              <span className="text-xl font-bold text-[#8DC63F]">GreenRoot</span>
+              <span className="text-xl font-bold text-gr-primary">GreenRoot</span>
             </Link>
             {onToggle && (
               <button
@@ -80,8 +104,9 @@ export default function StudentSidebar({ isCollapsed = false, onToggle }: Studen
       <nav className="flex-1 p-4 space-y-2">
         {navItems.map((item) => {
           const Icon = item.icon
-          const isActive = pathname === item.href
-          
+          const isActive = activePage ? activePage === item.id : pathname === item.href
+          const isNotifications = item.id === 'notifications'
+
           return (
             <Link
               key={item.href}
@@ -89,11 +114,14 @@ export default function StudentSidebar({ isCollapsed = false, onToggle }: Studen
               title={isCollapsed ? item.label : undefined}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                 isActive 
-                  ? 'bg-[#8DC63F] text-white font-medium' 
+                  ? 'bg-gr-primary text-white font-medium' 
                   : 'text-[#555555] hover:bg-gray-100'
               } ${isCollapsed ? 'justify-center' : ''}`}
             >
-              <Icon className="w-5 h-5 flex-shrink-0" />
+              <span className="relative flex-shrink-0">
+                <Icon className="w-5 h-5" />
+                {isNotifications && <NotificationBadge count={unreadCount} />}
+              </span>
               {!isCollapsed && (
                 <span className="text-sm font-medium">{item.label}</span>
               )}
@@ -103,38 +131,12 @@ export default function StudentSidebar({ isCollapsed = false, onToggle }: Studen
       </nav>
 
       {/* Help Section */}
-      {!isCollapsed && (
-        <div className="p-3">
-          <div className="bg-gray-50 rounded-xl p-4 mx-3 mb-4">
-            <h3 className="text-sm font-semibold text-gray-900 mb-1">Need help?</h3>
-            <p className="text-xs text-gray-500 mb-3">
-              Here&apos;s our contact number and email address
-            </p>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm">
-                <Phone className="w-4 h-4 text-[#8DC63F] flex-shrink-0" />
-                <span className="text-[#8DC63F] break-all">1234567890</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Mail className="w-4 h-4 text-[#8DC63F] flex-shrink-0" />
-                <a
-                  href={gmailComposeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#8DC63F] break-all text-xs hover:underline"
-                >
-                  {supportEmail}
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {!isCollapsed && <SidebarHelpContact />}
 
       {/* Help Icon for Collapsed */}
       {isCollapsed && (
-        <div className="p-4 border-t border-[#EEEEEE] flex justify-center">
-          <button className="text-gray-600 hover:text-[#8DC63F] transition-colors">
+        <div className="p-4 border-t border-gr-border flex justify-center">
+          <button className="text-gray-600 hover:text-gr-primary transition-colors">
             <HelpCircle className="w-5 h-5" />
           </button>
         </div>

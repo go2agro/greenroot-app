@@ -1,5 +1,6 @@
 "use server"
 
+import { getAdminDbClient } from './adminAuth'
 import { createClient } from './supabase'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 
@@ -10,26 +11,48 @@ export async function getAllStudents(filters?: {
 
   search?: string          // searches name, email, unique_id
   gender?: 'male' | 'female' | 'other'
-  course_status?: 'ongoing' | 'completed'
-  degree?: string
-  branch_major?: string
   university_name?: string
   city?: string
   state?: string
 }) {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
+
   let query = supabase
     .from('student_profiles')
     .select(`
-      *,
-      profiles (
+      id,
+      first_name,
+      last_name,
+      email,
+      gender,
+      date_of_birth,
+      nationality,
+      marital_status,
+      mobile_number,
+      emergency_contact_number,
+      country,
+      state,
+      city,
+      address_line_1,
+      pincode,
+      passport_number,
+      aadhar_number,
+      pan_number,
+      university_name,
+      college_name,
+      degree_name,
+      branch_specialization,
+      updated_at,
+      profiles!inner (
         unique_id,
         role,
         created_at
       )
     `)
+    .eq('profiles.role', 'student')
+    .order('created_at', { foreignTable: 'profiles', ascending: false })
 
-  // Search by name or email
   if (filters?.search) {
     query = query.or(
       `first_name.ilike.%${filters.search}%,` +
@@ -38,14 +61,10 @@ export async function getAllStudents(filters?: {
     )
   }
 
-  // Filters
-  if (filters?.gender)          query = query.eq('gender', filters.gender)
-  if (filters?.course_status)   query = query.eq('course_status', filters.course_status)
-  if (filters?.degree)          query = query.ilike('degree', `%${filters.degree}%`)
-  if (filters?.branch_major)    query = query.ilike('branch_major', `%${filters.branch_major}%`)
+  if (filters?.gender) query = query.eq('gender', filters.gender)
   if (filters?.university_name) query = query.ilike('university_name', `%${filters.university_name}%`)
-  if (filters?.city)            query = query.ilike('city', `%${filters.city}%`)
-  if (filters?.state)           query = query.ilike('state', `%${filters.state}%`)
+  if (filters?.city) query = query.ilike('city', `%${filters.city}%`)
+  if (filters?.state) query = query.ilike('state', `%${filters.state}%`)
 
   const { data, error } = await query
 
@@ -98,22 +117,38 @@ export async function getAllAdmins(filters?: {
 // GET SINGLE STUDENT (by user ID)
 // ─────────────────────────────────────────
 export async function getStudentById(userId: string) {
-  const supabase = await createClient()
+  const { client: supabase, error: authError } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
 
   const { data, error } = await supabase
     .from('student_profiles')
     .select(`
       *,
-      profiles (
+      profiles!inner (
         unique_id,
         role,
         created_at
       )
     `)
     .eq('id', userId)
+    .eq('profiles.role', 'student')
     .single()
 
-  return { data, error }
+  return toPlainResponse(data, error)
+}
+
+// ─────────────────────────────────────────
+// GET STUDENT DOCUMENT (signed url)
+// ─────────────────────────────────────────
+export async function getStudentDocumentUrl(filePath: string) {
+  const { client: supabase, error: authError } = await getAdminDbClient()
+  if (!supabase) return toPlainResponse(null, authError)
+
+  const { data, error } = await supabase.storage
+    .from('student-documents')
+    .createSignedUrl(filePath, 60 * 60)
+
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────

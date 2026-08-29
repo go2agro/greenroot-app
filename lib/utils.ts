@@ -55,3 +55,62 @@ export function getApplicationStatusTimestamp(application: ApplicationTimestampF
 
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
+
+export function formatApplicationReferenceId(applicationId: string, submittedAt?: string) {
+  const year = submittedAt
+    ? new Date(submittedAt).getFullYear()
+    : new Date().getFullYear()
+  const numericPart = parseInt(applicationId.replace(/-/g, '').slice(0, 8), 16) % 100000
+
+  return `GR-${year}-${String(numericPart).padStart(5, '0')}`
+}
+
+export function formatSubmittedDateTime(dateString: string) {
+  const date = new Date(dateString)
+  const datePart = date.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+  const timePart = date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  })
+
+  return `${datePart} · ${timePart}`
+}
+
+export function formatApplicationStatusLabel(status: string) {
+  const labels: Record<string, string> = {
+    submitted: 'Awaiting Screening',
+    under_review: 'Screening Passed',
+    admin_accepted: 'Screening Passed',
+    forwarded_to_partner: 'With Partner',
+    partner_review: 'Partner Reviewed',
+  }
+
+  if (labels[status]) return labels[status]
+
+  return status
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+}
+
+export function formatStudentStatusLabel(status: string) {
+  const studentLabels: Record<string, string> = {
+    draft: 'Draft',
+    submitted: 'Under Review',
+    under_review: 'Under Review',
+    admin_accepted: 'Under Review',
+    forwarded_to_partner: 'Under Review',
+    partner_review: 'Under Review',
+    approved: 'Approved',
+    rejected: 'Rejected',
+    accepted: 'Accepted',
+    closed: 'Closed',
+    withdrawn: 'Withdrawn',
+  }
+  return studentLabels[status] || 'Under Review'
+}

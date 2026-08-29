@@ -74,21 +74,4 @@ async function handleDeleteDraft(applicationId: string) {
 }
 */
 
-// ============================================
-// EXAMPLE 5: After accepting an offer
-// ============================================
-/*
-async function handleAcceptOffer(applicationId: string) {
-  const result = await confirmOffer(applicationId)
-  
-  if (!result.error) {
-    // Invalidate all application data since this affects multiple states
-    invalidateAllApplicationData()
-    
-    toast.success('Offer accepted!')
-    router.push('/student/my-internship')
-  }
-}
-*/
-
 export {}

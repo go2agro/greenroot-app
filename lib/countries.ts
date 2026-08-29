@@ -1,0 +1,101 @@
+export const PARTNER_COUNTRY_OPTIONS = [
+  'United States',
+  'United Kingdom',
+  'Canada',
+  'Australia',
+  'Germany',
+  'France',
+  'Italy',
+  'Spain',
+  'Netherlands',
+  'Belgium',
+  'Switzerland',
+  'Austria',
+  'Japan',
+  'China',
+  'South Korea',
+  'Singapore',
+  'India',
+  'UAE',
+  'Ireland',
+  'Denmark',
+  'Sweden',
+  'Norway',
+  'Finland',
+  'Poland',
+  'Portugal',
+  'Greece',
+  'Israel',
+  'Brazil',
+  'Mexico',
+  'Argentina',
+  'New Zealand',
+  'South Africa',
+  'Kenya',
+  'Nigeria',
+  'Egypt',
+  'Thailand',
+  'Vietnam',
+  'Indonesia',
+  'Philippines',
+  'Malaysia',
+] as const
+
+const countryToCode: Record<string, string> = {
+  USA: 'US',
+  'United States': 'US',
+  UK: 'GB',
+  'United Kingdom': 'GB',
+  Canada: 'CA',
+  Australia: 'AU',
+  India: 'IN',
+  Germany: 'DE',
+  France: 'FR',
+  Italy: 'IT',
+  Spain: 'ES',
+  Netherlands: 'NL',
+  Belgium: 'BE',
+  Switzerland: 'CH',
+  Austria: 'AT',
+  Japan: 'JP',
+  China: 'CN',
+  'South Korea': 'KR',
+  Brazil: 'BR',
+  Mexico: 'MX',
+  Argentina: 'AR',
+  'New Zealand': 'NZ',
+  Singapore: 'SG',
+  Ireland: 'IE',
+  Denmark: 'DK',
+  Sweden: 'SE',
+  Norway: 'NO',
+  Finland: 'FI',
+  Poland: 'PL',
+  Portugal: 'PT',
+  Greece: 'GR',
+  Israel: 'IL',
+  UAE: 'AE',
+  'South Africa': 'ZA',
+  Kenya: 'KE',
+  Nigeria: 'NG',
+  Egypt: 'EG',
+  Thailand: 'TH',
+  Vietnam: 'VN',
+  Indonesia: 'ID',
+  Philippines: 'PH',
+  Malaysia: 'MY',
+}
+
+export function getCountryFlag(country?: string, emoji?: string) {
+  if (emoji) return emoji
+
+  if (!country) return '🌍'
+  const code = countryToCode[country] || countryToCode[country.split(',')[0]?.trim()]
+  if (!code) return '🌍'
+
+  return String.fromCodePoint(...[...code].map((c) => c.charCodeAt(0) + 127397))
+}
+
+export function formatPartnerCountries(countries?: string[] | null) {
+  return (countries ?? []).filter(Boolean)
+}

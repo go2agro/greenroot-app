@@ -4,15 +4,17 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { AtSign, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { signIn } from '@/lib/auth'
+import { loginUser, signOut } from '@/lib/auth'
 import { getMyProfile } from '@/lib/profiles'
+import { BTN_LOGIN } from '@/lib/appConfig'
+import { getMessage } from '@/lib/messages'
 import Image from 'next/image'
 import Link from 'next/link'
 import AuthLeftPanel from '@/components/AuthLeftPanel'
 
 export default function Login() {
   const router = useRouter()
-  const [selectedRole, setSelectedRole] = useState<'student' | 'admin'>('student')
+  const [selectedRole, setSelectedRole] = useState<'student' | 'admin' | 'partner'>('student')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -26,6 +28,8 @@ export default function Login() {
       const { data } = await getMyProfile()
       if (data?.role === 'admin') {
         router.push('/admin/dashboard')
+      } else if (data?.role === 'partner') {
+        router.push('/partner/dashboard')
       } else if (data?.role === 'student') {
         router.push('/student/dashboard')
       }
@@ -62,35 +66,55 @@ export default function Login() {
     setIsLoading(true)
 
     try {
-      const { data, error } = await signIn(email, password)
-      
+      const { data, error } = await loginUser(email, password)
+
       if (error) {
-        setGeneralError('Invalid email or password. Please try again.')
+        const message = error.message || getMessage('error', 'login')
+        setGeneralError(
+          message.toLowerCase().includes('invalid login credentials')
+            ? getMessage('error', 'login')
+            : message
+        )
         setIsLoading(false)
         return
       }
 
-      if (data?.user) {
-        const profileResponse = await getMyProfile()
-        
-        // Check if profile exists
-        if (!profileResponse?.data) {
-          setGeneralError('Account setup incomplete. Please contact support.')
-          setIsLoading(false)
-          return
-        }
-        
-        // Redirect based on role from profiles table
-        if (profileResponse.data.role === 'admin') {
-          router.push('/admin/dashboard')
-        } else if (profileResponse.data.role === 'student') {
-          router.push('/student/dashboard')
-        } else {
-          setGeneralError('Account setup incomplete. Please contact support.')
-          setIsLoading(false)
-        }
+      if (!data?.profile) {
+        setGeneralError('Account setup incomplete. Please contact support.')
+        setIsLoading(false)
+        return
       }
+
+      if (selectedRole === 'admin' && data.profile.role !== 'admin') {
+        await signOut()
+        setGeneralError('This account does not have admin access.')
+        setIsLoading(false)
+        return
+      }
+
+      if (selectedRole === 'student' && data.profile.role !== 'student') {
+        await signOut()
+        setGeneralError('This account is not a student account.')
+        setIsLoading(false)
+        return
+      }
+
+      if (selectedRole === 'partner' && data.profile.role !== 'partner') {
+        await signOut()
+        setGeneralError('This account does not have partner access.')
+        setIsLoading(false)
+        return
+      }
+
+      const dashboardByRole = {
+        admin: '/admin/dashboard',
+        partner: '/partner/dashboard',
+        student: '/student/dashboard',
+      } as const
+
+      router.push(dashboardByRole[data.profile.role as keyof typeof dashboardByRole] ?? '/student/dashboard')
     } catch (error) {
+      console.error('Login error:', error)
       setGeneralError('An error occurred. Please try again.')
       setIsLoading(false)
     }
@@ -115,51 +139,36 @@ export default function Login() {
           </div>
 
           {/* Welcome Heading */}
-          <h2 className="text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-2">Welcome Back!</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gr-text-dark mb-2">Welcome Back!</h2>
           <p className="text-sm text-gray-500 mb-6">
             Please enter your credentials to access this platform.<br />
             Take the first step in exploring your future.
           </p>
 
-          {/* Student/Admin Toggle */}
-          <div className="w-full bg-[#F0F0F0] rounded-lg p-1 mb-6">
-            <div className="grid grid-cols-2 gap-1">
-              <button
-                type="button"
-                onClick={() => setSelectedRole('student')}
-                className={`relative py-2.5 rounded-md text-sm sm:text-base transition-colors duration-200 ${
-                  selectedRole === 'student'
-                    ? 'text-white font-semibold'
-                    : 'text-gray-500 font-normal'
-                }`}
-              >
-                {selectedRole === 'student' && (
-                  <motion.div
-                    layoutId="role-bg"
-                    className="absolute inset-0 bg-[#8DC63F] rounded-md z-0"
-                    transition={{ type: "spring", stiffness: 400, damping: 35 }}
-                  />
-                )}
-                <span className="relative z-10">Student</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedRole('admin')}
-                className={`relative py-2.5 rounded-md text-sm sm:text-base transition-colors duration-200 ${
-                  selectedRole === 'admin'
-                    ? 'text-white font-semibold'
-                    : 'text-gray-500 font-normal'
-                }`}
-              >
-                {selectedRole === 'admin' && (
-                  <motion.div
-                    layoutId="role-bg"
-                    className="absolute inset-0 bg-[#8DC63F] rounded-md z-0"
-                    transition={{ type: "spring", stiffness: 400, damping: 35 }}
-                  />
-                )}
-                <span className="relative z-10">Admin</span>
-              </button>
+          {/* Role Toggle */}
+          <div className="w-full bg-gr-input-bg rounded-lg p-1 mb-6">
+            <div className="grid grid-cols-3 gap-1">
+              {(['student', 'admin', 'partner'] as const).map((role) => (
+                <button
+                  key={role}
+                  type="button"
+                  onClick={() => setSelectedRole(role)}
+                  className={`relative py-2.5 rounded-md text-sm sm:text-base transition-colors duration-200 ${
+                    selectedRole === role
+                      ? 'text-white font-semibold'
+                      : 'text-gray-500 font-normal'
+                  }`}
+                >
+                  {selectedRole === role && (
+                    <motion.div
+                      layoutId="role-bg"
+                      className="absolute inset-0 bg-gr-primary rounded-md z-0"
+                      transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+                    />
+                  )}
+                  <span className="relative z-10 capitalize">{role}</span>
+                </button>
+              ))}
             </div>
           </div>
 
@@ -182,13 +191,13 @@ export default function Login() {
                   }}
                   placeholder="example@email.com"
                   disabled={isLoading}
-                  className={`w-full bg-[#F5F5F5] rounded-lg py-3 pl-12 pr-4 text-sm sm:text-base outline-none transition-all ${
-                    emailError ? 'border-2 border-red-500' : 'border-0'
+                  className={`w-full bg-gr-input-bg rounded-lg py-3 pl-12 pr-4 text-sm sm:text-base outline-none transition-all ${
+                    emailError ? 'border-2 border-gr-error' : 'border-0'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 />
               </div>
               {emailError && (
-                <p className="text-[#DC2626] text-sm mt-1">{emailError}</p>
+                <p className="text-gr-error text-sm mt-1">{emailError}</p>
               )}
             </div>
 
@@ -209,8 +218,8 @@ export default function Login() {
                   }}
                   placeholder="••••••••"
                   disabled={isLoading}
-                  className={`w-full bg-[#F5F5F5] rounded-lg py-3 pl-12 pr-12 text-sm sm:text-base outline-none transition-all ${
-                    passwordError ? 'border-2 border-red-500' : 'border-0'
+                  className={`w-full bg-gr-input-bg rounded-lg py-3 pl-12 pr-12 text-sm sm:text-base outline-none transition-all ${
+                    passwordError ? 'border-2 border-gr-error' : 'border-0'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 />
                 <button
@@ -223,12 +232,12 @@ export default function Login() {
                 </button>
               </div>
               {passwordError && (
-                <p className="text-[#DC2626] text-sm mt-1">{passwordError}</p>
+                <p className="text-gr-error text-sm mt-1">{passwordError}</p>
               )}
               <div className="flex justify-end mt-2">
                 <Link 
                   href="/forgot-password" 
-                  className="text-sm text-[#8DC63F] hover:underline"
+                  className="text-sm text-gr-primary hover:underline"
                 >
                   Forgot password?
                 </Link>
@@ -239,19 +248,19 @@ export default function Login() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#8DC63F] text-white rounded-lg py-3 text-base font-semibold hover:bg-[#7DB62F] transition-colors disabled:opacity-80 disabled:cursor-not-allowed flex items-center justify-center"
+              className="w-full bg-gr-primary text-white rounded-lg py-3 text-base font-semibold hover:bg-gr-primary-hover transition-colors disabled:opacity-80 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                'Login'
+                BTN_LOGIN
               )}
             </button>
           </form>
 
           {/* General Error Message */}
           {generalError && (
-            <p className="text-[#DC2626] text-sm text-center mt-2">
+            <p className="text-gr-error text-sm text-center mt-2">
               {generalError}
             </p>
           )}
@@ -259,7 +268,7 @@ export default function Login() {
           {/* Sign Up Link */}
           <p className="text-center mt-6 text-sm">
             <span className="text-gray-600">Don't have an account yet? </span>
-            <Link href="/signup" className="text-[#8DC63F] hover:underline">
+            <Link href="/signup" className="text-gr-primary hover:underline">
               Create an account.
             </Link>
           </p>

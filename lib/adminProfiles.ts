@@ -26,6 +26,7 @@ export async function createAdminProfile(profileData: {
   personal_email?: string
   official_email?: string
   phone_number?: string
+  alternate_phone_number?: string
   gender?: 'male' | 'female' | 'other'
   date_of_birth?: string
   address_line_1?: string
@@ -55,6 +56,7 @@ export async function updateAdminProfile(profileData: {
   personal_email?: string
   official_email?: string
   phone_number?: string
+  alternate_phone_number?: string
   gender?: 'male' | 'female' | 'other'
   date_of_birth?: string
   address_line_1?: string

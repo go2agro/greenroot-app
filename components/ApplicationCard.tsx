@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { ChevronRight } from 'lucide-react'
+import { DEFAULT_INTERNSHIP_IMAGE } from '@/lib/appConfig'
 
 interface ApplicationCardProps {
   id: string
@@ -49,13 +50,13 @@ export default function ApplicationCard({
         {/* Image */}
         <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
           <Image
-            src={imageUrl || '/images/placeholder.jpg'}
+            src={imageUrl || DEFAULT_INTERNSHIP_IMAGE}
             alt={title}
             fill
             className="object-cover"
             onError={(e) => {
               const target = e.target as HTMLImageElement
-              target.src = '/images/placeholder.jpg'
+              target.src = DEFAULT_INTERNSHIP_IMAGE
             }}
           />
         </div>

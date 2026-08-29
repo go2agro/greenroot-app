@@ -7,8 +7,15 @@ import { Search, MapPin, Clock, Banknote, ChevronLeft, ChevronRight, X } from 'l
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { getAllInternships } from '@/lib/internships'
-
-const ITEMS_PER_PAGE = 9
+import {
+  BTN_APPLY_NOW,
+  DEFAULT_INTERNSHIP_IMAGE,
+  INTERNSHIPS_PAGE_HEADING,
+  INTERNSHIPS_PAGE_SUBHEADING,
+  ITEMS_PER_PAGE,
+  LABEL_LOADING,
+  LABEL_SEARCH_PLACEHOLDER,
+} from '@/lib/appConfig'
 
 type Internship = {
   id: string
@@ -36,7 +43,7 @@ const getBadgeColor = (badge: string) => {
   if (badgeUpper.includes('HORTICULTURE')) return 'bg-green-600'
   if (badgeUpper.includes('GENETICS')) return 'bg-indigo-500'
   if (badgeUpper.includes('AUTOMATION')) return 'bg-orange-500'
-  return 'bg-[#8DC63F]'
+  return 'bg-gr-primary'
 }
 
 const getCountryFlag = (country: string, emoji?: string) => {
@@ -208,10 +215,10 @@ export default function PublicInternships() {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
             type="text"
-            placeholder="Search internships (e.g. Soil Research)"
+            placeholder={LABEL_SEARCH_PLACEHOLDER}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white border border-[#EEEEEE] rounded-xl py-3 px-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+            className="w-full bg-white border border-gr-border rounded-xl py-3 px-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent"
           />
           {searchQuery && (
             <button
@@ -226,9 +233,9 @@ export default function PublicInternships() {
 
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
           <div>
-            <h1 className="font-bold text-2xl text-gray-900 mb-1">Agricultural Internships</h1>
+            <h1 className="font-bold text-2xl text-gray-900 mb-1">{INTERNSHIPS_PAGE_HEADING}</h1>
             <p className="text-sm text-gray-500">
-              Showing {filteredInternships.length} opportunities worldwide
+              {INTERNSHIPS_PAGE_SUBHEADING} · Showing {filteredInternships.length} opportunities worldwide
             </p>
           </div>
           
@@ -237,7 +244,7 @@ export default function PublicInternships() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortOption)}
-              className="border border-[#EEEEEE] rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#8DC63F] focus:border-transparent"
+              className="border border-gr-border rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent"
             >
               <option value="most_recent">Most Recent</option>
               <option value="oldest_first">Oldest First</option>
@@ -250,7 +257,7 @@ export default function PublicInternships() {
         </div>
 
         {isLoading ? (
-          <div className="text-center py-12 text-gray-500">Loading internships...</div>
+          <div className="text-center py-12 text-gray-500">{LABEL_LOADING}</div>
         ) : paginatedInternships.length === 0 ? (
           <div className="text-center py-12 text-gray-500">No internships found</div>
         ) : (
@@ -259,7 +266,7 @@ export default function PublicInternships() {
               {paginatedInternships.map((internship, index) => (
                 <div
                   key={internship.id}
-                  className="bg-white rounded-2xl border border-[#EEEEEE] overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+                  className="bg-white rounded-2xl border border-gr-border overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer"
                   onClick={() => router.push(`/internships/${internship.id}`)}
                 >
                   <div className="relative h-48 w-full">
@@ -306,7 +313,7 @@ export default function PublicInternships() {
                       {(internship.stipend_label || internship.stipend_monthly) && (
                         <div className="flex items-center gap-2 text-sm">
                           <Banknote className="w-4 h-4 text-gray-500" />
-                          <span className="font-bold text-[#8DC63F]">
+                          <span className="font-bold text-gr-primary">
                             {internship.stipend_label || `$ ${internship.stipend_monthly?.toLocaleString()} / Month`}
                           </span>
                         </div>
@@ -318,7 +325,7 @@ export default function PublicInternships() {
                         e.stopPropagation()
                         router.push(`/internships/${internship.id}`)
                       }}
-                      className="w-full bg-[#8DC63F] text-white rounded-lg py-2.5 font-semibold text-sm hover:bg-[#7DB62F] transition-colors"
+                      className="w-full bg-gr-primary text-white rounded-lg py-2.5 font-semibold text-sm hover:bg-gr-primary-hover transition-colors"
                     >
                       View Details
                     </button>
@@ -332,7 +339,7 @@ export default function PublicInternships() {
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="border border-[#EEEEEE] rounded-lg px-3 py-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="border border-gr-border rounded-lg px-3 py-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
@@ -348,8 +355,8 @@ export default function PublicInternships() {
                       onClick={() => handlePageChange(page as number)}
                       className={`min-w-[40px] px-3 py-2 rounded-lg font-medium transition-colors ${
                         currentPage === page
-                          ? 'bg-[#8DC63F] text-white'
-                          : 'border border-[#EEEEEE] hover:bg-gray-50'
+                          ? 'bg-gr-primary text-white'
+                          : 'border border-gr-border hover:bg-gray-50'
                       }`}
                     >
                       {page}
@@ -360,7 +367,7 @@ export default function PublicInternships() {
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="border border-[#EEEEEE] rounded-lg px-3 py-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="border border-gr-border rounded-lg px-3 py-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>

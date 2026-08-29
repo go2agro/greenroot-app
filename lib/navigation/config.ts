@@ -114,44 +114,12 @@ export const NAVIGATION_CONFIG: Record<string, NavigationRoute> = {
     roles: ['student'],
     category: 'student'
   },
-  studentLibrary: {
-    id: 'studentLibrary',
-    label: 'Library',
-    route: '/student/library',
-    roles: ['student'],
-    minVersion: '1.1.0',
-    category: 'student',
-    description: 'Access learning resources and videos'
-  },
-  studentLibraryDetail: {
-    id: 'studentLibraryDetail',
-    label: 'Library Content',
-    route: '/student/library/[id]',
-    roles: ['student'],
-    minVersion: '1.1.0',
-    category: 'student'
-  },
-  studentSettings: {
-    id: 'studentSettings',
-    label: 'Settings',
-    route: '/student/settings',
-    roles: ['student'],
-    category: 'student'
-  },
   studentNotifications: {
     id: 'studentNotifications',
     label: 'Notifications',
     route: '/student/notifications',
     roles: ['student'],
     category: 'student'
-  },
-  studentMyInternship: {
-    id: 'studentMyInternship',
-    label: 'My Internship',
-    route: '/student/my-internship',
-    roles: ['student'],
-    category: 'student',
-    description: 'Post selection internship details'
   },
   
   // Admin routes
@@ -176,24 +144,10 @@ export const NAVIGATION_CONFIG: Record<string, NavigationRoute> = {
     roles: ['admin'],
     category: 'admin'
   },
-  adminAdmins: {
-    id: 'adminAdmins',
-    label: 'Admins',
-    route: '/admin/admins',
-    roles: ['admin'],
-    category: 'admin'
-  },
-  adminAdminDetail: {
-    id: 'adminAdminDetail',
-    label: 'Admin Details',
-    route: '/admin/admins/[id]',
-    roles: ['admin'],
-    category: 'admin'
-  },
-  adminAdminNew: {
-    id: 'adminAdminNew',
-    label: 'Add New Admin',
-    route: '/admin/admins/new',
+  adminPartners: {
+    id: 'adminPartners',
+    label: 'Partners',
+    route: '/admin/partners',
     roles: ['admin'],
     category: 'admin'
   },
@@ -232,46 +186,48 @@ export const NAVIGATION_CONFIG: Record<string, NavigationRoute> = {
     roles: ['admin'],
     category: 'admin'
   },
-  adminLibrary: {
-    id: 'adminLibrary',
-    label: 'Library Management',
-    route: '/admin/library',
-    roles: ['admin'],
-    category: 'admin'
-  },
-  adminLibraryDetail: {
-    id: 'adminLibraryDetail',
-    label: 'Library Content',
-    route: '/admin/library/[id]',
-    roles: ['admin'],
-    category: 'admin'
-  },
-  adminLibraryNew: {
-    id: 'adminLibraryNew',
-    label: 'Add Library Content',
-    route: '/admin/library/new',
-    roles: ['admin'],
-    category: 'admin'
-  },
-  adminSettings: {
-    id: 'adminSettings',
-    label: 'Settings',
-    route: '/admin/settings',
-    roles: ['admin'],
-    category: 'admin'
-  },
-  adminBilling: {
-    id: 'adminBilling',
-    label: 'Billing',
-    route: '/admin/billing',
-    roles: ['admin'],
-    category: 'admin'
-  },
   adminNotifications: {
     id: 'adminNotifications',
     label: 'Notifications',
     route: '/admin/notifications',
     roles: ['admin'],
     category: 'admin'
+  },
+
+  // Partner routes
+  partnerDashboard: {
+    id: 'partnerDashboard',
+    label: 'Dashboard',
+    route: '/partner/dashboard',
+    roles: ['partner'],
+    category: 'partner'
+  },
+  partnerApplications: {
+    id: 'partnerApplications',
+    label: 'Applications',
+    route: '/partner/applications',
+    roles: ['partner'],
+    category: 'partner'
+  },
+  partnerApplicationDetail: {
+    id: 'partnerApplicationDetail',
+    label: 'Application Details',
+    route: '/partner/applications/[id]',
+    roles: ['partner'],
+    category: 'partner'
+  },
+  partnerNotifications: {
+    id: 'partnerNotifications',
+    label: 'Notifications',
+    route: '/partner/notifications',
+    roles: ['partner'],
+    category: 'partner'
+  },
+  partnerProfile: {
+    id: 'partnerProfile',
+    label: 'My Profile',
+    route: '/partner/profile',
+    roles: ['partner'],
+    category: 'partner'
   }
 };

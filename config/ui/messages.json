@@ -1,0 +1,34 @@
+{
+  "success": {
+    "login": "Welcome back!",
+    "signup": "Account created successfully. Please check your email to verify.",
+    "logout": "You have been logged out.",
+    "profileUpdate": "Profile updated successfully.",
+    "applicationSubmit": "Application submitted successfully.",
+    "applicationWithdraw": "Application withdrawn.",
+    "offerAccept": "Congratulations! You have accepted the offer.",
+    "passwordReset": "Password reset email sent. Please check your inbox.",
+    "passwordUpdate": "Password updated successfully."
+  },
+  "error": {
+    "generic": "Something went wrong. Please try again.",
+    "login": "Invalid email or password.",
+    "signup": "Unable to create account. Please try again.",
+    "unauthorized": "You are not authorized to perform this action.",
+    "notFound": "The requested resource was not found.",
+    "applicationLimit": "You have reached the maximum number of applications.",
+    "networkError": "Network error. Please check your connection.",
+    "sessionExpired": "Your session has expired. Please log in again."
+  },
+  "loading": {
+    "generic": "Loading...",
+    "submitting": "Submitting...",
+    "saving": "Saving...",
+    "processing": "Processing..."
+  },
+  "confirm": {
+    "withdraw": "Are you sure you want to withdraw this application?",
+    "delete": "Are you sure you want to delete this?",
+    "logout": "Are you sure you want to log out?"
+  }
+}

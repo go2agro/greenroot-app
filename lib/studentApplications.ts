@@ -3,7 +3,84 @@
 import { createClient } from './supabase'
 import { createAdminClient } from './supabase-admin'
 import { checkProfileCompletion } from './studentProfiles'
+import { recordApplicationEvent } from '@/lib/applicationEvents'
+import { createNotification } from '@/lib/notifications'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
+import {
+  appConfig,
+  APPLICATION_STEPS_COUNT,
+  MAX_FILE_UPLOAD_BYTES,
+  MAX_FILE_UPLOAD_ERROR,
+} from '@/lib/appConfig'
+
+const ACTIVE_APPLICATION_STATUSES = [
+  'draft',
+  'submitted',
+  'under_review',
+  'approved',
+  'accepted',
+] as const
+
+const MAX_APPLICATIONS = appConfig.max_applications_per_student || 5
+
+async function assertOwnedDraftApplication(applicationId: string) {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return {
+      supabase: null as Awaited<ReturnType<typeof createClient>> | null,
+      user: null,
+      application: null,
+      error: { message: 'Not logged in' },
+    }
+  }
+
+  const { data: application, error } = await supabase
+    .from('applications')
+    .select('id, status, student_id, internship_id')
+    .eq('id', applicationId)
+    .eq('student_id', user.id)
+    .single()
+
+  if (error || !application) {
+    return {
+      supabase,
+      user,
+      application: null,
+      error: error || { message: 'Application not found' },
+    }
+  }
+
+  if (application.status === 'rejected') {
+    return {
+      supabase,
+      user,
+      application,
+      error: {
+        message:
+          'This application was rejected and cannot be modified. Please apply again to start a new application.',
+        code: 'APPLICATION_REJECTED',
+      },
+    }
+  }
+
+  if (application.status !== 'draft') {
+    return {
+      supabase,
+      user,
+      application,
+      error: {
+        message: 'This application can no longer be edited.',
+        code: 'APPLICATION_LOCKED',
+      },
+    }
+  }
+
+  return { supabase, user, application, error: null }
+}
 
 // ─────────────────────────────────────────
 // START A NEW APPLICATION
@@ -14,29 +91,44 @@ export async function startApplication(internshipId: string) {
   if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
   // Check if student profile is complete
-  const { data: profile } = await supabase
-    .from('student_profiles')
-    .select('first_name, last_name, email, mobile_number, university_name, degree_name, passport_number')
-    .eq('id', user.id)
-    .single()
+  const profileCompletion = await checkProfileCompletion()
+  if (profileCompletion.data && !profileCompletion.data.isComplete) {
+    return toPlainResponse(null, {
+      message: `Please complete your profile before applying. Missing: ${profileCompletion.data.missingFields.join(', ')}`
+    })
+  }
 
-    const profileCompletion = await checkProfileCompletion()
-    if (profileCompletion.data && !profileCompletion.data.isComplete) {
-      return toPlainResponse(null, {
-        message: `Please complete your profile before applying. Missing: ${profileCompletion.data.missingFields.join(', ')}`
-      })
-    }
+  // Check if student has reached max applications limit
+  const { count: activeCount } = await supabase
+    .from('applications')
+    .select('*', { count: 'exact', head: true })
+    .eq('student_id', user.id)
+    .in('status', [...ACTIVE_APPLICATION_STATUSES])
 
-  // Check if already applied
+  if (activeCount !== null && activeCount >= MAX_APPLICATIONS) {
+    return toPlainResponse(null, {
+      message: `You have reached the maximum limit of ${MAX_APPLICATIONS} active applications. Please wait for existing applications to be processed or withdraw one to apply again.`,
+      code: 'MAX_APPLICATIONS_REACHED',
+    })
+  }
+
+  // Block only if student still has an active application for this internship.
+  // Rejected / withdrawn / closed applications are historical and do not block a fresh apply.
   const { data: existing } = await supabase
     .from('applications')
-    .select('id')
+    .select('id, status')
     .eq('student_id', user.id)
     .eq('internship_id', internshipId)
-    .single()
+    .in('status', [...ACTIVE_APPLICATION_STATUSES])
+    .order('started_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
 
   if (existing) {
-    return toPlainResponse(null, { message: 'Already applied to this internship', code: 'ALREADY_APPLIED' })
+    return toPlainResponse(null, {
+      message: 'Already applied to this internship',
+      code: 'ALREADY_APPLIED',
+    })
   }
 
   // Create new application
@@ -50,6 +142,13 @@ export async function startApplication(internshipId: string) {
     })
     .select()
     .single()
+
+  if (error?.code === '23505') {
+    return toPlainResponse(null, {
+      message: 'Already applied to this internship',
+      code: 'ALREADY_APPLIED',
+    })
+  }
 
   return toPlainResponse(data, error)
 }
@@ -67,6 +166,9 @@ export async function getMyApplicationByInternshipId(internshipId: string) {
     .select('id, status, submitted_at, started_at')
     .eq('student_id', user.id)
     .eq('internship_id', internshipId)
+    .in('status', [...ACTIVE_APPLICATION_STATUSES])
+    .order('started_at', { ascending: false })
+    .limit(1)
     .maybeSingle()
 
   return toPlainResponse(data, error)
@@ -89,10 +191,6 @@ export async function deleteStudentApplication(applicationId: string) {
 
   if (fetchError || !application) {
     return toPlainResponse(null, fetchError || { message: 'Application not found' })
-  }
-
-  if (!['draft', 'submitted'].includes(application.status)) {
-    return toPlainResponse(null, { message: 'Only draft or submitted applications can be deleted' })
   }
 
   let admin
@@ -197,6 +295,7 @@ export async function getMyApplicationById(applicationId: string) {
     .select(`
       *,
       internships (
+        id,
         title,
         subtitle,
         city,
@@ -204,7 +303,13 @@ export async function getMyApplicationById(applicationId: string) {
         image_url,
         badge,
         duration_months,
-        stipend_monthly
+        stipend_monthly,
+        stipend_yearly,
+        work_mode,
+        start_date,
+        short_description,
+        long_description,
+        flag_emoji
       ),
       application_answers (*)
     `)
@@ -224,7 +329,9 @@ export async function saveTextAnswer(
   fieldKey: string,
   answerText: string
 ) {
-  const supabase = await createClient()
+  const { supabase, error: accessError } = await assertOwnedDraftApplication(applicationId)
+  if (!supabase || accessError) return toPlainResponse(null, accessError)
+
   const { data, error } = await supabase
     .from('application_answers')
     .upsert({
@@ -247,13 +354,19 @@ export async function uploadFileAnswer(
   fieldKey: string,
   file: File
 ) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+  const { supabase, user, error: accessError } = await assertOwnedDraftApplication(applicationId)
+  if (!supabase || !user || accessError) return toPlainResponse(null, accessError)
 
-  // Check file size (max 1MB)
-  if (file.size > 1024 * 1024) {
-    return toPlainResponse(null, { message: 'File size must be under 1MB' })
+  if (file.size > MAX_FILE_UPLOAD_BYTES) {
+    return toPlainResponse(null, { message: MAX_FILE_UPLOAD_ERROR })
+  }
+
+  const isPdf =
+    file.type.toLowerCase().includes('pdf') ||
+    file.name.toLowerCase().endsWith('.pdf')
+
+  if (!isPdf) {
+    return toPlainResponse(null, { message: 'Only PDF files are allowed' })
   }
 
   // Upload file to storage
@@ -274,7 +387,7 @@ export async function uploadFileAnswer(
       field_key: fieldKey,
       file_url: filePath,
       file_name: file.name,
-      file_type: file.type.includes('pdf') ? 'pdf' : 'image',
+      file_type: 'pdf',
       updated_at: new Date().toISOString()
     }, { onConflict: 'application_id,field_key' })
 
@@ -285,11 +398,20 @@ export async function uploadFileAnswer(
 // UPDATE CURRENT STEP
 // ─────────────────────────────────────────
 export async function updateCurrentStep(applicationId: string, stepNumber: number) {
-  const supabase = await createClient()
+  const { supabase, error: accessError } = await assertOwnedDraftApplication(applicationId)
+  if (!supabase || accessError) return toPlainResponse(null, accessError)
+
+  if (stepNumber < 1 || stepNumber > APPLICATION_STEPS_COUNT) {
+    return toPlainResponse(null, {
+      message: `Step must be between 1 and ${APPLICATION_STEPS_COUNT}`,
+    })
+  }
+
   const { data, error } = await supabase
     .from('applications')
     .update({ current_step: stepNumber })
     .eq('id', applicationId)
+    .eq('status', 'draft')
 
   return toPlainResponse(data, error)
 }
@@ -298,49 +420,49 @@ export async function updateCurrentStep(applicationId: string, stepNumber: numbe
 // SUBMIT APPLICATION
 // ─────────────────────────────────────────
 export async function submitApplication(applicationId: string) {
-  const supabase = await createClient()
+  const { supabase, error: accessError } = await assertOwnedDraftApplication(applicationId)
+  if (!supabase || accessError) return toPlainResponse(null, accessError)
+
   const { data, error } = await supabase
     .from('applications')
     .update({
       status: 'submitted',
       submitted_at: new Date().toISOString(),
-      current_step: 5
+      current_step: APPLICATION_STEPS_COUNT
     })
     .eq('id', applicationId)
+    .eq('status', 'draft')
     .select('id, status, submitted_at')
     .single()
 
-  return toPlainResponse(data ?? { id: applicationId, status: 'submitted' }, error)
-}
+  if (!error) {
+    const adminClient = createAdminClient()
+    const { data: admins } = await adminClient
+      .from('profiles')
+      .select('id')
+      .eq('role', 'admin')
 
-// ─────────────────────────────────────────
-// ACCEPT AN OFFER
-// auto withdraws all other applications
-// ─────────────────────────────────────────
-export async function acceptOffer(applicationId: string) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+    for (const admin of admins ?? []) {
+      await createNotification({
+        userId: admin.id,
+        type: 'new_application_received',
+        title: 'New Application Received',
+        message: 'A student has submitted a new internship application.',
+        relatedId: applicationId,
+        relatedType: 'application',
+        category: 'application',
+      })
+    }
 
-  // Accept this application
-  const { error: acceptError } = await supabase
-    .from('applications')
-    .update({
-      status: 'accepted',
-      accepted_at: new Date().toISOString()
+    await recordApplicationEvent({
+      applicationId,
+      eventType: 'submitted',
+      actorRole: 'student',
+      message: 'Application submitted by student',
     })
-    .eq('id', applicationId)
+  }
 
-  if (acceptError) return toPlainResponse(null, acceptError)
-
-  // Auto withdraw all other applications
-  const { error: withdrawError } = await supabase
-    .from('applications')
-    .update({ status: 'withdrawn' })
-    .eq('student_id', user.id)
-    .neq('id', applicationId)
-
-  return toPlainResponse('Offer accepted successfully', withdrawError)
+  return toPlainResponse(data ?? { id: applicationId, status: 'submitted' }, error)
 }
 
 // ─────────────────────────────────────────
@@ -348,98 +470,29 @@ export async function acceptOffer(applicationId: string) {
 // ─────────────────────────────────────────
 export async function withdrawApplication(applicationId: string) {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+
   const { data, error } = await supabase
     .from('applications')
     .update({ status: 'withdrawn' })
     .eq('id', applicationId)
-
-  return toPlainResponse(data, error)
-}
-
-// ─────────────────────────────────────────
-// GET ALL APPROVED APPLICATIONS
-// (with offer letters)
-// ─────────────────────────────────────────
-export async function getApprovedApplications() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
-
-  const { data, error } = await supabase
-    .from('applications')
-    .select(`
-      *,
-      internships (
-        title,
-        subtitle,
-        city,
-        country,
-        image_url,
-        badge,
-        duration_months,
-        stipend_monthly
-      )
-    `)
     .eq('student_id', user.id)
-    .eq('status', 'approved')
-    .order('decided_at', { ascending: false })
+    .in('status', ['draft', 'submitted', 'under_review', 'approved'])
+    .select()
+    .single()
 
   return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
-// GET OFFER LETTER (student)
+// GET APPLICATION FILE (student)
 // ─────────────────────────────────────────
-export async function getMyOfferLetter(filePath: string) {
+export async function getMyApplicationFile(filePath: string) {
   const supabase = await createClient()
   const { data, error } = await supabase.storage
     .from('application-documents')
     .createSignedUrl(filePath, 60 * 60)
-
-  return toPlainResponse(data, error)
-}
-
-// ─────────────────────────────────────────
-// CONFIRM OFFER (student accepts one)
-// auto closes all other applications
-// ─────────────────────────────────────────
-export async function confirmOffer(applicationId: string) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
-
-  // Accept this application
-  const { error: acceptError } = await supabase
-    .from('applications')
-    .update({
-      status: 'accepted',
-      accepted_at: new Date().toISOString()
-    })
-    .eq('id', applicationId)
-
-  if (acceptError) return toPlainResponse(null, acceptError)
-
-  // Auto close ALL other applications
-  // (draft, submitted, under_review, approved)
-  const { error: closeError } = await supabase
-    .from('applications')
-    .update({ status: 'closed' })
-    .eq('student_id', user.id)
-    .neq('id', applicationId)
-    .in('status', ['draft', 'submitted', 'under_review', 'approved'])
-
-  return toPlainResponse('Offer confirmed successfully', closeError)
-}
-
-// ─────────────────────────────────────────
-// DECLINE OFFER (student declines one)
-// ─────────────────────────────────────────
-export async function declineOffer(applicationId: string) {
-  const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('applications')
-    .update({ status: 'closed' })
-    .eq('id', applicationId)
 
   return toPlainResponse(data, error)
 }
@@ -479,7 +532,7 @@ export async function getApplicationCounts() {
     if (isApproved) {
       counts.approved++
     }
-    // Active = in pipeline (awaiting admin decision or student offer response)
+    // Active = in pipeline (awaiting admin decision)
     if (isInReview || app.status === 'approved') {
       counts.active++
     }
@@ -546,4 +599,163 @@ export async function getDraftApplications() {
     .order('started_at', { ascending: false })
 
   return toPlainResponse(data, error)
+}
+
+// ─────────────────────────────────────────
+// GET APPROVED APPLICATIONS COUNT
+// ─────────────────────────────────────────
+export async function getApprovedApplicationsCount() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+
+  const { count, error } = await supabase
+    .from('applications')
+    .select('*', { count: 'exact', head: true })
+    .eq('student_id', user.id)
+    .eq('status', 'approved')
+
+  return toPlainResponse({ count: count ?? 0 }, error)
+}
+
+// ─────────────────────────────────────────
+// ACCEPT APPLICATION (student selects one approved application)
+// ─────────────────────────────────────────
+export async function acceptApplication(
+  applicationId: string,
+  confirmationText: string,
+  applicationRefId: string
+) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+
+  const expectedText = `I am accepting this application ${applicationRefId}`
+  if (confirmationText.trim() !== expectedText) {
+    return toPlainResponse(null, {
+      message: 'Confirmation text does not match. Please type the exact text shown.',
+      code: 'CONFIRMATION_MISMATCH',
+    })
+  }
+
+  const { data: application, error: fetchError } = await supabase
+    .from('applications')
+    .select(`
+      id, status, student_id, internship_id,
+      student_profiles (first_name, last_name),
+      internships (title)
+    `)
+    .eq('id', applicationId)
+    .eq('student_id', user.id)
+    .single()
+
+  if (fetchError || !application) {
+    return toPlainResponse(null, fetchError || { message: 'Application not found' })
+  }
+
+  if (application.status !== 'approved') {
+    return toPlainResponse(null, {
+      message: 'Only approved applications can be accepted.',
+      code: 'INVALID_STATUS',
+    })
+  }
+
+  const { data: existingAccepted } = await supabase
+    .from('applications')
+    .select('id')
+    .eq('student_id', user.id)
+    .eq('status', 'accepted')
+    .limit(1)
+    .maybeSingle()
+
+  if (existingAccepted) {
+    return toPlainResponse(null, {
+      message: 'You have already accepted another application. Only one application can be accepted.',
+      code: 'ALREADY_ACCEPTED',
+    })
+  }
+
+  const now = new Date().toISOString()
+
+  const { data: acceptedApp, error: acceptError } = await supabase
+    .from('applications')
+    .update({
+      status: 'accepted',
+      accepted_at: now,
+    })
+    .eq('id', applicationId)
+    .eq('student_id', user.id)
+    .eq('status', 'approved')
+    .select('id, status, accepted_at')
+    .single()
+
+  if (acceptError || !acceptedApp) {
+    return toPlainResponse(null, acceptError || { message: 'Failed to accept application' })
+  }
+
+  await recordApplicationEvent({
+    applicationId,
+    eventType: 'student_accepted',
+    actorRole: 'student',
+    message: 'Student accepted this application offer',
+  })
+
+  const { data: otherApproved } = await supabase
+    .from('applications')
+    .select('id')
+    .eq('student_id', user.id)
+    .eq('status', 'approved')
+    .neq('id', applicationId)
+
+  if (otherApproved && otherApproved.length > 0) {
+    const otherIds = otherApproved.map(app => app.id)
+
+    await supabase
+      .from('applications')
+      .update({
+        status: 'closed',
+        closed_at: now,
+      })
+      .eq('student_id', user.id)
+      .eq('status', 'approved')
+      .neq('id', applicationId)
+
+    for (const otherId of otherIds) {
+      await recordApplicationEvent({
+        applicationId: otherId,
+        eventType: 'auto_closed',
+        actorRole: 'system',
+        message: `Student chose a different application (${applicationRefId})`,
+        metadata: { accepted_application_id: applicationId, accepted_application_ref: applicationRefId },
+      })
+    }
+  }
+
+  const adminClient = createAdminClient()
+  const { data: admins } = await adminClient
+    .from('profiles')
+    .select('id')
+    .eq('role', 'admin')
+
+  const studentProfile = application.student_profiles as { first_name?: string; last_name?: string } | null
+  const internshipData = application.internships as { title?: string } | null
+  const studentName = [studentProfile?.first_name, studentProfile?.last_name].filter(Boolean).join(' ') || 'A student'
+  const internshipTitle = internshipData?.title || 'an internship'
+
+  for (const admin of admins ?? []) {
+    await createNotification({
+      userId: admin.id,
+      type: 'application_accepted',
+      title: 'Application Accepted by Student',
+      message: `${studentName} has accepted their application for ${internshipTitle} (${applicationRefId}).`,
+      relatedId: applicationId,
+      relatedType: 'application',
+      category: 'application',
+    })
+  }
+
+  return toPlainResponse({
+    accepted: acceptedApp,
+    closedCount: otherApproved?.length ?? 0,
+  }, null)
 }

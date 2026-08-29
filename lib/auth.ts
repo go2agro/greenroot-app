@@ -21,7 +21,55 @@ export async function signUp(email: string, password: string) {
 export async function signIn(email: string, password: string) {
   const supabase = await createClient()
   const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-  return toPlainResponse(data, error)
+
+  if (error || !data.user) {
+    return toPlainResponse(null, error)
+  }
+
+  return toPlainResponse(
+    { user: { id: data.user.id, email: data.user.email } },
+    null
+  )
+}
+
+// Sign in and fetch profile in one request so the session is available immediately
+export async function loginUser(email: string, password: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+
+  if (error) {
+    return toPlainResponse(null, error)
+  }
+
+  if (!data.user) {
+    return toPlainResponse(null, { message: 'Login failed' })
+  }
+
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('id, role, unique_id')
+    .eq('id', data.user.id)
+    .maybeSingle()
+
+  if (profileError) {
+    return toPlainResponse(null, profileError)
+  }
+
+  if (!profile) {
+    return toPlainResponse(null, { message: 'Account setup incomplete. Please contact support.' })
+  }
+
+  return toPlainResponse(
+    {
+      user: { id: data.user.id, email: data.user.email },
+      profile: {
+        id: profile.id,
+        role: profile.role,
+        unique_id: profile.unique_id,
+      },
+    },
+    null
+  )
 }
 
 // Sign Out
@@ -104,18 +152,12 @@ export async function deleteAccount() {
 
   const { data: applications, error: applicationsError } = await admin
     .from('applications')
-    .select('id, offer_letter_url')
+    .select('id')
     .eq('student_id', userId)
 
   if (applicationsError) return toPlainResponse(null, applicationsError)
 
   const applicationIds = applications?.map((app) => app.id) ?? []
-
-  applications?.forEach((app) => {
-    if (app.offer_letter_url) {
-      applicationDocumentPaths.push(app.offer_letter_url)
-    }
-  })
 
   if (applicationIds.length) {
     const { data: answers, error: answersError } = await admin
@@ -148,12 +190,6 @@ export async function deleteAccount() {
 
   studentDocumentPaths.push(...await listAllStoragePaths(admin, 'student-documents', userId))
   applicationDocumentPaths.push(...await listAllStoragePaths(admin, 'application-documents', userId))
-
-  for (const applicationId of applicationIds) {
-    applicationDocumentPaths.push(
-      ...await listAllStoragePaths(admin, 'application-documents', `offer-letters/${applicationId}`)
-    )
-  }
 
   if (studentDocumentPaths.length) {
     try {

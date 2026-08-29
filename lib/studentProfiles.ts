@@ -2,6 +2,7 @@
 
 import { createClient } from './supabase'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
+import { MAX_FILE_UPLOAD_BYTES, MAX_FILE_UPLOAD_ERROR } from '@/lib/appConfig'
 
 // Get my student profile
 export async function getMyStudentProfile() {
@@ -142,6 +143,10 @@ export async function uploadStudentDocument(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return toPlainResponse(null, { message: 'Not logged in' })
 
+  if (file.size > MAX_FILE_UPLOAD_BYTES) {
+    return toPlainResponse(null, { message: MAX_FILE_UPLOAD_ERROR })
+  }
+
   const fileExt = file.name.split('.').pop()
   const filePath = `${user.id}/${documentType}.${fileExt}`
 
@@ -155,6 +160,18 @@ export async function uploadStudentDocument(
     .from('student_profiles')
     .update({ [`${documentType}_url`]: filePath })
     .eq('id', user.id)
+
+  return toPlainResponse(data, error)
+}
+
+// ─────────────────────────────────────────
+// GET STUDENT DOCUMENT URL (signed)
+// ─────────────────────────────────────────
+export async function getMyStudentDocumentUrl(filePath: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase.storage
+    .from('student-documents')
+    .createSignedUrl(filePath, 60 * 60)
 
   return toPlainResponse(data, error)
 }
