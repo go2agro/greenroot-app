@@ -1,0 +1,163 @@
+{
+  "hero": {
+    "eyebrow": "Our story · GreenRoot",
+    "heading": "We grow careers",
+    "headingHighlight": "the way nature does",
+    "headingSuffix": "— patiently, globally, with purpose.",
+    "description": "GreenRoot is where agriculture students meet the world. We open doors to international internships so tomorrow's agri leaders can learn in the field, not just from textbooks.",
+    "primaryCta": { "label": "Explore internships", "href": "/internships" },
+    "secondaryCta": { "label": "Read our story", "href": "#our-story" },
+    "highlightStat": { "value": "5000+", "label": "students guided into global agri careers" },
+    "images": {
+      "main": "https://picsum.photos/700/800?random=40",
+      "mainAlt": "Students learning in an agricultural field",
+      "secondary": "https://picsum.photos/400/300?random=49",
+      "secondaryAlt": "Greenhouse research"
+    }
+  },
+  "stats": [
+    { "value": "5000+", "label": "Students placed" },
+    { "value": "24", "label": "Countries reached" },
+    { "value": "200+", "label": "Partner firms" }
+  ],
+  "story": {
+    "eyebrow": "Our story",
+    "heading": "Grown from a gap. Guided by a greener future.",
+    "description": "The best agriculture careers aren't built in isolation — they're cultivated across borders, mentors, and seasons of real practice. Here's how GreenRoot took root.",
+    "chapters": [
+      {
+        "step": "01",
+        "title": "The seed",
+        "label": "Why we began",
+        "icon": "Sprout",
+        "body": "Agriculture students were ready to grow — but the path to real, international experience felt distant, confusing, and out of reach. GreenRoot began as a simple belief: opportunity should travel as freely as ambition."
+      },
+      {
+        "step": "02",
+        "title": "The roots",
+        "label": "How we work",
+        "icon": "Compass",
+        "body": "We carefully curate internships with farms and agri organizations worldwide — pairing students with mentors, clear expectations, and hands-on learning that turns classroom knowledge into field confidence."
+      },
+      {
+        "step": "03",
+        "title": "The canopy",
+        "label": "What we promise",
+        "icon": "Sun",
+        "body": "Every placement is built on transparency and trust. No guesswork, no empty listings — just meaningful experience that helps the next generation of agri-professionals stand taller in a changing world."
+      }
+    ]
+  },
+  "pillars": {
+    "eyebrow": "What drives us",
+    "heading": "Mission, vision & promise — in one breath.",
+    "description": "Three commitments that shape every internship we share.",
+    "items": [
+      {
+        "title": "Mission",
+        "icon": "Leaf",
+        "text": "Open trusted global internships so agriculture students can learn, innovate, and grow into confident professionals."
+      },
+      {
+        "title": "Vision",
+        "icon": "Globe",
+        "text": "Become the platform students and industry leaders trust most to connect talent with worldwide agri opportunity."
+      },
+      {
+        "title": "Promise",
+        "icon": "HandHeart",
+        "text": "Curate every internship for quality and clarity — so every student walks into real experience, not uncertainty."
+      }
+    ]
+  },
+  "team": {
+    "eyebrow": "The people",
+    "heading": "Hands that plant. Minds that guide.",
+    "description": "Founders, team leads, and advisors who blend agronomy, education, and operations — so every student journey feels personal and possible.",
+    "founders": [
+      {
+        "name": "Mr. Sunil Landkar",
+        "role": "Co-founder & CEO",
+        "email": "sunil@go2agro.com",
+        "mobile": "+91 7972537388",
+        "image": "https://picsum.photos/400/500?random=42"
+      }
+    ],
+    "members": [
+      {
+        "name": "Shubham Jaydeokar",
+        "role": "Tech Lead",
+        "image": "https://picsum.photos/400/500?random=50"
+      },
+      {
+        "name": "Kasturi Pawde",
+        "role": "Design Head",
+        "image": "https://picsum.photos/400/500?random=51"
+      }
+    ],
+    "advisors": [
+      {
+        "name": "Mr. Abraham Yehunda",
+        "roleLine1": "CEO Israel-India Initiative",
+        "roleLine2": "Advisor - International Associate",
+        "image": "https://picsum.photos/80/80?random=43"
+      },
+      {
+        "name": "Giri & Jadhav Associate",
+        "roleLine1": "Advisor - Finance & Tax",
+        "roleLine2": null,
+        "icon": "briefcase"
+      },
+      {
+        "name": "Mr. Sharad Pabale",
+        "roleLine1": "CEO Israel-India Initiative",
+        "roleLine2": "Advisor - International Associate",
+        "image": "https://picsum.photos/80/80?random=45"
+      },
+      {
+        "name": "Radhika Sakseria",
+        "roleLine1": "Advocate",
+        "roleLine2": null,
+        "icon": "scale"
+      }
+    ]
+  },
+  "goals": {
+    "eyebrow": "Looking ahead",
+    "heading": "Where we're growing next",
+    "description": "Our north star is simple: make global agricultural learning accessible, trustworthy, and transformative — for every student willing to grow.",
+    "image": "https://picsum.photos/700/700?random=47",
+    "imageAlt": "Greenhouse and field collaboration",
+    "items": [
+      {
+        "icon": "Globe",
+        "title": "Wider horizons",
+        "text": "Open internship pathways in more countries each year."
+      },
+      {
+        "icon": "Handshake",
+        "title": "Deeper partnerships",
+        "text": "Grow with leading farms and agricultural organizations."
+      },
+      {
+        "icon": "GraduationCap",
+        "title": "Ready for the field",
+        "text": "Help students leave with practical, career-ready skills."
+      },
+      {
+        "icon": "Leaf",
+        "title": "Grow responsibly",
+        "text": "Champion sustainable and innovative farming practices."
+      }
+    ]
+  },
+  "cta": {
+    "eyebrow": "Your turn to grow",
+    "heading": "Ready to plant the next chapter of your agri career?",
+    "description": "Browse curated international internships — or create an account and start your application today.",
+    "primaryCta": { "label": "Browse Internships", "href": "/internships" },
+    "secondaryCta": { "label": "Create Account", "href": "/signup" },
+    "image": "https://picsum.photos/500/400?random=48",
+    "imageAlt": "Student ready for an agriculture internship"
+  }
+}

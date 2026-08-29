@@ -1,0 +1,168 @@
+{
+  "hero": {
+    "heading_prefix": "Empowering the Next Generation of",
+    "heading_highlight": "Agricultural Leaders",
+    "subheading": "Gain hands-on experience with world-class farms and agricultural organizations across the globe.",
+    "cta_primary_text": "Browse Internships",
+    "cta_primary_link": "/internships",
+    "cta_secondary_text": "Learn More",
+    "cta_secondary_link": "/about",
+    "images": {
+      "collage_top_right": {
+        "src": "https://picsum.photos/300/200?random=1",
+        "alt": "Agricultural work"
+      },
+      "collage_bottom_left": {
+        "src": "https://picsum.photos/300/200?random=2",
+        "alt": "Farm landscape"
+      },
+      "collage_center": {
+        "src": "https://picsum.photos/300/200?random=3",
+        "alt": "Students learning"
+      }
+    }
+  },
+  "stats": [
+    { "value": 300, "suffix": "+", "label": "Students Placed" },
+    { "value": 25, "suffix": "+", "label": "Partner Countries" },
+    { "value": 98, "suffix": "%", "label": "Success Rate" }
+  ],
+  "features": {
+    "heading": "Why Choose GreenRoot?",
+    "subheading": "We connect Indian agriculture students with global opportunities",
+    "image": {
+      "src": "https://picsum.photos/400/600?random=4",
+      "alt": "Students learning in an agricultural field"
+    },
+    "items": [
+      {
+        "id": "global-network",
+        "title": "Global Network",
+        "description": "Access to 100+ international farms and agricultural institutions"
+      },
+      {
+        "id": "visa-support",
+        "title": "Visa Support",
+        "description": "Complete assistance with visa applications and documentation"
+      },
+      {
+        "id": "career-growth",
+        "title": "Career Growth",
+        "description": "Build international experience and industry connections"
+      }
+    ]
+  },
+  "featuredCountries": {
+    "heading_prefix": "Featured",
+    "heading_highlight": "Countries",
+    "countries": [
+      { "flag": "🇩🇰", "name": "Denmark" },
+      { "flag": "🇩🇪", "name": "Germany" },
+      { "flag": "🇺🇸", "name": "USA" },
+      { "flag": "🇮🇱", "name": "Israel" },
+      { "flag": "🇦🇺", "name": "Australia" },
+      { "flag": "🇨🇦", "name": "Canada" },
+      { "flag": "🇮🇹", "name": "Italy" },
+      { "flag": "🇵🇹", "name": "Portugal" },
+      { "flag": "🇵🇪", "name": "Peru" }
+    ]
+  },
+  "howItWorks": {
+    "heading_prefix": "How It",
+    "heading_highlight": "Works?",
+    "steps": [
+      {
+        "id": "step-1",
+        "icon": "user",
+        "stepLabel": "Step 1",
+        "title": "Create Profile"
+      },
+      {
+        "id": "step-2",
+        "icon": "globe",
+        "stepLabel": "Step 2",
+        "title": "Browse Internships"
+      },
+      {
+        "id": "step-3",
+        "icon": "briefcase",
+        "stepLabel": "Step 3",
+        "title": "Submit Application"
+      },
+      {
+        "id": "step-4",
+        "icon": "checkCircle",
+        "stepLabel": "Step 4",
+        "title": "Start your Journey!"
+      }
+    ]
+  },
+  "featuredOpportunities": {
+    "heading_prefix": "Featured",
+    "heading_highlight": "Opportunities"
+  },
+  "successStories": {
+    "heading_prefix": "Success",
+    "heading_highlight": "Stories",
+    "stories": [
+      {
+        "id": "sarah-j",
+        "initials": "SJ",
+        "name": "Sarah J.",
+        "role": "Intern in Denmark",
+        "quote": "GreenRoot didn't just find me an internship; they found me a career. The mentorship I received in Denmark changed my entire perspective on sustainable dairy farming."
+      },
+      {
+        "id": "marcus-t",
+        "initials": "MT",
+        "name": "Marcus T.",
+        "role": "Intern in Singapore",
+        "quote": "The application process was seamless. Within weeks, I was working on a rooftop hydroponics project that combined my love for tech and plants."
+      },
+      {
+        "id": "elena-r",
+        "initials": "ER",
+        "name": "Elena R.",
+        "role": "Intern in Portugal",
+        "quote": "I gained hands-on experience that no textbook could ever provide. GreenRoot is truly bridging the gap for the next generation of ag-leaders."
+      }
+    ]
+  },
+  "faq": {
+    "heading_prefix": "Frequently Asked",
+    "heading_highlight": "Questions",
+    "description": "Find answers to the most common questions about GreenRoot internships.",
+    "items": [
+      {
+        "id": "who-can-apply",
+        "question": "Who can apply for GreenRoot internships?",
+        "answer": "Any agriculture student or recent graduate can apply. We welcome students from all agricultural disciplines across India."
+      },
+      {
+        "id": "which-countries",
+        "question": "Which countries offer internship opportunities?",
+        "answer": "We currently offer internships in Denmark, Germany, USA, Israel, Australia, Canada, Italy, Portugal, and Peru."
+      },
+      {
+        "id": "how-to-apply",
+        "question": "How do I apply for an internship?",
+        "answer": "Create your profile, browse available internships, and submit your application through our simple 10-step process."
+      },
+      {
+        "id": "required-documents",
+        "question": "What documents are required to apply?",
+        "answer": "You will need your resume, passport copy, academic transcripts, recommendation letters, and a statement of purpose."
+      }
+    ]
+  },
+  "cta": {
+    "heading": "Ready to Start Your Journey?",
+    "subheading": "Join hundreds of students who have transformed their careers",
+    "button_text": "Get Started",
+    "button_link": "/signup",
+    "image": {
+      "src": "https://picsum.photos/400/300?random=8",
+      "alt": "Students in agriculture"
+    }
+  }
+}

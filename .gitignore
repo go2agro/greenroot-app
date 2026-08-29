@@ -31,6 +31,7 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
+# Never commit SUPABASE_SERVICE_ROLE_KEY or ADMIN_SETUP_SECRET — server-side secrets only.
 .env*
 
 # vercel
@@ -42,6 +43,8 @@ next-env.d.ts
 
 # project documentation (internal use only - not for git)
 PROJECT_MASTER_DOCUMENTATION.md
+NAVIGATION_SYSTEM.md
+lib/navigation/README.md
 .env.local
 
 # Cursor agent skills (local AI assistance only)
@@ -49,3 +52,7 @@ PROJECT_MASTER_DOCUMENTATION.md
 
 # Setup reports and documentation
 *-setup-report.md
+
+# Cursor local config & codebase map
+CODEBASE_MAP.md
+.cursorrules

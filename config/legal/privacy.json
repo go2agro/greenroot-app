@@ -1,0 +1,449 @@
+{
+  "title": "Privacy Policy",
+  "subtitle": "{{platformDescription}}",
+  "effectiveNote": "Upon publication",
+  "lastUpdated": "August 2026",
+  "intro": "This Privacy Policy explains how {{operatorName}} (\"{{operatorShortName}}\", \"we\", \"us\", or \"our\") collects, uses, stores, shares, and protects personal data through the {{platformName}} platform at {{platformHost}} (the \"Platform\"). We are committed to handling your information responsibly and in compliance with applicable Indian laws, including the Digital Personal Data Protection Act, 2023 (\"DPDP Act\"), the Information Technology Act, 2000, and the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011 (\"SPDI Rules\").",
+  "sections": [
+    {
+      "id": "scope",
+      "title": "1. Scope & Data Fiduciary",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "This Privacy Policy applies to all personal data collected through the {{platformName}} Platform, including data provided by Students, Admins, and Partners. {{platformName}} is the technology platform; {{operatorName}} acts as the data fiduciary responsible for determining the purposes and means of processing personal data collected through the Platform."
+        },
+        {
+          "type": "p",
+          "text": "This Policy covers the {{platformName}} web platform only. Offline services provided by {{operatorShortName}} staff — such as visa counselling, travel coordination, or in-person training — may involve additional data handling practices communicated separately during those engagements."
+        },
+        {
+          "type": "p",
+          "text": "By registering on or using the Platform, you consent to the collection and processing of your personal data as described in this Policy. If you do not agree, please do not use the Platform."
+        }
+      ]
+    },
+    {
+      "id": "data-collected",
+      "title": "2. Personal Data We Collect",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "We collect the following categories of personal data depending on your role and activity on the Platform:"
+        },
+        {
+          "type": "h3",
+          "text": "2.1 Account & Authentication Data"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Email address and password (stored in encrypted form)",
+            "Account role (Student, Admin, or Partner)",
+            "Unique user identifier assigned by the Platform"
+          ]
+        },
+        {
+          "type": "h3",
+          "text": "2.2 Identity & Verification Documents"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Aadhaar number and front/back images",
+            "PAN number and card image",
+            "Passport number, issue/expiry dates, issuing country, and passport images",
+            "Driving licence (where provided)",
+            "Profile photograph and digital signature"
+          ]
+        },
+        {
+          "type": "h3",
+          "text": "2.3 Personal & Contact Information"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Full name (first, middle, last), gender, date of birth, nationality, marital status",
+            "Email address, mobile number, alternate email/phone, WhatsApp number",
+            "Emergency contact name and number",
+            "Residential address (address lines, city, district, state, pincode, country)",
+            "Current residential address (where different from permanent address)"
+          ]
+        },
+        {
+          "type": "h3",
+          "text": "2.4 Academic Information"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "University, college, degree, branch/specialisation",
+            "Current academic status and expected graduation year",
+            "Short biography or personal statement"
+          ]
+        },
+        {
+          "type": "h3",
+          "text": "2.5 Health & Eligibility Information"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Medical conditions relevant to international agricultural work",
+            "Allergies and dietary restrictions",
+            "Disabilities or special accommodation needs",
+            "Language proficiency (read, write, speak)"
+          ]
+        },
+        {
+          "type": "h3",
+          "text": "2.6 Application Data"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Responses to internship-specific application questions",
+            "Documents uploaded during the application process",
+            "Application status, stage history, and admin comments",
+            "Declarations and consent records (including agreement to these Terms and this Policy)"
+          ]
+        },
+        {
+          "type": "h3",
+          "text": "2.7 Admin & Partner Profile Data"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Name, contact details, and address for authorised Admins and Partners",
+            "Partner country assignments and organisational details",
+            "Identity documents (Aadhaar, PAN) where collected for Admin profiles"
+          ]
+        },
+        {
+          "type": "h3",
+          "text": "2.8 Technical & Usage Data"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Device type, browser type, operating system, and IP address",
+            "Pages visited, actions taken, and session information",
+            "Error logs and performance data",
+            "Cookies and similar tracking technologies (see Section 10)"
+          ]
+        },
+        {
+          "type": "p",
+          "text": "We do not currently collect bank account details or payment card information through the {{platformName}} Platform. Any fee payments are handled outside the Platform through separate channels communicated by {{operatorShortName}}."
+        }
+      ]
+    },
+    {
+      "id": "legal-basis",
+      "title": "3. Legal Basis & Purpose of Processing",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "We process your personal data for the following purposes and on the following legal bases:"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Account creation and authentication — to provide you access to the Platform (consent and contractual necessity).",
+            "Profile completion and application submission — to enable you to apply for Internships (consent and contractual necessity).",
+            "Identity verification — to verify your identity using Aadhaar, PAN, and passport documents, which is essential for internship placement and visa processing (consent and legitimate use for specified purpose under the DPDP Act).",
+            "Health and eligibility assessment — to determine whether you are medically fit for international agricultural work and to inform host organisations (consent and legitimate use).",
+            "Application review and placement facilitation — to evaluate Applications, communicate with you, and coordinate with Partners (contractual necessity and legitimate use).",
+            "Sharing with programme coordinators and overseas Partners — to enable selection, verification, and placement of eligible candidates (consent, provided at application submission).",
+            "Visa and immigration support — to assist {{operatorShortName}} staff in preparing documentation for overseas travel (consent and legitimate use).",
+            "Platform administration — to manage listings, monitor application pipelines, send operational notifications, and maintain records (legitimate use).",
+            "Security and fraud prevention — to detect false documents, unauthorised access, and misuse of the Platform (legitimate use and legal obligation).",
+            "Analytics and platform improvement — to understand usage patterns and improve the Platform experience (consent, where required; legitimate use for aggregated analytics).",
+            "Legal compliance — to comply with applicable laws, respond to lawful requests, and enforce our Terms (legal obligation)."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Collection of Aadhaar is important for identity verification in the context of Indian students applying for government-documented international programmes. We collect Aadhaar only with your explicit consent and use it solely for the purposes stated above. We do not use Aadhaar for any purpose not disclosed in this Policy."
+        }
+      ]
+    },
+    {
+      "id": "data-sharing",
+      "title": "4. How We Share Your Data",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "We do not sell your personal data. We share personal data only as necessary for the purposes described in this Policy:"
+        },
+        {
+          "type": "h3",
+          "text": "4.1 Internship Programme Coordinators & Partners"
+        },
+        {
+          "type": "p",
+          "text": "When you submit an Application, the information visible on your Application form — which includes personal, academic, health, and document data relevant to the Internship — is shared with the respective internship programme coordinators and authorised overseas Partners. Partners do not have access to your complete Platform profile; they see only the Application form and related data necessary for recruitment and selection."
+        },
+        {
+          "type": "h3",
+          "text": "4.2 International Data Transfers"
+        },
+        {
+          "type": "p",
+          "text": "Because Internships are located in countries such as Denmark, Germany, the United States, Israel, Australia, and others, a portion of your Application Data will be transferred outside India to overseas Partners for verification and selection purposes. By submitting an Application and consenting to this Policy, you expressly consent to such cross-border transfers. We take reasonable steps to ensure overseas recipients handle your data responsibly and only for the stated purposes."
+        },
+        {
+          "type": "h3",
+          "text": "4.3 Service Providers"
+        },
+        {
+          "type": "p",
+          "text": "We use trusted third-party service providers to operate the Platform:"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Supabase — cloud database, authentication, and file storage (hosted in India region)",
+            "PostHog — website analytics and product usage insights",
+            "Email and communication services used by {{operatorShortName}} staff (where applicable)"
+          ]
+        },
+        {
+          "type": "p",
+          "text": "These providers process data on our behalf under contractual obligations to protect your information and use it only for the services they provide to us."
+        },
+        {
+          "type": "h3",
+          "text": "4.4 Legal & Regulatory Disclosures"
+        },
+        {
+          "type": "p",
+          "text": "We may disclose personal data where required by law, court order, government authority, or to protect the rights, safety, and property of {{operatorShortName}}, Users, or the public."
+        },
+        {
+          "type": "h3",
+          "text": "4.5 Admins"
+        },
+        {
+          "type": "p",
+          "text": "Authorised {{operatorShortName}} Admins have access to Student profiles, Applications, and associated documents for operational purposes including review, status updates, data correction, and forwarding to Partners."
+        }
+      ]
+    },
+    {
+      "id": "data-storage",
+      "title": "5. Data Storage & Security",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Your personal data and uploaded documents are stored on Supabase cloud infrastructure in the India region. We implement reasonable technical and organisational security measures including:"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Encrypted data transmission (HTTPS/TLS) for all Platform communications",
+            "Secure authentication with password hashing",
+            "Role-based access controls limiting data visibility by user type",
+            "Restricted Admin and Partner access on a need-to-know basis",
+            "Secure file storage with access policies for uploaded documents"
+          ]
+        },
+        {
+          "type": "p",
+          "text": "While we take reasonable precautions, no method of transmission or electronic storage is completely secure. We cannot guarantee absolute security of your data. You are responsible for keeping your login credentials confidential."
+        },
+        {
+          "type": "p",
+          "text": "Uploaded documents are subject to a maximum file size of 5 MB per file as configured on the Platform."
+        }
+      ]
+    },
+    {
+      "id": "data-retention",
+      "title": "6. Data Retention",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "We retain your personal data for as long as your account is active and for a reasonable period thereafter. Currently, we do not automatically delete personal data upon application withdrawal, rejection, or completion. Data associated with withdrawn, rejected, or completed Applications remains stored on the Platform for record-keeping, audit, and potential future reference purposes."
+        },
+        {
+          "type": "p",
+          "text": "We may retain certain data for longer periods where required by applicable law, to resolve disputes, enforce our agreements, or maintain business records. When data is no longer needed, we will take reasonable steps to delete or anonymise it."
+        },
+        {
+          "type": "p",
+          "text": "If you wish to request deletion of your account and associated data, please contact us at {{supportEmail}}. Deletion requests will be processed subject to legal retention requirements and ongoing application or placement obligations."
+        }
+      ]
+    },
+    {
+      "id": "your-rights",
+      "title": "7. Your Rights",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Under the DPDP Act and applicable law, you have the following rights regarding your personal data:"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Right to access — request information about the personal data we hold about you.",
+            "Right to correction — request correction of inaccurate or incomplete personal data. Currently, data corrections on the Platform are performed by authorised Admins upon your request.",
+            "Right to erasure — request deletion of your personal data, subject to legal and contractual limitations.",
+            "Right to withdraw consent — withdraw consent for processing that is based on consent, without affecting the lawfulness of processing before withdrawal.",
+            "Right to grievance redressal — raise a complaint regarding our data handling practices.",
+            "Right to nominate — nominate another individual to exercise your rights in the event of your death or incapacity, as provided under the DPDP Act."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "To exercise any of these rights, contact us at {{supportEmail}} with your registered email address and a description of your request. We will respond within the timeframe required by applicable law (generally within thirty (30) days under the DPDP Act). We may request identity verification before processing your request."
+        },
+        {
+          "type": "p",
+          "text": "Please note that Students cannot directly edit certain verified data fields on the Platform after submission. Admin-assisted correction is available upon request."
+        }
+      ]
+    },
+    {
+      "id": "children",
+      "title": "8. Minors & Student Users",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The Platform is designed for agriculture students, who may include individuals under the age of eighteen (18). Where a User is a minor under applicable law, registration and use of the Platform should be undertaken with the knowledge and consent of a parent or legal guardian. {{operatorShortName}} reserves the right to request parental or guardian consent where required."
+        },
+        {
+          "type": "p",
+          "text": "We do not knowingly collect personal data from children without appropriate consent. If you believe we have collected data from a minor without proper authorisation, please contact us immediately."
+        }
+      ]
+    },
+    {
+      "id": "marketing",
+      "title": "9. Marketing Communications",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "We do not send promotional marketing emails, SMS, or WhatsApp messages. Communications you receive from us are limited to operational and service-related messages, such as application status updates, account notifications, and responses to your enquiries."
+        }
+      ]
+    },
+    {
+      "id": "cookies",
+      "title": "10. Cookies & Analytics",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The Platform uses cookies and similar technologies to maintain your login session, remember preferences, and understand how the Platform is used."
+        },
+        {
+          "type": "h3",
+          "text": "10.1 Essential Cookies"
+        },
+        {
+          "type": "p",
+          "text": "These cookies are necessary for the Platform to function, including authentication session cookies. They cannot be disabled without affecting Platform functionality."
+        },
+        {
+          "type": "h3",
+          "text": "10.2 Analytics (PostHog)"
+        },
+        {
+          "type": "p",
+          "text": "We use PostHog, a product analytics service, to collect usage data such as pages visited, features used, device information, and error reports. This helps us improve the Platform. PostHog may set cookies or use similar technologies. Analytics data is generally collected in aggregated or pseudonymised form. Session recording may be enabled in production to help diagnose usability issues."
+        },
+        {
+          "type": "h3",
+          "text": "10.3 Third-Party Embeds"
+        },
+        {
+          "type": "p",
+          "text": "Certain pages (such as the Contact page) may embed third-party content such as Google Maps. These services may collect data according to their own privacy policies."
+        },
+        {
+          "type": "p",
+          "text": "You can control cookies through your browser settings. Disabling certain cookies may limit Platform functionality."
+        }
+      ]
+    },
+    {
+      "id": "breach",
+      "title": "11. Data Breach Notification",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "In the event of a personal data breach that is likely to affect your rights, we will take reasonable steps to investigate, contain, and remediate the breach. Where required by the DPDP Act and applicable rules, we will notify the Data Protection Board of India and affected Data Principals (Users) in accordance with legal requirements."
+        },
+        {
+          "type": "p",
+          "text": "If you become aware of any unauthorised access to your account or suspect a security incident, please contact us immediately at {{supportEmail}}."
+        }
+      ]
+    },
+    {
+      "id": "grievance",
+      "title": "12. Grievance Officer & Contact",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "In accordance with the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021 and the DPDP Act, {{operatorName}} has designated the following contact for privacy and data protection grievances. The Grievance Officer will be formally appointed and their details updated on this page:"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Name: {{grievanceOfficerName}}",
+            "Designation: Grievance Officer / Data Protection Contact",
+            "Email: {{supportEmail}}",
+            "Phone: {{supportPhone}}",
+            "Address: {{correspondenceAddress}}",
+            "Office hours: Monday to Friday, 10:00 AM to 6:00 PM IST"
+          ]
+        },
+        {
+          "type": "p",
+          "text": "We will acknowledge grievances within twenty-four (24) hours and endeavour to resolve them within fifteen (15) days, or within the timeframe prescribed by applicable law."
+        },
+        {
+          "type": "p",
+          "text": "If you are not satisfied with our response, you may escalate your complaint to the Data Protection Board of India as provided under the DPDP Act."
+        }
+      ]
+    },
+    {
+      "id": "changes",
+      "title": "13. Changes to This Policy",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "We may update this Privacy Policy from time to time to reflect changes in our practices, technology, or legal requirements. The \"Last updated\" date at the top of this page indicates when the Policy was last revised. Material changes will be communicated through the Platform or by email where appropriate. Continued use of the Platform after changes constitutes acceptance of the updated Policy."
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "title": "14. Contact Us",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "For privacy-related questions, data access requests, or concerns about this Policy:"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Platform: {{platformName}} — {{platformHost}}",
+            "Data Fiduciary: {{operatorName}}",
+            "Privacy contact: {{supportEmail}}",
+            "General enquiries: {{generalEmail}}",
+            "Phone: {{supportPhone}}",
+            "Correspondence address: {{correspondenceAddress}}",
+            "Registered office: {{registeredOffice}}",
+            "LLPIN: {{registeredOffice}}"
+          ]
+        }
+      ]
+    }
+  ]
+}

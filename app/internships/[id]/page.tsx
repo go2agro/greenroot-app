@@ -1,0 +1,347 @@
+"use client"
+
+import { use, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Image from 'next/image'
+import { 
+  MapPin, 
+  CalendarDays, 
+  Clock, 
+  CreditCard, 
+  Briefcase,
+  Settings2,
+  Droplets,
+  Layers,
+  BarChart3,
+  Leaf,
+  FlaskConical,
+  Droplet,
+  Wheat,
+  ArrowLeft
+} from 'lucide-react'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
+import { getInternshipById } from '@/lib/internships'
+import { BTN_APPLY_NOW, LABEL_LOADING } from '@/lib/appConfig'
+import { getMessage } from '@/lib/messages'
+import { stripRequiredDocumentsBlock } from '@/lib/internshipContent'
+
+interface Internship {
+  id: string
+  title: string
+  subtitle?: string
+  country: string
+  city?: string
+  image_url?: string
+  secondary_image_url?: string
+  start_date?: string
+  duration_months?: number
+  stipend_monthly?: number
+  work_mode?: string
+  long_description?: string
+  key_responsibilities?: string | string[]
+  skills_learned?: string | { icon: string; name: string }[]
+  eligibility_requirements?: string | string[]
+  stipend_benefits?: string | string[]
+  badge?: string
+  flag_emoji?: string
+}
+
+const iconMap = {
+  Settings2,
+  Droplets,
+  Layers,
+  BarChart3,
+  Leaf,
+  FlaskConical,
+  Droplet,
+  Wheat
+}
+
+export default function PublicInternshipDetail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
+  const router = useRouter()
+  const [internship, setInternship] = useState<Internship | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchData() {
+      const { data: internshipData } = await getInternshipById(id)
+      
+      if (internshipData) {
+        setInternship(internshipData)
+      }
+      
+      setLoading(false)
+    }
+    
+    fetchData()
+  }, [id])
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return 'TBA'
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  }
+
+  const parseArray = (data: string | string[] | undefined): string[] => {
+    if (!data) return []
+    if (Array.isArray(data)) return data
+    try {
+      const parsed = JSON.parse(data)
+      return Array.isArray(parsed) ? parsed : [data]
+    } catch {
+      return data.split('\n').filter(line => line.trim())
+    }
+  }
+
+  const parseSkills = (data: string | { icon: string; name: string }[] | undefined): { icon: string; name: string }[] => {
+    if (!data) return []
+    if (Array.isArray(data)) return data
+    try {
+      const parsed = JSON.parse(data)
+      return Array.isArray(parsed) ? parsed : []
+    } catch {
+      return []
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Navbar activeLink="opportunities" />
+        <div className="flex items-center justify-center h-96">
+          <div className="text-gray-400">{LABEL_LOADING}</div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!internship) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Navbar activeLink="opportunities" />
+        <div className="flex items-center justify-center h-96">
+          <div className="text-gray-400">Internship not found</div>
+        </div>
+      </div>
+    )
+  }
+
+  const responsibilities = parseArray(internship.key_responsibilities)
+  const skills = parseSkills(internship.skills_learned)
+  const eligibility = parseArray(internship.eligibility_requirements)
+  const benefits = parseArray(internship.stipend_benefits)
+
+  const responsibilityIcons = [Settings2, Droplets, Layers, BarChart3]
+
+  return (
+    <div className="min-h-screen bg-white">
+      <Navbar activeLink="opportunities" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+        <button
+          onClick={() => router.back()}
+          className="flex items-center gap-2 text-gray-600 hover:text-gr-primary transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span className="font-medium">Back</span>
+        </button>
+      </div>
+
+      <div className="relative w-full h-[300px] md:h-[450px]">
+        <Image
+          src={internship.image_url || `https://picsum.photos/seed/${internship.id}/1920/900`}
+          alt={internship.title}
+          fill
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+        
+        <div className="absolute inset-x-0 bottom-0 flex justify-center px-8 pb-8">
+          <div className="flex flex-col items-center text-center gap-4 max-w-3xl">
+            <div className="flex items-center gap-2 text-white text-sm">
+              <MapPin className="w-4 h-4" />
+              <span className="flex items-center gap-2">
+                {internship.flag_emoji && <span className="text-3xl">{internship.flag_emoji}</span>}
+                <span className="text-base">{internship.country}</span>
+              </span>
+            </div>
+            
+            <h1 className="text-2xl md:text-4xl font-bold text-white">
+              {internship.title}
+            </h1>
+            
+            <button
+              onClick={() => router.push('/login')}
+              className="bg-gr-primary text-white rounded-lg px-8 py-3 font-semibold hover:bg-gr-primary-hover transition-colors"
+            >
+              {BTN_APPLY_NOW}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="w-full bg-white border-b border-gr-border py-6">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
+                <CalendarDays className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wide">START DATE</p>
+                <p className="text-sm font-semibold text-gray-900">{formatDate(internship.start_date)}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
+                <Clock className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wide">DURATION</p>
+                <p className="text-sm font-semibold text-gray-900">{internship.duration_months || 'N/A'} Months</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
+                <CreditCard className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wide">STIPEND</p>
+                <p className="text-sm font-semibold text-gray-900">
+                  {internship.stipend_monthly 
+                    ? `₹${internship.stipend_monthly.toLocaleString('en-IN')}/month` 
+                    : 'N/A'}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
+                <Briefcase className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wide">WORK MODE</p>
+                <p className="text-sm font-semibold text-gray-900 capitalize">{internship.work_mode || 'N/A'}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-8 py-10">
+        <h2 className="font-bold text-xl mb-4 text-gr-text-dark">About this Internship</h2>
+        <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">
+          {stripRequiredDocumentsBlock(internship.long_description) || 'No description available.'}
+        </p>
+      </div>
+
+      {responsibilities.length > 0 && (
+        <div className="max-w-7xl mx-auto px-8 py-10">
+          <h2 className="font-bold text-xl mb-4 text-gr-text-dark">Key Responsibilities</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {responsibilities.map((resp, idx) => {
+              const IconComponent = responsibilityIcons[idx % responsibilityIcons.length]
+              return (
+                <div key={idx} className="bg-gr-primary-light rounded-xl p-4 flex items-start gap-3">
+                  <IconComponent className="w-5 h-5 text-gr-primary mt-0.5 flex-shrink-0" />
+                  <p className="text-sm text-gray-700">{resp}</p>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {skills.length > 0 && (
+        <div className="max-w-7xl mx-auto px-8 py-10">
+          <h2 className="font-bold text-xl mb-4 text-gr-text-dark">Skills you&apos;ll learn</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="relative h-72 rounded-2xl overflow-hidden">
+              <Image
+                src={internship.secondary_image_url || `https://picsum.photos/seed/${internship.id}-2/600/400`}
+                alt="Skills"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div className="flex flex-col">
+              {skills.map((skill, idx) => {
+                const IconComponent = iconMap[skill.icon as keyof typeof iconMap] || Leaf
+                return (
+                  <div key={idx} className="bg-white border border-gr-border rounded-xl p-4 mb-3 flex items-center gap-3">
+                    <IconComponent className="w-5 h-5 text-blue-500" />
+                    <span className="text-sm font-medium text-gray-800">{skill.name}</span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="max-w-7xl mx-auto px-8 py-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h2 className="font-bold text-xl mb-4 text-gr-text-dark">Eligibility</h2>
+            <div className="bg-white border-l-4 border-gr-primary rounded-r-xl p-6 shadow-sm">
+              {eligibility.length > 0 ? (
+                eligibility.map((req, idx) => (
+                  <div key={idx} className="flex items-start gap-2 text-sm text-gray-600 mb-2">
+                    <span className="mt-1.5">•</span>
+                    <span>{req}</span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-gray-600">No specific requirements listed.</p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <h2 className="font-bold text-xl mb-4 text-gr-text-dark">Stipend Details</h2>
+            <div className="bg-white border-l-4 border-gr-primary rounded-r-xl p-6 shadow-sm">
+              <p className="font-semibold text-gray-900 mb-2">Monthly Stipend</p>
+              <p className="text-sm text-gray-600 mb-4">
+                {internship.stipend_monthly 
+                  ? `₹${internship.stipend_monthly.toLocaleString('en-IN')}/month` 
+                  : 'To be discussed'}
+              </p>
+              {benefits.length > 0 && (
+                <>
+                  <p className="font-medium text-gray-900 mb-2">Additional benefits may include:</p>
+                  {benefits.map((benefit, idx) => (
+                    <div key={idx} className="flex items-start gap-2 text-sm text-gray-600 mb-2">
+                      <span className="mt-1.5">•</span>
+                      <span>{benefit}</span>
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-8 py-10 mb-10">
+        <div className="bg-gr-primary-light rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div>
+            <h3 className="font-bold text-lg text-gray-900 mb-1">Ready to Start?</h3>
+            <p className="text-sm text-gray-500">Take the first step toward your global agriculture career.</p>
+          </div>
+          <button
+            onClick={() => router.push('/login')}
+            className="bg-gr-primary text-white rounded-lg px-6 py-3 font-semibold hover:bg-gr-primary-hover transition-colors whitespace-nowrap w-full md:w-auto"
+          >
+            {BTN_APPLY_NOW}
+          </button>
+        </div>
+      </div>
+
+      <Footer />
+    </div>
+  )
+}

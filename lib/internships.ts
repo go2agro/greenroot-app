@@ -1,5 +1,7 @@
-import { supabase } from './supabase'
-import { getPostHogClient } from './posthog-server'
+"use server"
+
+import { createClient } from './supabase'
+import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // ─────────────────────────────────────────
 // GET ALL INTERNSHIPS (with filters + search)
@@ -14,6 +16,7 @@ export async function getAllInternships(filters?: {
   min_stipend?: number
   max_stipend?: number
 }) {
+  const supabase = await createClient()
   let query = supabase
     .from('internships')
     .select('*')
@@ -36,20 +39,21 @@ export async function getAllInternships(filters?: {
 
   const { data, error } = await query
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
 // GET SINGLE INTERNSHIP (by id)
 // ─────────────────────────────────────────
 export async function getInternshipById(internshipId: string) {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('internships')
     .select('*')
     .eq('id', internshipId)
     .single()
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -67,29 +71,21 @@ export async function createInternship(internshipData: {
   stipend_monthly?: number
   stipend_yearly?: number
   image_url?: string
+  start_date?: string
+  work_mode?: string
+  key_responsibilities?: string
+  skills_learned?: string
+  eligibility_requirements?: string
+  stipend_benefits?: string
+  secondary_image_url?: string
+  flag_emoji?: string
 }) {
-  const { data: { user } } = await supabase.auth.getUser()
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('internships')
     .insert(internshipData)
 
-  if (!error && user) {
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: user.id,
-      event: 'internship_created',
-      properties: {
-        title: internshipData.title,
-        country: internshipData.country,
-        city: internshipData.city,
-        duration_months: internshipData.duration_months,
-        stipend_monthly: internshipData.stipend_monthly,
-        badge: internshipData.badge,
-      },
-    })
-  }
-
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
@@ -107,23 +103,61 @@ export async function updateInternship(internshipId: string, internshipData: {
   stipend_monthly?: number
   stipend_yearly?: number
   image_url?: string
+  start_date?: string
+  work_mode?: string
+  key_responsibilities?: string
+  skills_learned?: string
+  eligibility_requirements?: string
+  stipend_benefits?: string
+  secondary_image_url?: string
+  flag_emoji?: string
 }) {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('internships')
     .update({ ...internshipData, updated_at: new Date().toISOString() })
     .eq('id', internshipId)
 
-  return { data, error }
+  return toPlainResponse(data, error)
 }
 
 // ─────────────────────────────────────────
 // DELETE INTERNSHIP (admin only)
 // ─────────────────────────────────────────
 export async function deleteInternship(internshipId: string) {
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('internships')
     .delete()
     .eq('id', internshipId)
 
-  return { data, error }
+  return toPlainResponse(data, error)
+}
+
+// ─────────────────────────────────────────
+// GET RECENT INTERNSHIPS
+// ─────────────────────────────────────────
+export async function getRecentInternships(limit: number = 6) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('internships')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(limit)
+
+  return toPlainResponse(data, error)
+}
+
+// ─────────────────────────────────────────
+// GET TOP PAID INTERNSHIPS
+// ─────────────────────────────────────────
+export async function getTopPaidInternships(limit: number = 3) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('internships')
+    .select('*')
+    .order('stipend_monthly', { ascending: false })
+    .limit(limit)
+
+  return toPlainResponse(data, error)
 }
