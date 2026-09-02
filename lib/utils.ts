@@ -101,11 +101,12 @@ export function formatApplicationStatusLabel(status: string) {
 export function formatStudentStatusLabel(status: string) {
   const studentLabels: Record<string, string> = {
     draft: 'Draft',
-    submitted: 'Under Review',
+    submitted: 'Submitted',
     under_review: 'Under Review',
     admin_accepted: 'Under Review',
-    forwarded_to_partner: 'Under Review',
-    partner_review: 'Under Review',
+    forwarded_to_partner: 'Partner Review',
+    partner_review: 'Partner Review',
+    final_approved: 'Final Approved',
     approved: 'Approved',
     rejected: 'Rejected',
     accepted: 'Accepted',

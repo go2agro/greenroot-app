@@ -25,7 +25,10 @@ import {
   formatApplicationReferenceId,
   getApplicationStatusTimestamp,
 } from '@/lib/utils'
-import { ITEMS_PER_PAGE, LABEL_SEARCH_PLACEHOLDER } from '@/lib/appConfig'
+import { ITEMS_PER_PAGE } from '@/lib/appConfig'
+import { pageCopyConfig } from '@/lib/config'
+
+const adminApplicationsCopy = pageCopyConfig.admin.applications
 
 const TABLE_GRID_CLASS =
   'md:grid md:grid-cols-[130px_minmax(0,1fr)_minmax(0,1.4fr)_100px_110px_40px] md:gap-4 md:items-center md:px-6 md:py-4'
@@ -517,9 +520,9 @@ export default function AdminApplications() {
         <div className="bg-white border-b border-gr-border px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex-shrink-0">
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
-              <h1 className="font-bold text-xl sm:text-2xl text-gray-900">Applications</h1>
+              <h1 className="font-bold text-xl sm:text-2xl text-gray-900">{adminApplicationsCopy.heading}</h1>
               <p className="text-sm text-gray-500 mt-0.5 hidden sm:block">
-                Manage and review all student applications
+                {adminApplicationsCopy.subheading}
               </p>
             </div>
 
@@ -605,7 +608,7 @@ export default function AdminApplications() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
-                  placeholder={LABEL_SEARCH_PLACEHOLDER}
+                  placeholder={adminApplicationsCopy.searchPlaceholder}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-white border border-gr-border rounded-xl py-3 px-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent"
@@ -742,8 +745,8 @@ export default function AdminApplications() {
             ) : filteredApplications.length === 0 ? (
               <div className="bg-white border border-gr-border rounded-2xl flex flex-col items-center justify-center py-16">
                 <FileText className="w-12 h-12 text-gray-300 mb-3" />
-                <p className="font-semibold text-gray-500">No applications found</p>
-                <p className="text-sm text-gray-400 mt-1">Try adjusting your filters</p>
+                <p className="font-semibold text-gray-500">{adminApplicationsCopy.emptyHeading}</p>
+                <p className="text-sm text-gray-400 mt-1">{adminApplicationsCopy.emptyBody}</p>
               </div>
             ) : (
               <>

@@ -1,29 +1,47 @@
 {
   "success": {
     "login": "Welcome back!",
-    "signup": "Account created successfully. Please check your email to verify.",
+    "signup": "Account created successfully! Please login with your credentials.",
     "logout": "You have been logged out.",
-    "profileUpdate": "Profile updated successfully.",
-    "applicationSubmit": "Application submitted successfully.",
+    "profileUpdate": "Profile updated successfully!",
+    "applicationSubmit": "Application submitted successfully!",
     "applicationWithdraw": "Application withdrawn.",
-    "offerAccept": "Congratulations! You have accepted the offer.",
-    "passwordReset": "Password reset email sent. Please check your inbox.",
-    "passwordUpdate": "Password updated successfully."
+    "offerAccept": "Offer accepted! All other applications have been closed.",
+    "passwordReset": "Password reset link sent! Please check your inbox.",
+    "passwordUpdate": "Password updated successfully!",
+    "draftSaved": "Progress saved!",
+    "stageRecorded": "Stage recorded successfully!",
+    "partnerAssigned": "Application forwarded to partner successfully!",
+    "messageSent": "Message sent to student successfully!"
   },
   "error": {
     "generic": "Something went wrong. Please try again.",
-    "login": "Invalid email or password.",
+    "login": "Invalid email or password. Please try again.",
     "signup": "Unable to create account. Please try again.",
-    "unauthorized": "You are not authorized to perform this action.",
-    "notFound": "The requested resource was not found.",
+    "unauthorized": "You don't have permission to access this page.",
+    "notFound": "The page you are looking for doesn't exist or has been moved.",
+    "notLoggedIn": "Please login to continue.",
+    "accountIncomplete": "Account setup incomplete. Please contact support.",
     "applicationLimit": "You have reached the maximum number of applications.",
     "networkError": "Network error. Please check your connection.",
-    "sessionExpired": "Your session has expired. Please log in again."
+    "sessionExpired": "Your session has expired. Please log in again.",
+    "invalidEmail": "Please enter a valid email address.",
+    "shortPassword": "Password must be at least 8 characters.",
+    "passwordMismatch": "Passwords do not match.",
+    "emailExists": "An account with this email already exists.",
+    "fileTooLarge": "File size must be under 1MB.",
+    "tooManyFiles": "Maximum 5 files allowed.",
+    "requiredField": "This field is required.",
+    "invalidFormat": "Invalid file format. Please upload PDF, JPG, or PNG only.",
+    "noteRequired": "A note is required before recording this stage.",
+    "stageOrder": "Stages must be completed in order.",
+    "resetLinkExpired": "Your reset link has expired. Please request a new one."
   },
   "loading": {
     "generic": "Loading...",
     "submitting": "Submitting...",
     "saving": "Saving...",
+    "uploading": "Uploading...",
     "processing": "Processing..."
   },
   "confirm": {

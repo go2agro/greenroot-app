@@ -6,8 +6,11 @@ import { AtSign, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { loginUser, signOut } from '@/lib/auth'
 import { getMyProfile } from '@/lib/profiles'
-import { BTN_LOGIN } from '@/lib/appConfig'
+import { appConfig, BTN_LOGIN } from '@/lib/appConfig'
+import { pageCopyConfig } from '@/lib/config'
 import { getMessage } from '@/lib/messages'
+
+const loginCopy = pageCopyConfig.auth.login
 import Image from 'next/image'
 import Link from 'next/link'
 import AuthLeftPanel from '@/components/AuthLeftPanel'
@@ -52,12 +55,12 @@ export default function Login() {
     let hasError = false
 
     if (!validateEmail(email)) {
-      setEmailError('Invalid email address')
+      setEmailError(getMessage('error', 'invalidEmail'))
       hasError = true
     }
 
     if (password.length < 8) {
-      setPasswordError('Password should be atleast 8 characters')
+      setPasswordError(getMessage('error', 'shortPassword'))
       hasError = true
     }
 
@@ -80,7 +83,7 @@ export default function Login() {
       }
 
       if (!data?.profile) {
-        setGeneralError('Account setup incomplete. Please contact support.')
+        setGeneralError(getMessage('error', 'accountIncomplete'))
         setIsLoading(false)
         return
       }
@@ -115,7 +118,7 @@ export default function Login() {
       router.push(dashboardByRole[data.profile.role as keyof typeof dashboardByRole] ?? '/student/dashboard')
     } catch (error) {
       console.error('Login error:', error)
-      setGeneralError('An error occurred. Please try again.')
+      setGeneralError(getMessage('error', 'generic'))
       setIsLoading(false)
     }
   }
@@ -139,10 +142,9 @@ export default function Login() {
           </div>
 
           {/* Welcome Heading */}
-          <h2 className="text-2xl sm:text-3xl font-bold text-gr-text-dark mb-2">Welcome Back!</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gr-text-dark mb-2">{loginCopy.heading}</h2>
           <p className="text-sm text-gray-500 mb-6">
-            Please enter your credentials to access this platform.<br />
-            Take the first step in exploring your future.
+            {loginCopy.subheading}
           </p>
 
           {/* Role Toggle */}
@@ -177,7 +179,7 @@ export default function Login() {
             {/* Email Input */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
+                {loginCopy.emailLabel}
               </label>
               <div className="relative">
                 <AtSign className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -189,7 +191,7 @@ export default function Login() {
                     setEmail(e.target.value)
                     if (emailError) setEmailError('')
                   }}
-                  placeholder="example@email.com"
+                  placeholder={loginCopy.emailPlaceholder}
                   disabled={isLoading}
                   className={`w-full bg-gr-input-bg rounded-lg py-3 pl-12 pr-4 text-sm sm:text-base outline-none transition-all ${
                     emailError ? 'border-2 border-gr-error' : 'border-0'
@@ -204,7 +206,7 @@ export default function Login() {
             {/* Password Input */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                Password
+                {loginCopy.passwordLabel}
               </label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -216,7 +218,7 @@ export default function Login() {
                     setPassword(e.target.value)
                     if (passwordError) setPasswordError('')
                   }}
-                  placeholder="••••••••"
+                  placeholder={loginCopy.passwordPlaceholder}
                   disabled={isLoading}
                   className={`w-full bg-gr-input-bg rounded-lg py-3 pl-12 pr-12 text-sm sm:text-base outline-none transition-all ${
                     passwordError ? 'border-2 border-gr-error' : 'border-0'
@@ -239,7 +241,7 @@ export default function Login() {
                   href="/forgot-password" 
                   className="text-sm text-gr-primary hover:underline"
                 >
-                  Forgot password?
+                  {loginCopy.forgotPassword}
                 </Link>
               </div>
             </div>
@@ -267,15 +269,15 @@ export default function Login() {
 
           {/* Sign Up Link */}
           <p className="text-center mt-6 text-sm">
-            <span className="text-gray-600">Don't have an account yet? </span>
+            <span className="text-gray-600">{loginCopy.signupPrompt} </span>
             <Link href="/signup" className="text-gr-primary hover:underline">
-              Create an account.
+              {loginCopy.signupLink}
             </Link>
           </p>
 
           {/* Footer */}
           <p className="text-xs text-gray-400 text-center mt-8 sm:mt-12">
-            © 2026 GreenRoot Student Internship Portal. All rights reserved.
+            {appConfig.auth_footer_text}
           </p>
         </div>
       </div>

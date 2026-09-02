@@ -1,0 +1,172 @@
+{
+  "auth": {
+    "panelHeading": "Empowering the Next Generation of Agri-Leaders.",
+    "panelSubheading": "Get international paid internships and revolutionise the future of agriculture.",
+    "login": {
+      "heading": "Welcome Back!",
+      "subheading": "Please enter your credentials to access the platform. Take the first step in exploring your future.",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "example@email.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "forgotPassword": "Forgot password?",
+      "signupPrompt": "Don't have an account yet?",
+      "signupLink": "Create an account."
+    },
+    "signup": {
+      "heading": "Create Your Account",
+      "subheading": "Start your journey in international paid internships today.",
+      "emailLabel": "Email Address",
+      "passwordLabel": "Password",
+      "passwordHint": "(Must contain at least 8 characters)*",
+      "confirmPasswordLabel": "Re-enter Password",
+      "loginPrompt": "Already have an account?",
+      "loginLink": "Login here."
+    },
+    "forgotPassword": {
+      "heading": "Forgot your password?",
+      "subheading": "Don't worry! Enter your registered email address below and we'll send you a secure link to reset your password.",
+      "emailLabel": "Enter your email address",
+      "successHeading": "Password reset link sent!",
+      "successLine1": "Please check the inbox of your registered email address.",
+      "successLine2": "If you don't find it, please check your Spam or Junk folder."
+    },
+    "resetPassword": {
+      "heading": "Set New Password",
+      "subheading": "Enter your new password below. Make sure it is at least 8 characters long.",
+      "passwordLabel": "New Password",
+      "confirmLabel": "Confirm New Password",
+      "invalidLinkHeading": "Invalid Reset Link",
+      "invalidLinkBody": "This password reset link is invalid or has expired.",
+      "successHeading": "Password Updated Successfully",
+      "successBody": "You can now sign in using your new password."
+    }
+  },
+  "student": {
+    "dashboard": {
+      "welcomePrefix": "Welcome back,",
+      "welcomeSuffix": "! 👋",
+      "subheading": "Here's a summary of your internship journey.",
+      "cardApplications": "Applications Submitted",
+      "cardApproved": "Applications Approved",
+      "cardPending": "Pending Review",
+      "recentApplications": "My Recent Applications",
+      "browseSection": "Browse Internships",
+      "browseCta": "Discover international agriculture internships tailored for you.",
+      "emptyApplications": "You haven't applied to any internships yet."
+    },
+    "internships": {
+      "searchPlaceholder": "Search internships (e.g. Soil Research, Germany...)",
+      "sortLabel": "Sort by:",
+      "emptyHeading": "No internships found",
+      "emptyBody": "Try adjusting your search or filters.",
+      "resultsCount": "Showing {count} relevant opportunities"
+    },
+    "applications": {
+      "heading": "My Applications",
+      "subheading": "Track and manage all your internship applications.",
+      "statSubmitted": "Submitted",
+      "statApproved": "Approved",
+      "statPending": "Pending",
+      "searchPlaceholder": "Search by internship name or country...",
+      "emptyHeading": "No applications yet",
+      "emptyBody": "Start browsing internships and submit your first application!"
+    },
+    "profile": {
+      "heading": "My Profile",
+      "completionHeading": "Complete Your Profile",
+      "completionBody": "Complete your profile to increase your chances of being matched with top international agriculture internships.",
+      "completionLabel": "Profile Strength"
+    },
+    "notifications": {
+      "heading": "Notifications",
+      "subheading": "Stay updated on your applications and internship progress.",
+      "markAllRead": "Mark all as read",
+      "emptyHeading": "You're all caught up!",
+      "emptyBody": "No new notifications at this time."
+    },
+    "internshipDetail": {
+      "aboutHeading": "About this Internship",
+      "responsibilitiesHeading": "Key Responsibilities",
+      "skillsHeading": "Skills you'll learn",
+      "eligibilityHeading": "Eligibility",
+      "stipendHeading": "Stipend Details",
+      "requirementsSubheading": "Requirements",
+      "monthlyStipendSubheading": "Monthly Stipend",
+      "stipendNote": "Interns receive a competitive monthly stipend to help cover personal living expenses throughout the internship.",
+      "benefitsHeading": "Additional benefits may include:",
+      "ctaHeading": "Ready to Start?",
+      "ctaSubheading": "Take the first step toward your global agriculture career.",
+      "similarHeading": "Similar Internships",
+      "chipStartDate": "START DATE",
+      "chipDuration": "DURATION",
+      "chipStipend": "STIPEND",
+      "chipWorkMode": "WORK MODE"
+    },
+    "applicationForm": {
+      "steps": [
+        "Personal Information",
+        "Academic Details",
+        "Language & Health",
+        "Documents Upload",
+        "Review & Declaration"
+      ],
+      "personalInfoBanner": "These details are auto-filled from your profile. To update them, visit your Profile page.",
+      "currentlyStudying": "Currently Studying",
+      "graduated": "Graduated",
+      "expectedGradYear": "Expected Graduation Year",
+      "graduationYear": "Graduation Year",
+      "languageProficiency": "Language Proficiency",
+      "addLanguage": "+ Add Language",
+      "healthInfo": "Health Information",
+      "healthNote": "This information is kept strictly confidential and used only for internship placement purposes.",
+      "documentsSubheading": "Upload your documents below. Maximum 5 files, 1MB each.",
+      "uploadGuidelines": "Upload Guidelines",
+      "reviewSubheading": "Please carefully review all your information before submitting your application."
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "heading": "Business Overview",
+      "subheading": "Performance metrics and key insights for your platform.",
+      "kpiStudents": "Total Students",
+      "kpiApplications": "Total Applications",
+      "kpiAcceptance": "Acceptance Rate",
+      "kpiInternships": "Total Internships"
+    },
+    "applications": {
+      "heading": "Applications",
+      "subheading": "Manage and review all student internship applications.",
+      "searchPlaceholder": "Search by student name, email or internship...",
+      "emptyHeading": "No applications found",
+      "emptyBody": "Try adjusting your search or filter criteria."
+    },
+    "billing": {
+      "heading": "Billing Report",
+      "subheading": "Monthly billing summary based on visa process activity."
+    }
+  },
+  "partner": {
+    "dashboard": {
+      "heading": "Partner Dashboard",
+      "subheading": "Overview of applications assigned to you for review.",
+      "statReceived": "Total Received",
+      "statApproved": "Approved",
+      "statRejected": "Rejected",
+      "statPending": "Pending Review"
+    },
+    "applications": {
+      "heading": "Assigned Applications",
+      "subheading": "Review and respond to applications forwarded to you by the admin.",
+      "searchPlaceholder": "Search by student name or internship...",
+      "emptyHeading": "No applications assigned",
+      "emptyBody": "Applications forwarded to you by the admin will appear here.",
+      "reviewButton": "Review"
+    }
+  },
+  "notFound": {
+    "heading": "Page Not Found",
+    "body": "The page you are looking for doesn't exist or has been moved.",
+    "button": "Go Back Home"
+  }
+}

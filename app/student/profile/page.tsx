@@ -29,10 +29,13 @@ import {
   uploadStudentDocument,
   checkProfileCompletion
 } from '@/lib/studentProfiles'
+import { pageCopyConfig } from '@/lib/config'
 import {
   MAX_FILE_UPLOAD_BYTES,
   MAX_FILE_UPLOAD_ERROR,
 } from '@/lib/appConfig'
+
+const profileCopy = pageCopyConfig.student.profile
 
 interface ProfileData {
   first_name?: string
@@ -442,7 +445,7 @@ export default function StudentProfile() {
               <StudentMobileLogo />
               <div className="flex-1 min-w-0">
                 <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
-                  Profile Settings
+                  {profileCopy.heading}
                 </h1>
               </div>
             </div>
@@ -472,12 +475,12 @@ export default function StudentProfile() {
               <div className="flex items-center justify-between gap-6">
                 <div className="flex-1">
                   <h2 className="font-bold text-xl mb-1">
-                    {profileCompletion === 100 ? 'Profile Complete' : 'Complete Your Profile'}
+                    {profileCompletion === 100 ? 'Profile Complete' : profileCopy.completionHeading}
                   </h2>
                   <p className="text-sm text-gray-500">
                     {profileCompletion === 100
                       ? 'Your profile is fully complete! You\'re all set to apply for top agricultural internships.'
-                      : `Finish your profile to increase your chances of getting matched with top agricultural internships! Just ${100 - profileCompletion}% more to go!`}
+                      : profileCopy.completionBody}
                   </p>
                   <div className="mt-4 h-3 bg-gray-200 rounded-full overflow-hidden">
                     <div 
@@ -488,7 +491,7 @@ export default function StudentProfile() {
                 </div>
                 <div className="text-right">
                   <p className="text-blue-500 font-bold text-3xl">{profileCompletion}%</p>
-                  <p className="text-gray-500 text-xs">Profile Strength</p>
+                  <p className="text-gray-500 text-xs">{profileCopy.completionLabel}</p>
                 </div>
               </div>
             </div>

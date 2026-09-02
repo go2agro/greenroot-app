@@ -4,7 +4,10 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { CheckCircle, FileText, XCircle } from 'lucide-react'
 import PartnerShell from '@/components/PartnerShell'
+import { pageCopyConfig } from '@/lib/config'
 import { getPartnerDashboardData } from '@/lib/partnerDashboard'
+
+const partnerDashboardCopy = pageCopyConfig.partner.dashboard
 
 const KPI_CARD_CLASS =
   'bg-white border border-gr-border rounded-2xl p-5 transition-colors hover:border-gr-primary'
@@ -37,9 +40,9 @@ export default function PartnerDashboardPage() {
     <PartnerShell activePage="dashboard">
       <div className="p-4 sm:p-6 lg:p-8 space-y-6">
         <div>
-          <h1 className="font-bold text-2xl text-gray-900">Dashboard</h1>
+          <h1 className="font-bold text-2xl text-gray-900">{partnerDashboardCopy.heading}</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Overview of applications assigned to you.
+            {partnerDashboardCopy.subheading}
           </p>
         </div>
 
@@ -50,7 +53,7 @@ export default function PartnerDashboardPage() {
             ) : (
               <>
                 <FileText className="w-8 h-8 text-gr-primary mb-3" />
-                <p className="text-sm text-gray-500">Total Applications</p>
+                <p className="text-sm text-gray-500">{partnerDashboardCopy.statReceived}</p>
                 <p className="text-3xl font-bold text-gr-secondary mt-1">
                   {stats.total.toLocaleString()}
                 </p>
@@ -64,7 +67,7 @@ export default function PartnerDashboardPage() {
             ) : (
               <>
                 <CheckCircle className="w-8 h-8 text-gr-primary mb-3" />
-                <p className="text-sm text-gray-500">Approved</p>
+                <p className="text-sm text-gray-500">{partnerDashboardCopy.statApproved}</p>
                 <p className="text-3xl font-bold text-gr-secondary mt-1">
                   {stats.approved.toLocaleString()}
                 </p>
@@ -78,7 +81,7 @@ export default function PartnerDashboardPage() {
             ) : (
               <>
                 <XCircle className="w-8 h-8 text-gr-primary mb-3" />
-                <p className="text-sm text-gray-500">Rejected</p>
+                <p className="text-sm text-gray-500">{partnerDashboardCopy.statRejected}</p>
                 <p className="text-3xl font-bold text-gr-secondary mt-1">
                   {stats.rejected.toLocaleString()}
                 </p>

@@ -24,7 +24,10 @@ import {
   getNotificationsByCategory,
 } from '@/lib/notifications'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
+import { pageCopyConfig } from '@/lib/config'
 import { getMyProfile } from '@/lib/profiles'
+
+const notificationsCopy = pageCopyConfig.student.notifications
 
 type NotificationCategory = 'application' | 'interview' | 'system'
 
@@ -384,9 +387,9 @@ export default function StudentNotificationsPage() {
         <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div>
-              <h1 className="font-bold text-2xl text-gray-900">Notifications</h1>
+              <h1 className="font-bold text-2xl text-gray-900">{notificationsCopy.heading}</h1>
               <p className="text-sm text-gray-500 mt-1">
-                Manage their account, security, and communication preferences.
+                {notificationsCopy.subheading}
               </p>
             </div>
             {hasUnread && (
@@ -396,7 +399,7 @@ export default function StudentNotificationsPage() {
                 disabled={isMarkingAllRead}
                 className="self-start rounded-lg border border-gr-primary px-4 py-2 text-sm font-medium text-gr-primary hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
               >
-                {isMarkingAllRead ? 'Marking...' : 'Mark all as read'}
+                {isMarkingAllRead ? 'Marking...' : notificationsCopy.markAllRead}
               </button>
             )}
           </div>
@@ -444,8 +447,8 @@ export default function StudentNotificationsPage() {
           ) : filteredNotifications.length === 0 ? (
             <div className="py-16 text-center">
               <Bell className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="font-semibold text-gray-500">No notifications</p>
-              <p className="text-sm text-gray-400">You&apos;re all caught up!</p>
+              <p className="font-semibold text-gray-500">{notificationsCopy.emptyHeading}</p>
+              <p className="text-sm text-gray-400">{notificationsCopy.emptyBody}</p>
             </div>
           ) : (
             <div>

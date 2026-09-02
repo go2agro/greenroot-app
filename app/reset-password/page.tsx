@@ -3,8 +3,12 @@
 import { useState, useEffect } from 'react'
 import { getSupabaseBrowser } from '@/lib/supabase-browser'
 import { updatePassword } from '@/lib/auth'
-import { BTN_LOGIN } from '@/lib/appConfig'
+import { appConfig, BTN_LOGIN, BTN_UPDATE_PASSWORD } from '@/lib/appConfig'
+import { pageCopyConfig } from '@/lib/config'
 import { getMessage } from '@/lib/messages'
+
+const resetPasswordCopy = pageCopyConfig.auth.resetPassword
+const authPanelCopy = pageCopyConfig.auth
 import Image from 'next/image'
 import Link from 'next/link'
 import { Eye, EyeOff, Lock, CheckCircle2 } from 'lucide-react'
@@ -36,19 +40,19 @@ export default function ResetPasswordPage() {
     setIsLoading(true)
 
     if (!password || !confirmPassword) {
-      setError('Please fill in all fields')
+      setError(getMessage('error', 'requiredField'))
       setIsLoading(false)
       return
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      setError(getMessage('error', 'passwordMismatch'))
       setIsLoading(false)
       return
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters')
+      setError(getMessage('error', 'shortPassword'))
       setIsLoading(false)
       return
     }
@@ -69,8 +73,8 @@ export default function ResetPasswordPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Invalid Reset Link</h1>
-          <p className="text-gray-600 mb-6">This password reset link is invalid or has expired.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">{resetPasswordCopy.invalidLinkHeading}</h1>
+          <p className="text-gray-600 mb-6">{resetPasswordCopy.invalidLinkBody}</p>
           <Link 
             href="/login" 
             className="inline-block bg-gr-primary text-white rounded-lg px-6 py-2 font-semibold hover:bg-gr-primary-hover transition-colors"
@@ -99,10 +103,10 @@ export default function ResetPasswordPage() {
             </div>
             <div>
               <h1 className="text-4xl font-bold mb-4 leading-tight">
-                Empowering the next<br />generation of Agri-Leaders.
+                {authPanelCopy.panelHeading}
               </h1>
               <p className="text-gray-200 text-lg">
-                Get international paid internships and revolutionise<br />the future of agriculture.
+                {authPanelCopy.panelSubheading}
               </p>
             </div>
           </div>
@@ -126,14 +130,14 @@ export default function ResetPasswordPage() {
               </div>
               
               <h1 className="text-2xl font-bold text-gray-900 mb-3">
-                Password Updated Successfully
+                {resetPasswordCopy.successHeading}
               </h1>
               
               <p className="text-gray-600 mb-2">
                 {getMessage('success', 'passwordUpdate')}
               </p>
               <p className="text-gray-600 mb-8">
-                You can now sign in using your new password.
+                {resetPasswordCopy.successBody}
               </p>
 
               <Link 
@@ -145,7 +149,7 @@ export default function ResetPasswordPage() {
             </div>
 
             <div className="text-center text-xs text-gray-400 mt-8">
-              © 2024 GreenRoot Student Internship Portal. All rights reserved.
+              {appConfig.auth_footer_text}
             </div>
           </div>
         </div>
@@ -169,10 +173,10 @@ export default function ResetPasswordPage() {
           </div>
           <div>
             <h1 className="text-4xl font-bold mb-4 leading-tight">
-              Empowering the next<br />generation of Agri-Leaders.
+              {authPanelCopy.panelHeading}
             </h1>
             <p className="text-gray-200 text-lg">
-              Get international paid internships and revolutionise<br />the future of agriculture.
+              {authPanelCopy.panelSubheading}
             </p>
           </div>
         </div>
@@ -191,13 +195,13 @@ export default function ResetPasswordPage() {
           </div>
 
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Reset Password</h1>
-            <p className="text-sm text-gray-600">Please enter your new password here:</p>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">{resetPasswordCopy.heading}</h1>
+            <p className="text-sm text-gray-600">{resetPasswordCopy.subheading}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">New Password</label>
+              <label className="text-sm font-medium text-gray-700">{resetPasswordCopy.passwordLabel}</label>
               <div className="relative">
                 <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                   <Lock className="w-5 h-5" />
@@ -221,7 +225,7 @@ export default function ResetPasswordPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Confirm Password</label>
+              <label className="text-sm font-medium text-gray-700">{resetPasswordCopy.confirmLabel}</label>
               <div className="relative">
                 <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                   <Lock className="w-5 h-5" />
@@ -255,12 +259,12 @@ export default function ResetPasswordPage() {
               disabled={isLoading}
               className="w-full h-12 bg-gr-primary text-white font-semibold rounded-lg hover:bg-gr-primary-hover transition-colors"
             >
-              {isLoading ? 'Resetting Password...' : 'Reset Password'}
+              {isLoading ? getMessage('loading', 'processing') : BTN_UPDATE_PASSWORD}
             </Button>
           </form>
 
           <div className="text-center text-xs text-gray-400 mt-8">
-            © 2024 GreenRoot Student Internship Portal. All rights reserved.
+            {appConfig.auth_footer_text}
           </div>
         </div>
       </div>

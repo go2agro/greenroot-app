@@ -25,7 +25,11 @@ import {
   formatApplicationReferenceId,
   getApplicationStatusTimestamp,
 } from '@/lib/utils'
-import { ITEMS_PER_PAGE, LABEL_SEARCH_PLACEHOLDER } from '@/lib/appConfig'
+import { ITEMS_PER_PAGE } from '@/lib/appConfig'
+import { pageCopyConfig } from '@/lib/config'
+
+const partnerApplicationsCopy = pageCopyConfig.partner.applications
+const partnerDashboardCopy = pageCopyConfig.partner.dashboard
 
 const TABLE_GRID_CLASS =
   'md:grid md:grid-cols-[130px_minmax(0,1fr)_minmax(0,1.4fr)_100px_110px_40px] md:gap-4 md:items-center md:px-6 md:py-4'
@@ -430,9 +434,9 @@ export default function PartnerApplications() {
         <div className="bg-white border-b border-gr-border px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex-shrink-0">
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
-              <h1 className="font-bold text-xl sm:text-2xl text-gray-900">Applications</h1>
+              <h1 className="font-bold text-xl sm:text-2xl text-gray-900">{partnerApplicationsCopy.heading}</h1>
               <p className="text-sm text-gray-500 mt-0.5 hidden sm:block">
-                View applications assigned to you
+                {partnerApplicationsCopy.subheading}
               </p>
             </div>
 
@@ -461,7 +465,7 @@ export default function PartnerApplications() {
                 ) : (
                   <>
                     <FileText className="w-8 h-8 text-gr-primary mb-3" />
-                    <p className="text-sm text-gray-500">Total Applications</p>
+                    <p className="text-sm text-gray-500">{partnerDashboardCopy.statReceived}</p>
                     <p className="text-3xl font-bold text-gr-secondary mt-1">
                       {stats.total.toLocaleString()}
                     </p>
@@ -475,7 +479,7 @@ export default function PartnerApplications() {
                 ) : (
                   <>
                     <Send className="w-8 h-8 text-gr-primary mb-3" />
-                    <p className="text-sm text-gray-500">Pending Review</p>
+                    <p className="text-sm text-gray-500">{partnerDashboardCopy.statPending}</p>
                     <p className="text-3xl font-bold text-gr-secondary mt-1">
                       {stats.pending.toLocaleString()}
                     </p>
@@ -489,7 +493,7 @@ export default function PartnerApplications() {
                 ) : (
                   <>
                     <CheckCircle className="w-8 h-8 text-gr-primary mb-3" />
-                    <p className="text-sm text-gray-500">Approved</p>
+                    <p className="text-sm text-gray-500">{partnerDashboardCopy.statApproved}</p>
                     <p className="text-3xl font-bold text-gr-secondary mt-1">
                       {stats.approved.toLocaleString()}
                     </p>
@@ -503,7 +507,7 @@ export default function PartnerApplications() {
                 ) : (
                   <>
                     <XCircle className="w-8 h-8 text-gr-primary mb-3" />
-                    <p className="text-sm text-gray-500">Rejected</p>
+                    <p className="text-sm text-gray-500">{partnerDashboardCopy.statRejected}</p>
                     <p className="text-3xl font-bold text-gr-secondary mt-1">
                       {stats.rejected.toLocaleString()}
                     </p>
@@ -518,7 +522,7 @@ export default function PartnerApplications() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
-                  placeholder={LABEL_SEARCH_PLACEHOLDER}
+                  placeholder={partnerApplicationsCopy.searchPlaceholder}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-white border border-gr-border rounded-xl py-3 px-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent"
@@ -655,8 +659,8 @@ export default function PartnerApplications() {
             ) : filteredApplications.length === 0 ? (
               <div className="bg-white border border-gr-border rounded-2xl flex flex-col items-center justify-center py-16">
                 <FileText className="w-12 h-12 text-gray-300 mb-3" />
-                <p className="font-semibold text-gray-500">No applications found</p>
-                <p className="text-sm text-gray-400 mt-1">Try adjusting your filters</p>
+                <p className="font-semibold text-gray-500">{partnerApplicationsCopy.emptyHeading}</p>
+                <p className="text-sm text-gray-400 mt-1">{partnerApplicationsCopy.emptyBody}</p>
               </div>
             ) : (
               <>
@@ -728,7 +732,10 @@ export default function PartnerApplications() {
                         </div>
 
                         <div className="flex md:justify-end">
-                          <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-gr-input-bg text-gray-500 transition-colors group-hover:bg-gr-primary group-hover:text-white">
+                          <div
+                            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gr-input-bg text-gray-500 transition-colors group-hover:bg-gr-primary group-hover:text-white"
+                            aria-label={partnerApplicationsCopy.reviewButton}
+                          >
                             <ChevronRight className="w-4 h-4" />
                           </div>
                         </div>

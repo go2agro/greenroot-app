@@ -1,8 +1,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowLeft, Compass, Home, Leaf, Sprout } from 'lucide-react'
-import appConfig from '@/config/appConfig.json'
+import { appConfig } from '@/lib/appConfig'
+import { pageCopyConfig } from '@/lib/config'
 import { Button } from '@/components/ui/button'
+
+const notFoundCopy = pageCopyConfig.notFound
 
 export default function NotFound() {
   return (
@@ -37,7 +40,7 @@ export default function NotFound() {
         </div>
 
         <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-gr-primary">
-          Page not found
+          {notFoundCopy.heading}
         </p>
 
         <h1 className="mb-4 bg-gradient-to-r from-gr-primary-hover via-gr-primary to-gr-secondary bg-clip-text text-center text-7xl font-black leading-none text-transparent sm:text-8xl">
@@ -45,19 +48,18 @@ export default function NotFound() {
         </h1>
 
         <h2 className="mb-3 text-center text-2xl font-bold text-gr-text-dark sm:text-3xl">
-          This page has gone to seed
+          {notFoundCopy.heading}
         </h2>
 
         <p className="mb-10 max-w-lg text-center text-base leading-relaxed text-gr-text-muted sm:text-lg">
-          The page you are looking for may have moved, been removed, or never existed.
-          Let us help you find your way back to growth.
+          {notFoundCopy.body}
         </p>
 
         <div className="flex w-full max-w-md flex-col gap-3 sm:flex-row sm:justify-center">
           <Button asChild size="lg" className="h-11 px-6">
             <Link href="/">
               <Home className="size-4" aria-hidden="true" />
-              Back to Home
+              {notFoundCopy.button}
             </Link>
           </Button>
           <Button asChild variant="outline" size="lg" className="h-11 px-6">

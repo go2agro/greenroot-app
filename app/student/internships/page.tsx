@@ -13,13 +13,14 @@ import { Search, MapPin, Clock, Banknote, ChevronLeft, ChevronRight, X, RefreshC
 import { getAllInternships } from '@/lib/internships'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
+import { pageCopyConfig } from '@/lib/config'
 import {
   INTERNSHIPS_PAGE_HEADING,
-  INTERNSHIPS_PAGE_SUBHEADING,
   ITEMS_PER_PAGE,
   LABEL_LOADING,
-  LABEL_SEARCH_PLACEHOLDER,
 } from '@/lib/appConfig'
+
+const internshipsCopy = pageCopyConfig.student.internships
 
 type Internship = {
   id: string
@@ -273,7 +274,7 @@ export default function StudentInternships() {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
-                placeholder={LABEL_SEARCH_PLACEHOLDER}
+                placeholder={internshipsCopy.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-white border border-gr-border rounded-xl py-3 px-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent"
@@ -293,7 +294,7 @@ export default function StudentInternships() {
               <div>
                 <h1 className="font-bold text-xl text-gray-900">{INTERNSHIPS_PAGE_HEADING}</h1>
                 <p className="text-sm text-gray-500">
-                  Showing {filteredInternships.length} relevant opportunities
+                  {internshipsCopy.resultsCount.replace('{count}', String(filteredInternships.length))}
                 </p>
               </div>
               
@@ -308,7 +309,7 @@ export default function StudentInternships() {
                 </button>
                 
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-500">Sort by:</span>
+                  <span className="text-sm text-gray-500">{internshipsCopy.sortLabel}</span>
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as SortOption)}
@@ -328,7 +329,10 @@ export default function StudentInternships() {
             {isLoading ? (
               <div className="text-center py-12 text-gray-500">{LABEL_LOADING}</div>
             ) : paginatedInternships.length === 0 ? (
-              <div className="text-center py-12 text-gray-500">No internships found</div>
+              <div className="text-center py-12 text-gray-500">
+                <p className="font-semibold">{internshipsCopy.emptyHeading}</p>
+                <p className="text-sm mt-1">{internshipsCopy.emptyBody}</p>
+              </div>
             ) : (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

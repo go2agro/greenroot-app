@@ -80,13 +80,9 @@ type UploadedFile = {
   preview: string
 }
 
-const STEP_NAMES = [
-  'Personal Info',
-  'Academic Details',
-  'Language & Health',
-  'Documents',
-  'Review & Submit'
-]
+import { pageCopyConfig } from '@/lib/config'
+
+const STEP_NAMES = pageCopyConfig.student.applicationForm.steps
 
 const MAX_DOCUMENT_UPLOADS = 10
 const MAX_LANGUAGES = 8

@@ -13,7 +13,8 @@ import InternshipCard from '@/components/InternshipCard'
 import { getMyProfile } from '@/lib/profiles'
 import { getMyStudentProfile, checkProfileCompletion } from '@/lib/studentProfiles'
 import { getApplicationCounts, getActiveApplications, getDraftApplications } from '@/lib/studentApplications'
-import { DEFAULT_INTERNSHIP_IMAGE } from '@/lib/appConfig'
+import { BTN_BROWSE_INTERNSHIPS, DEFAULT_INTERNSHIP_IMAGE } from '@/lib/appConfig'
+import { pageCopyConfig } from '@/lib/config'
 import { getRecentInternships } from '@/lib/internships'
 import { getApplicationStatusTimestamp } from '@/lib/utils'
 
@@ -58,7 +59,8 @@ interface Internship {
   flag?: string
 }
 
-// SWR fetcher functions
+const dashboardCopy = pageCopyConfig.student.dashboard
+
 const fetcher = (fn: () => Promise<any>) => fn().then(res => res.data)
 
 export default function StudentDashboard() {
@@ -208,10 +210,10 @@ export default function StudentDashboard() {
               <StudentMobileLogo />
               <div className="flex-1 min-w-0">
                 <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">
-                  Welcome back, {displayName}!
+                  {dashboardCopy.welcomePrefix} {displayName}{dashboardCopy.welcomeSuffix}
                 </h1>
                 <p className="text-xs sm:text-sm text-gray-500 mt-1 hidden sm:block">
-                  Your journey to internships start here, let's get you placed!
+                  {dashboardCopy.subheading}
                 </p>
               </div>
             </div>
@@ -299,7 +301,7 @@ export default function StudentDashboard() {
               <div className="bg-white border border-gr-border rounded-2xl p-5">
                 <div className="flex justify-between items-start">
                   <div>
-                    <div className="text-sm text-gray-500 font-medium">Drafts</div>
+                    <div className="text-sm text-gray-500 font-medium">{dashboardCopy.cardApplications}</div>
                     <div className="text-4xl font-bold text-gr-secondary mt-2">
                       {counts.drafts.toString().padStart(2, '0')}
                     </div>
@@ -312,7 +314,7 @@ export default function StudentDashboard() {
               <div className="bg-white border border-gr-border rounded-2xl p-5">
                 <div className="flex justify-between items-start">
                   <div>
-                    <div className="text-sm text-gray-500 font-medium">In Review</div>
+                    <div className="text-sm text-gray-500 font-medium">{dashboardCopy.cardPending}</div>
                     <div className="text-4xl font-bold text-gr-secondary mt-2">
                       {counts.submitted.toString().padStart(2, '0')}
                     </div>
@@ -325,7 +327,7 @@ export default function StudentDashboard() {
               <div className="bg-white border border-gr-border rounded-2xl p-5">
                 <div className="flex justify-between items-start">
                   <div>
-                    <div className="text-sm text-gray-500 font-medium">Approved</div>
+                    <div className="text-sm text-gray-500 font-medium">{dashboardCopy.cardApproved}</div>
                     <div className="text-4xl font-bold text-gr-secondary mt-2">
                       {counts.approved.toString().padStart(2, '0')}
                     </div>
@@ -342,7 +344,7 @@ export default function StudentDashboard() {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-lg sm:text-xl font-bold text-gray-900">Active Applications</h2>
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900">{dashboardCopy.recentApplications}</h2>
                   <span className="inline-flex items-center justify-center min-w-[2rem] h-7 px-2 rounded-full bg-gr-primary/10 text-gr-primary text-sm font-bold">
                     {activeCount.toString().padStart(2, '0')}
                   </span>
@@ -395,7 +397,7 @@ export default function StudentDashboard() {
                   ))
                 ) : (
                   <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
-                    <p className="text-gray-500">No active applications yet</p>
+                    <p className="text-gray-500">{dashboardCopy.emptyApplications}</p>
                   </div>
                 )}
               </div>
@@ -506,18 +508,16 @@ export default function StudentDashboard() {
                 </div>
               </div>
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                Browse Internships,<br />
-                <span className="text-gr-primary">Grow Your Future</span>
+                {dashboardCopy.browseSection}
               </h2>
               <p className="text-sm sm:text-base text-gray-600 mb-6">
-                Explore global agricultural internships<br className="hidden sm:block" />
-                and gain real-world experience.
+                {dashboardCopy.browseCta}
               </p>
               <Link
                 href="/student/internships"
                 className="inline-flex items-center gap-2 bg-gr-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-gr-primary-hover transition-colors text-sm sm:text-base"
               >
-                Browse Internships
+                {BTN_BROWSE_INTERNSHIPS}
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </div>

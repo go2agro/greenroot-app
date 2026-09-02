@@ -1,73 +1,72 @@
 {
-  "pageTitle": "Contact Us",
-  "pageSubtitle": "Call, email, WhatsApp, or visit — we'll help with internships, applications, and partnerships.",
-  "responseNote": "Prefer messaging? Reach out on any channel — we reply within 1–2 business days.",
-  "officeName": "GreenRoot Head Office",
+  "pageTitle": "Get in Touch",
+  "pageSubtitle": "Have a question or need assistance? We're here to help. Reach out to our team and we'll get back to you as soon as possible.",
+  "responseNote": "We typically respond within 1–2 business days.",
+  "officeName": "GreenRoot Platform",
   "addressLines": [
-    "42 Agro Business Park, Baner Road",
-    "Baner, Pune, Maharashtra 411045",
-    "India"
+    "GreenRoot Platform, Pune, Maharashtra, India"
   ],
   "mapEmbedUrl": "https://www.google.com/maps?q=18.5597,73.7769&hl=en&z=16&output=embed",
   "mapDirectionsUrl": "https://www.google.com/maps/dir/?api=1&destination=18.5597,73.7769",
   "websiteUrl": "https://greenroot.co.in",
   "whatsapp": {
     "label": "WhatsApp",
-    "display": "+91 7972537388",
-    "url": "https://wa.me/917972537388"
+    "display": "+91 12345 67890",
+    "url": "https://wa.me/911234567890"
   },
   "phones": [
     {
-      "label": "General enquiries",
-      "display": "+91 7972537388",
-      "tel": "+917972537388"
-    },
-    {
-      "label": "Admissions & internships",
-      "display": "+91 7972537388",
-      "tel": "+917972537388"
+      "label": "Phone Number",
+      "display": "+91 12345 67890",
+      "tel": "+911234567890"
     }
   ],
   "emails": [
     {
-      "label": "Support",
-      "email": "support@greenroot.in"
-    },
-    {
-      "label": "General",
-      "email": "info@greenroot.in"
+      "label": "Email Address",
+      "email": "support@greenroot.co.in"
     }
   ],
   "officeHours": [
     {
-      "days": "Weekdays",
-      "hours": "10:00 AM – 6:00 PM IST"
-    },
-    {
-      "days": "Weekends",
-      "hours": "10:00 AM – 2:00 PM IST"
+      "days": "Working Hours",
+      "hours": "Monday to Saturday, 10:00 AM – 6:00 PM IST"
     }
   ],
   "socials": [
     {
-      "id": "facebook",
-      "label": "Facebook",
-      "href": "https://facebook.com/greenroot"
+      "id": "linkedin",
+      "label": "LinkedIn",
+      "href": "https://linkedin.com/company/greenroot"
+    },
+    {
+      "id": "x",
+      "label": "Twitter/X",
+      "href": "https://x.com/greenroot"
     },
     {
       "id": "instagram",
       "label": "Instagram",
       "href": "https://instagram.com/greenroot"
-    },
-    {
-      "id": "x",
-      "label": "X",
-      "href": "https://x.com/greenroot"
-    },
-    {
-      "id": "linkedin",
-      "label": "LinkedIn",
-      "href": "https://linkedin.com/company/greenroot"
     }
-  ]
+  ],
+  "form": {
+    "heading": "Send us a Message",
+    "fullNameLabel": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "Enter your email address",
+    "subjectLabel": "Subject",
+    "subjectPlaceholder": "What is this regarding?",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Write your message here...",
+    "submitButton": "Send Message",
+    "successMessage": "Thank you! Your message has been sent. We'll get back to you within 24 hours."
+  },
+  "sidebarHelp": {
+    "heading": "Need help?",
+    "body": "Contact our support team for assistance.",
+    "phone": "+91 12345 67890",
+    "email": "support@greenroot.co.in"
+  }
 }

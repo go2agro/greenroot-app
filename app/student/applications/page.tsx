@@ -26,8 +26,11 @@ import { invalidateAllApplicationData } from '@/lib/cache'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
 import { getApplicationStatusTimestamp, formatApplicationReferenceId } from '@/lib/utils'
-import { BTN_DELETE, ITEMS_PER_PAGE, LABEL_SEARCH_PLACEHOLDER } from '@/lib/appConfig'
+import { BTN_BROWSE_INTERNSHIPS, BTN_DELETE, ITEMS_PER_PAGE } from '@/lib/appConfig'
+import { pageCopyConfig } from '@/lib/config'
 import { getMessage } from '@/lib/messages'
+
+const applicationsCopy = pageCopyConfig.student.applications
 
 type ApplicationStatus = 'draft' | 'submitted' | 'under_review' | 'admin_accepted' | 'forwarded_to_partner' | 'partner_review' | 'approved' | 'rejected' | 'accepted' | 'closed' | 'withdrawn'
 
@@ -350,8 +353,8 @@ export default function StudentApplications() {
         <div className="flex-1 overflow-y-auto pb-20 lg:pb-0">
           <div className="p-4 sm:p-6 lg:p-8">
             <div className="mb-6">
-              <h1 className="font-bold text-2xl text-gray-900">My Applications</h1>
-              <p className="text-sm text-gray-500 mt-1">Track all your internship applications</p>
+              <h1 className="font-bold text-2xl text-gray-900">{applicationsCopy.heading}</h1>
+              <p className="text-sm text-gray-500 mt-1">{applicationsCopy.subheading}</p>
             </div>
 
             <div className="flex gap-3 items-center mb-6">
@@ -359,7 +362,7 @@ export default function StudentApplications() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
-                  placeholder={LABEL_SEARCH_PLACEHOLDER}
+                  placeholder={applicationsCopy.searchPlaceholder}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-white border border-gr-border rounded-xl py-3 px-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent"
@@ -421,13 +424,13 @@ export default function StudentApplications() {
             ) : filteredApplications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16">
                 <FileText className="w-16 h-16 text-gray-300 mb-4" />
-                <h3 className="font-semibold text-gray-500 mb-1">No applications yet</h3>
-                <p className="text-sm text-gray-400 mb-4">Start browsing internships and apply!</p>
+                <h3 className="font-semibold text-gray-500 mb-1">{applicationsCopy.emptyHeading}</h3>
+                <p className="text-sm text-gray-400 mb-4">{applicationsCopy.emptyBody}</p>
                 <button
                   onClick={() => router.push('/student/internships')}
                   className="bg-gr-primary text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-gr-primary-hover transition-colors"
                 >
-                  Browse Internships
+                  {BTN_BROWSE_INTERNSHIPS}
                 </button>
               </div>
             ) : (

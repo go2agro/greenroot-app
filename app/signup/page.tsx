@@ -4,8 +4,11 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AtSign, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { signUp } from '@/lib/auth'
-import { BTN_SIGNUP } from '@/lib/appConfig'
+import { appConfig, BTN_CREATE_ACCOUNT } from '@/lib/appConfig'
+import { pageCopyConfig } from '@/lib/config'
 import { getMessage } from '@/lib/messages'
+
+const signupCopy = pageCopyConfig.auth.signup
 import Image from 'next/image'
 import Link from 'next/link'
 import AuthLeftPanel from '@/components/AuthLeftPanel'
@@ -37,17 +40,17 @@ export default function Signup() {
     let hasError = false
 
     if (!validateEmail(email)) {
-      setEmailError('Invalid email address')
+      setEmailError(getMessage('error', 'invalidEmail'))
       hasError = true
     }
 
     if (password.length < 8) {
-      setPasswordError('Password must atleast be of 8 characters')
+      setPasswordError(getMessage('error', 'shortPassword'))
       hasError = true
     }
 
     if (password !== confirmPassword) {
-      setConfirmPasswordError("Passwords don't match")
+      setConfirmPasswordError(getMessage('error', 'passwordMismatch'))
       hasError = true
     }
 
@@ -92,9 +95,9 @@ export default function Signup() {
           </div>
 
           {/* Heading */}
-          <h2 className="text-2xl sm:text-3xl font-bold text-gr-text-dark mb-2">Create Your Account</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gr-text-dark mb-2">{signupCopy.heading}</h2>
           <p className="text-sm text-gray-500 mb-6">
-            Start your journey in international paid internship today.
+            {signupCopy.subheading}
           </p>
 
           {/* Form */}
@@ -102,7 +105,7 @@ export default function Signup() {
             {/* Email Input */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email address
+                {signupCopy.emailLabel}
               </label>
               <div className="relative">
                 <AtSign className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -130,10 +133,10 @@ export default function Signup() {
             <div>
               <div className="flex items-baseline gap-1 mb-2">
                 <label htmlFor="password" className="text-sm font-medium text-gray-700">
-                  Password
+                  {signupCopy.passwordLabel}
                 </label>
                 <span className="text-xs text-gr-error">
-                  (Must contain at least 8 characters)*
+                  {signupCopy.passwordHint}
                 </span>
               </div>
               <div className="relative">
@@ -169,7 +172,7 @@ export default function Signup() {
             {/* Re-enter Password Input */}
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-                Re-enter password
+                {signupCopy.confirmPasswordLabel}
               </label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -210,22 +213,22 @@ export default function Signup() {
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                BTN_SIGNUP
+                BTN_CREATE_ACCOUNT
               )}
             </button>
           </form>
 
           {/* Login Link */}
           <p className="text-center mt-6 text-sm">
-            <span className="text-gray-600">Already have an account? </span>
+            <span className="text-gray-600">{signupCopy.loginPrompt} </span>
             <Link href="/login" className="text-gr-primary hover:underline">
-              Login here.
+              {signupCopy.loginLink}
             </Link>
           </p>
 
           {/* Footer */}
           <p className="text-xs text-gray-400 text-center mt-8 sm:mt-12">
-            © 2026 GreenRoot Student Internship Portal. All rights reserved.
+            {appConfig.auth_footer_text}
           </p>
         </div>
       </div>

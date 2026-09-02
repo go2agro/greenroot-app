@@ -4,8 +4,11 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AtSign, X, Loader2 } from 'lucide-react'
 import { resetPassword } from '@/lib/auth'
-import { BTN_LOGIN } from '@/lib/appConfig'
+import { appConfig, BTN_BACK_TO_LOGIN, BTN_SEND_RESET_LINK } from '@/lib/appConfig'
+import { pageCopyConfig } from '@/lib/config'
 import { getMessage } from '@/lib/messages'
+
+const forgotPasswordCopy = pageCopyConfig.auth.forgotPassword
 import Image from 'next/image'
 import AuthLeftPanel from '@/components/AuthLeftPanel'
 
@@ -29,7 +32,7 @@ export default function ForgotPassword() {
     setGeneralError('')
 
     if (!validateEmail(email)) {
-      setEmailError('Invalid email address')
+      setEmailError(getMessage('error', 'invalidEmail'))
       return
     }
 
@@ -93,10 +96,10 @@ export default function ForgotPassword() {
             <>
               {/* Heading */}
               <h2 className="text-2xl sm:text-3xl font-bold text-gr-text-dark mb-2">
-                Forgot your password?
+                {forgotPasswordCopy.heading}
               </h2>
               <p className="text-sm text-gr-text-dark mb-6">
-                Don't worry! Enter the registered Email address below and we'll send you a link to reset your password.
+                {forgotPasswordCopy.subheading}
               </p>
 
               {/* Form */}
@@ -104,7 +107,7 @@ export default function ForgotPassword() {
                 {/* Email Input */}
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                    Enter your email address
+                    {forgotPasswordCopy.emailLabel}
                   </label>
                   <div className="relative">
                     <AtSign className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -138,7 +141,7 @@ export default function ForgotPassword() {
                   {isLoading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
                   ) : (
-                    'Send Reset Link'
+                    BTN_SEND_RESET_LINK
                   )}
                 </button>
 
@@ -153,10 +156,13 @@ export default function ForgotPassword() {
             <>
               {/* Success Heading */}
               <h2 className="text-2xl sm:text-3xl font-bold text-gr-text-dark mb-2">
-                Password reset link sent!
+                {forgotPasswordCopy.successHeading}
               </h2>
+              <p className="text-sm text-gr-text-dark mb-2">
+                {forgotPasswordCopy.successLine1}
+              </p>
               <p className="text-sm text-gr-text-dark mb-6">
-                {getMessage('success', 'passwordReset')}
+                {forgotPasswordCopy.successLine2}
               </p>
 
               {/* Back to Login Button */}
@@ -164,14 +170,14 @@ export default function ForgotPassword() {
                 onClick={handleBackToLogin}
                 className="w-full bg-gr-primary text-white rounded-lg py-3 text-base font-semibold hover:bg-gr-primary-hover transition-colors"
               >
-                {BTN_LOGIN}
+                {BTN_BACK_TO_LOGIN}
               </button>
             </>
           )}
 
           {/* Footer */}
           <p className="text-xs text-[#999999] text-center mt-8 sm:mt-12">
-            © 2026 GreenRoot Student Internship Portal. All rights reserved.
+            {appConfig.auth_footer_text}
           </p>
         </div>
       </div>

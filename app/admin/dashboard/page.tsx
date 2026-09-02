@@ -28,11 +28,14 @@ import AdminBottomNavigation from '@/components/AdminBottomNavigation'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
+import { pageCopyConfig } from '@/lib/config'
 import {
   getAdminDashboardData,
   getDashboardKpisByDateRange,
 } from '@/lib/adminDashboard'
 import { themeColors } from '@/lib/theme'
+
+const adminDashboardCopy = pageCopyConfig.admin.dashboard
 
 type TimeFilter = 'this_week' | 'this_month' | 'last_3_months'
 
@@ -76,7 +79,7 @@ const CARD_CLASS = 'bg-white border border-gr-border rounded-2xl p-6'
 const KPI_CARDS = [
   {
     key: 'students',
-    label: 'Total Students',
+    label: adminDashboardCopy.kpiStudents,
     href: '/admin/students',
     icon: Users,
     gradient: 'bg-gradient-to-br from-gr-secondary to-gr-primary',
@@ -84,7 +87,7 @@ const KPI_CARDS = [
   },
   {
     key: 'applications',
-    label: 'Total Applications',
+    label: adminDashboardCopy.kpiApplications,
     href: '/admin/applications',
     icon: FileText,
     gradient: 'bg-gradient-to-br from-gr-secondary to-gr-success',
@@ -92,7 +95,7 @@ const KPI_CARDS = [
   },
   {
     key: 'acceptance',
-    label: 'Acceptance Rate',
+    label: adminDashboardCopy.kpiAcceptance,
     href: null,
     icon: CheckCircle,
     gradient: 'bg-gradient-to-br from-gr-primary to-gr-secondary',
@@ -100,7 +103,7 @@ const KPI_CARDS = [
   },
   {
     key: 'internships',
-    label: 'Total Internships Listed',
+    label: adminDashboardCopy.kpiInternships,
     href: '/admin/internships',
     icon: Briefcase,
     gradient: 'bg-gradient-to-br from-gr-secondary to-gr-primary-hover',
@@ -476,11 +479,11 @@ export default function AdminDashboard() {
             {/* Header */}
             <div className="flex justify-between items-start gap-4">
               <div>
-                <h1 className="font-bold text-2xl text-gray-900">Business Overview</h1>
+                <h1 className="font-bold text-2xl text-gray-900">{adminDashboardCopy.heading}</h1>
                 <p className="text-sm text-gray-500 mt-1">
                   {dateRangeLabel
                     ? `Showing metrics for ${dateRangeLabel}.`
-                    : 'Performance metrics for the academic semester.'}
+                    : adminDashboardCopy.subheading}
                 </p>
                 {!dateRangeLabel && (
                   <p className="text-xs text-gray-400 mt-0.5">Lifetime counts</p>
