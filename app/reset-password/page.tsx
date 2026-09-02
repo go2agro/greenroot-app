@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase-browser'
+import { getSupabaseBrowser } from '@/lib/supabase-browser'
 import { updatePassword } from '@/lib/auth'
 import { BTN_LOGIN } from '@/lib/appConfig'
 import { getMessage } from '@/lib/messages'
@@ -22,6 +22,7 @@ export default function ResetPasswordPage() {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
+    const supabase = getSupabaseBrowser()
     supabase.auth.onAuthStateChange(async (event) => {
       if (event === 'PASSWORD_RECOVERY') {
         setIsValidSession(true)
