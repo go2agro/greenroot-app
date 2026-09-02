@@ -236,7 +236,10 @@ export async function getAdminDashboardData() {
       .not('submitted_at', 'is', null)
       .order('submitted_at', { ascending: false })
       .limit(5),
-    supabase.from('student_profiles').select(STUDENT_PROFILE_COMPLETION_SELECT),
+    supabase
+      .from('student_profiles')
+      .select(`${STUDENT_PROFILE_COMPLETION_SELECT}, profiles!inner(role)`)
+      .eq('profiles.role', 'student'),
     supabase.from('admin_profiles').select('*').eq('id', userId).single(),
     supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
   ])
@@ -773,11 +776,13 @@ export async function getRecentStudents() {
       first_name,
       last_name,
       university_name,
-      profiles (
+      profiles!inner (
         unique_id,
-        created_at
+        created_at,
+        role
       )
     `)
+    .eq('profiles.role', 'student')
     .order('updated_at', { ascending: false })
     .limit(5)
 

@@ -26,6 +26,7 @@ export async function createAdminAccount(details: {
       email: details.officialEmail,
       password: details.password,
       email_confirm: true,
+      user_metadata: { role: 'admin' },
     })
 
   if (authError || !authData.user) 
@@ -66,6 +67,9 @@ export async function createAdminAccount(details: {
 
   if (adminProfileError) 
     return toPlainResponse(null, adminProfileError)
+
+  // Remove stray student_profiles row created by handle_new_user trigger on auth insert
+  await supabase.from('student_profiles').delete().eq('id', userId)
 
   return toPlainResponse({ success: true, userId, accountId: adminId }, null)
 }
