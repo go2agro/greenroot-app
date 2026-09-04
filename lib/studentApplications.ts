@@ -641,8 +641,7 @@ export async function acceptApplication(
   const { data: application, error: fetchError } = await supabase
     .from('applications')
     .select(`
-      id, status, student_id, internship_id,
-      student_profiles (first_name, last_name),
+      id, status, student_id, internship_id, accepted_at,
       internships (title)
     `)
     .eq('id', applicationId)
@@ -653,6 +652,23 @@ export async function acceptApplication(
     return toPlainResponse(null, fetchError || { message: 'Application not found' })
   }
 
+  if (application.status === 'accepted') {
+    return toPlainResponse({
+      accepted: {
+        id: application.id,
+        status: application.status,
+        accepted_at: application.accepted_at,
+      },
+      closedCount: 0,
+    }, null)
+  }
+
+  const { data: studentProfile } = await supabase
+    .from('student_profiles')
+    .select('first_name, last_name')
+    .eq('id', user.id)
+    .maybeSingle()
+
   if (application.status !== 'approved') {
     return toPlainResponse(null, {
       message: 'Only approved applications can be accepted.',
@@ -660,24 +676,54 @@ export async function acceptApplication(
     })
   }
 
-  const { data: existingAccepted } = await supabase
-    .from('applications')
-    .select('id')
-    .eq('student_id', user.id)
-    .eq('status', 'accepted')
-    .limit(1)
-    .maybeSingle()
-
-  if (existingAccepted) {
-    return toPlainResponse(null, {
-      message: 'You have already accepted another application. Only one application can be accepted.',
-      code: 'ALREADY_ACCEPTED',
-    })
-  }
-
+  const adminClient = createAdminClient()
   const now = new Date().toISOString()
 
-  const { data: acceptedApp, error: acceptError } = await supabase
+  const { data: otherApplications, error: otherAppsError } = await adminClient
+    .from('applications')
+    .select('id, status')
+    .eq('student_id', user.id)
+    .neq('id', applicationId)
+    .in('status', ['approved', 'accepted'])
+
+  if (otherAppsError) {
+    return toPlainResponse(null, otherAppsError)
+  }
+
+  const previouslyAccepted = (otherApplications ?? []).filter((app) => app.status === 'accepted')
+  const otherApproved = (otherApplications ?? []).filter((app) => app.status === 'approved')
+
+  if (previouslyAccepted.length > 0) {
+    const { error: closeAcceptedError } = await adminClient
+      .from('applications')
+      .update({
+        status: 'closed',
+        closed_at: now,
+      })
+      .eq('student_id', user.id)
+      .eq('status', 'accepted')
+      .neq('id', applicationId)
+
+    if (closeAcceptedError) {
+      return toPlainResponse(null, closeAcceptedError)
+    }
+
+    for (const otherApp of previouslyAccepted) {
+      await recordApplicationEvent({
+        applicationId: otherApp.id,
+        eventType: 'auto_closed',
+        actorRole: 'system',
+        message: `Student chose a different application (${applicationRefId})`,
+        metadata: {
+          accepted_application_id: applicationId,
+          accepted_application_ref: applicationRefId,
+          replaced_accepted: true,
+        },
+      })
+    }
+  }
+
+  const { data: acceptedApp, error: acceptError } = await adminClient
     .from('applications')
     .update({
       status: 'accepted',
@@ -690,6 +736,20 @@ export async function acceptApplication(
     .single()
 
   if (acceptError || !acceptedApp) {
+    const { data: refreshed } = await adminClient
+      .from('applications')
+      .select('id, status, accepted_at')
+      .eq('id', applicationId)
+      .eq('student_id', user.id)
+      .single()
+
+    if (refreshed?.status === 'accepted') {
+      return toPlainResponse({
+        accepted: refreshed,
+        closedCount: previouslyAccepted.length + otherApproved.length,
+      }, null)
+    }
+
     return toPlainResponse(null, acceptError || { message: 'Failed to accept application' })
   }
 
@@ -700,17 +760,8 @@ export async function acceptApplication(
     message: 'Student accepted this application offer',
   })
 
-  const { data: otherApproved } = await supabase
-    .from('applications')
-    .select('id')
-    .eq('student_id', user.id)
-    .eq('status', 'approved')
-    .neq('id', applicationId)
-
-  if (otherApproved && otherApproved.length > 0) {
-    const otherIds = otherApproved.map(app => app.id)
-
-    await supabase
+  if (otherApproved.length > 0) {
+    const { error: closeApprovedError } = await adminClient
       .from('applications')
       .update({
         status: 'closed',
@@ -720,24 +771,31 @@ export async function acceptApplication(
       .eq('status', 'approved')
       .neq('id', applicationId)
 
-    for (const otherId of otherIds) {
+    if (closeApprovedError) {
+      return toPlainResponse(null, closeApprovedError)
+    }
+
+    for (const otherApp of otherApproved) {
       await recordApplicationEvent({
-        applicationId: otherId,
+        applicationId: otherApp.id,
         eventType: 'auto_closed',
         actorRole: 'system',
         message: `Student chose a different application (${applicationRefId})`,
-        metadata: { accepted_application_id: applicationId, accepted_application_ref: applicationRefId },
+        metadata: {
+          accepted_application_id: applicationId,
+          accepted_application_ref: applicationRefId,
+        },
       })
     }
   }
 
-  const adminClient = createAdminClient()
+  const closedCount = previouslyAccepted.length + otherApproved.length
+
   const { data: admins } = await adminClient
     .from('profiles')
     .select('id')
     .eq('role', 'admin')
 
-  const studentProfile = application.student_profiles as { first_name?: string; last_name?: string } | null
   const internshipData = application.internships as { title?: string } | null
   const studentName = [studentProfile?.first_name, studentProfile?.last_name].filter(Boolean).join(' ') || 'A student'
   const internshipTitle = internshipData?.title || 'an internship'
@@ -745,7 +803,7 @@ export async function acceptApplication(
   for (const admin of admins ?? []) {
     await createNotification({
       userId: admin.id,
-      type: 'application_accepted',
+      type: 'offer_accepted',
       title: 'Application Accepted by Student',
       message: `${studentName} has accepted their application for ${internshipTitle} (${applicationRefId}).`,
       relatedId: applicationId,
@@ -756,6 +814,6 @@ export async function acceptApplication(
 
   return toPlainResponse({
     accepted: acceptedApp,
-    closedCount: otherApproved?.length ?? 0,
+    closedCount,
   }, null)
 }

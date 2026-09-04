@@ -337,7 +337,7 @@ export function DocumentRow({
   }, [uploaded, isImage, filePath, getSignedUrl])
 
   return (
-    <li className="flex items-center justify-between gap-3 px-3 py-3 bg-gr-primary-light">
+    <li className="flex items-center justify-between gap-3 px-3 py-3 bg-white">
       <div className="min-w-0 flex items-start gap-3">
         <span className="text-xs font-bold text-gray-400 tabular-nums pt-0.5">
           {String(index).padStart(2, '0')}
@@ -482,7 +482,7 @@ export function ApplicationPaperForm({
   }
 
   return (
-    <article className="bg-gr-primary-light border border-gr-border shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
+    <article className="bg-white border border-gr-border shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
       <header className="border-b-4 border-double border-gray-900 px-5 sm:px-8 pt-7 pb-6">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div>
@@ -724,7 +724,7 @@ export function ApplicationPaperForm({
             <div className="overflow-x-auto border border-gray-200">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-[#F4F2EC] text-left">
+                  <tr className="bg-white text-left">
                     <th className="px-3 py-2.5 font-semibold text-gray-700 border-b border-gray-200">
                       Language
                     </th>
@@ -834,7 +834,7 @@ export function ApplicationPaperForm({
         )}
       </div>
 
-      <footer className="border-t border-gray-300 bg-[#F7F5EF] px-5 sm:px-8 py-4">
+      <footer className="border-t border-gray-300 bg-white px-5 sm:px-8 py-4">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-gray-500">
           <p>
             Started:{' '}

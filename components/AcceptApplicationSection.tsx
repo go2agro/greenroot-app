@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { getMessage } from '@/lib/messages'
 import { BTN_ACCEPT_OFFER } from '@/lib/appConfig'
 import { CheckCircle2, Loader2, AlertCircle, Info } from 'lucide-react'
@@ -23,22 +23,27 @@ export function AcceptApplicationSection({
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [closedCount, setClosedCount] = useState(0)
+  const isSubmittingRef = useRef(false)
 
   const applicationRefId = formatApplicationReferenceId(applicationId, submittedAt)
   const expectedText = `I am accepting this application ${applicationRefId}`
   const isTextValid = confirmationText.trim() === expectedText
 
   const handleAccept = async () => {
-    if (!isTextValid) {
-      setError('Please type the exact confirmation text shown above.')
+    if (!isTextValid || isSubmittingRef.current) {
+      if (!isTextValid) {
+        setError('Please type the exact confirmation text shown above.')
+      }
       return
     }
 
+    isSubmittingRef.current = true
     setIsSubmitting(true)
     setError(null)
 
     const result = await acceptApplication(applicationId, confirmationText, applicationRefId)
 
+    isSubmittingRef.current = false
     setIsSubmitting(false)
 
     if (result.error) {
@@ -80,7 +85,7 @@ export function AcceptApplicationSection({
               <div className="flex items-start gap-3">
                 <Info className="w-5 h-5 text-gray-500 flex-shrink-0 mt-0.5" />
                 <p className="text-sm text-gray-600">
-                  {closedCount} other approved application{closedCount > 1 ? 's have' : ' has'} been automatically closed as you can only proceed with one internship.
+                  {closedCount} other application{closedCount > 1 ? 's have' : ' has'} been automatically closed as you can only proceed with one internship.
                 </p>
               </div>
             </div>

@@ -30,6 +30,7 @@ export function ApplicationStagesStepper({
   const [completedStages, setCompletedStages] = useState<ApplicationStageRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedStage, setSelectedStage] = useState<ApplicationStageKey | null>(null)
+  const [viewingStageKey, setViewingStageKey] = useState<ApplicationStageKey | null>(null)
   const [comment, setComment] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -56,7 +57,15 @@ export function ApplicationStagesStepper({
   }
 
   const handleStageClick = (stageKey: ApplicationStageKey) => {
-    if (isStageCompleted(stageKey)) return
+    if (isStageCompleted(stageKey)) {
+      setViewingStageKey(stageKey)
+      setSelectedStage(null)
+      setComment('')
+      setError(null)
+      return
+    }
+
+    setViewingStageKey(null)
     setSelectedStage(stageKey)
     setComment('')
     setError(null)
@@ -99,6 +108,7 @@ export function ApplicationStagesStepper({
   const handleClose = () => {
     if (isSubmitting) return
     setSelectedStage(null)
+    setViewingStageKey(null)
     setComment('')
     setError(null)
   }
@@ -129,7 +139,7 @@ export function ApplicationStagesStepper({
       <div className="bg-gray-50 border-b border-gray-200 px-5 py-4">
         <h3 className="font-semibold text-gray-900">Post-Acceptance Progress</h3>
         <p className="text-xs text-gray-500 mt-1">
-          Click on any incomplete stage to mark it as complete
+          Click an incomplete stage to mark it complete, or click a completed stage to view its note
         </p>
       </div>
 
@@ -145,10 +155,9 @@ export function ApplicationStagesStepper({
                 key={stage.key}
                 type="button"
                 onClick={() => handleStageClick(stage.key)}
-                disabled={isCompleted}
                 className={`relative p-4 rounded-xl border-2 text-left transition-all ${
                   isCompleted
-                    ? 'bg-green-50 border-green-300 cursor-default'
+                    ? 'bg-green-50 border-green-300 hover:border-green-400 hover:bg-green-100/70 cursor-pointer'
                     : 'bg-gray-50 border-gray-200 hover:border-yellow-400 hover:bg-yellow-50 cursor-pointer'
                 }`}
               >
@@ -183,7 +192,7 @@ export function ApplicationStagesStepper({
 
                 {record && (
                   <p className="text-[10px] text-green-600 mt-2 truncate">
-                    {formatDate(record.recorded_at)}
+                    {formatDate(record.recorded_at)} · View note
                   </p>
                 )}
 
@@ -195,6 +204,64 @@ export function ApplicationStagesStepper({
           })}
         </div>
       </div>
+
+      {viewingStageKey && (() => {
+        const stageRecord = getStageRecord(viewingStageKey)
+        if (!stageRecord) return null
+
+        return (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-md animate-in fade-in zoom-in-95 duration-200">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
+                <div>
+                  <h4 className="font-semibold text-gray-900">
+                    Stage Note
+                  </h4>
+                  <p className="text-sm text-gray-500 mt-0.5">
+                    {getStageLabel(viewingStageKey)}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
+
+              <div className="p-5 space-y-4">
+                <div className="rounded-lg border border-green-200 bg-green-50 px-3 py-2">
+                  <p className="text-xs font-medium text-green-800">Completed</p>
+                  <p className="text-xs text-green-700 mt-0.5">
+                    {formatDate(stageRecord.recorded_at)}
+                    {stageRecord.admin_name ? ` · ${stageRecord.admin_name}` : ''}
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Comment
+                  </label>
+                  <div className="w-full min-h-[120px] border-2 border-gray-200 rounded-xl py-3 px-4 text-sm text-gray-900 leading-relaxed whitespace-pre-wrap break-words bg-gray-50">
+                    {stageRecord.comment}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3 px-5 py-4 border-t border-gray-100 bg-gray-50 rounded-b-xl">
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
 
       {selectedStage && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
