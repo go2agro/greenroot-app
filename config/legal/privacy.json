@@ -206,7 +206,6 @@
           "type": "ul",
           "items": [
             "Supabase — cloud database, authentication, and file storage (hosted in India region)",
-            "PostHog — website analytics and product usage insights",
             "Email and communication services used by {{operatorShortName}} staff (where applicable)"
           ]
         },
@@ -349,15 +348,7 @@
         },
         {
           "type": "h3",
-          "text": "10.2 Analytics (PostHog)"
-        },
-        {
-          "type": "p",
-          "text": "We use PostHog, a product analytics service, to collect usage data such as pages visited, features used, device information, and error reports. This helps us improve the Platform. PostHog may set cookies or use similar technologies. Analytics data is generally collected in aggregated or pseudonymised form. Session recording may be enabled in production to help diagnose usability issues."
-        },
-        {
-          "type": "h3",
-          "text": "10.3 Third-Party Embeds"
+          "text": "10.2 Third-Party Embeds"
         },
         {
           "type": "p",

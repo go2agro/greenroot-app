@@ -7,7 +7,6 @@ Internship management platform for GreenRoot. Students discover and apply to int
 - Next.js 16 (App Router) + TypeScript
 - Supabase (auth, database, storage)
 - Tailwind CSS v4 + ShadCN
-- PostHog (analytics)
 
 ## Roles
 
@@ -33,8 +32,6 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ADMIN_SETUP_SECRET=
-NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN=
-NEXT_PUBLIC_POSTHOG_HOST=
 ```
 
 ```bash
