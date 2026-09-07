@@ -3,9 +3,8 @@
 import { useState, useEffect } from 'react'
 import { getSupabaseBrowser } from '@/lib/supabase-browser'
 import { updatePassword } from '@/lib/auth'
-import { appConfig, BTN_LOGIN, BTN_UPDATE_PASSWORD } from '@/lib/appConfig'
-import { pageCopyConfig } from '@/lib/config'
-import { getMessage } from '@/lib/messages'
+import { appConfig, APP_LOGO, APP_NAME, BTN_LOGIN, BTN_UPDATE_PASSWORD } from '@/lib/appConfig'
+import { pageCopyConfig, getMessage } from '@/lib/config'
 
 const resetPasswordCopy = pageCopyConfig.auth.resetPassword
 const authPanelCopy = pageCopyConfig.auth
@@ -95,8 +94,8 @@ export default function ResetPasswordPage() {
           <div className="relative z-10 flex flex-col justify-between p-12 text-white">
             <div className="flex items-center gap-2">
               <Image 
-                src="/greenroot-logo.svg" 
-                alt="GreenRoot" 
+                src={APP_LOGO} 
+                alt={APP_NAME} 
                 width={40} 
                 height={40}
               />
@@ -116,12 +115,12 @@ export default function ResetPasswordPage() {
           <div className="w-full max-w-md">
             <div className="flex items-center justify-center gap-2 mb-8">
               <Image 
-                src="/greenroot-logo.svg" 
-                alt="GreenRoot" 
+                src={APP_LOGO} 
+                alt={APP_NAME} 
                 width={32} 
                 height={32}
               />
-              <span className="text-xl font-bold text-gray-900">GreenRoot</span>
+              <span className="text-xl font-bold text-gray-900">{APP_NAME}</span>
             </div>
 
             <div className="flex flex-col items-center text-center mb-8">
@@ -133,11 +132,8 @@ export default function ResetPasswordPage() {
                 {resetPasswordCopy.successHeading}
               </h1>
               
-              <p className="text-gray-600 mb-2">
-                {getMessage('success', 'passwordUpdate')}
-              </p>
               <p className="text-gray-600 mb-8">
-                {resetPasswordCopy.successBody}
+                {getMessage('success', 'passwordUpdateRedirect')}
               </p>
 
               <Link 
@@ -165,8 +161,8 @@ export default function ResetPasswordPage() {
         <div className="relative z-10 flex flex-col justify-between p-12 text-white">
           <div className="flex items-center gap-2">
             <Image 
-              src="/greenroot-logo.svg" 
-              alt="GreenRoot" 
+              src={APP_LOGO} 
+              alt={APP_NAME} 
               width={40} 
               height={40}
             />

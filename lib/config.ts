@@ -24,6 +24,8 @@ import entityConfig from '@/config/legal/entity.json'
 // UI strings
 import messagesConfig from '@/config/ui/messages.json'
 import pageCopyConfig from '@/config/ui/pageCopy.json'
+import footerConfig from '@/config/ui/footer.json'
+import statusLabelsConfig from '@/config/ui/statusLabels.json'
 
 // Types for better autocomplete
 export type AppConfig = typeof appConfig
@@ -32,6 +34,8 @@ export type LandingConfig = typeof landingConfig
 export type AboutConfig = typeof aboutConfig
 export type MessagesConfig = typeof messagesConfig
 export type PageCopyConfig = typeof pageCopyConfig
+export type FooterConfig = typeof footerConfig
+export type StatusLabelsConfig = typeof statusLabelsConfig
 export type LegalEntityConfig = typeof entityConfig
 
 // Unified config object
@@ -42,6 +46,8 @@ export const config = {
   about: aboutConfig,
   messages: messagesConfig,
   pageCopy: pageCopyConfig,
+  footer: footerConfig,
+  statusLabels: statusLabelsConfig,
   legalEntity: entityConfig,
 } as const
 
@@ -53,6 +59,8 @@ export {
   aboutConfig,
   messagesConfig,
   pageCopyConfig,
+  footerConfig,
+  statusLabelsConfig,
   entityConfig,
 }
 

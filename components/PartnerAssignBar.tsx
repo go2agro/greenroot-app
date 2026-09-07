@@ -23,6 +23,7 @@ type PartnerOption = {
 interface PartnerAssignBarProps {
   applicationId: string
   onAssigned?: () => void
+  searchPlaceholder?: string
 }
 
 function getPartnerName(partner: PartnerOption) {
@@ -31,7 +32,11 @@ function getPartnerName(partner: PartnerOption) {
     .join(' ')
 }
 
-export default function PartnerAssignBar({ applicationId, onAssigned }: PartnerAssignBarProps) {
+export default function PartnerAssignBar({
+  applicationId,
+  onAssigned,
+  searchPlaceholder,
+}: PartnerAssignBarProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [partners, setPartners] = useState<PartnerOption[]>([])
   const [assignedPartner, setAssignedPartner] = useState<PartnerOption | null>(null)
@@ -155,7 +160,7 @@ export default function PartnerAssignBar({ applicationId, onAssigned }: PartnerA
             setShowResults(true)
           }}
           onFocus={() => setShowResults(true)}
-          placeholder={LABEL_SEARCH_PLACEHOLDER}
+          placeholder={searchPlaceholder ?? LABEL_SEARCH_PLACEHOLDER}
           className="w-full bg-gr-input-bg border border-gr-border rounded-xl py-3 px-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent"
         />
       </div>

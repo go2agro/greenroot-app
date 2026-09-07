@@ -9,6 +9,7 @@
     "offerAccept": "Offer accepted! All other applications have been closed.",
     "passwordReset": "Password reset link sent! Please check your inbox.",
     "passwordUpdate": "Password updated successfully!",
+    "passwordUpdateRedirect": "Password updated successfully! Redirecting to login...",
     "draftSaved": "Progress saved!",
     "stageRecorded": "Stage recorded successfully!",
     "partnerAssigned": "Application forwarded to partner successfully!",

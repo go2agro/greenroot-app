@@ -5,6 +5,16 @@
     "login": {
       "heading": "Welcome Back!",
       "subheading": "Please enter your credentials to access the platform. Take the first step in exploring your future.",
+      "roles": {
+        "student": "Student",
+        "admin": "Admin",
+        "partner": "Partner"
+      },
+      "roleErrors": {
+        "admin": "This account does not have admin access.",
+        "student": "This account is not a student account.",
+        "partner": "This account does not have partner access."
+      },
       "emailLabel": "Email Address",
       "emailPlaceholder": "example@email.com",
       "passwordLabel": "Password",
@@ -17,6 +27,7 @@
       "heading": "Create Your Account",
       "subheading": "Start your journey in international paid internships today.",
       "emailLabel": "Email Address",
+      "emailPlaceholder": "example@email.com",
       "passwordLabel": "Password",
       "passwordHint": "(Must contain at least 8 characters)*",
       "confirmPasswordLabel": "Re-enter Password",
@@ -27,6 +38,7 @@
       "heading": "Forgot your password?",
       "subheading": "Don't worry! Enter your registered email address below and we'll send you a secure link to reset your password.",
       "emailLabel": "Enter your email address",
+      "emailPlaceholder": "example@email.com",
       "successHeading": "Password reset link sent!",
       "successLine1": "Please check the inbox of your registered email address.",
       "successLine2": "If you don't find it, please check your Spam or Junk folder."
@@ -37,9 +49,9 @@
       "passwordLabel": "New Password",
       "confirmLabel": "Confirm New Password",
       "invalidLinkHeading": "Invalid Reset Link",
-      "invalidLinkBody": "This password reset link is invalid or has expired.",
+      "invalidLinkBody": "Your reset link has expired. Please request a new one.",
       "successHeading": "Password Updated Successfully",
-      "successBody": "You can now sign in using your new password."
+      "successBody": "Password updated successfully! Redirecting to login..."
     }
   },
   "student": {
@@ -53,11 +65,22 @@
       "recentApplications": "My Recent Applications",
       "browseSection": "Browse Internships",
       "browseCta": "Discover international agriculture internships tailored for you.",
-      "emptyApplications": "You haven't applied to any internships yet."
+      "browseAllButton": "Browse All Internships",
+      "emptyApplications": "You haven't applied to any internships yet.",
+      "emptyCta": "Start Browsing"
     },
     "internships": {
+      "heading": "Agricultural Internships",
       "searchPlaceholder": "Search internships (e.g. Soil Research, Germany...)",
       "sortLabel": "Sort by:",
+      "sortOptions": [
+        { "value": "recent", "label": "Most Recent" },
+        { "value": "oldest", "label": "Oldest First" },
+        { "value": "stipend_high", "label": "Highest Stipend" },
+        { "value": "stipend_low", "label": "Lowest Stipend" },
+        { "value": "duration_short", "label": "Shortest Duration" },
+        { "value": "duration_long", "label": "Longest Duration" }
+      ],
       "emptyHeading": "No internships found",
       "emptyBody": "Try adjusting your search or filters.",
       "resultsCount": "Showing {count} relevant opportunities"
@@ -70,18 +93,72 @@
       "statPending": "Pending",
       "searchPlaceholder": "Search by internship name or country...",
       "emptyHeading": "No applications yet",
-      "emptyBody": "Start browsing internships and submit your first application!"
+      "emptyBody": "Start browsing internships and submit your first application!",
+      "emptyButton": "Browse Internships"
     },
     "profile": {
       "heading": "My Profile",
       "completionHeading": "Complete Your Profile",
       "completionBody": "Complete your profile to increase your chances of being matched with top international agriculture internships.",
-      "completionLabel": "Profile Strength"
+      "completionLabel": "Profile Strength",
+      "sections": {
+        "personal": "Personal Information",
+        "contact": "Contact Information",
+        "address": "Address Details",
+        "identity": "Identity Documents",
+        "academic": "Academic Information"
+      },
+      "fields": {
+        "firstName": "First Name",
+        "middleName": "Middle Name (Optional)",
+        "lastName": "Last Name",
+        "gender": "Gender",
+        "dateOfBirth": "Date of Birth",
+        "nationality": "Nationality",
+        "maritalStatus": "Marital Status",
+        "primaryEmail": "Primary Email",
+        "alternateEmail": "Alternate Email",
+        "mobileNumber": "Mobile Number",
+        "alternateMobile": "Alternate Mobile",
+        "whatsappNumber": "WhatsApp Number",
+        "emergencyContact": "Emergency Contact Number",
+        "country": "Country",
+        "state": "State",
+        "district": "District",
+        "city": "City",
+        "addressLine1": "Address Line 1",
+        "addressLine2": "Address Line 2",
+        "pinCode": "PIN Code",
+        "passportNumber": "Passport Number",
+        "passportPdf": "Passport PDF",
+        "aadhaarNumber": "Aadhaar Number",
+        "aadhaarPdf": "Aadhaar PDF (Front & Back)",
+        "panNumber": "PAN Number",
+        "panPdf": "PAN PDF",
+        "drivingLicenseNumber": "Driving License Number (Optional)",
+        "drivingLicensePdf": "Driving License PDF (Optional)",
+        "passportPhoto": "Passport Size Photograph",
+        "digitalSignature": "Digital Signature",
+        "universityName": "University Name",
+        "collegeName": "College Name",
+        "degreeName": "Degree Name",
+        "branch": "Branch / Specialization"
+      },
+      "uploadButton": "Browse File",
+      "uploadNote": "PDF, JPG, PNG only. Max 1MB per file."
     },
     "notifications": {
       "heading": "Notifications",
       "subheading": "Stay updated on your applications and internship progress.",
       "markAllRead": "Mark all as read",
+      "filterTabs": [
+        { "key": "all", "label": "All" },
+        { "key": "unread", "label": "Unread" },
+        { "key": "application", "label": "Application" },
+        { "key": "interview", "label": "Interviews" },
+        { "key": "system", "label": "System" }
+      ],
+      "dateGroups": ["Today", "Yesterday", "Earlier this week", "Earlier"],
       "emptyHeading": "You're all caught up!",
       "emptyBody": "No new notifications at this time."
     },
@@ -111,18 +188,60 @@
         "Documents Upload",
         "Review & Declaration"
       ],
+      "stepHeadings": {
+        "personal": "Personal Information",
+        "academic": "Academic Details",
+        "languageHealth": "Language & Health Information",
+        "documents": "Supporting Documents",
+        "review": "Review & Submit"
+      },
       "personalInfoBanner": "These details are auto-filled from your profile. To update them, visit your Profile page.",
+      "currentStatusLabel": "Current Status",
       "currentlyStudying": "Currently Studying",
       "graduated": "Graduated",
       "expectedGradYear": "Expected Graduation Year",
       "graduationYear": "Graduation Year",
       "languageProficiency": "Language Proficiency",
       "addLanguage": "+ Add Language",
+      "languageLevels": ["Beginner", "Intermediate", "Advanced", "Native"],
       "healthInfo": "Health Information",
       "healthNote": "This information is kept strictly confidential and used only for internship placement purposes.",
+      "medicalConditions": "Medical Conditions",
+      "medicalPlaceholder": "List any known medical conditions, or type \"None\"",
+      "allergies": "Allergies",
+      "allergiesPlaceholder": "List any allergies, or type \"None\"",
+      "disabilities": "Disabilities",
+      "disabilitiesPlaceholder": "List any disabilities, or type \"None\"",
       "documentsSubheading": "Upload your documents below. Maximum 5 files, 1MB each.",
       "uploadGuidelines": "Upload Guidelines",
-      "reviewSubheading": "Please carefully review all your information before submitting your application."
+      "uploadRule1": "Maximum 5 files total",
+      "uploadRule2": "Each file must be under 1MB",
+      "uploadRule3": "Accepted formats: PDF, JPG, JPEG, PNG",
+      "uploadBoxText": "Click to upload or drag and drop",
+      "uploadBoxSubtext": "PDF, JPG, PNG • Max 1MB per file • Max 5 files",
+      "fileCounter": "{count} / 5 files uploaded",
+      "reviewSubheading": "Please carefully review all your information before submitting your application.",
+      "declaration1": "I confirm that all the information provided in this application is true, accurate, and complete to the best of my knowledge. I understand that any false or misleading information may result in immediate disqualification.",
+      "declaration2": "I agree to the Terms & Conditions and Privacy Policy of GreenRoot. I understand that my information will be shared with the respective internship programme coordinators for evaluation purposes."
+    },
+    "myInternship": {
+      "heading": "My Internship",
+      "subheading": "Your confirmed internship and current progress.",
+      "offerHeading": "Your Approved Offers",
+      "offerSubheading": "You have received approvals for the following internships. Please select one to proceed.",
+      "confirmHeading": "Confirm Your Selection",
+      "confirmBody": "By accepting this offer, all other approved applications will be automatically closed. This action cannot be undone.",
+      "journeyStages": [
+        "Student Confirmed",
+        "Screening Interview Scheduled",
+        "Screening Interview Cleared",
+        "Fees Discussion Done",
+        "Fees Processed",
+        "Visa Process Started",
+        "Visa Approved",
+        "Pre-departure Training",
+        "Departed"
+      ]
     }
   },
   "admin": {
@@ -132,18 +251,65 @@
       "kpiStudents": "Total Students",
       "kpiApplications": "Total Applications",
       "kpiAcceptance": "Acceptance Rate",
-      "kpiInternships": "Total Internships"
+      "kpiInternships": "Total Internships",
+      "pipelineHeading": "Application Pipeline",
+      "pipelineStages": ["Applied", "Under Review", "Partner Review", "Final Approved", "Placed"],
+      "chartHeading": "Application Trends",
+      "chartFilters": ["Last Week", "Last Month", "Last 3 Months"],
+      "recentStudents": "Recently Registered Students",
+      "recentApplications": "Recently Submitted Applications",
+      "recentInternships": "Recently Added Internships",
+      "billingHeading": "This Month's Billing",
+      "billingLink": "View Full Report →"
     },
     "applications": {
       "heading": "Applications",
       "subheading": "Manage and review all student internship applications.",
       "searchPlaceholder": "Search by student name, email or internship...",
+      "filterAllStatus": "All Status",
+      "filterCountry": "Country",
+      "filterInternship": "Internship",
+      "filterDateFrom": "Date From",
+      "filterDateTo": "Date To",
+      "clearFilters": "Clear Filters",
+      "tableHeaders": {
+        "student": "STUDENT",
+        "internship": "INTERNSHIP",
+        "submitted": "SUBMITTED",
+        "status": "STATUS",
+        "action": "ACTION"
+      },
+      "showingCount": "Showing {from} to {to} of {total} applications",
       "emptyHeading": "No applications found",
       "emptyBody": "Try adjusting your search or filter criteria."
     },
+    "applicationDetail": {
+      "backLink": "← Back to Applications",
+      "applicationDetails": "Application Details",
+      "forwardToPartner": "Forward to Partner",
+      "forwardSearchPlaceholder": "Search partner by name or organisation...",
+      "partnerResponseHeading": "Partner Response",
+      "partnerNote": "Partner messages are visible to admin only and will not be shared with the student.",
+      "finalDecisionHeading": "Final Decision",
+      "finalMessageLabel": "Message to Student (Required)",
+      "finalMessagePlaceholder": "Write your final decision message. This will be sent to the student.",
+      "journeyHeading": "Application Journey"
+    },
     "billing": {
       "heading": "Billing Report",
-      "subheading": "Monthly billing summary based on visa process activity."
+      "subheading": "Monthly billing summary based on visa process activity.",
+      "currentMonthHeading": "Current Month Report",
+      "billingBasisNote": "Billing is calculated based on the number of students who reached the Visa Process Started stage this month.",
+      "historyHeading": "Billing History",
+      "historySubheading": "Last 6 months",
+      "tableHeaders": {
+        "month": "Month",
+        "visaApplications": "Visa Applications",
+        "tier": "Tier",
+        "baseRetainer": "Base Retainer",
+        "volumeFee": "Volume Fee",
+        "totalPayable": "Total Payable"
+      }
     }
   },
   "partner": {
@@ -159,9 +325,27 @@
       "heading": "Assigned Applications",
       "subheading": "Review and respond to applications forwarded to you by the admin.",
       "searchPlaceholder": "Search by student name or internship...",
+      "tableHeaders": {
+        "student": "STUDENT",
+        "internship": "INTERNSHIP",
+        "country": "COUNTRY",
+        "assigned": "ASSIGNED",
+        "status": "STATUS",
+        "action": "ACTION"
+      },
       "emptyHeading": "No applications assigned",
       "emptyBody": "Applications forwarded to you by the admin will appear here.",
       "reviewButton": "Review"
+    },
+    "applicationDetail": {
+      "backLink": "← Back to Applications",
+      "noteLabel": "Your Review Comments (Required)",
+      "notePlaceholder": "Write your detailed review comments. This message will be shared with the admin only, not the student.",
+      "confirmApproveHeading": "Confirm Approval",
+      "confirmApproveBody": "Are you sure you want to approve this application? Your comments will be sent to the admin for final review.",
+      "confirmRejectHeading": "Confirm Rejection",
+      "confirmRejectBody": "Are you sure you want to reject this application? Your comments and reason will be sent to the admin.",
+      "adminOnlyNote": "Your message is visible to the admin only. The student will not see this message directly."
     }
   },
   "notFound": {

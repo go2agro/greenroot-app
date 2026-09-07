@@ -1,8 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowLeft, Compass, Home, Leaf, Sprout } from 'lucide-react'
-import { appConfig } from '@/lib/appConfig'
-import { pageCopyConfig } from '@/lib/config'
+import { appConfig, contactConfig, pageCopyConfig } from '@/lib/config'
 import { Button } from '@/components/ui/button'
 
 const notFoundCopy = pageCopyConfig.notFound
@@ -89,8 +88,8 @@ export default function NotFound() {
             <div className="mb-3 flex size-10 items-center justify-center rounded-xl bg-[#E8F4FC] text-gr-secondary transition-colors group-hover:bg-gr-secondary group-hover:text-white">
               <ArrowLeft className="size-5" aria-hidden="true" />
             </div>
-            <p className="font-semibold text-gr-text-dark">Need help?</p>
-            <p className="mt-1 text-sm text-gr-text-muted">Reach out and we will point you in the right direction.</p>
+            <p className="font-semibold text-gr-text-dark">{contactConfig.sidebarHelp.heading}</p>
+            <p className="mt-1 text-sm text-gr-text-muted">{contactConfig.sidebarHelp.body}</p>
           </Link>
         </div>
 

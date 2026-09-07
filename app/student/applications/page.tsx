@@ -26,7 +26,7 @@ import { invalidateAllApplicationData } from '@/lib/cache'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
 import { getApplicationStatusTimestamp, formatApplicationReferenceId } from '@/lib/utils'
-import { BTN_BROWSE_INTERNSHIPS, BTN_DELETE, ITEMS_PER_PAGE } from '@/lib/appConfig'
+import { BTN_DELETE, ITEMS_PER_PAGE } from '@/lib/appConfig'
 import { pageCopyConfig } from '@/lib/config'
 import { getMessage } from '@/lib/messages'
 
@@ -430,7 +430,7 @@ export default function StudentApplications() {
                   onClick={() => router.push('/student/internships')}
                   className="bg-gr-primary text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-gr-primary-hover transition-colors"
                 >
-                  {BTN_BROWSE_INTERNSHIPS}
+                  {applicationsCopy.emptyButton}
                 </button>
               </div>
             ) : (

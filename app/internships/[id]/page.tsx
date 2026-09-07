@@ -22,9 +22,11 @@ import {
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { getInternshipById } from '@/lib/internships'
-import { BTN_APPLY_NOW, LABEL_LOADING } from '@/lib/appConfig'
-import { getMessage } from '@/lib/messages'
+import { BTN_LOGIN_TO_APPLY, LABEL_LOADING } from '@/lib/appConfig'
+import { pageCopyConfig } from '@/lib/config'
 import { stripRequiredDocumentsBlock } from '@/lib/internshipContent'
+
+const internshipCopy = pageCopyConfig.student.internshipDetail
 
 interface Internship {
   id: string
@@ -176,7 +178,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
               onClick={() => router.push('/login')}
               className="bg-gr-primary text-white rounded-lg px-8 py-3 font-semibold hover:bg-gr-primary-hover transition-colors"
             >
-              {BTN_APPLY_NOW}
+              {BTN_LOGIN_TO_APPLY}
             </button>
           </div>
         </div>
@@ -190,7 +192,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
                 <CalendarDays className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-xs text-gray-400 uppercase tracking-wide">START DATE</p>
+                <p className="text-xs text-gray-400 uppercase tracking-wide">{internshipCopy.chipStartDate}</p>
                 <p className="text-sm font-semibold text-gray-900">{formatDate(internship.start_date)}</p>
               </div>
             </div>
@@ -200,7 +202,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
                 <Clock className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-xs text-gray-400 uppercase tracking-wide">DURATION</p>
+                <p className="text-xs text-gray-400 uppercase tracking-wide">{internshipCopy.chipDuration}</p>
                 <p className="text-sm font-semibold text-gray-900">{internship.duration_months || 'N/A'} Months</p>
               </div>
             </div>
@@ -210,7 +212,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
                 <CreditCard className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-xs text-gray-400 uppercase tracking-wide">STIPEND</p>
+                <p className="text-xs text-gray-400 uppercase tracking-wide">{internshipCopy.chipStipend}</p>
                 <p className="text-sm font-semibold text-gray-900">
                   {internship.stipend_monthly 
                     ? `₹${internship.stipend_monthly.toLocaleString('en-IN')}/month` 
@@ -224,7 +226,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
                 <Briefcase className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-xs text-gray-400 uppercase tracking-wide">WORK MODE</p>
+                <p className="text-xs text-gray-400 uppercase tracking-wide">{internshipCopy.chipWorkMode}</p>
                 <p className="text-sm font-semibold text-gray-900 capitalize">{internship.work_mode || 'N/A'}</p>
               </div>
             </div>
@@ -233,7 +235,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
       </div>
 
       <div className="max-w-7xl mx-auto px-8 py-10">
-        <h2 className="font-bold text-xl mb-4 text-gr-text-dark">About this Internship</h2>
+        <h2 className="font-bold text-xl mb-4 text-gr-text-dark">{internshipCopy.aboutHeading}</h2>
         <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">
           {stripRequiredDocumentsBlock(internship.long_description) || 'No description available.'}
         </p>
@@ -241,7 +243,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
 
       {responsibilities.length > 0 && (
         <div className="max-w-7xl mx-auto px-8 py-10">
-          <h2 className="font-bold text-xl mb-4 text-gr-text-dark">Key Responsibilities</h2>
+          <h2 className="font-bold text-xl mb-4 text-gr-text-dark">{internshipCopy.responsibilitiesHeading}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {responsibilities.map((resp, idx) => {
               const IconComponent = responsibilityIcons[idx % responsibilityIcons.length]
@@ -258,7 +260,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
 
       {skills.length > 0 && (
         <div className="max-w-7xl mx-auto px-8 py-10">
-          <h2 className="font-bold text-xl mb-4 text-gr-text-dark">Skills you&apos;ll learn</h2>
+          <h2 className="font-bold text-xl mb-4 text-gr-text-dark">{internshipCopy.skillsHeading}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="relative h-72 rounded-2xl overflow-hidden">
               <Image
@@ -286,7 +288,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
       <div className="max-w-7xl mx-auto px-8 py-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h2 className="font-bold text-xl mb-4 text-gr-text-dark">Eligibility</h2>
+            <h2 className="font-bold text-xl mb-4 text-gr-text-dark">{internshipCopy.eligibilityHeading}</h2>
             <div className="bg-white border-l-4 border-gr-primary rounded-r-xl p-6 shadow-sm">
               {eligibility.length > 0 ? (
                 eligibility.map((req, idx) => (
@@ -302,9 +304,9 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
           </div>
 
           <div>
-            <h2 className="font-bold text-xl mb-4 text-gr-text-dark">Stipend Details</h2>
+            <h2 className="font-bold text-xl mb-4 text-gr-text-dark">{internshipCopy.stipendHeading}</h2>
             <div className="bg-white border-l-4 border-gr-primary rounded-r-xl p-6 shadow-sm">
-              <p className="font-semibold text-gray-900 mb-2">Monthly Stipend</p>
+              <p className="font-semibold text-gray-900 mb-2">{internshipCopy.monthlyStipendSubheading}</p>
               <p className="text-sm text-gray-600 mb-4">
                 {internship.stipend_monthly 
                   ? `₹${internship.stipend_monthly.toLocaleString('en-IN')}/month` 
@@ -312,7 +314,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
               </p>
               {benefits.length > 0 && (
                 <>
-                  <p className="font-medium text-gray-900 mb-2">Additional benefits may include:</p>
+                  <p className="font-medium text-gray-900 mb-2">{internshipCopy.benefitsHeading}</p>
                   {benefits.map((benefit, idx) => (
                     <div key={idx} className="flex items-start gap-2 text-sm text-gray-600 mb-2">
                       <span className="mt-1.5">•</span>
@@ -329,14 +331,14 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
       <div className="max-w-7xl mx-auto px-8 py-10 mb-10">
         <div className="bg-gr-primary-light rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
-            <h3 className="font-bold text-lg text-gray-900 mb-1">Ready to Start?</h3>
-            <p className="text-sm text-gray-500">Take the first step toward your global agriculture career.</p>
+            <h3 className="font-bold text-lg text-gray-900 mb-1">{internshipCopy.ctaHeading}</h3>
+            <p className="text-sm text-gray-500">{internshipCopy.ctaSubheading}</p>
           </div>
           <button
             onClick={() => router.push('/login')}
             className="bg-gr-primary text-white rounded-lg px-6 py-3 font-semibold hover:bg-gr-primary-hover transition-colors whitespace-nowrap w-full md:w-auto"
           >
-            {BTN_APPLY_NOW}
+            {BTN_LOGIN_TO_APPLY}
           </button>
         </div>
       </div>

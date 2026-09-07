@@ -13,7 +13,7 @@ import InternshipCard from '@/components/InternshipCard'
 import { getMyProfile } from '@/lib/profiles'
 import { getMyStudentProfile, checkProfileCompletion } from '@/lib/studentProfiles'
 import { getApplicationCounts, getActiveApplications, getDraftApplications } from '@/lib/studentApplications'
-import { BTN_BROWSE_INTERNSHIPS, DEFAULT_INTERNSHIP_IMAGE } from '@/lib/appConfig'
+import { BTN_START_BROWSING, DEFAULT_INTERNSHIP_IMAGE } from '@/lib/appConfig'
 import { pageCopyConfig } from '@/lib/config'
 import { getRecentInternships } from '@/lib/internships'
 import { getApplicationStatusTimestamp } from '@/lib/utils'
@@ -286,7 +286,7 @@ export default function StudentDashboard() {
           {/* Application Stats */}
           <div className="mb-6 sm:mb-8">
             <div className="flex items-center gap-3 mb-4">
-              <h2 className="text-lg sm:text-xl font-bold text-gray-900">My Applications</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900">{dashboardCopy.recentApplications}</h2>
               <button
                 onClick={handleRefreshApplications}
                 disabled={isRefreshingApplications}
@@ -397,7 +397,13 @@ export default function StudentDashboard() {
                   ))
                 ) : (
                   <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
-                    <p className="text-gray-500">{dashboardCopy.emptyApplications}</p>
+                    <p className="text-gray-500 mb-4">{dashboardCopy.emptyApplications}</p>
+                    <Link
+                      href="/student/internships"
+                      className="inline-flex items-center gap-2 bg-gr-primary text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-gr-primary-hover transition-colors text-sm"
+                    >
+                      {BTN_START_BROWSING}
+                    </Link>
                   </div>
                 )}
               </div>
@@ -517,7 +523,7 @@ export default function StudentDashboard() {
                 href="/student/internships"
                 className="inline-flex items-center gap-2 bg-gr-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-gr-primary-hover transition-colors text-sm sm:text-base"
               >
-                {BTN_BROWSE_INTERNSHIPS}
+                {dashboardCopy.browseAllButton}
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </div>

@@ -1,0 +1,51 @@
+{
+  "tagline": "Cultivating the next generation of agricultural leaders through immersive international learning and technology.",
+  "copyright": "© 2025 GreenRoot Platform. All rights reserved.",
+  "columns": [
+    {
+      "id": "brand",
+      "heading": "GreenRoot",
+      "links": []
+    },
+    {
+      "id": "about",
+      "heading": "About Us",
+      "links": [
+        { "label": "Our Mission", "href": "/about#our-story" },
+        { "label": "Team", "href": "/about#team" },
+        { "label": "Impact Reports", "href": "/about" }
+      ]
+    },
+    {
+      "id": "quick-links",
+      "heading": "Quick Links",
+      "links": [
+        { "label": "Find Internships", "href": "/internships" },
+        { "label": "Learning Hub", "href": "/about" },
+        { "label": "For Employers", "href": "/contact" }
+      ]
+    },
+    {
+      "id": "resources",
+      "heading": "Resources",
+      "links": [
+        { "label": "Student Guide", "href": "/about" },
+        { "label": "Career Blog", "href": "/about" },
+        { "label": "Support", "href": "/contact" }
+      ]
+    },
+    {
+      "id": "socials",
+      "heading": "Socials",
+      "links": [
+        { "label": "LinkedIn", "href": "https://linkedin.com/company/greenroot", "external": true },
+        { "label": "Twitter/X", "href": "https://x.com/greenroot", "external": true },
+        { "label": "Instagram", "href": "https://instagram.com/greenroot", "external": true }
+      ]
+    }
+  ],
+  "legalLinks": [
+    { "label": "Privacy Policy", "href": "/privacy" },
+    { "label": "Terms of Service", "href": "/terms" }
+  ]
+}

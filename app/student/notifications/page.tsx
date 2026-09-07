@@ -44,22 +44,10 @@ interface NotificationItem {
 }
 
 type FilterKey = 'all' | 'unread' | 'application' | 'interview' | 'system'
-type DateGroup = 'Today' | 'Yesterday' | 'Earlier this week' | 'Earlier'
+type DateGroup = (typeof notificationsCopy.dateGroups)[number]
 
-const FILTER_TABS: { key: FilterKey; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'unread', label: 'Unread' },
-  { key: 'application', label: 'Application' },
-  { key: 'interview', label: 'Interviews' },
-  { key: 'system', label: 'System' },
-]
-
-const DATE_GROUP_ORDER: DateGroup[] = [
-  'Today',
-  'Yesterday',
-  'Earlier this week',
-  'Earlier',
-]
+const FILTER_TABS = notificationsCopy.filterTabs as { key: FilterKey; label: string }[]
+const DATE_GROUP_ORDER = notificationsCopy.dateGroups
 
 function getNotificationIcon(type: string): {
   Icon: LucideIcon
@@ -247,7 +235,7 @@ export default function StudentNotificationsPage() {
     [notifications]
   )
 
-  const filterCounts = useMemo(
+  const filterCounts = useMemo<Record<FilterKey, number>>(
     () => ({
       all: notifications.length,
       unread: notifications.filter((item) => !item.is_read).length,
@@ -259,12 +247,9 @@ export default function StudentNotificationsPage() {
   )
 
   const groupedNotifications = useMemo(() => {
-    const groups: Record<DateGroup, NotificationItem[]> = {
-      Today: [],
-      Yesterday: [],
-      'Earlier this week': [],
-      Earlier: [],
-    }
+    const groups = Object.fromEntries(
+      DATE_GROUP_ORDER.map((group) => [group, [] as NotificationItem[]])
+    ) as Record<DateGroup, NotificationItem[]>
 
     for (const item of filteredNotifications) {
       groups[getDateGroup(item.created_at)].push(item)

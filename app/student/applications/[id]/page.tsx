@@ -83,6 +83,7 @@ type UploadedFile = {
 import { pageCopyConfig } from '@/lib/config'
 
 const STEP_NAMES = pageCopyConfig.student.applicationForm.steps
+const formCopy = pageCopyConfig.student.applicationForm
 
 const MAX_DOCUMENT_UPLOADS = 10
 const MAX_LANGUAGES = 8
@@ -820,12 +821,11 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
               {currentStep === 1 && (
                 <div>
-                  <h3 className="font-bold text-xl text-gray-900 mb-2">Personal Information</h3>
-                  <p className="text-sm text-gray-500 mb-4">Auto-filled from your profile. To edit go to Profile page.</p>
+                  <h3 className="font-bold text-xl text-gray-900 mb-2">{formCopy.stepHeadings.personal}</h3>
                   
                   <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 flex items-start gap-3">
                     <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-blue-800">These details are read-only. Update them in your Profile.</p>
+                    <p className="text-sm text-blue-800">{formCopy.personalInfoBanner}</p>
                   </div>
 
                   <div className="space-y-4">
@@ -909,7 +909,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
               {currentStep === 2 && (
                 <div>
-                  <h3 className="font-bold text-xl text-gray-900 mb-6">Academic Details</h3>
+                  <h3 className="font-bold text-xl text-gray-900 mb-6">{formCopy.stepHeadings.academic}</h3>
 
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -957,7 +957,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Current Status <span className="text-red-500">*</span>
+                          {formCopy.currentStatusLabel} <span className="text-red-500">*</span>
                         </label>
                         <select
                           value={formData.academic_current_status || ''}
@@ -966,13 +966,13 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                           className={`w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                         >
                           <option value="">Select status</option>
-                          <option value="Studying">Studying</option>
-                          <option value="Graduated">Graduated</option>
+                          <option value="Studying">{formCopy.currentlyStudying}</option>
+                          <option value="Graduated">{formCopy.graduated}</option>
                         </select>
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          {formData.academic_current_status === 'Studying' ? 'Expected Graduation Year' : 'Graduation Year'} <span className="text-red-500">*</span>
+                          {formData.academic_current_status === 'Studying' ? formCopy.expectedGradYear : formCopy.graduationYear} <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -990,11 +990,11 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
               {currentStep === 3 && (
                 <div>
-                  <h3 className="font-bold text-xl text-gray-900 mb-6">Language & Health Information</h3>
+                  <h3 className="font-bold text-xl text-gray-900 mb-6">{formCopy.stepHeadings.languageHealth}</h3>
 
                   <div className="mb-8">
                     <div className="flex items-center justify-between mb-4">
-                      <h4 className="font-semibold text-gray-900">Language Proficiency</h4>
+                      <h4 className="font-semibold text-gray-900">{formCopy.languageProficiency}</h4>
                       {!isReadOnly && (
                       <button
                         onClick={addLanguage}
@@ -1002,7 +1002,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                         className="border border-gr-primary text-gr-primary rounded-lg px-4 py-2 text-sm font-medium hover:bg-green-50 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Plus className="w-4 h-4" />
-                        Add Language
+                        {formCopy.addLanguage}
                       </button>
                       )}
                     </div>
@@ -1049,10 +1049,10 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                                 className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                               >
                                 <option value="">Read level</option>
-                                <option value="Beginner">Beginner</option>
-                                <option value="Intermediate">Intermediate</option>
-                                <option value="Advanced">Advanced</option>
-                                <option value="Native">Native</option>
+                                <option value="Beginner">{formCopy.languageLevels[0]}</option>
+                                <option value="Intermediate">{formCopy.languageLevels[1]}</option>
+                                <option value="Advanced">{formCopy.languageLevels[2]}</option>
+                                <option value="Native">{formCopy.languageLevels[3]}</option>
                               </select>
 
                               <select
@@ -1062,10 +1062,10 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                                 className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                               >
                                 <option value="">Write level</option>
-                                <option value="Beginner">Beginner</option>
-                                <option value="Intermediate">Intermediate</option>
-                                <option value="Advanced">Advanced</option>
-                                <option value="Native">Native</option>
+                                <option value="Beginner">{formCopy.languageLevels[0]}</option>
+                                <option value="Intermediate">{formCopy.languageLevels[1]}</option>
+                                <option value="Advanced">{formCopy.languageLevels[2]}</option>
+                                <option value="Native">{formCopy.languageLevels[3]}</option>
                               </select>
 
                               <select
@@ -1075,10 +1075,10 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                                 className={`w-full bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent ${isReadOnly ? 'bg-gray-50 cursor-not-allowed opacity-75' : ''}`}
                               >
                                 <option value="">Speak level</option>
-                                <option value="Beginner">Beginner</option>
-                                <option value="Intermediate">Intermediate</option>
-                                <option value="Advanced">Advanced</option>
-                                <option value="Native">Native</option>
+                                <option value="Beginner">{formCopy.languageLevels[0]}</option>
+                                <option value="Intermediate">{formCopy.languageLevels[1]}</option>
+                                <option value="Advanced">{formCopy.languageLevels[2]}</option>
+                                <option value="Native">{formCopy.languageLevels[3]}</option>
                               </select>
                             </div>
                           </div>
@@ -1088,15 +1088,15 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                   </div>
 
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Health Information</h4>
-                    <p className="text-xs text-gray-400 mb-4">This information is kept confidential.</p>
+                    <h4 className="font-semibold text-gray-900 mb-1">{formCopy.healthInfo}</h4>
+                    <p className="text-xs text-gray-400 mb-4">{formCopy.healthNote}</p>
 
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Medical Conditions</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{formCopy.medicalConditions}</label>
                         <textarea
                           rows={3}
-                          placeholder="List any known medical conditions, or type 'None'"
+                          placeholder={formCopy.medicalPlaceholder}
                           value={formData.health_medical_conditions || ''}
                           onChange={(e) => setFormData({ ...formData, health_medical_conditions: e.target.value })}
                           disabled={isReadOnly}
@@ -1105,10 +1105,10 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Allergies</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{formCopy.allergies}</label>
                         <textarea
                           rows={2}
-                          placeholder="List any allergies, or type 'None'"
+                          placeholder={formCopy.allergiesPlaceholder}
                           value={formData.health_allergies || ''}
                           onChange={(e) => setFormData({ ...formData, health_allergies: e.target.value })}
                           disabled={isReadOnly}
@@ -1117,10 +1117,10 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Disabilities</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{formCopy.disabilities}</label>
                         <textarea
                           rows={2}
-                          placeholder="List any disabilities, or type 'None'"
+                          placeholder={formCopy.disabilitiesPlaceholder}
                           value={formData.health_disabilities || ''}
                           onChange={(e) => setFormData({ ...formData, health_disabilities: e.target.value })}
                           disabled={isReadOnly}
@@ -1134,11 +1134,11 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
               {currentStep === 4 && (
                 <div>
-                  <h3 className="font-bold text-xl text-gray-900 mb-2">Supporting Documents</h3>
+                  <h3 className="font-bold text-xl text-gray-900 mb-2">{formCopy.stepHeadings.documents}</h3>
                   <p className="text-sm text-gray-500 mb-6">
                     {requiredDocumentsText
-                      ? 'Read the required documents list below, then upload your files.'
-                      : `Upload your documents below. Maximum ${MAX_DOCUMENT_UPLOADS} files, ${MAX_FILE_UPLOAD_MB}MB each.`}
+                      ? formCopy.documentsSubheading
+                      : formCopy.documentsSubheading}
                   </p>
 
                   {requiredDocumentsText && (
@@ -1160,10 +1160,11 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                   {!isReadOnly && (
                   <>
                   <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+                    <p className="text-sm font-semibold text-amber-900 mb-2">{formCopy.uploadGuidelines}</p>
                     <ul className="text-sm text-amber-800 space-y-1 list-disc list-inside">
-                      <li>Maximum {MAX_DOCUMENT_UPLOADS} files total</li>
-                      <li>Each file must be under {MAX_FILE_UPLOAD_MB}MB</li>
-                      <li>Accepted format: PDF only</li>
+                      <li>{formCopy.uploadRule1}</li>
+                      <li>{formCopy.uploadRule2}</li>
+                      <li>{formCopy.uploadRule3}</li>
                     </ul>
                   </div>
 
@@ -1186,8 +1187,8 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                     />
                     <div className="text-center">
                       <CloudUpload className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                      <p className="font-medium text-gray-600">Click to upload or drag and drop</p>
-                      <p className="text-xs text-gray-400 mt-1">PDF only • Max {MAX_FILE_UPLOAD_MB}MB per file • Max {MAX_DOCUMENT_UPLOADS} files</p>
+                      <p className="font-medium text-gray-600">{formCopy.uploadBoxText}</p>
+                      <p className="text-xs text-gray-400 mt-1">{formCopy.uploadBoxSubtext}</p>
                     </div>
                   </div>
                   {fileUploadError && (
@@ -1203,7 +1204,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                   <p className={`text-sm text-center mt-3 ${
                     uploadedFiles.length + existingFiles.length >= MAX_DOCUMENT_UPLOADS ? 'text-red-500' : 'text-gr-primary'
                   }`}>
-                    {uploadedFiles.length + existingFiles.length} / {MAX_DOCUMENT_UPLOADS} files uploaded
+                    {formCopy.fileCounter.replace('{count}', String(uploadedFiles.length + existingFiles.length))}
                   </p>
 
                   {(existingFiles.length > 0 || uploadedFiles.length > 0) && (
@@ -1253,16 +1254,16 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
               {currentStep === APPLICATION_STEPS_COUNT && (
                 <div>
-                  <h3 className="font-bold text-xl text-gray-900 mb-2">Review & Submit</h3>
+                  <h3 className="font-bold text-xl text-gray-900 mb-2">{formCopy.stepHeadings.review}</h3>
                   <p className="text-sm text-gray-500 mb-6">
-                    {isReadOnly ? 'Review your submitted application details below.' : 'Please review your information before submitting.'}
+                    {isReadOnly ? formCopy.reviewSubheading : formCopy.reviewSubheading}
                   </p>
 
                   <div className="space-y-4">
                     <div className="bg-gray-50 rounded-2xl p-5">
                       <div className="flex items-center gap-2 mb-4">
                         <User className="w-5 h-5 text-gr-primary" />
-                        <h4 className="font-semibold text-gray-900">Personal Information</h4>
+                        <h4 className="font-semibold text-gray-900">{formCopy.stepHeadings.personal}</h4>
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
                         <div>
@@ -1299,7 +1300,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                     <div className="bg-gray-50 rounded-2xl p-5">
                       <div className="flex items-center gap-2 mb-4">
                         <GraduationCap className="w-5 h-5 text-gr-primary" />
-                        <h4 className="font-semibold text-gray-900">Academic Details</h4>
+                        <h4 className="font-semibold text-gray-900">{formCopy.stepHeadings.academic}</h4>
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
                         <div>
@@ -1332,7 +1333,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                     <div className="bg-gray-50 rounded-2xl p-5">
                       <div className="flex items-center gap-2 mb-4">
                         <Languages className="w-5 h-5 text-gr-primary" />
-                        <h4 className="font-semibold text-gray-900">Language Proficiency</h4>
+                        <h4 className="font-semibold text-gray-900">{formCopy.languageProficiency}</h4>
                       </div>
                       <div className="space-y-2 text-sm">
                         {languages.filter(l => l.language).map((lang, index) => (
@@ -1349,19 +1350,19 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                     <div className="bg-gray-50 rounded-2xl p-5">
                       <div className="flex items-center gap-2 mb-4">
                         <Heart className="w-5 h-5 text-gr-primary" />
-                        <h4 className="font-semibold text-gray-900">Health Information</h4>
+                        <h4 className="font-semibold text-gray-900">{formCopy.healthInfo}</h4>
                       </div>
                       <div className="space-y-3 text-sm">
                         <div>
-                          <p className="text-gray-500">Medical Conditions</p>
+                          <p className="text-gray-500">{formCopy.medicalConditions}</p>
                           <p className="font-medium text-gray-900">{formData.health_medical_conditions || 'None'}</p>
                         </div>
                         <div>
-                          <p className="text-gray-500">Allergies</p>
+                          <p className="text-gray-500">{formCopy.allergies}</p>
                           <p className="font-medium text-gray-900">{formData.health_allergies || 'None'}</p>
                         </div>
                         <div>
-                          <p className="text-gray-500">Disabilities</p>
+                          <p className="text-gray-500">{formCopy.disabilities}</p>
                           <p className="font-medium text-gray-900">{formData.health_disabilities || 'None'}</p>
                         </div>
                       </div>
@@ -1411,7 +1412,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                         className="mt-1 w-5 h-5 rounded border-gray-300 text-gr-primary focus:ring-gr-primary accent-gr-primary"
                       />
                       <span className="text-sm text-gray-700">
-                        I confirm that all the information provided in this application is true, accurate and complete to the best of my knowledge. I understand that any false information may result in disqualification.
+                        {formCopy.declaration1}
                       </span>
                     </label>
 
@@ -1423,27 +1424,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                         className="mt-1 w-5 h-5 rounded border-gray-300 text-gr-primary focus:ring-gr-primary accent-gr-primary"
                       />
                       <span className="text-sm text-gray-700">
-                        I agree to the{' '}
-                        <Link
-                          href="/terms"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-gr-primary hover:underline"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          Terms & Conditions
-                        </Link>
-                        {' '}and{' '}
-                        <Link
-                          href="/privacy"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-gr-primary hover:underline"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          Privacy Policy
-                        </Link>
-                        {' '}of GreenRoot. I understand that my information will be shared with the respective internship programme coordinators.
+                        {formCopy.declaration2}
                       </span>
                     </label>
 
