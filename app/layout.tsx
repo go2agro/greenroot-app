@@ -1,13 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Montserrat, Geist_Mono } from "next/font/google";
-import { Suspense } from "react";
 import "./globals.css";
 import appConfig from '@/config/appConfig.json';
 import MaintenancePage from '@/components/MaintenancePage';
 import OfflineBanner from '@/components/OfflineBanner';
 import ThemeVariables from '@/components/ThemeVariables';
-import GoogleAnalyticsScript from '@/components/GoogleAnalyticsScript';
-import GoogleAnalyticsProvider from '@/components/GoogleAnalyticsProvider';
+import GoogleAnalytics from '@/components/GoogleAnalytics';
 import AnalyticsInteractionTracker from '@/components/AnalyticsInteractionTracker';
 import { shouldLoadGoogleAnalytics } from '@/lib/analytics/config';
 
@@ -56,10 +54,7 @@ export default function RootLayout({
         {isMaintenanceMode ? <MaintenancePage /> : children}
         {shouldLoadGoogleAnalytics() && gaMeasurementId ? (
           <>
-            <GoogleAnalyticsScript gaId={gaMeasurementId} />
-            <Suspense fallback={null}>
-              <GoogleAnalyticsProvider />
-            </Suspense>
+            <GoogleAnalytics gaId={gaMeasurementId} />
             <AnalyticsInteractionTracker />
           </>
         ) : null}

@@ -10,31 +10,19 @@ export function isAnalyticsEnabled(): boolean {
   return isAllowedAnalyticsHost(window.location.hostname);
 }
 
-function ensureGtagStub() {
-  window.dataLayer = window.dataLayer || [];
-
-  if (typeof window.gtag !== "function") {
-    window.gtag = function gtag(...args: unknown[]) {
-      window.dataLayer!.push(args);
-    };
-  }
-}
-
 function sendGtag(
   command: "config" | "event" | "set" | "js" | "consent",
   targetOrAction: string | Date,
   params?: Record<string, unknown>
 ) {
-  if (!isAnalyticsEnabled()) return;
-
-  ensureGtagStub();
+  if (!isAnalyticsEnabled() || typeof window.gtag !== "function") return;
 
   if (params !== undefined) {
-    window.gtag!(command, targetOrAction, params);
+    window.gtag(command, targetOrAction, params);
     return;
   }
 
-  window.gtag!(command, targetOrAction);
+  window.gtag(command, targetOrAction);
 }
 
 export function trackPageView({
