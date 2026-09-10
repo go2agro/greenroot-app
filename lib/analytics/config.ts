@@ -4,30 +4,9 @@ function normalizeHostname(hostname: string): string {
   return hostname.toLowerCase().replace(/^www\./, "");
 }
 
-export function getConfiguredSiteHostname(): string | null {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-  if (!siteUrl) return null;
-
-  try {
-    return normalizeHostname(new URL(siteUrl).hostname);
-  } catch {
-    return null;
-  }
-}
-
 export function isAllowedAnalyticsHost(hostname: string): boolean {
   const current = normalizeHostname(hostname);
-
-  if (LOCAL_HOSTS.has(current)) {
-    return false;
-  }
-
-  const configured = getConfiguredSiteHostname();
-  if (!configured) {
-    return process.env.NODE_ENV === "production";
-  }
-
-  return current === configured;
+  return !LOCAL_HOSTS.has(current);
 }
 
 export function shouldLoadGoogleAnalytics(): boolean {

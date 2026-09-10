@@ -7,19 +7,34 @@ export function isAnalyticsEnabled(): boolean {
     return false;
   }
 
-  return (
-    isAllowedAnalyticsHost(window.location.hostname) &&
-    typeof window.gtag === "function"
-  );
+  return isAllowedAnalyticsHost(window.location.hostname);
 }
 
-function gtag(
+function ensureDataLayer() {
+  window.dataLayer = window.dataLayer || [];
+}
+
+function sendGtag(
   command: "config" | "event" | "set" | "js" | "consent",
   targetOrAction: string | Date,
   params?: Record<string, unknown>
 ) {
   if (!isAnalyticsEnabled()) return;
-  window.gtag?.(command, targetOrAction, params);
+
+  const dataLayer = window.dataLayer ?? [];
+  window.dataLayer = dataLayer;
+
+  if (typeof window.gtag === "function") {
+    window.gtag(command, targetOrAction, params);
+    return;
+  }
+
+  if (params !== undefined) {
+    dataLayer.push([command, targetOrAction, params]);
+    return;
+  }
+
+  dataLayer.push([command, targetOrAction]);
 }
 
 export function trackPageView({
@@ -35,7 +50,7 @@ export function trackPageView({
 }) {
   if (!GA_MEASUREMENT_ID) return;
 
-  gtag("event", "page_view", {
+  sendGtag("event", "page_view", {
     page_path: path,
     page_title: title ?? screenName,
     page_location: window.location.href,
@@ -44,7 +59,7 @@ export function trackPageView({
     app_name: "GreenRoot",
   });
 
-  gtag("config", GA_MEASUREMENT_ID, {
+  sendGtag("config", GA_MEASUREMENT_ID, {
     page_path: path,
     page_title: title ?? screenName,
   });
@@ -60,7 +75,7 @@ export function trackEvent(
       )
     : undefined;
 
-  gtag("event", eventName, cleanedParams);
+  sendGtag("event", eventName, cleanedParams);
 }
 
 export function setAnalyticsUser(
@@ -69,7 +84,7 @@ export function setAnalyticsUser(
 ) {
   if (!GA_MEASUREMENT_ID) return;
 
-  gtag("config", GA_MEASUREMENT_ID, {
+  sendGtag("config", GA_MEASUREMENT_ID, {
     user_id: userId,
   });
 
@@ -80,18 +95,18 @@ export function setAnalyticsUser(
     : undefined;
 
   if (userProperties && Object.keys(userProperties).length > 0) {
-    gtag("set", "user_properties", userProperties);
+    sendGtag("set", "user_properties", userProperties);
   }
 }
 
 export function clearAnalyticsUser() {
   if (!GA_MEASUREMENT_ID) return;
 
-  gtag("config", GA_MEASUREMENT_ID, {
+  sendGtag("config", GA_MEASUREMENT_ID, {
     user_id: undefined,
   });
 
-  gtag("set", "user_properties", {
+  sendGtag("set", "user_properties", {
     user_role: undefined,
   });
 }
