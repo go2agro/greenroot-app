@@ -10,8 +10,14 @@ export function isAnalyticsEnabled(): boolean {
   return isAllowedAnalyticsHost(window.location.hostname);
 }
 
-function ensureDataLayer() {
+function ensureGtagStub() {
   window.dataLayer = window.dataLayer || [];
+
+  if (typeof window.gtag !== "function") {
+    window.gtag = function gtag(...args: unknown[]) {
+      window.dataLayer!.push(args);
+    };
+  }
 }
 
 function sendGtag(
@@ -21,20 +27,14 @@ function sendGtag(
 ) {
   if (!isAnalyticsEnabled()) return;
 
-  const dataLayer = window.dataLayer ?? [];
-  window.dataLayer = dataLayer;
-
-  if (typeof window.gtag === "function") {
-    window.gtag(command, targetOrAction, params);
-    return;
-  }
+  ensureGtagStub();
 
   if (params !== undefined) {
-    dataLayer.push([command, targetOrAction, params]);
+    window.gtag!(command, targetOrAction, params);
     return;
   }
 
-  dataLayer.push([command, targetOrAction]);
+  window.gtag!(command, targetOrAction);
 }
 
 export function trackPageView({
