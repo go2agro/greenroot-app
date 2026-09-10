@@ -1,0 +1,31 @@
+{
+  "student": {
+    "draft": "Draft",
+    "submitted": "Submitted",
+    "under_review": "Under Review",
+    "admin_accepted": "Under Review",
+    "forwarded_to_partner": "Partner Review",
+    "partner_review": "Partner Review",
+    "final_approved": "Final Approved",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "accepted": "Accepted",
+    "closed": "Closed",
+    "withdrawn": "Withdrawn"
+  },
+  "admin": {
+    "submitted": "Applied",
+    "under_review": "Under Review",
+    "admin_accepted": "Under Review",
+    "forwarded_to_partner": "Partner Review",
+    "partner_review": "Partner Review",
+    "final_approved": "Final Approved",
+    "approved": "Final Approved",
+    "accepted": "Placed",
+    "rejected": "Rejected",
+    "closed": "Closed",
+    "draft": "Draft"
+  },
+  "defaultStudent": "Under Review",
+  "defaultAdmin": "Under Review"
+}

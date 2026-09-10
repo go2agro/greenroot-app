@@ -28,7 +28,8 @@
     { "value": 50, "suffix": "+", "label": "Internship Programmes" }
   ],
   "features": {
-    "heading": "Why Choose GreenRoot?",
+    "heading_prefix": "Why Choose",
+    "heading_highlight": "GreenRoot?",
     "subheading": "",
     "image": {
       "src": "https://picsum.photos/400/600?random=4",
@@ -161,10 +162,13 @@
     ]
   },
   "cta": {
-    "heading": "Ready to Start Your Global Agriculture Journey?",
+    "heading_prefix": "Ready to Start Your",
+    "heading_highlight": "Global Agriculture Journey?",
     "subheading": "Join thousands of aspiring agriculture students building world-class careers through GreenRoot.",
-    "button_text": "Browse Internships",
-    "button_link": "/internships",
+    "primary_button_text": "Browse Internships",
+    "primary_button_link": "/internships",
+    "secondary_button_text": "Create Account",
+    "secondary_button_link": "/signup",
     "image": {
       "src": "https://picsum.photos/400/300?random=8",
       "alt": "Students in agriculture"

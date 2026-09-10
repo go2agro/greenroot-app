@@ -32,6 +32,13 @@ import {
   formatApplicationReferenceId,
   formatApplicationStatusLabel,
 } from '@/lib/utils'
+import { pageCopyConfig } from '@/lib/config'
+import {
+  BTN_APPROVE_APPLICATION,
+  BTN_REJECT_APPLICATION,
+} from '@/lib/appConfig'
+
+const applicationDetailCopy = pageCopyConfig.partner.applicationDetail
 
 type ApplicationDetail = ApplicationPaperData & {
   internships?: ApplicationPaperInternship | null
@@ -219,12 +226,12 @@ export default function PartnerApplicationDetails({
               </p>
 
               <label className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-gray-700 mb-1.5">
-                Your Remarks <span className="text-red-500">*</span>
+                {applicationDetailCopy.noteLabel}
               </label>
               <Textarea
                 value={remarks}
                 onChange={(e) => setRemarks(e.target.value)}
-                placeholder="Provide detailed remarks about your decision. This will only be visible to the admin..."
+                placeholder={applicationDetailCopy.notePlaceholder}
                 className={`min-h-[120px] rounded-none bg-white focus-visible:ring-gr-secondary focus-visible:border-gr-secondary ${
                   !remarks.trim()
                     ? 'border-red-300 focus-visible:border-red-400 focus-visible:ring-red-200'
@@ -232,7 +239,7 @@ export default function PartnerApplicationDetails({
                 }`}
               />
               <p className="text-[11px] text-gray-500 mt-2">
-                Your remarks will only be visible to the admin, not the student.
+                {applicationDetailCopy.adminOnlyNote}
               </p>
 
               <div className="mt-5 pt-4 border-t border-gr-secondary/40 flex flex-wrap justify-end gap-2">
@@ -243,7 +250,7 @@ export default function PartnerApplicationDetails({
                   className="inline-flex items-center gap-2 rounded-sm border border-red-300 bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-700 hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <XCircle className="w-4 h-4" />
-                  Recommend Rejection
+                  {BTN_REJECT_APPLICATION}
                 </button>
                 <button
                   type="button"
@@ -252,7 +259,7 @@ export default function PartnerApplicationDetails({
                   className="inline-flex items-center gap-2 rounded-sm bg-gr-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-gr-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <CheckCircle className="w-4 h-4" />
-                  Recommend Approval
+                  {BTN_APPROVE_APPLICATION}
                 </button>
               </div>
             </div>
@@ -329,7 +336,7 @@ export default function PartnerApplicationDetails({
             className="absolute left-0 flex items-center gap-2 text-gray-600 hover:text-gr-primary transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-medium">Back</span>
+            <span className="font-medium">{applicationDetailCopy.backLink}</span>
           </Link>
 
           <Link href="/partner/dashboard" className="flex items-center gap-2">
@@ -372,7 +379,7 @@ export default function PartnerApplicationDetails({
               href="/partner/applications"
               className="text-sm font-semibold text-gr-primary hover:underline"
             >
-              Back to Applications
+              {applicationDetailCopy.backLink}
             </Link>
           </div>
         ) : (
@@ -412,9 +419,9 @@ export default function PartnerApplicationDetails({
         }}
         variant="success"
         icon={<CheckCircle />}
-        title="Recommend Approval?"
-        description="Your recommendation and remarks will be sent to the admin for final review. The admin will make the final decision."
-        confirmText="Recommend Approval"
+        title={applicationDetailCopy.confirmApproveHeading}
+        description={applicationDetailCopy.confirmApproveBody}
+        confirmText={BTN_APPROVE_APPLICATION}
         onConfirm={handleDecisionConfirm}
         isLoading={decisionLoading}
         loadingText="Submitting..."
@@ -427,9 +434,9 @@ export default function PartnerApplicationDetails({
         }}
         variant="danger"
         icon={<XCircle />}
-        title="Recommend Rejection?"
-        description="Your recommendation and remarks will be sent to the admin for final review. The admin will make the final decision."
-        confirmText="Recommend Rejection"
+        title={applicationDetailCopy.confirmRejectHeading}
+        description={applicationDetailCopy.confirmRejectBody}
+        confirmText={BTN_REJECT_APPLICATION}
         onConfirm={handleDecisionConfirm}
         isLoading={decisionLoading}
         loadingText="Submitting..."

@@ -541,7 +541,7 @@ export default function AdminDashboard() {
 
             {/* Row 2 — Application Pipeline */}
             <div className={CARD_CLASS}>
-              <h2 className="font-semibold text-base mb-6">Application pipeline</h2>
+              <h2 className="font-semibold text-base mb-6">{adminDashboardCopy.pipelineHeading}</h2>
               <div className="overflow-x-auto pb-2">
                 <div className="grid grid-cols-4 min-w-[520px]">
                   {pipelineStages.map((stage, index) => (
@@ -570,15 +570,15 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className={CARD_CLASS}>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                  <h2 className="font-semibold text-base">Applications submitted</h2>
+                  <h2 className="font-semibold text-base">{adminDashboardCopy.chartHeading}</h2>
                   <select
                     value={timeFilter}
                     onChange={(e) => setTimeFilter(e.target.value as TimeFilter)}
                     className="border border-gr-border rounded-lg px-3 py-2 text-sm bg-white w-full sm:w-auto"
                   >
-                    <option value="this_week">This week</option>
-                    <option value="this_month">This month</option>
-                    <option value="last_3_months">Last 3 months</option>
+                    <option value="this_week">{adminDashboardCopy.chartFilters[0]}</option>
+                    <option value="this_month">{adminDashboardCopy.chartFilters[1]}</option>
+                    <option value="last_3_months">{adminDashboardCopy.chartFilters[2]}</option>
                   </select>
                 </div>
 
@@ -607,7 +607,7 @@ export default function AdminDashboard() {
               </div>
 
               <div className={CARD_CLASS}>
-                <h2 className="font-semibold text-base mb-6">Top internships</h2>
+                <h2 className="font-semibold text-base mb-6">{adminDashboardCopy.recentInternships}</h2>
                 {topInternships.length > 0 ? (
                   <div className="space-y-3">
                     {topInternships.map((item, index) => (

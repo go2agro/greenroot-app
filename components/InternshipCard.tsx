@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { analyticsAttrs } from '@/lib/analytics/attributes'
 
 interface InternshipCardProps {
   id: string
@@ -28,6 +29,12 @@ export default function InternshipCard({
     <Link 
       href={`${basePath}/${id}`}
       className="block relative aspect-[4/3] rounded-xl overflow-hidden group w-full"
+      {...analyticsAttrs({
+        id: `internship_card_${id}`,
+        label: title,
+        section: 'internship_list',
+        type: 'internship_card',
+      })}
     >
       {/* Image */}
       <Image

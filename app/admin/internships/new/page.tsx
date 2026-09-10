@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { createInternship } from '@/lib/internships'
+import { trackInternshipCreated } from '@/lib/analytics'
 import { mergeRequiredDocuments } from '@/lib/internshipContent'
 import { getMyAdminProfile } from '@/lib/adminProfiles'
 import { getMyProfile } from '@/lib/profiles'
@@ -259,6 +260,11 @@ export default function AdminInternshipsNew() {
       setSaving(false)
       return
     }
+
+    trackInternshipCreated({
+      title: form.title.trim(),
+      country: form.country.trim() || undefined,
+    })
 
     await invalidateInternships()
     router.push('/admin/internships')

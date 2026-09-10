@@ -51,6 +51,15 @@ import {
   formatApplicationReferenceId,
   formatApplicationStatusLabel,
 } from '@/lib/utils'
+import { pageCopyConfig } from '@/lib/config'
+import {
+  BTN_FINAL_APPROVE,
+  BTN_FINAL_REJECT,
+  BTN_SEND_MESSAGE,
+} from '@/lib/appConfig'
+import { trackApplicationReviewAction } from '@/lib/analytics'
+
+const applicationDetailCopy = pageCopyConfig.admin.applicationDetail
 
 type ApplicationDetail = ApplicationPaperData & {
   internships?: ApplicationPaperInternship | null
@@ -229,6 +238,12 @@ export default function AdminApplicationDetails({
         return
       }
 
+      trackApplicationReviewAction({
+        action: 'deleted',
+        applicationId: application.id,
+        internshipId: application.internship_id,
+      })
+
       setActionDialog(null)
       invalidateAdminApplications()
       router.push('/admin/applications')
@@ -248,6 +263,12 @@ export default function AdminApplicationDetails({
         return
       }
 
+      trackApplicationReviewAction({
+        action: 'screening_rejected',
+        applicationId: application.id,
+        internshipId: application.internship_id,
+      })
+
       setActionDialog(null)
       setRejectionMessage('')
       invalidateAdminApplications()
@@ -263,6 +284,12 @@ export default function AdminApplicationDetails({
       if (result.error || !result.data) {
         return
       }
+
+      trackApplicationReviewAction({
+        action: 'screening_accepted',
+        applicationId: application.id,
+        internshipId: application.internship_id,
+      })
 
       const now = new Date().toISOString()
       setApplication((prev) =>
@@ -301,6 +328,12 @@ export default function AdminApplicationDetails({
       if (result.error) {
         return
       }
+
+      trackApplicationReviewAction({
+        action: actionDialog === 'approve' ? 'approved' : 'rejected',
+        applicationId: application.id,
+        internshipId: application.internship_id,
+      })
 
       setActionDialog(null)
       invalidateAdminApplications()
@@ -369,14 +402,15 @@ export default function AdminApplicationDetails({
                 Next Step
               </p>
               <h3 className="text-base font-bold text-gray-900 mt-1">
-                Forward to Partner
+                {applicationDetailCopy.forwardToPartner}
               </h3>
               <p className="text-sm text-gray-500 mt-1">
-                Search and assign a partner reviewer for this application.
+                {applicationDetailCopy.forwardSearchPlaceholder}
               </p>
             </div>
             <PartnerAssignBar
               applicationId={application!.id}
+              searchPlaceholder={applicationDetailCopy.forwardSearchPlaceholder}
               onAssigned={() => loadApplication()}
             />
           </div>
@@ -427,8 +461,9 @@ export default function AdminApplicationDetails({
               {application.partner_remarks && (
                 <div className="bg-white/60 rounded-lg border border-gray-200 p-3">
                   <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
-                    Partner Remarks
+                    {applicationDetailCopy.partnerResponseHeading}
                   </p>
+                  <p className="text-xs text-gray-500 mb-2">{applicationDetailCopy.partnerNote}</p>
                   <p className="text-sm text-gray-700 whitespace-pre-wrap">
                     {application.partner_remarks}
                   </p>
@@ -444,17 +479,17 @@ export default function AdminApplicationDetails({
             <div className="pl-2">
               <div className="mb-4 inline-flex items-center gap-2 rounded-sm bg-amber-500 px-2.5 py-1">
                 <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-white">
-                  Final Decision Required
+                  {applicationDetailCopy.finalDecisionHeading}
                 </span>
               </div>
 
               <label className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-gray-700 mb-1.5">
-                Administrative Remarks <span className="text-red-500">*</span>
+                {applicationDetailCopy.finalMessageLabel}
               </label>
               <Textarea
                 value={finalRemarks}
                 onChange={(e) => setFinalRemarks(e.target.value)}
-                placeholder="Final decision remarks..."
+                placeholder={applicationDetailCopy.finalMessagePlaceholder}
                 className="min-h-[100px] rounded-none bg-white border-amber-300 focus-visible:ring-amber-200 focus-visible:border-amber-400"
               />
 
@@ -466,7 +501,7 @@ export default function AdminApplicationDetails({
                   className="inline-flex items-center gap-2 rounded-sm border border-red-300 bg-red-50 px-3.5 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 disabled:opacity-50"
                 >
                   <XCircle className="w-4 h-4" />
-                  Reject
+                  {BTN_FINAL_REJECT}
                 </button>
                 <button
                   type="button"
@@ -475,7 +510,7 @@ export default function AdminApplicationDetails({
                   className="inline-flex items-center gap-2 rounded-sm bg-gr-primary px-3.5 py-2 text-sm font-semibold text-white hover:bg-gr-primary-hover disabled:opacity-50"
                 >
                   <CheckCircle className="w-4 h-4" />
-                  Approve
+                  {BTN_FINAL_APPROVE}
                 </button>
               </div>
             </div>
@@ -493,7 +528,7 @@ export default function AdminApplicationDetails({
             className="absolute left-0 flex items-center gap-2 text-gray-600 hover:text-gr-primary transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-medium">Back</span>
+            <span className="font-medium">{applicationDetailCopy.backLink}</span>
           </Link>
 
           <Link href="/admin/dashboard" className="flex items-center gap-2">
@@ -536,7 +571,7 @@ export default function AdminApplicationDetails({
               href="/admin/applications"
               className="text-sm font-semibold text-gr-primary hover:underline"
             >
-              Back to Applications
+              {applicationDetailCopy.backLink}
             </Link>
           </div>
         ) : (

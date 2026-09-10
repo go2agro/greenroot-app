@@ -15,6 +15,7 @@ import {
 import NotificationBadge from '@/components/NotificationBadge'
 import SidebarHelpContact from '@/components/SidebarHelpContact'
 import { getUnreadCount } from '@/lib/notifications'
+import { analyticsNavAttrs } from '@/lib/analytics/attributes'
 
 interface PartnerSidebarProps {
   activePage?: string
@@ -108,6 +109,7 @@ export default function PartnerSidebar({
               key={item.href}
               href={item.href}
               title={isCollapsed ? item.label : undefined}
+              {...analyticsNavAttrs('partner', item.id, item.label)}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                 isActive
                   ? 'bg-gr-primary text-white font-medium'

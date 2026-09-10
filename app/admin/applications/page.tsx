@@ -25,7 +25,7 @@ import {
   formatApplicationReferenceId,
   getApplicationStatusTimestamp,
 } from '@/lib/utils'
-import { ITEMS_PER_PAGE } from '@/lib/appConfig'
+import { ITEMS_PER_PAGE, BTN_VIEW } from '@/lib/appConfig'
 import { pageCopyConfig } from '@/lib/config'
 
 const adminApplicationsCopy = pageCopyConfig.admin.applications
@@ -659,7 +659,7 @@ export default function AdminApplications() {
                         </div>
                       </FilterCategory>
 
-                      <FilterCategory title="Country">
+                      <FilterCategory title={adminApplicationsCopy.filterCountry}>
                         {uniqueCountries.length > 0 ? (
                           <div className="space-y-1 max-h-36 overflow-y-auto">
                             {uniqueCountries.map((country) => (
@@ -681,7 +681,7 @@ export default function AdminApplications() {
                         )}
                       </FilterCategory>
 
-                      <FilterCategory title="Internship">
+                      <FilterCategory title={adminApplicationsCopy.filterInternship}>
                         {uniqueInternships.length > 0 ? (
                           <div className="space-y-1 max-h-36 overflow-y-auto">
                             {uniqueInternships.map((title) => (
@@ -710,7 +710,7 @@ export default function AdminApplications() {
                         onClick={handleClearFilters}
                         className="flex-1 py-2.5 rounded-xl text-sm font-medium text-gray-600 border border-gr-border hover:bg-gray-50 transition-colors"
                       >
-                        Clear
+                        {adminApplicationsCopy.clearFilters}
                       </button>
                       <button
                         type="button"
@@ -729,7 +729,10 @@ export default function AdminApplications() {
               <p className="text-sm text-gray-500">
                 {isLoading
                   ? 'Loading applications...'
-                  : `Showing ${filteredApplications.length} ${filteredApplications.length === 1 ? 'application' : 'applications'}`}
+                  : adminApplicationsCopy.showingCount
+                      .replace('{from}', String(filteredApplications.length === 0 ? 0 : startIndex + 1))
+                      .replace('{to}', String(Math.min(startIndex + ITEMS_PER_PAGE, filteredApplications.length)))
+                      .replace('{total}', String(filteredApplications.length))}
               </p>
             </div>
 
@@ -753,11 +756,10 @@ export default function AdminApplications() {
                 <div
                   className={`hidden ${TABLE_GRID_CLASS} bg-gr-background border border-gr-border rounded-t-2xl text-xs font-semibold text-gray-500 uppercase tracking-wide md:py-3`}
                 >
-                  <span>Application ID</span>
-                  <span>Student</span>
-                  <span>Internship</span>
-                  <span>Status</span>
-                  <span>Time</span>
+                  <span>{adminApplicationsCopy.tableHeaders.student}</span>
+                  <span>{adminApplicationsCopy.tableHeaders.internship}</span>
+                  <span>{adminApplicationsCopy.tableHeaders.status}</span>
+                  <span>{adminApplicationsCopy.tableHeaders.submitted}</span>
                   <span />
                 </div>
 
@@ -779,14 +781,14 @@ export default function AdminApplications() {
                         </div>
 
                         <div className="mb-3 md:mb-0 min-w-0">
-                          <p className="md:hidden text-xs text-gray-400 mb-0.5">Student</p>
+                          <p className="md:hidden text-xs text-gray-400 mb-0.5">{adminApplicationsCopy.tableHeaders.student}</p>
                           <p className="text-sm font-medium text-gray-900 truncate">
                             {getStudentName(application)}
                           </p>
                         </div>
 
                         <div className="mb-3 md:mb-0 min-w-0">
-                          <p className="md:hidden text-xs text-gray-400 mb-0.5">Internship</p>
+                          <p className="md:hidden text-xs text-gray-400 mb-0.5">{adminApplicationsCopy.tableHeaders.internship}</p>
                           <p className="text-sm font-medium text-gray-900 truncate">
                             {application.internships?.title || 'Unknown internship'}
                           </p>
@@ -801,7 +803,7 @@ export default function AdminApplications() {
                         </div>
 
                         <div className="mb-3 md:mb-0">
-                          <p className="md:hidden text-xs text-gray-400 mb-0.5">Status</p>
+                          <p className="md:hidden text-xs text-gray-400 mb-0.5">{adminApplicationsCopy.tableHeaders.status}</p>
                           <span
                             className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(application.status)}`}
                           >
@@ -810,14 +812,14 @@ export default function AdminApplications() {
                         </div>
 
                         <div className="mb-3 md:mb-0 min-w-0">
-                          <p className="md:hidden text-xs text-gray-400 mb-0.5">Time</p>
+                          <p className="md:hidden text-xs text-gray-400 mb-0.5">{adminApplicationsCopy.tableHeaders.submitted}</p>
                           <div className="flex items-center gap-1 text-sm text-gray-500">
                             <Clock className="w-3.5 h-3.5 flex-shrink-0" />
                             <span className="truncate">{getApplicationStatusTimestamp(application)}</span>
                           </div>
                         </div>
 
-                        <div className="flex md:justify-end">
+                        <div className="flex md:justify-end" title={BTN_VIEW} aria-label={BTN_VIEW}>
                           <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-gr-input-bg text-gray-500 transition-colors group-hover:bg-gr-primary group-hover:text-white">
                             <ChevronRight className="w-4 h-4" />
                           </div>

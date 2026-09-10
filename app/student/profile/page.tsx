@@ -23,6 +23,7 @@ import BottomNavigation from '@/components/BottomNavigation'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { getMyProfile } from '@/lib/profiles'
 import { signOut, deleteAccount } from '@/lib/auth'
+import { trackAccountDeleted, trackLogout } from '@/lib/analytics'
 import { 
   getMyStudentProfile, 
   updateStudentProfile,
@@ -33,6 +34,7 @@ import { pageCopyConfig } from '@/lib/config'
 import {
   MAX_FILE_UPLOAD_BYTES,
   MAX_FILE_UPLOAD_ERROR,
+  BTN_SAVE,
 } from '@/lib/appConfig'
 
 const profileCopy = pageCopyConfig.student.profile
@@ -372,6 +374,7 @@ export default function StudentProfile() {
   const handleLogout = async () => {
     setIsLoggingOut(true)
     try {
+      trackLogout()
       await signOut()
       router.push('/login')
     } catch (error) {
@@ -388,6 +391,7 @@ export default function StudentProfile() {
         setIsDeletingAccount(false)
         return
       }
+      trackAccountDeleted()
       router.push('/login')
     } catch (error) {
       setIsDeletingAccount(false)
@@ -549,7 +553,7 @@ export default function StudentProfile() {
                 onClick={() => toggleSection('personal')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
-                <h2 className="text-lg font-bold text-gray-900">Section A: <span className="text-gr-secondary">Personal Information</span></h2>
+                <h2 className="text-lg font-bold text-gray-900">Section A: <span className="text-gr-secondary">{profileCopy.sections.personal}</span></h2>
                 {collapsedSections.personal ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
                 ) : (
@@ -565,7 +569,7 @@ export default function StudentProfile() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    First Name<span className="text-red-500">*</span>
+                    {profileCopy.fields.firstName}<span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -577,7 +581,7 @@ export default function StudentProfile() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Middle Name
+                    {profileCopy.fields.middleName}
                   </label>
                   <input
                     type="text"
@@ -589,7 +593,7 @@ export default function StudentProfile() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Last Name<span className="text-red-500">*</span>
+                    {profileCopy.fields.lastName}<span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -601,7 +605,7 @@ export default function StudentProfile() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Gender<span className="text-red-500">*</span>
+                    {profileCopy.fields.gender}<span className="text-red-500">*</span>
                   </label>
                   <select
                     value={formData.gender || ''}
@@ -616,7 +620,7 @@ export default function StudentProfile() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Date of Birth<span className="text-red-500">*</span>
+                    {profileCopy.fields.dateOfBirth}<span className="text-red-500">*</span>
                   </label>
                   <input
                     type="date"
@@ -627,7 +631,7 @@ export default function StudentProfile() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Nationality<span className="text-red-500">*</span>
+                    {profileCopy.fields.nationality}<span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -639,7 +643,7 @@ export default function StudentProfile() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Marital Status<span className="text-red-500">*</span>
+                    {profileCopy.fields.maritalStatus}<span className="text-red-500">*</span>
                   </label>
                   <select
                     value={formData.marital_status || ''}
@@ -660,7 +664,7 @@ export default function StudentProfile() {
                   className="border border-gr-primary text-gr-primary rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-gr-primary hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
                 >
                   <Save className="w-4 h-4" />
-                  {savingSection === 'personal' ? 'Saving...' : 'Save'}
+                  {savingSection === 'personal' ? 'Saving...' : BTN_SAVE}
                 </button>
               </div>
               </div>
@@ -673,7 +677,7 @@ export default function StudentProfile() {
                 onClick={() => toggleSection('contact')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
-                <h2 className="text-lg font-bold text-gray-900">Section B: <span className="text-gr-secondary">Contact Information</span></h2>
+                <h2 className="text-lg font-bold text-gray-900">Section B: <span className="text-gr-secondary">{profileCopy.sections.contact}</span></h2>
                 {collapsedSections.contact ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
                 ) : (
@@ -689,7 +693,7 @@ export default function StudentProfile() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Email<span className="text-red-500">*</span>
+                    {profileCopy.fields.primaryEmail}<span className="text-red-500">*</span>
                   </label>
                   <input
                     type="email"
@@ -701,7 +705,7 @@ export default function StudentProfile() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Mobile Number<span className="text-red-500">*</span>
+                    {profileCopy.fields.mobileNumber}<span className="text-red-500">*</span>
                   </label>
                   <input
                     type="tel"
@@ -713,7 +717,7 @@ export default function StudentProfile() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Alternate Email
+                    {profileCopy.fields.alternateEmail}
                   </label>
                   <input
                     type="email"
@@ -725,7 +729,7 @@ export default function StudentProfile() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Alternate Phone
+                    {profileCopy.fields.alternateMobile}
                   </label>
                   <input
                     type="tel"
@@ -737,7 +741,7 @@ export default function StudentProfile() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    WhatsApp Number
+                    {profileCopy.fields.whatsappNumber}
                   </label>
                   <input
                     type="tel"
@@ -749,7 +753,7 @@ export default function StudentProfile() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Emergency Contact Number<span className="text-red-500">*</span>
+                    {profileCopy.fields.emergencyContact}<span className="text-red-500">*</span>
                   </label>
                   <input
                     type="tel"
@@ -767,7 +771,7 @@ export default function StudentProfile() {
                   className="border border-gr-primary text-gr-primary rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-gr-primary hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
                 >
                   <Save className="w-4 h-4" />
-                  {savingSection === 'contact' ? 'Saving...' : 'Save'}
+                  {savingSection === 'contact' ? 'Saving...' : BTN_SAVE}
                 </button>
               </div>
               </div>
@@ -780,7 +784,7 @@ export default function StudentProfile() {
                 onClick={() => toggleSection('address')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
-                <h2 className="text-lg font-bold text-gray-900">Section C: <span className="text-gr-secondary">Address Details</span></h2>
+                <h2 className="text-lg font-bold text-gray-900">Section C: <span className="text-gr-secondary">{profileCopy.sections.address}</span></h2>
                 {collapsedSections.address ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
                 ) : (
@@ -797,7 +801,7 @@ export default function StudentProfile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="text-sm font-medium text-gray-700 mb-2 block">
-                      Country<span className="text-red-500">*</span>
+                      {profileCopy.fields.country}<span className="text-red-500">*</span>
                     </label>
                     <select
                       value={formData.country || ''}
@@ -812,7 +816,7 @@ export default function StudentProfile() {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-700 mb-2 block">
-                      State<span className="text-red-500">*</span>
+                      {profileCopy.fields.state}<span className="text-red-500">*</span>
                     </label>
                     <select
                       value={formData.state || ''}
@@ -829,7 +833,7 @@ export default function StudentProfile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="text-sm font-medium text-gray-700 mb-2 block">
-                      City<span className="text-red-500">*</span>
+                      {profileCopy.fields.city}<span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -841,7 +845,7 @@ export default function StudentProfile() {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-700 mb-2 block">
-                      District
+                      {profileCopy.fields.district}
                     </label>
                     <input
                       type="text"
@@ -854,7 +858,7 @@ export default function StudentProfile() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Address Line 1<span className="text-red-500">*</span>
+                    {profileCopy.fields.addressLine1}<span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -866,7 +870,7 @@ export default function StudentProfile() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Address Line 2
+                    {profileCopy.fields.addressLine2}
                   </label>
                   <input
                     type="text"
@@ -878,7 +882,7 @@ export default function StudentProfile() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Pincode<span className="text-red-500">*</span>
+                    {profileCopy.fields.pinCode}<span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -921,7 +925,7 @@ export default function StudentProfile() {
                   className="border border-gr-primary text-gr-primary rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-gr-primary hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
                 >
                   <Save className="w-4 h-4" />
-                  {savingSection === 'address' ? 'Saving...' : 'Save'}
+                  {savingSection === 'address' ? 'Saving...' : BTN_SAVE}
                 </button>
               </div>
               </div>
@@ -934,7 +938,7 @@ export default function StudentProfile() {
                 onClick={() => toggleSection('identity')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
-                <h2 className="text-lg font-bold text-gray-900">Section D: <span className="text-gr-secondary">Identity Documents</span></h2>
+                <h2 className="text-lg font-bold text-gray-900">Section D: <span className="text-gr-secondary">{profileCopy.sections.identity}</span></h2>
                 {collapsedSections.identity ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
                 ) : (
@@ -954,7 +958,7 @@ export default function StudentProfile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="text-sm font-medium text-gray-700 mb-2 block">
-                      Passport Number<span className="text-red-500">*</span>
+                      {profileCopy.fields.passportNumber}<span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -1007,7 +1011,7 @@ export default function StudentProfile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="text-sm font-medium text-gray-700 mb-2 block">
-                      Aadhar Number<span className="text-red-500">*</span>
+                      {profileCopy.fields.aadhaarNumber}<span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -1019,7 +1023,7 @@ export default function StudentProfile() {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-700 mb-2 block">
-                      PAN Number<span className="text-red-500">*</span>
+                      {profileCopy.fields.panNumber}<span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -1032,7 +1036,7 @@ export default function StudentProfile() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Driving License Number
+                    {profileCopy.fields.drivingLicenseNumber}
                   </label>
                   <input
                     type="text"
@@ -1045,7 +1049,8 @@ export default function StudentProfile() {
 
                 {/* Document Uploads */}
                 <div className="mt-6">
-                  <h3 className="text-base font-semibold mb-4">Upload Documents</h3>
+                  <h3 className="text-base font-semibold mb-2">{profileCopy.sections.identity}</h3>
+                  <p className="text-xs text-gray-500 mb-4">{profileCopy.uploadNote}</p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Passport Document */}
                     <div>
@@ -1084,7 +1089,7 @@ export default function StudentProfile() {
                               htmlFor="passport-upload"
                               className="cursor-pointer text-sm text-gr-primary hover:underline"
                             >
-                              {uploadingDoc === 'passport' ? 'Uploading...' : 'Upload Passport'}
+                              {uploadingDoc === 'passport' ? 'Uploading...' : profileCopy.uploadButton}
                             </label>
                           </>
                         )}
@@ -1364,7 +1369,7 @@ export default function StudentProfile() {
                   className="border border-gr-primary text-gr-primary rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-gr-primary hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
                 >
                   <Save className="w-4 h-4" />
-                  {savingSection === 'identity' ? 'Saving...' : 'Save'}
+                  {savingSection === 'identity' ? 'Saving...' : BTN_SAVE}
                 </button>
               </div>
               </div>
@@ -1377,7 +1382,7 @@ export default function StudentProfile() {
                 onClick={() => toggleSection('academic')}
                 className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
               >
-                <h2 className="text-lg font-bold text-gray-900">Section E: <span className="text-gr-secondary">Academic Information</span></h2>
+                <h2 className="text-lg font-bold text-gray-900">Section E: <span className="text-gr-secondary">{profileCopy.sections.academic}</span></h2>
                 {collapsedSections.academic ? (
                   <ChevronDown className="w-5 h-5 text-gray-500" />
                 ) : (
@@ -1393,7 +1398,7 @@ export default function StudentProfile() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    University Name<span className="text-red-500">*</span>
+                    {profileCopy.fields.universityName}<span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -1405,7 +1410,7 @@ export default function StudentProfile() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    College Name<span className="text-red-500">*</span>
+                    {profileCopy.fields.collegeName}<span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -1417,7 +1422,7 @@ export default function StudentProfile() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Degree Name<span className="text-red-500">*</span>
+                    {profileCopy.fields.degreeName}<span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -1429,7 +1434,7 @@ export default function StudentProfile() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Branch / Specialization<span className="text-red-500">*</span>
+                    {profileCopy.fields.branch}<span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -1447,7 +1452,7 @@ export default function StudentProfile() {
                   className="border border-gr-primary text-gr-primary rounded-lg px-16 py-2.5 flex items-center gap-2 hover:bg-gr-primary hover:text-white transition-colors disabled:opacity-50 text-sm font-bold"
                 >
                   <Save className="w-4 h-4" />
-                  {savingSection === 'academic' ? 'Saving...' : 'Save'}
+                  {savingSection === 'academic' ? 'Saving...' : BTN_SAVE}
                 </button>
               </div>
               </div>

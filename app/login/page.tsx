@@ -5,8 +5,10 @@ import { useRouter } from 'next/navigation'
 import { AtSign, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { loginUser, signOut } from '@/lib/auth'
+import { trackLogin, trackLoginFailed, trackLoginRoleSelected } from '@/lib/analytics'
+import { analyticsAttrs } from '@/lib/analytics/attributes'
 import { getMyProfile } from '@/lib/profiles'
-import { appConfig, BTN_LOGIN } from '@/lib/appConfig'
+import { appConfig, BTN_LOGIN, APP_LOGO, APP_NAME } from '@/lib/appConfig'
 import { pageCopyConfig } from '@/lib/config'
 import { getMessage } from '@/lib/messages'
 
@@ -73,6 +75,12 @@ export default function Login() {
 
       if (error) {
         const message = error.message || getMessage('error', 'login')
+        trackLoginFailed({
+          role: selectedRole,
+          reason: message.toLowerCase().includes('invalid login credentials')
+            ? 'invalid_credentials'
+            : 'auth_error',
+        })
         setGeneralError(
           message.toLowerCase().includes('invalid login credentials')
             ? getMessage('error', 'login')
@@ -90,24 +98,32 @@ export default function Login() {
 
       if (selectedRole === 'admin' && data.profile.role !== 'admin') {
         await signOut()
-        setGeneralError('This account does not have admin access.')
+        trackLoginFailed({ role: selectedRole, reason: 'role_mismatch' })
+        setGeneralError(loginCopy.roleErrors.admin)
         setIsLoading(false)
         return
       }
 
       if (selectedRole === 'student' && data.profile.role !== 'student') {
         await signOut()
-        setGeneralError('This account is not a student account.')
+        trackLoginFailed({ role: selectedRole, reason: 'role_mismatch' })
+        setGeneralError(loginCopy.roleErrors.student)
         setIsLoading(false)
         return
       }
 
       if (selectedRole === 'partner' && data.profile.role !== 'partner') {
         await signOut()
-        setGeneralError('This account does not have partner access.')
+        trackLoginFailed({ role: selectedRole, reason: 'role_mismatch' })
+        setGeneralError(loginCopy.roleErrors.partner)
         setIsLoading(false)
         return
       }
+
+      trackLogin({
+        role: data.profile.role,
+        userId: data.profile.id,
+      })
 
       const dashboardByRole = {
         admin: '/admin/dashboard',
@@ -133,12 +149,12 @@ export default function Login() {
           {/* Logo - visible on all screens */}
           <div className="flex items-center gap-2 mb-8">
             <Image 
-              src="/greenroot-logo.svg" 
-              alt="GreenRoot" 
+              src={APP_LOGO} 
+              alt={APP_NAME} 
               width={32} 
               height={32}
             />
-            <span className="text-2xl font-bold text-gray-900">GreenRoot</span>
+            <span className="text-2xl font-bold text-gray-900">{APP_NAME}</span>
           </div>
 
           {/* Welcome Heading */}
@@ -154,7 +170,16 @@ export default function Login() {
                 <button
                   key={role}
                   type="button"
-                  onClick={() => setSelectedRole(role)}
+                  onClick={() => {
+                    setSelectedRole(role)
+                    trackLoginRoleSelected(role)
+                  }}
+                  {...analyticsAttrs({
+                    id: `login_role_${role}`,
+                    label: loginCopy.roles[role],
+                    section: 'login',
+                    type: 'role_select',
+                  })}
                   className={`relative py-2.5 rounded-md text-sm sm:text-base transition-colors duration-200 ${
                     selectedRole === role
                       ? 'text-white font-semibold'
@@ -168,7 +193,7 @@ export default function Login() {
                       transition={{ type: 'spring', stiffness: 400, damping: 35 }}
                     />
                   )}
-                  <span className="relative z-10 capitalize">{role}</span>
+                  <span className="relative z-10">{loginCopy.roles[role]}</span>
                 </button>
               ))}
             </div>
@@ -250,6 +275,12 @@ export default function Login() {
             <button
               type="submit"
               disabled={isLoading}
+              {...analyticsAttrs({
+                id: 'login_submit',
+                label: BTN_LOGIN,
+                section: 'login',
+                type: 'submit',
+              })}
               className="w-full bg-gr-primary text-white rounded-lg py-3 text-base font-semibold hover:bg-gr-primary-hover transition-colors disabled:opacity-80 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {isLoading ? (

@@ -3,16 +3,17 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, Briefcase, FileText, User, Bell } from 'lucide-react'
+import { analyticsNavAttrs } from '@/lib/analytics/attributes'
 
 export default function BottomNavigation() {
   const pathname = usePathname()
 
   const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', href: '/student/dashboard' },
-    { icon: Briefcase, label: 'Internships', href: '/student/internships' },
-    { icon: FileText, label: 'Applications', href: '/student/applications' },
-    { icon: User, label: 'Profile', href: '/student/profile' },
-    { icon: Bell, label: 'Notifications', href: '/student/notifications' },
+    { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', href: '/student/dashboard' },
+    { id: 'internships', icon: Briefcase, label: 'Internships', href: '/student/internships' },
+    { id: 'applications', icon: FileText, label: 'Applications', href: '/student/applications' },
+    { id: 'profile', icon: User, label: 'Profile', href: '/student/profile' },
+    { id: 'notifications', icon: Bell, label: 'Notifications', href: '/student/notifications' },
   ]
 
   return (
@@ -26,6 +27,7 @@ export default function BottomNavigation() {
             <Link
               key={item.href}
               href={item.href}
+              {...analyticsNavAttrs('student', item.id, item.label)}
               className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-colors min-w-0 flex-1 ${
                 isActive 
                   ? 'text-gr-primary' 

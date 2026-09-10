@@ -1,0 +1,97 @@
+import { isAllowedAnalyticsHost } from "./config";
+
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+
+export function isAnalyticsEnabled(): boolean {
+  if (typeof window === "undefined" || !GA_MEASUREMENT_ID) {
+    return false;
+  }
+
+  return (
+    isAllowedAnalyticsHost(window.location.hostname) &&
+    typeof window.gtag === "function"
+  );
+}
+
+function gtag(
+  command: "config" | "event" | "set" | "js" | "consent",
+  targetOrAction: string | Date,
+  params?: Record<string, unknown>
+) {
+  if (!isAnalyticsEnabled()) return;
+  window.gtag?.(command, targetOrAction, params);
+}
+
+export function trackPageView({
+  path,
+  screenName,
+  screenClass,
+  title,
+}: {
+  path: string;
+  screenName: string;
+  screenClass: string;
+  title?: string;
+}) {
+  if (!GA_MEASUREMENT_ID) return;
+
+  gtag("event", "page_view", {
+    page_path: path,
+    page_title: title ?? screenName,
+    page_location: window.location.href,
+    screen_name: screenName,
+    screen_class: screenClass,
+    app_name: "GreenRoot",
+  });
+
+  gtag("config", GA_MEASUREMENT_ID, {
+    page_path: path,
+    page_title: title ?? screenName,
+  });
+}
+
+export function trackEvent(
+  eventName: string,
+  params?: Record<string, string | number | boolean | undefined>
+) {
+  const cleanedParams = params
+    ? Object.fromEntries(
+        Object.entries(params).filter(([, value]) => value !== undefined)
+      )
+    : undefined;
+
+  gtag("event", eventName, cleanedParams);
+}
+
+export function setAnalyticsUser(
+  userId: string,
+  properties?: Record<string, string | undefined>
+) {
+  if (!GA_MEASUREMENT_ID) return;
+
+  gtag("config", GA_MEASUREMENT_ID, {
+    user_id: userId,
+  });
+
+  const userProperties = properties
+    ? Object.fromEntries(
+        Object.entries(properties).filter(([, value]) => value !== undefined)
+      )
+    : undefined;
+
+  if (userProperties && Object.keys(userProperties).length > 0) {
+    gtag("set", "user_properties", userProperties);
+  }
+}
+
+export function clearAnalyticsUser() {
+  if (!GA_MEASUREMENT_ID) return;
+
+  gtag("config", GA_MEASUREMENT_ID, {
+    user_id: undefined,
+  });
+
+  gtag("set", "user_properties", {
+    user_role: undefined,
+  });
+}

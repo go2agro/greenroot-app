@@ -206,6 +206,7 @@
           "type": "ul",
           "items": [
             "Supabase — cloud database, authentication, and file storage (hosted in India region)",
+            "Google Analytics — website traffic and usage analytics",
             "Email and communication services used by {{operatorShortName}} staff (where applicable)"
           ]
         },
@@ -348,7 +349,15 @@
         },
         {
           "type": "h3",
-          "text": "10.2 Third-Party Embeds"
+          "text": "10.2 Analytics (Google Analytics)"
+        },
+        {
+          "type": "p",
+          "text": "We use Google Analytics (GA4) to understand how visitors use the Platform, including pages visited, approximate location, device and browser information, and referral sources. Google may set cookies or use similar technologies. Data is used in aggregated form to improve the Platform. Google's privacy policy is available at policies.google.com/privacy."
+        },
+        {
+          "type": "h3",
+          "text": "10.3 Third-Party Embeds"
         },
         {
           "type": "p",

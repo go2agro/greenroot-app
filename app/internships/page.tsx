@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Search, MapPin, Clock, Banknote, ChevronLeft, ChevronRight, X } from 'lucide-react'
@@ -16,6 +16,7 @@ import {
   LABEL_LOADING,
   LABEL_SEARCH_PLACEHOLDER,
 } from '@/lib/appConfig'
+import { trackInternshipSearch } from '@/lib/analytics'
 
 type Internship = {
   id: string
@@ -108,6 +109,7 @@ export default function PublicInternships() {
   const [internships, setInternships] = useState<Internship[]>([])
   const [filteredInternships, setFilteredInternships] = useState<Internship[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const searchTrackingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     async function fetchInternships() {
@@ -163,6 +165,30 @@ export default function PublicInternships() {
     setFilteredInternships(result)
     setCurrentPage(1)
   }, [searchQuery, sortBy, internships])
+
+  useEffect(() => {
+    if (isLoading) return
+
+    if (searchTrackingTimeout.current) {
+      clearTimeout(searchTrackingTimeout.current)
+    }
+
+    searchTrackingTimeout.current = setTimeout(() => {
+      if (!searchQuery && sortBy === 'most_recent') return
+
+      trackInternshipSearch({
+        searchTerm: searchQuery,
+        resultCount: filteredInternships.length,
+        sortBy,
+      })
+    }, 800)
+
+    return () => {
+      if (searchTrackingTimeout.current) {
+        clearTimeout(searchTrackingTimeout.current)
+      }
+    }
+  }, [searchQuery, sortBy, filteredInternships.length, isLoading])
 
   const totalPages = Math.ceil(filteredInternships.length / ITEMS_PER_PAGE)
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE

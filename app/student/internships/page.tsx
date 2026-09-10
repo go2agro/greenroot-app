@@ -15,7 +15,7 @@ import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
 import { pageCopyConfig } from '@/lib/config'
 import {
-  INTERNSHIPS_PAGE_HEADING,
+  BTN_VIEW_DETAILS,
   ITEMS_PER_PAGE,
   LABEL_LOADING,
 } from '@/lib/appConfig'
@@ -38,7 +38,7 @@ type Internship = {
   created_at: string
 }
 
-type SortOption = 'most_recent' | 'oldest_first' | 'highest_stipend' | 'lowest_stipend' | 'shortest_duration' | 'longest_duration'
+type SortOption = (typeof internshipsCopy.sortOptions)[number]['value']
 
 const getBadgeColor = (badge: string) => {
   const badgeUpper = badge?.toUpperCase() || ''
@@ -109,7 +109,7 @@ export default function StudentInternships() {
   const router = useRouter()
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [sortBy, setSortBy] = useState<SortOption>('most_recent')
+  const [sortBy, setSortBy] = useState<SortOption>('recent')
   const [currentPage, setCurrentPage] = useState(1)
   const [filteredInternships, setFilteredInternships] = useState<Internship[]>([])
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -168,22 +168,22 @@ export default function StudentInternships() {
     }
 
     switch (sortBy) {
-      case 'most_recent':
+      case 'recent':
         result.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
         break
-      case 'oldest_first':
+      case 'oldest':
         result.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
         break
-      case 'highest_stipend':
+      case 'stipend_high':
         result.sort((a, b) => (b.stipend_monthly || 0) - (a.stipend_monthly || 0))
         break
-      case 'lowest_stipend':
+      case 'stipend_low':
         result.sort((a, b) => (a.stipend_monthly || 0) - (b.stipend_monthly || 0))
         break
-      case 'shortest_duration':
+      case 'duration_short':
         result.sort((a, b) => (a.duration_months || 0) - (b.duration_months || 0))
         break
-      case 'longest_duration':
+      case 'duration_long':
         result.sort((a, b) => (b.duration_months || 0) - (a.duration_months || 0))
         break
     }
@@ -292,7 +292,7 @@ export default function StudentInternships() {
 
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
               <div>
-                <h1 className="font-bold text-xl text-gray-900">{INTERNSHIPS_PAGE_HEADING}</h1>
+                <h1 className="font-bold text-xl text-gray-900">{internshipsCopy.heading}</h1>
                 <p className="text-sm text-gray-500">
                   {internshipsCopy.resultsCount.replace('{count}', String(filteredInternships.length))}
                 </p>
@@ -315,12 +315,11 @@ export default function StudentInternships() {
                     onChange={(e) => setSortBy(e.target.value as SortOption)}
                     className="border border-gr-border rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-gr-primary focus:border-transparent"
                   >
-                    <option value="most_recent">Most Recent</option>
-                    <option value="oldest_first">Oldest First</option>
-                    <option value="highest_stipend">Highest Stipend</option>
-                    <option value="lowest_stipend">Lowest Stipend</option>
-                    <option value="shortest_duration">Shortest Duration</option>
-                    <option value="longest_duration">Longest Duration</option>
+                    {internshipsCopy.sortOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -400,7 +399,7 @@ export default function StudentInternships() {
                           }}
                           className="w-full bg-gr-primary text-white rounded-lg py-2.5 font-semibold text-sm hover:bg-gr-primary-hover transition-colors"
                         >
-                          View Details
+                          {BTN_VIEW_DETAILS}
                         </button>
                       </div>
                     </div>

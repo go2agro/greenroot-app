@@ -1,10 +1,15 @@
 import type { Metadata, Viewport } from "next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Montserrat, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import appConfig from '@/config/appConfig.json';
 import MaintenancePage from '@/components/MaintenancePage';
 import OfflineBanner from '@/components/OfflineBanner';
 import ThemeVariables from '@/components/ThemeVariables';
+import GoogleAnalyticsProvider from '@/components/GoogleAnalyticsProvider';
+import AnalyticsInteractionTracker from '@/components/AnalyticsInteractionTracker';
+import { shouldLoadGoogleAnalytics } from '@/lib/analytics/config';
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -37,6 +42,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const isMaintenanceMode = appConfig.maintenance_mode === true;
+  const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
   return (
     <html
@@ -48,6 +54,15 @@ export default function RootLayout({
         <ThemeVariables />
         <OfflineBanner />
         {isMaintenanceMode ? <MaintenancePage /> : children}
+        {shouldLoadGoogleAnalytics() && gaMeasurementId ? (
+          <>
+            <GoogleAnalytics gaId={gaMeasurementId} />
+            <Suspense fallback={null}>
+              <GoogleAnalyticsProvider />
+            </Suspense>
+            <AnalyticsInteractionTracker />
+          </>
+        ) : null}
       </body>
     </html>
   );

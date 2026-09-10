@@ -214,7 +214,8 @@ export default function Home() {
 
             <div className="flex flex-col gap-6">
               <h2 className="font-bold text-2xl md:text-3xl text-gr-text-dark">
-                {landingConfig.features.heading}
+                {landingConfig.features.heading_prefix}{' '}
+                <span className="text-gr-primary">{landingConfig.features.heading_highlight}</span>
               </h2>
               <p className="text-sm text-gr-text-muted">{landingConfig.features.subheading}</p>
 
@@ -422,17 +423,24 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
             <div className="flex flex-col gap-6">
               <h2 className="font-bold text-3xl md:text-4xl text-gr-text-dark leading-tight">
-                {landingConfig.cta.heading}
+                {landingConfig.cta.heading_prefix}{' '}
+                <span className="text-gr-primary">{landingConfig.cta.heading_highlight}</span>
               </h2>
               <p className="text-sm md:text-base text-gr-text-muted">
                 {landingConfig.cta.subheading}
               </p>
-              <div>
+              <div className="flex flex-wrap gap-3">
                 <Link
-                  href={landingConfig.cta.button_link}
+                  href={landingConfig.cta.primary_button_link}
                   className="inline-block bg-gr-primary text-white rounded-lg px-6 py-3 font-semibold hover:bg-gr-primary-hover transition-colors"
                 >
-                  {landingConfig.cta.button_text}
+                  {landingConfig.cta.primary_button_text}
+                </Link>
+                <Link
+                  href={landingConfig.cta.secondary_button_link}
+                  className="inline-block border border-gray-300 text-gray-700 rounded-lg px-6 py-3 font-semibold hover:border-gr-primary transition-colors"
+                >
+                  {landingConfig.cta.secondary_button_text}
                 </Link>
               </div>
             </div>

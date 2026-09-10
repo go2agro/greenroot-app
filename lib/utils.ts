@@ -81,15 +81,10 @@ export function formatSubmittedDateTime(dateString: string) {
   return `${datePart} · ${timePart}`
 }
 
-export function formatApplicationStatusLabel(status: string) {
-  const labels: Record<string, string> = {
-    submitted: 'Awaiting Screening',
-    under_review: 'Screening Passed',
-    admin_accepted: 'Screening Passed',
-    forwarded_to_partner: 'With Partner',
-    partner_review: 'Partner Reviewed',
-  }
+import statusLabelsConfig from '@/config/ui/statusLabels.json'
 
+export function formatApplicationStatusLabel(status: string) {
+  const labels = statusLabelsConfig.admin as Record<string, string>
   if (labels[status]) return labels[status]
 
   return status
@@ -99,19 +94,6 @@ export function formatApplicationStatusLabel(status: string) {
 }
 
 export function formatStudentStatusLabel(status: string) {
-  const studentLabels: Record<string, string> = {
-    draft: 'Draft',
-    submitted: 'Submitted',
-    under_review: 'Under Review',
-    admin_accepted: 'Under Review',
-    forwarded_to_partner: 'Partner Review',
-    partner_review: 'Partner Review',
-    final_approved: 'Final Approved',
-    approved: 'Approved',
-    rejected: 'Rejected',
-    accepted: 'Accepted',
-    closed: 'Closed',
-    withdrawn: 'Withdrawn',
-  }
-  return studentLabels[status] || 'Under Review'
+  const studentLabels = statusLabelsConfig.student as Record<string, string>
+  return studentLabels[status] || statusLabelsConfig.defaultStudent
 }
