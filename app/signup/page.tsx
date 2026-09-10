@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { AtSign, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { signUp } from '@/lib/auth'
 import { trackSignUp, trackSignUpFailed } from '@/lib/analytics'
+import { analyticsAttrs } from '@/lib/analytics/attributes'
 import { appConfig, BTN_CREATE_ACCOUNT } from '@/lib/appConfig'
 import { pageCopyConfig } from '@/lib/config'
 import { getMessage } from '@/lib/messages'
@@ -213,6 +214,12 @@ export default function Signup() {
             <button
               type="submit"
               disabled={isLoading}
+              {...analyticsAttrs({
+                id: 'signup_submit',
+                label: BTN_CREATE_ACCOUNT,
+                section: 'signup',
+                type: 'submit',
+              })}
               className="w-full bg-gr-primary text-white rounded-lg py-3 text-base font-semibold hover:bg-gr-primary-hover transition-colors disabled:opacity-80 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {isLoading ? (

@@ -50,18 +50,21 @@ export function trackPageView({
 }) {
   if (!GA_MEASUREMENT_ID) return;
 
+  const pageTitle = title ?? screenName;
+
+  sendGtag("config", GA_MEASUREMENT_ID, {
+    page_path: path,
+    page_title: pageTitle,
+    page_location: window.location.href,
+  });
+
   sendGtag("event", "page_view", {
     page_path: path,
-    page_title: title ?? screenName,
+    page_title: pageTitle,
     page_location: window.location.href,
     screen_name: screenName,
     screen_class: screenClass,
     app_name: "GreenRoot",
-  });
-
-  sendGtag("config", GA_MEASUREMENT_ID, {
-    page_path: path,
-    page_title: title ?? screenName,
   });
 }
 

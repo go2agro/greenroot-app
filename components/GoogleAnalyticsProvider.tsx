@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { getMyProfile } from "@/lib/profiles";
 import {
-  isAnalyticsEnabled,
   setAnalyticsUser,
   trackDashboardView,
   trackScreenView,
@@ -18,34 +17,31 @@ function getDashboardRole(pathname: string): string | null {
 export default function GoogleAnalyticsProvider() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const lastTrackedPath = useRef<string | null>(null);
 
   const search = searchParams.toString();
   const queryString = search ? `?${search}` : "";
-  const fullPath = `${pathname}${queryString}`;
 
   useEffect(() => {
-    if (!pathname || lastTrackedPath.current === fullPath) return;
+    if (!pathname) return;
 
-    const track = () => {
-      if (!isAnalyticsEnabled()) return false;
-      trackScreenView(pathname, queryString);
-      lastTrackedPath.current = fullPath;
-      return true;
-    };
+    const sendPageView = () => trackScreenView(pathname, queryString);
 
-    if (track()) return;
+    sendPageView();
 
-    let attempts = 0;
     const interval = window.setInterval(() => {
-      attempts += 1;
-      if (track() || attempts >= 20) {
+      if (typeof window.gtag === "function") {
+        sendPageView();
         window.clearInterval(interval);
       }
-    }, 250);
+    }, 200);
 
-    return () => window.clearInterval(interval);
-  }, [pathname, queryString, fullPath]);
+    const timeout = window.setTimeout(() => window.clearInterval(interval), 5000);
+
+    return () => {
+      window.clearInterval(interval);
+      window.clearTimeout(timeout);
+    };
+  }, [pathname, queryString]);
 
   useEffect(() => {
     if (!pathname) return;
