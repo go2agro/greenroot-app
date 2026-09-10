@@ -57,6 +57,7 @@ import {
   BTN_FINAL_REJECT,
   BTN_SEND_MESSAGE,
 } from '@/lib/appConfig'
+import { trackApplicationReviewAction } from '@/lib/analytics'
 
 const applicationDetailCopy = pageCopyConfig.admin.applicationDetail
 
@@ -237,6 +238,12 @@ export default function AdminApplicationDetails({
         return
       }
 
+      trackApplicationReviewAction({
+        action: 'deleted',
+        applicationId: application.id,
+        internshipId: application.internship_id,
+      })
+
       setActionDialog(null)
       invalidateAdminApplications()
       router.push('/admin/applications')
@@ -256,6 +263,12 @@ export default function AdminApplicationDetails({
         return
       }
 
+      trackApplicationReviewAction({
+        action: 'screening_rejected',
+        applicationId: application.id,
+        internshipId: application.internship_id,
+      })
+
       setActionDialog(null)
       setRejectionMessage('')
       invalidateAdminApplications()
@@ -271,6 +284,12 @@ export default function AdminApplicationDetails({
       if (result.error || !result.data) {
         return
       }
+
+      trackApplicationReviewAction({
+        action: 'screening_accepted',
+        applicationId: application.id,
+        internshipId: application.internship_id,
+      })
 
       const now = new Date().toISOString()
       setApplication((prev) =>
@@ -309,6 +328,12 @@ export default function AdminApplicationDetails({
       if (result.error) {
         return
       }
+
+      trackApplicationReviewAction({
+        action: actionDialog === 'approve' ? 'approved' : 'rejected',
+        applicationId: application.id,
+        internshipId: application.internship_id,
+      })
 
       setActionDialog(null)
       invalidateAdminApplications()

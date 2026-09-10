@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AtSign, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { signUp } from '@/lib/auth'
+import { trackSignUp, trackSignUpFailed } from '@/lib/analytics'
 import { appConfig, BTN_CREATE_ACCOUNT } from '@/lib/appConfig'
 import { pageCopyConfig } from '@/lib/config'
 import { getMessage } from '@/lib/messages'
@@ -62,12 +63,16 @@ export default function Signup() {
       const { data, error } = await signUp(email, password)
       
       if (error) {
+        trackSignUpFailed({
+          reason: error.message || 'signup_error',
+        })
         setPasswordError(error.message || getMessage('error', 'signup'))
         setIsLoading(false)
         return
       }
 
-      if (data) {
+      if (data?.user?.id) {
+        trackSignUp({ userId: data.user.id })
         router.push('/student/dashboard')
       }
     } catch (error) {

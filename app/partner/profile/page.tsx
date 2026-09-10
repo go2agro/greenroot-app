@@ -20,6 +20,7 @@ import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { getMyProfile } from '@/lib/profiles'
 import { getMyPartnerProfile, updatePartnerProfile } from '@/lib/partnerProfiles'
 import { signOut } from '@/lib/auth'
+import { trackLogout } from '@/lib/analytics'
 import { PARTNER_COUNTRY_OPTIONS, getCountryFlag } from '@/lib/countries'
 
 interface PartnerProfileData {
@@ -192,6 +193,7 @@ export default function PartnerProfilePage() {
   const handleLogout = async () => {
     setIsLoggingOut(true)
     try {
+      trackLogout()
       await signOut()
       router.push('/login')
     } catch {

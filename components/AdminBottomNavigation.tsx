@@ -3,16 +3,17 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, FileText, Users, User, Bell } from 'lucide-react'
+import { analyticsNavAttrs } from '@/lib/analytics/attributes'
 
 export default function AdminBottomNavigation() {
   const pathname = usePathname()
 
   const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
-    { icon: FileText, label: 'Applications', href: '/admin/applications' },
-    { icon: Users, label: 'Students', href: '/admin/students' },
-    { icon: User, label: 'Profile', href: '/admin/profile' },
-    { icon: Bell, label: 'Alerts', href: '/admin/notifications' },
+    { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
+    { id: 'applications', icon: FileText, label: 'Applications', href: '/admin/applications' },
+    { id: 'students', icon: Users, label: 'Students', href: '/admin/students' },
+    { id: 'profile', icon: User, label: 'Profile', href: '/admin/profile' },
+    { id: 'notifications', icon: Bell, label: 'Alerts', href: '/admin/notifications' },
   ]
 
   return (
@@ -26,6 +27,7 @@ export default function AdminBottomNavigation() {
             <Link
               key={item.href}
               href={item.href}
+              {...analyticsNavAttrs('admin', item.id, item.label)}
               className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-colors min-w-0 flex-1 ${
                 isActive 
                   ? 'text-gr-primary' 

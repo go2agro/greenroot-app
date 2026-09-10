@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { Menu, X } from 'lucide-react'
 import { useState } from 'react'
 import { APP_LOGO, APP_NAME, BTN_LOGIN, BTN_SIGNUP, appConfig } from '@/lib/appConfig'
+import { analyticsAttrs, analyticsNavAttrs } from '@/lib/analytics/attributes'
 
 interface NavbarProps {
   activeLink?: 'about' | 'opportunities' | 'contact' | 'learning'
@@ -24,7 +25,7 @@ export default function Navbar({ activeLink }: NavbarProps) {
     <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2" {...analyticsNavAttrs('public', 'home', 'Home')}>
             <Image 
               src={APP_LOGO} 
               alt={APP_NAME} 
@@ -41,6 +42,7 @@ export default function Navbar({ activeLink }: NavbarProps) {
                 key={link.key}
                 href={link.href}
                 className={linkStyle(link.key)}
+                {...analyticsNavAttrs('public', link.key, link.label)}
               >
                 {link.label}
               </Link>
@@ -51,12 +53,14 @@ export default function Navbar({ activeLink }: NavbarProps) {
             <Link 
               href="/login" 
               className="bg-gr-primary text-white rounded-lg px-4 py-2 hover:bg-gr-primary-hover transition-colors font-semibold"
+              {...analyticsAttrs({ id: 'public_nav_login', label: BTN_LOGIN, section: 'public_navigation', type: 'cta' })}
             >
               {BTN_LOGIN}
             </Link>
             <Link 
               href="/signup" 
               className="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 hover:border-gr-primary transition-colors"
+              {...analyticsAttrs({ id: 'public_nav_signup', label: BTN_SIGNUP, section: 'public_navigation', type: 'cta' })}
             >
               {BTN_SIGNUP}
             </Link>
@@ -79,6 +83,7 @@ export default function Navbar({ activeLink }: NavbarProps) {
                   href={link.href}
                   className="text-gray-700 hover:text-gr-primary py-2"
                   onClick={() => setMobileMenuOpen(false)}
+                  {...analyticsNavAttrs('public', link.key, link.label)}
                 >
                   {link.label}
                 </Link>
@@ -87,6 +92,7 @@ export default function Navbar({ activeLink }: NavbarProps) {
                 href="/login" 
                 className="bg-gr-primary text-white rounded-lg px-4 py-2 text-center font-semibold"
                 onClick={() => setMobileMenuOpen(false)}
+                {...analyticsAttrs({ id: 'public_nav_login_mobile', label: BTN_LOGIN, section: 'public_navigation', type: 'cta' })}
               >
                 {BTN_LOGIN}
               </Link>
@@ -94,6 +100,7 @@ export default function Navbar({ activeLink }: NavbarProps) {
                 href="/signup" 
                 className="border border-gray-300 rounded-lg px-4 py-2 text-center text-gray-700"
                 onClick={() => setMobileMenuOpen(false)}
+                {...analyticsAttrs({ id: 'public_nav_signup_mobile', label: BTN_SIGNUP, section: 'public_navigation', type: 'cta' })}
               >
                 {BTN_SIGNUP}
               </Link>

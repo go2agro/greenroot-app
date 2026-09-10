@@ -25,6 +25,7 @@ import { getInternshipById } from '@/lib/internships'
 import { BTN_LOGIN_TO_APPLY, LABEL_LOADING } from '@/lib/appConfig'
 import { pageCopyConfig } from '@/lib/config'
 import { stripRequiredDocumentsBlock } from '@/lib/internshipContent'
+import { trackInternshipView } from '@/lib/analytics'
 
 const internshipCopy = pageCopyConfig.student.internshipDetail
 
@@ -72,6 +73,12 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
       
       if (internshipData) {
         setInternship(internshipData)
+        trackInternshipView({
+          internshipId: internshipData.id,
+          title: internshipData.title,
+          country: internshipData.country,
+          audience: 'public',
+        })
       }
       
       setLoading(false)

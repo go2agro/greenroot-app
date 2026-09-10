@@ -8,6 +8,7 @@ import { LayoutDashboard, FileText, User, Bell, HelpCircle, ChevronLeft, Chevron
 import NotificationBadge from '@/components/NotificationBadge'
 import SidebarHelpContact from '@/components/SidebarHelpContact'
 import { getUnreadCount } from '@/lib/notifications'
+import { analyticsNavAttrs } from '@/lib/analytics/attributes'
 
 interface StudentSidebarProps {
   isCollapsed?: boolean
@@ -112,6 +113,7 @@ export default function StudentSidebar({
               key={item.href}
               href={item.href}
               title={isCollapsed ? item.label : undefined}
+              {...analyticsNavAttrs('student', item.id, item.label)}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                 isActive 
                   ? 'bg-gr-primary text-white font-medium' 

@@ -1,5 +1,6 @@
 import { NAVIGATION_CONFIG, APP_VERSION } from './config';
 import { NavigationParams, UserRole } from './types';
+import { trackNavigationEvent } from '@/lib/analytics';
 
 function compareVersions(v1: string, v2: string): number {
   const parts1 = v1.split('.').map(Number);
@@ -89,4 +90,12 @@ export function trackNavigation(
       user_id: userId
     });
   }
+
+  trackNavigationEvent({
+    routeId,
+    routeLabel: route.label,
+    fromPath,
+    toPath: route.route,
+    category: route.category,
+  });
 }

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AtSign, X, Loader2 } from 'lucide-react'
 import { resetPassword } from '@/lib/auth'
+import { trackPasswordResetRequest } from '@/lib/analytics'
 import { appConfig, BTN_BACK_TO_LOGIN, BTN_SEND_RESET_LINK } from '@/lib/appConfig'
 import { pageCopyConfig } from '@/lib/config'
 import { getMessage } from '@/lib/messages'
@@ -48,6 +49,7 @@ export default function ForgotPassword() {
       }
 
       // Success - switch to success state
+      trackPasswordResetRequest()
       setIsSuccess(true)
       setIsLoading(false)
     } catch (error) {

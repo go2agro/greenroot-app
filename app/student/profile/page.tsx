@@ -23,6 +23,7 @@ import BottomNavigation from '@/components/BottomNavigation'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { getMyProfile } from '@/lib/profiles'
 import { signOut, deleteAccount } from '@/lib/auth'
+import { trackAccountDeleted, trackLogout } from '@/lib/analytics'
 import { 
   getMyStudentProfile, 
   updateStudentProfile,
@@ -373,6 +374,7 @@ export default function StudentProfile() {
   const handleLogout = async () => {
     setIsLoggingOut(true)
     try {
+      trackLogout()
       await signOut()
       router.push('/login')
     } catch (error) {
@@ -389,6 +391,7 @@ export default function StudentProfile() {
         setIsDeletingAccount(false)
         return
       }
+      trackAccountDeleted()
       router.push('/login')
     } catch (error) {
       setIsDeletingAccount(false)

@@ -26,6 +26,7 @@ import UserAvatar from '@/components/UserAvatar'
 import { getInternshipById } from '@/lib/internships'
 import { stripRequiredDocumentsBlock } from '@/lib/internshipContent'
 import { startApplication } from '@/lib/studentApplications'
+import { trackApplicationStarted, trackInternshipView } from '@/lib/analytics'
 import { BTN_APPLY_NOW, LABEL_LOADING } from '@/lib/appConfig'
 import { getMessage } from '@/lib/messages'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
@@ -90,6 +91,12 @@ export default function StudentInternshipDetail({ params }: { params: Promise<{ 
 
       if (internshipResult.data) {
         setInternship(internshipResult.data)
+        trackInternshipView({
+          internshipId: internshipResult.data.id,
+          title: internshipResult.data.title,
+          country: internshipResult.data.country,
+          audience: 'student',
+        })
       }
 
       setProfile(profileResult.data)
@@ -117,6 +124,11 @@ export default function StudentInternshipDetail({ params }: { params: Promise<{ 
     } else {
       const applicationId = result.data?.id
       if (applicationId) {
+        trackApplicationStarted({
+          internshipId: internship.id,
+          applicationId,
+          internshipTitle: internship.title,
+        })
         router.push(`/student/applications/${applicationId}`)
       }
     }

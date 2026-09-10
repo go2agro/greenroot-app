@@ -20,6 +20,7 @@ import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { getMyProfile } from '@/lib/profiles'
 import { getMyAdminProfile, updateAdminProfile } from '@/lib/adminProfiles'
 import { signOut } from '@/lib/auth'
+import { trackLogout } from '@/lib/analytics'
 
 interface AdminProfileData {
   first_name?: string
@@ -180,6 +181,7 @@ export default function AdminProfilePage() {
   const handleLogout = async () => {
     setIsLoggingOut(true)
     try {
+      trackLogout()
       await signOut()
       router.push('/login')
     } catch {

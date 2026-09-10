@@ -54,6 +54,7 @@ import {
   MAX_FILE_UPLOAD_MB,
 } from '@/lib/appConfig'
 import { getMessage } from '@/lib/messages'
+import { trackApplicationSubmitted } from '@/lib/analytics'
 
 type ApplicationData = ApplicationPaperData & {
   internships?: ApplicationPaperInternship & {
@@ -487,6 +488,11 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
       const result = await submitApplication(application.id)
       
       if (!result.error) {
+        trackApplicationSubmitted({
+          applicationId: application.id,
+          internshipId: application.internship_id,
+        })
+
         const submissionTime =
           result.data &&
           typeof result.data === 'object' &&
