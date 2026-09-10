@@ -254,4 +254,60 @@ export function trackLoginRoleSelected(role: string) {
   });
 }
 
+export function trackLinkClick({
+  href,
+  label,
+  isExternal,
+  pagePath,
+}: {
+  href: string;
+  label: string;
+  isExternal: boolean;
+  pagePath: string;
+}) {
+  trackEvent(isExternal ? "click_outbound" : "click_internal_link", {
+    link_url: href,
+    link_text: label.slice(0, 100),
+    page_path: pagePath,
+  });
+}
+
+export function trackButtonClick({
+  label,
+  pagePath,
+  section,
+}: {
+  label: string;
+  pagePath: string;
+  section?: string;
+}) {
+  trackEvent("click_button", {
+    button_text: label.slice(0, 100),
+    page_path: pagePath,
+    section,
+  });
+}
+
+export function trackMarketingCta({
+  ctaId,
+  ctaLabel,
+  destination,
+  pagePath,
+  section,
+}: {
+  ctaId: string;
+  ctaLabel: string;
+  destination: string;
+  pagePath: string;
+  section: string;
+}) {
+  trackEvent("marketing_cta_click", {
+    cta_id: ctaId,
+    cta_label: ctaLabel,
+    destination,
+    page_path: pagePath,
+    section,
+  });
+}
+
 export { setAnalyticsUser, clearAnalyticsUser };

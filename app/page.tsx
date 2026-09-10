@@ -24,6 +24,7 @@ import AnimatedCounter from '@/components/AnimatedCounter';
 import { getTopPaidInternships } from '@/lib/internships';
 import landingConfig from '@/config/pages/landing.json';
 import { BTN_APPLY_NOW, DEFAULT_INTERNSHIP_IMAGE } from '@/lib/appConfig';
+import { analyticsAttrs } from '@/lib/analytics/attributes';
 
 const FEATURE_ICONS: Record<string, LucideIcon> = {
   'global-network': Globe,
@@ -130,12 +131,24 @@ export default function Home() {
                 <Link
                   href={landingConfig.hero.cta_primary_link}
                   className="bg-gr-primary text-white rounded-lg px-6 py-3 font-semibold hover:bg-gr-primary-hover transition-colors text-center"
+                  {...analyticsAttrs({
+                    id: 'home_hero_browse_internships',
+                    label: landingConfig.hero.cta_primary_text,
+                    section: 'home_hero',
+                    type: 'marketing_cta',
+                  })}
                 >
                   {landingConfig.hero.cta_primary_text}
                 </Link>
                 <Link
                   href={landingConfig.hero.cta_secondary_link}
                   className="border border-gr-border text-gr-text-dark rounded-lg px-6 py-3 font-medium hover:border-gr-primary transition-colors text-center"
+                  {...analyticsAttrs({
+                    id: 'home_hero_learn_more',
+                    label: landingConfig.hero.cta_secondary_text,
+                    section: 'home_hero',
+                    type: 'marketing_cta',
+                  })}
                 >
                   {landingConfig.hero.cta_secondary_text}
                 </Link>
@@ -340,6 +353,12 @@ export default function Home() {
                   <Link
                     href={`/internships/${internship.id}`}
                     className="w-full block text-center bg-gr-primary text-white rounded-lg py-2 hover:bg-gr-primary-hover transition-colors font-semibold"
+                    {...analyticsAttrs({
+                      id: `home_featured_internship_${internship.id}`,
+                      label: internship.title,
+                      section: 'home_featured_opportunities',
+                      type: 'internship_cta',
+                    })}
                   >
                     {BTN_APPLY_NOW}
                   </Link>
@@ -433,12 +452,24 @@ export default function Home() {
                 <Link
                   href={landingConfig.cta.primary_button_link}
                   className="inline-block bg-gr-primary text-white rounded-lg px-6 py-3 font-semibold hover:bg-gr-primary-hover transition-colors"
+                  {...analyticsAttrs({
+                    id: 'home_bottom_browse_internships',
+                    label: landingConfig.cta.primary_button_text,
+                    section: 'home_bottom_cta',
+                    type: 'marketing_cta',
+                  })}
                 >
                   {landingConfig.cta.primary_button_text}
                 </Link>
                 <Link
                   href={landingConfig.cta.secondary_button_link}
                   className="inline-block border border-gray-300 text-gray-700 rounded-lg px-6 py-3 font-semibold hover:border-gr-primary transition-colors"
+                  {...analyticsAttrs({
+                    id: 'home_bottom_create_account',
+                    label: landingConfig.cta.secondary_button_text,
+                    section: 'home_bottom_cta',
+                    type: 'marketing_cta',
+                  })}
                 >
                   {landingConfig.cta.secondary_button_text}
                 </Link>

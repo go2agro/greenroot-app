@@ -114,6 +114,16 @@ const ROUTE_PATTERNS: RoutePattern[] = [
     screenClass: "partner",
   },
   { pattern: /^\/partner\/profile$/, screenName: "Partner Profile", screenClass: "partner" },
+  {
+    pattern: /^\/gr-admin-setup-x9k2$/,
+    screenName: "Admin Setup",
+    screenClass: "system",
+  },
+  {
+    pattern: /^\/gr-dev-billing-m7q3$/,
+    screenName: "Dev Billing",
+    screenClass: "system",
+  },
 ];
 
 function titleCaseSegment(segment: string): string {

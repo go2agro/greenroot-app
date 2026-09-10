@@ -26,6 +26,7 @@ import { BTN_LOGIN_TO_APPLY, LABEL_LOADING } from '@/lib/appConfig'
 import { pageCopyConfig } from '@/lib/config'
 import { stripRequiredDocumentsBlock } from '@/lib/internshipContent'
 import { trackInternshipView } from '@/lib/analytics'
+import { analyticsAttrs } from '@/lib/analytics/attributes'
 
 const internshipCopy = pageCopyConfig.student.internshipDetail
 
@@ -183,6 +184,12 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
             
             <button
               onClick={() => router.push('/login')}
+              {...analyticsAttrs({
+                id: 'public_internship_login_to_apply_hero',
+                label: BTN_LOGIN_TO_APPLY,
+                section: 'internship_detail',
+                type: 'marketing_cta',
+              })}
               className="bg-gr-primary text-white rounded-lg px-8 py-3 font-semibold hover:bg-gr-primary-hover transition-colors"
             >
               {BTN_LOGIN_TO_APPLY}
@@ -343,6 +350,12 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
           </div>
           <button
             onClick={() => router.push('/login')}
+            {...analyticsAttrs({
+              id: 'public_internship_login_to_apply_footer',
+              label: BTN_LOGIN_TO_APPLY,
+              section: 'internship_detail',
+              type: 'marketing_cta',
+            })}
             className="bg-gr-primary text-white rounded-lg px-6 py-3 font-semibold hover:bg-gr-primary-hover transition-colors whitespace-nowrap w-full md:w-auto"
           >
             {BTN_LOGIN_TO_APPLY}

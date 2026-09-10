@@ -14,8 +14,7 @@ export default function GoogleAnalyticsScript({ gaId }: GoogleAnalyticsScriptPro
           window.gtag = gtag;
           gtag('js', new Date());
           gtag('config', '${gaId}', {
-            send_page_view: true,
-            anonymize_ip: false,
+            send_page_view: false
           });
         `}
       </Script>
