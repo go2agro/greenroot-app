@@ -7,6 +7,6 @@ declare global {
       targetOrAction: string | Date,
       params?: Record<string, unknown>
     ) => void;
-    dataLayer?: unknown[];
+    dataLayer?: Array<unknown[] | IArguments>;
   }
 }
