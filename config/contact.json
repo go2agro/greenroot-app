@@ -1,36 +1,47 @@
 {
   "pageTitle": "Get in Touch",
-  "pageSubtitle": "Have a question or need assistance? We're here to help. Reach out to our team and we'll get back to you as soon as possible.",
+  "pageSubtitle": "Have a question about your internship application or need assistance? Reach out to the GreenRoot team — we're here to help agricultural students every step of the way.",
   "responseNote": "We typically respond within 1–2 business days.",
   "officeName": "GreenRoot Platform",
   "addressLines": [
-    "GreenRoot Platform, Pune, Maharashtra, India"
+    "25–26, 4th Floor, B-Wing, City Vista",
+    "Downtown Road, Kharadi",
+    "Pune, Maharashtra 411014, India"
   ],
-  "mapEmbedUrl": "https://www.google.com/maps?q=18.5597,73.7769&hl=en&z=16&output=embed",
-  "mapDirectionsUrl": "https://www.google.com/maps/dir/?api=1&destination=18.5597,73.7769",
+  "mapEmbedUrl": "https://www.google.com/maps?q=City+Vista+Downtown+Road+Kharadi+Pune+411014&hl=en&z=16&output=embed",
+  "mapDirectionsUrl": "https://www.google.com/maps/dir/?api=1&destination=City+Vista+Downtown+Road+Kharadi+Pune+411014",
   "websiteUrl": "https://greenroot.co.in",
   "whatsapp": {
     "label": "WhatsApp",
-    "display": "+91 12345 67890",
-    "url": "https://wa.me/911234567890"
+    "display": "+91 80106 00850",
+    "url": "https://wa.me/918010600850"
   },
   "phones": [
     {
       "label": "Phone Number",
-      "display": "+91 12345 67890",
-      "tel": "+911234567890"
+      "display": "+91 79729 37388",
+      "tel": "+917972937388"
+    },
+    {
+      "label": "Alternate Number",
+      "display": "+91 77383 94086",
+      "tel": "+917738394086"
     }
   ],
   "emails": [
     {
-      "label": "Email Address",
-      "email": "support@greenroot.co.in"
+      "label": "Support",
+      "email": "support@greenroot.in"
+    },
+    {
+      "label": "General Enquiries",
+      "email": "info@greenroot.in"
     }
   ],
   "officeHours": [
     {
       "days": "Working Hours",
-      "hours": "Monday to Saturday, 10:00 AM – 6:00 PM IST"
+      "hours": "Monday to Friday, 10:00 AM – 6:00 PM IST"
     }
   ],
   "socials": [
@@ -65,8 +76,8 @@
   },
   "sidebarHelp": {
     "heading": "Need help?",
-    "body": "Contact our support team for assistance.",
-    "phone": "+91 12345 67890",
-    "email": "support@greenroot.co.in"
+    "body": "Contact our support team for assistance with your internship application.",
+    "phone": "+91 79729 37388",
+    "email": "support@greenroot.in"
   }
 }

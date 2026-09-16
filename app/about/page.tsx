@@ -249,7 +249,7 @@ export default async function About() {
               </p>
             </div>
 
-            <div className="mb-5">
+            <div className={`mb-5 ${team.founders.length > 1 ? 'grid grid-cols-1 lg:grid-cols-2 gap-5' : ''}`}>
               {team.founders.map((person) => (
                 <article
                   key={person.name}

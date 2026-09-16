@@ -1,86 +1,86 @@
 {
   "hero": {
     "eyebrow": "About GreenRoot",
-    "heading": "Growing Global Careers in",
-    "headingHighlight": "Agriculture",
+    "heading": "Agricultural Institute of",
+    "headingHighlight": "International Internships & Training",
     "headingSuffix": "",
-    "description": "GreenRoot connects aspiring Indian agricultural students with world-class international internships, practical training, and career opportunities — empowering the next generation of agri-professionals.",
+    "description": "GreenRoot is an agricultural institute and student internship platform working for agriculture students and farmers. We provide world-class training through experienced teaching staff and practical international internship programmes in dairy farming, poultry, horticulture, and field crops.",
     "primaryCta": { "label": "Browse Internships", "href": "/internships" },
     "secondaryCta": { "label": "Our Story", "href": "#our-story" },
-    "highlightStat": { "value": "5000+", "label": "Students Placed" },
+    "highlightStat": { "value": "100+", "label": "Students Placed Abroad" },
     "images": {
-      "main": "https://picsum.photos/700/800?random=40",
-      "mainAlt": "Students learning in an agricultural field",
-      "secondary": "https://picsum.photos/400/300?random=49",
-      "secondaryAlt": "Greenhouse research"
+      "main": "https://go2agro.com/wp-content/uploads/2024/10/IMG_20190516_164106-890x1024-1.jpg",
+      "mainAlt": "GreenRoot students at an international agricultural training programme",
+      "secondary": "https://go2agro.com/wp-content/uploads/2023/02/WhatsApp-Image-2023-02-21-at-11.52.30-AM-2.jpeg",
+      "secondaryAlt": "Hands-on dairy and cooperative farming training"
     }
   },
   "stats": [
-    { "value": "5000+", "label": "Students Placed" },
-    { "value": "24", "label": "Countries Impacted" },
-    { "value": "200+", "label": "Partner Firms" }
+    { "value": "100+", "label": "Students Placed Abroad" },
+    { "value": "5", "label": "Countries Served" },
+    { "value": "7+", "label": "Years of Experience" }
   ],
   "story": {
     "eyebrow": "Our Story",
-    "heading": "Tracing our roots from a local startup to a global platform.",
-    "description": "GreenRoot began with a belief that Indian agriculture students deserve the same global opportunities as students in other fields.",
+    "heading": "From Ex-AGRICOS to empowering the next generation of agri-professionals.",
+    "description": "We started working in 2019. Ex-AGRICOS founded what is now GreenRoot as an institution for current AGRICOS (Agriculture College Students). The GreenRoot name reflects our mission to grow towards agriculture — India is world famous when it comes to culture and agriculture. From the beginning, we focused on agriculture students, agricultural entrepreneurs, and farmers.",
     "chapters": [
       {
         "step": "01",
         "title": "Our Mission",
         "label": "Mission",
         "icon": "Sprout",
-        "body": "To empower agriculture students by providing access to trusted international internships that foster learning, innovation, and meaningful career growth."
+        "body": "To provide agricultural students with the world's best internship and training platforms that transform their lives through international work experience, high-quality farming and modern production operations, and skill development that develops them as Agri-Entrepreneurs. To connect Indian farmers and agriculture students to the world's best agricultural technologies and professionals."
       },
       {
         "step": "02",
         "title": "Our Vision",
         "label": "Vision",
         "icon": "Compass",
-        "body": "To become the world's most trusted platform connecting future agri-professionals with global opportunities and industry-leading organisations."
+        "body": "To be India's best platform for International Internship and Training that partners with governmental and commercial entities in realising agriculture development all over the world and achieving long-term growth of agricultural students and farmers."
       },
       {
         "step": "03",
-        "title": "Our Promise",
-        "label": "Promise",
+        "title": "Our Roots",
+        "label": "Since 2019",
         "icon": "Sun",
-        "body": "Every internship listed on GreenRoot is carefully curated to ensure transparency, quality, and a genuinely valuable real-world experience for every student."
+        "body": "GreenRoot has conducted seminars for farmers and young professionals in agriculture, and designed special programmes to encourage new entrepreneurs in the sector. Through our Agri Professional Development Program, students get the opportunity to intern and train abroad for one year — with more than 100 students already placed in dairy, poultry, horticulture, and field crops across different countries."
       }
     ]
   },
   "pillars": {
     "eyebrow": "What drives us",
-    "heading": "Mission, vision & promise",
-    "description": "Three commitments that shape every internship we share.",
+    "heading": "Integrity, transparency & service excellence",
+    "description": "Three core values that guide every programme, partnership, and student placement.",
     "items": [
       {
-        "title": "Our Mission",
-        "icon": "Leaf",
-        "text": "To empower agriculture students by providing access to trusted international internships that foster learning, innovation, and meaningful career growth."
-      },
-      {
-        "title": "Our Vision",
-        "icon": "Globe",
-        "text": "To become the world's most trusted platform connecting future agri-professionals with global opportunities and industry-leading organisations."
-      },
-      {
-        "title": "Our Promise",
+        "title": "Integrity",
         "icon": "HandHeart",
-        "text": "Every internship listed on GreenRoot is carefully curated to ensure transparency, quality, and a genuinely valuable real-world experience for every student."
+        "text": "Building trust with customers, communities, suppliers, and one another by doing what is right."
+      },
+      {
+        "title": "Transparency",
+        "icon": "Compass",
+        "text": "Ensuring openness, communication, and accountability in all our engagements with students, partners, and farmers."
+      },
+      {
+        "title": "Service Excellence",
+        "icon": "Sun",
+        "text": "Building an organisational culture based on service and operational excellence in thought and in execution."
       }
     ]
   },
   "team": {
     "eyebrow": "Our team",
-    "heading": "The Minds Behind GreenRoot",
-    "description": "A diverse group of agronomists, educators, international advisors, and technology innovators.",
+    "heading": "The People Behind GreenRoot",
+    "description": "Founded and led by agriculture professionals committed to connecting Indian students with global opportunities.",
     "founders": [
       {
         "name": "Mr. Sunil Landkar",
-        "role": "Co-founder & CEO",
-        "email": "sunil@go2agro.com",
-        "mobile": "+91 79725 37388",
-        "image": "https://picsum.photos/400/500?random=42"
+        "role": "Founder & CEO",
+        "email": "info@greenroot.in",
+        "mobile": "+91 79729 37388",
+        "image": "https://go2agro.com/wp-content/uploads/2022/08/sunil_1.jpg"
       }
     ],
     "members": [
@@ -100,64 +100,60 @@
         "name": "Mr. Abraham Yehunda",
         "roleLine1": "CEO — Israel-India Initiative",
         "roleLine2": "Advisor — International Associate",
-        "image": "https://picsum.photos/80/80?random=43"
+        "image": "https://go2agro.com/wp-content/uploads/2022/08/Untitled-design-62.jpg"
       },
       {
         "name": "Giri & Jadhav Associates",
         "roleLine1": "Advisor — Finance & Tax",
         "roleLine2": null,
+        "image": "https://go2agro.com/wp-content/uploads/2024/11/061.jpg",
         "icon": "briefcase"
-      },
-      {
-        "name": "Mr. Sharad Pabale",
-        "roleLine1": "CEO — Israel-India Initiative",
-        "roleLine2": "Advisor — International Associate",
-        "image": "https://picsum.photos/80/80?random=45"
       },
       {
         "name": "Radhika Sakseria",
         "roleLine1": "Advocate",
         "roleLine2": null,
+        "image": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-19-at-12.55.07-PM.jpeg",
         "icon": "scale"
       }
     ]
   },
   "goals": {
-    "eyebrow": "Vision & Goals",
-    "heading": "Vision & Goals",
-    "description": "To become the leading platform connecting aspiring agriculture professionals with meaningful global learning opportunities.",
-    "image": "https://picsum.photos/700/700?random=47",
-    "imageAlt": "Greenhouse and field collaboration",
+    "eyebrow": "What we do",
+    "heading": "Programmes & Services",
+    "description": "Tailored internship and training programmes designed to make agriculture students self-sufficient and career-ready on a global stage.",
+    "image": "https://go2agro.com/wp-content/uploads/2023/02/WhatsApp-Image-2023-02-21-at-11.52.29-AM-1.jpeg",
+    "imageAlt": "Students gaining practical international agricultural experience",
     "items": [
       {
         "icon": "Globe",
-        "title": "Expand programmes",
-        "text": "Expand internship programmes across more countries and regions."
-      },
-      {
-        "icon": "Handshake",
-        "title": "Build partnerships",
-        "text": "Build long-term partnerships with leading global agricultural organisations."
+        "title": "International Internships",
+        "text": "Tailored programmes in Denmark, Germany, the USA, Israel, and Australia — covering dairy farming, crop production, and agribusiness management with hands-on exposure to modern techniques."
       },
       {
         "icon": "GraduationCap",
-        "title": "Industry-ready skills",
-        "text": "Support students in developing practical, industry-ready skills for the future."
+        "title": "Agri Professional Development Program",
+        "text": "A one-year abroad internship and training programme for agriculture students, building skills in sustainable agriculture, precision farming, and agribusiness management."
       },
       {
         "icon": "Leaf",
-        "title": "Sustainable practices",
-        "text": "Promote sustainable and innovative farming practices on a worldwide scale."
+        "title": "Farmer Technology Projects",
+        "text": "Introducing precision agriculture, drone monitoring, and mobile apps for weather and market prices — helping farmers make data-driven decisions to increase yields and reduce costs."
+      },
+      {
+        "icon": "Handshake",
+        "title": "Agri-Entrepreneur Development",
+        "text": "Seminars and special programmes encouraging new entrepreneurs in the agricultural sector, connecting students and farmers with global technologies and professionals."
       }
     ]
   },
   "cta": {
     "eyebrow": "Your turn to grow",
     "heading": "Ready to Start Your Global Agriculture Journey?",
-    "description": "Join thousands of aspiring agriculture students building world-class careers through GreenRoot.",
+    "description": "Join over 100 agriculture students who have built world-class careers through GreenRoot's international internship and training programmes.",
     "primaryCta": { "label": "Browse Internships", "href": "/internships" },
     "secondaryCta": { "label": "Create Account", "href": "/signup" },
-    "image": "https://picsum.photos/500/400?random=48",
-    "imageAlt": "Student ready for an agriculture internship"
+    "image": "https://go2agro.com/wp-content/uploads/2023/02/WhatsApp-Image-2023-02-21-at-11.52.28-AM.jpeg",
+    "imageAlt": "Agriculture students preparing for international training"
   }
 }

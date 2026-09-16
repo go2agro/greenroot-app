@@ -8,7 +8,7 @@ import { APP_LOGO, APP_NAME, BTN_LOGIN, BTN_SIGNUP, appConfig } from '@/lib/appC
 import { analyticsAttrs, analyticsNavAttrs } from '@/lib/analytics/attributes'
 
 interface NavbarProps {
-  activeLink?: 'about' | 'opportunities' | 'contact' | 'learning'
+  activeLink?: 'about' | 'gallery' | 'opportunities' | 'contact' | 'learning'
 }
 
 export default function Navbar({ activeLink }: NavbarProps) {

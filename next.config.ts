@@ -17,6 +17,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'go2agro.com',
+        port: '',
+        pathname: '/wp-content/uploads/**',
+      },
     ],
   },
 };

@@ -20,6 +20,7 @@ import {
 import StudentSidebar from '@/components/StudentSidebar'
 import StudentMobileLogo from '@/components/StudentMobileLogo'
 import BottomNavigation from '@/components/BottomNavigation'
+import AlertBanner from '@/components/AlertBanner'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { getMyProfile } from '@/lib/profiles'
 import { signOut, deleteAccount } from '@/lib/auth'
@@ -36,6 +37,7 @@ import {
   MAX_FILE_UPLOAD_ERROR,
   BTN_SAVE,
 } from '@/lib/appConfig'
+import { getMessage } from '@/lib/messages'
 
 const profileCopy = pageCopyConfig.student.profile
 
@@ -148,7 +150,11 @@ export default function StudentProfile() {
   const [savingSection, setSavingSection] = useState<string | null>(null)
   const [sameAsPermanent, setSameAsPermanent] = useState(false)
   const [uploadingDoc, setUploadingDoc] = useState<string | null>(null)
-  const [uploadError, setUploadError] = useState<string | null>(null)
+  const [uploadAlert, setUploadAlert] = useState<{
+    message: string
+    onRetry?: () => Promise<void>
+  } | null>(null)
+  const [isRetryingUpload, setIsRetryingUpload] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [isDeletingAccount, setIsDeletingAccount] = useState(false)
   const [showLogoutDialog, setShowLogoutDialog] = useState(false)
@@ -223,6 +229,39 @@ export default function StudentProfile() {
   }
 
   // Handle document upload
+  const performDocumentUpload = async (
+    file: File,
+    docType: 'passport' | 'passport_photo' | 'aadhar_front' | 'aadhar_back' | 'pan' | 'driving_license' | 'digital_signature',
+    inputEl?: HTMLInputElement
+  ) => {
+    setUploadingDoc(docType)
+    try {
+      const result = await uploadStudentDocument(file, docType)
+      if (result.error) {
+        setUploadAlert({
+          message: result.error.message || getMessage('error', 'uploadFailed'),
+          onRetry: () => performDocumentUpload(file, docType, inputEl),
+        })
+        return
+      }
+
+      setUploadAlert(null)
+      await refreshProfile()
+      await refreshCompletion()
+      if (inputEl) {
+        inputEl.value = ''
+      }
+    } catch (error) {
+      console.error('Upload exception:', error)
+      setUploadAlert({
+        message: getMessage('error', 'uploadFailed'),
+        onRetry: () => performDocumentUpload(file, docType, inputEl),
+      })
+    } finally {
+      setUploadingDoc(null)
+    }
+  }
+
   const handleDocumentUpload = async (
     e: React.ChangeEvent<HTMLInputElement>, 
     docType: 'passport' | 'passport_photo' | 'aadhar_front' | 'aadhar_back' | 'pan' | 'driving_license' | 'digital_signature'
@@ -232,37 +271,33 @@ export default function StudentProfile() {
 
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf']
     if (!allowedTypes.includes(file.type)) {
-      e.target.value = '' // Reset input
-      setUploadError('Only JPEG, PNG, and PDF files are allowed')
+      e.target.value = ''
+      setUploadAlert({
+        message: 'Only JPEG, PNG, and PDF files are allowed',
+      })
       return
     }
 
     if (file.size > MAX_FILE_UPLOAD_BYTES) {
-      e.target.value = '' // Reset input
-      setUploadError(MAX_FILE_UPLOAD_ERROR)
+      e.target.value = ''
+      setUploadAlert({
+        message: MAX_FILE_UPLOAD_ERROR,
+      })
       return
     }
 
-    setUploadError(null)
-    setUploadingDoc(docType)
+    setUploadAlert(null)
+    await performDocumentUpload(file, docType, e.target)
+  }
+
+  const handleUploadRetry = async () => {
+    if (!uploadAlert?.onRetry) return
+
+    setIsRetryingUpload(true)
     try {
-      const result = await uploadStudentDocument(file, docType)
-      if (result.error) {
-        console.error('Upload error:', result.error)
-        setUploadError(
-          typeof result.error === 'object' && result.error && 'message' in result.error
-            ? String(result.error.message)
-            : MAX_FILE_UPLOAD_ERROR
-        )
-      } else {
-        await refreshProfile()
-        await refreshCompletion()
-        e.target.value = '' // Reset input after successful upload
-      }
-    } catch (error) {
-      console.error('Upload exception:', error)
+      await uploadAlert.onRetry()
     } finally {
-      setUploadingDoc(null)
+      setIsRetryingUpload(false)
     }
   }
 
@@ -434,6 +469,14 @@ export default function StudentProfile() {
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
+      {uploadAlert && (
+        <AlertBanner
+          message={uploadAlert.message}
+          onRetry={uploadAlert.onRetry ? handleUploadRetry : undefined}
+          onDismiss={() => setUploadAlert(null)}
+          isRetrying={isRetryingUpload}
+        />
+      )}
       <div className="hidden lg:block">
         <StudentSidebar 
           isCollapsed={isSidebarCollapsed} 
@@ -951,9 +994,6 @@ export default function StudentProfile() {
                 } overflow-hidden`}
               >
               <div className="px-6 pb-6">
-              {uploadError && (
-                <p className="text-sm text-red-500 mb-4">{uploadError}</p>
-              )}
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
