@@ -34,6 +34,7 @@
     "tooManyFiles": "Maximum 5 files allowed.",
     "requiredField": "This field is required.",
     "invalidFormat": "Invalid file format. Please upload PDF, JPG, or PNG only.",
+    "uploadFailed": "Document upload failed. Please try again.",
     "noteRequired": "A note is required before recording this stage.",
     "stageOrder": "Stages must be completed in order.",
     "resetLinkExpired": "Your reset link has expired. Please request a new one."

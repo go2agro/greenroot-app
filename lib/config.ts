@@ -17,6 +17,7 @@ import contactConfig from '@/config/contact.json'
 // Page-specific content
 import landingConfig from '@/config/pages/landing.json'
 import aboutConfig from '@/config/pages/about.json'
+import galleryConfig from '@/config/pages/gallery.json'
 
 // Legal entity (shared placeholders for terms/privacy)
 import entityConfig from '@/config/legal/entity.json'
@@ -32,6 +33,7 @@ export type AppConfig = typeof appConfig
 export type ContactConfig = typeof contactConfig
 export type LandingConfig = typeof landingConfig
 export type AboutConfig = typeof aboutConfig
+export type GalleryConfig = typeof galleryConfig
 export type MessagesConfig = typeof messagesConfig
 export type PageCopyConfig = typeof pageCopyConfig
 export type FooterConfig = typeof footerConfig
@@ -44,6 +46,7 @@ export const config = {
   contact: contactConfig,
   landing: landingConfig,
   about: aboutConfig,
+  gallery: galleryConfig,
   messages: messagesConfig,
   pageCopy: pageCopyConfig,
   footer: footerConfig,
@@ -57,6 +60,7 @@ export {
   contactConfig,
   landingConfig,
   aboutConfig,
+  galleryConfig,
   messagesConfig,
   pageCopyConfig,
   footerConfig,

@@ -23,38 +23,38 @@
     }
   },
   "stats": [
-    { "value": 300, "suffix": "+", "label": "Students Placed" },
-    { "value": 9, "suffix": "+", "label": "Countries" },
-    { "value": 50, "suffix": "+", "label": "Internship Programmes" }
+    { "value": 100, "suffix": "+", "label": "Students Placed Abroad" },
+    { "value": 5, "suffix": "", "label": "Countries Served" },
+    { "value": 7, "suffix": "+", "label": "Years of Experience" }
   ],
   "features": {
     "heading_prefix": "Why Choose",
     "heading_highlight": "GreenRoot?",
-    "subheading": "",
+    "subheading": "Solutions. Service. Sustainability. High tech advantages with old fashioned service.",
     "image": {
-      "src": "https://picsum.photos/400/600?random=4",
-      "alt": "Students learning in an agricultural field"
+      "src": "https://go2agro.com/wp-content/uploads/2024/10/IMG_20190516_164106-890x1024-1.jpg",
+      "alt": "GreenRoot students at an international agricultural training programme"
     },
     "items": [
       {
-        "id": "international-exposure",
-        "title": "International Exposure",
-        "description": "Work alongside experienced agronomists and researchers at leading farms across Europe, Asia, and beyond."
+        "id": "integrity",
+        "title": "Integrity",
+        "description": "Building trust with customers, communities, suppliers, and one another by doing what is right."
       },
       {
-        "id": "modern-agriculture",
-        "title": "Modern Agriculture",
-        "description": "Learn advanced farming technologies, precision agriculture, and sustainable practices adopted globally."
+        "id": "transparency",
+        "title": "Transparency",
+        "description": "Ensuring openness, communication, and accountability in all our engagements with students, partners, and farmers."
       },
       {
-        "id": "career-growth",
-        "title": "Career Growth",
-        "description": "Build a strong international portfolio and gain industry experience that sets you apart."
+        "id": "service-excellence",
+        "title": "Service Excellence",
+        "description": "Building an organisational culture based on service and operational excellence in thought and in execution."
       },
       {
-        "id": "expert-guidance",
-        "title": "Expert Guidance",
-        "description": "Our team supports you through every step — from application to departure."
+        "id": "international-training",
+        "title": "International Internships & Training",
+        "description": "Tailored programmes in Denmark, Germany, the USA, Israel, and Australia — with hands-on experience in dairy farming, crop production, horticulture, and agribusiness management."
       }
     ]
   },
@@ -108,29 +108,36 @@
     "heading_highlight": "Opportunities"
   },
   "successStories": {
-    "heading_prefix": "Success",
-    "heading_highlight": "Stories",
+    "heading_prefix": "Partner",
+    "heading_highlight": "Testimonials",
     "stories": [
       {
-        "id": "sarah-j",
-        "initials": "SJ",
-        "name": "Sarah J.",
-        "role": "Intern in Denmark",
-        "quote": "GreenRoot didn't just find me an internship — they found me a career. The mentorship I received in Denmark completely transformed my perspective on sustainable dairy farming."
+        "id": "abraham-yehuda",
+        "initials": "AY",
+        "name": "Mr. Abraham Yehuda",
+        "role": "CEO, Abraham Yehuda & Associates / INDIA–ISRAEL Initiatives, Mumbai",
+        "quote": "GreenRoot has been associated with our firm for more than a year. They specialize in finding meaningful opportunities for Agri Graduates in Maharashtra. With us, they have been supplying good candidates for our Israel Kibbutz Volunteers' Programme — a one-year programme for Agri Graduates and young professionals aged 18–35. They have been meticulous in recruitment and have shown honesty, integrity, and transparency in their approach. We are very pleased to be associated with them."
       },
       {
-        "id": "marcus-t",
-        "initials": "MT",
-        "name": "Marcus T.",
-        "role": "Intern in Singapore",
-        "quote": "The application process was seamless and guided. Within weeks, I was working on a rooftop hydroponics project that perfectly combined my love for technology and agriculture."
+        "id": "gitaram-kadam",
+        "initials": "GK",
+        "name": "Mr. Gitaram Kadam",
+        "role": "MD, Anandghana Industries",
+        "quote": "GreenRoot has been providing services to us — participating and promoting in exhibitions and on social media. Outsourcing services of GreenRoot have benefited us a lot in business. We will do better together in the future."
       },
       {
-        "id": "elena-r",
-        "initials": "ER",
-        "name": "Elena R.",
-        "role": "Intern in Portugal",
-        "quote": "I gained real hands-on experience that no textbook could ever provide. GreenRoot is truly bridging the gap for the next generation of agri-leaders worldwide."
+        "id": "ashok-modke",
+        "initials": "AM",
+        "name": "Mr. Ashok Modke",
+        "role": "Director, Agro Post Farm Services LLP",
+        "quote": "Thanks GreenRoot team. Your reach in rural agriculture is very deep and it is helping to spread the usage of the AgroPost app in Maharashtra state very fast. You guys are the best!"
+      },
+      {
+        "id": "anand-lokhande",
+        "initials": "AL",
+        "name": "Mr. Anand Lokhande",
+        "role": "Chairman, Vidyanand Agro",
+        "quote": "GreenRoot provides good service to us. It helps us a lot in marketing and also on social media."
       }
     ]
   },

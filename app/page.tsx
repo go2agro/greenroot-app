@@ -5,7 +5,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
   Globe,
-  Settings,
+  HandHeart,
+  Eye,
+  Award,
   Briefcase,
   User,
   CheckCircle,
@@ -27,9 +29,10 @@ import { BTN_APPLY_NOW, DEFAULT_INTERNSHIP_IMAGE } from '@/lib/appConfig';
 import { analyticsAttrs } from '@/lib/analytics/attributes';
 
 const FEATURE_ICONS: Record<string, LucideIcon> = {
-  'global-network': Globe,
-  'visa-support': Settings,
-  'career-growth': Briefcase,
+  integrity: HandHeart,
+  transparency: Eye,
+  'service-excellence': Award,
+  'international-training': Globe,
 };
 
 const HOW_IT_WORKS_ICONS: Record<string, LucideIcon> = {
@@ -377,7 +380,7 @@ export default function Home() {
             highlight={landingConfig.successStories.heading_highlight}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {landingConfig.successStories.stories.map((story) => (
               <div
                 key={story.id}

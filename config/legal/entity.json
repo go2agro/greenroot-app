@@ -2,12 +2,12 @@
   "platformName": "GreenRoot",
   "platformDescription": "GreenRoot Student Internship Portal",
   "platformUrl": "https://greenroot.co.in",
-  "operatorName": "Go2Agro Services LLP",
-  "operatorShortName": "Go2Agro",
+  "operatorName": "GreenRoot Platform",
+  "operatorShortName": "GreenRoot",
   "registeredName": "[Registered Legal Name — To Be Updated]",
   "llpin": "[LLPIN — To Be Updated]",
   "registeredOffice": "[Registered Office Address — To Be Updated]",
-  "correspondenceAddress": "42 Agro Business Park, Baner Road, Baner, Pune, Maharashtra 411045, India",
+  "correspondenceAddress": "25–26, 4th Floor, B-Wing, City Vista, Downtown Road, Kharadi, Pune, Maharashtra 411014, India",
   "supportEmail": "support@greenroot.in",
   "generalEmail": "info@greenroot.in",
   "supportPhone": "+91 79729 37388",
@@ -19,6 +19,6 @@
     "designation": "Grievance Officer / Data Protection Contact",
     "email": "support@greenroot.in",
     "phone": "+91 79729 37388",
-    "address": "42 Agro Business Park, Baner Road, Baner, Pune, Maharashtra 411045, India"
+    "address": "25–26, 4th Floor, B-Wing, City Vista, Downtown Road, Kharadi, Pune, Maharashtra 411014, India"
   }
 }

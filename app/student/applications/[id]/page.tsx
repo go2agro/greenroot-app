@@ -21,6 +21,7 @@ import {
   Image as ImageIcon,
 } from 'lucide-react'
 import UserAvatar from '@/components/UserAvatar'
+import AlertBanner from '@/components/AlertBanner'
 import { ApplicationSubmittedDialog } from '@/components/ApplicationSubmittedDialog'
 import { AcceptApplicationSection } from '@/components/AcceptApplicationSection'
 import {
@@ -169,7 +170,11 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
   })
   
   const [isDragging, setIsDragging] = useState(false)
-  const [fileUploadError, setFileUploadError] = useState<string | null>(null)
+  const [uploadAlert, setUploadAlert] = useState<{
+    message: string
+    canRetry: boolean
+  } | null>(null)
+  const [isRetryingUpload, setIsRetryingUpload] = useState(false)
   const [showSuccessDialog, setShowSuccessDialog] = useState(false)
   const [submittedAt, setSubmittedAt] = useState<string | null>(null)
 
@@ -262,7 +267,9 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
       await saveStep3()
     } else if (currentStep === 4) {
       if (!validateStep4()) return
-      await saveStep4()
+      const saved = await saveStep4()
+      if (!saved) return
+      setUploadAlert(null)
       setCurrentStep(APPLICATION_STEPS_COUNT)
       await updateCurrentStep(application.id, APPLICATION_STEPS_COUNT)
       return
@@ -312,6 +319,10 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
   const validateStep4 = () => {
     const totalFiles = uploadedFiles.length + existingFiles.length
     if (totalFiles === 0) {
+      setUploadAlert({
+        message: formCopy.uploadRequiredError,
+        canRetry: false,
+      })
       return false
     }
     return true
@@ -369,29 +380,54 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
     }
   }
 
-  const saveStep4 = async () => {
-    if (!application) return
+  const saveStep4 = async (): Promise<boolean> => {
+    if (!application) return false
     
     try {
       setIsSaving(true)
       
       for (let i = 0; i < uploadedFiles.length; i++) {
         const uploadedFile = uploadedFiles[i]
-        await uploadFileAnswer(
+        const result = await uploadFileAnswer(
           application.id,
           4,
           `doc_upload_${existingFiles.length + i}`,
           uploadedFile.file
         )
+
+        if (result.error) {
+          setUploadAlert({
+            message: result.error.message || formCopy.uploadFailedError,
+            canRetry: true,
+          })
+          return false
+        }
       }
       
       setUploadedFiles([])
       await loadData()
+      return true
     } catch (error) {
       console.error('Error uploading documents:', error)
-      throw error
+      setUploadAlert({
+        message: formCopy.uploadFailedError,
+        canRetry: true,
+      })
+      return false
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  const handleUploadRetry = async () => {
+    setIsRetryingUpload(true)
+    try {
+      const saved = await saveStep4()
+      if (saved) {
+        setUploadAlert(null)
+      }
+    } finally {
+      setIsRetryingUpload(false)
     }
   }
 
@@ -417,6 +453,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
     
     const newFiles: UploadedFile[] = []
     let rejectedForSize = false
+    let rejectedForFormat = false
     
     for (let i = 0; i < Math.min(files.length, remainingSlots); i++) {
       const file = files[i]
@@ -431,6 +468,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
         fileType.includes('pdf') || file.name.toLowerCase().endsWith('.pdf')
 
       if (!isPdf) {
+        rejectedForFormat = true
         continue
       }
       
@@ -442,9 +480,17 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
     }
     
     if (rejectedForSize) {
-      setFileUploadError(MAX_FILE_UPLOAD_ERROR)
-    } else {
-      setFileUploadError(null)
+      setUploadAlert({
+        message: MAX_FILE_UPLOAD_ERROR,
+        canRetry: false,
+      })
+    } else if (rejectedForFormat) {
+      setUploadAlert({
+        message: formCopy.uploadPdfOnlyError,
+        canRetry: false,
+      })
+    } else if (newFiles.length > 0) {
+      setUploadAlert(null)
     }
     
     if (newFiles.length > 0) {
@@ -732,6 +778,14 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
   return (
     <div className="flex h-screen bg-gr-background">
+      {uploadAlert && (
+        <AlertBanner
+          message={uploadAlert.message}
+          onRetry={uploadAlert.canRetry ? handleUploadRetry : undefined}
+          onDismiss={() => setUploadAlert(null)}
+          isRetrying={isRetryingUpload}
+        />
+      )}
       <div className="flex-1 flex flex-col overflow-hidden">
         {studentHeader}
 
@@ -1197,9 +1251,6 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                       <p className="text-xs text-gray-400 mt-1">{formCopy.uploadBoxSubtext}</p>
                     </div>
                   </div>
-                  {fileUploadError && (
-                    <p className="text-sm text-red-500 mt-2">{fileUploadError}</p>
-                  )}
                   </>
                   )}
 
