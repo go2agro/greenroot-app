@@ -4,6 +4,9 @@ import { ArrowLeft, Compass, Home, Leaf, Sprout } from 'lucide-react'
 import { appConfig, contactConfig, pageCopyConfig } from '@/lib/config'
 import GreenRootWordmark from '@/components/GreenRootWordmark'
 import { Button } from '@/components/ui/button'
+import { publicPageMetadata } from '@/lib/site-metadata'
+
+export const metadata = publicPageMetadata.notFound
 
 const notFoundCopy = pageCopyConfig.notFound
 
