@@ -79,18 +79,6 @@ export function trackNavigation(
   const route = NAVIGATION_CONFIG[routeId];
   if (!route) return;
   
-  if (typeof window !== 'undefined' && (window as any).posthog) {
-    (window as any).posthog.capture('navigation', {
-      route_id: routeId,
-      route_label: route.label,
-      from_path: fromPath,
-      to_path: route.route,
-      category: route.category,
-      app_version: APP_VERSION,
-      user_id: userId
-    });
-  }
-
   trackNavigationEvent({
     routeId,
     routeLabel: route.label,

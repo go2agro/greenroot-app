@@ -1,8 +1,8 @@
 {
   "hero": {
-    "heading_prefix": "International Internships for",
-    "heading_highlight": "Indian Agriculture Students",
-    "subheading": "GreenRoot helps Indian agriculture students find and apply for paid international internships on farms and agricultural organisations abroad — with hands-on training in dairy, horticulture, crop production, and more.",
+    "heading_prefix": "From Indian Farmlands to",
+    "heading_highlight": "Global Agriculture Careers",
+    "subheading": "We at GreenRoot connect agriculture students with paid internships on farms and agricultural organisations worldwide — hands-on training in dairy, horticulture, crop production, and more.",
     "cta_primary_text": "Browse Internships",
     "cta_primary_link": "/internships",
     "cta_secondary_text": "Learn More",
@@ -23,14 +23,14 @@
     }
   },
   "stats": [
-    { "value": 100, "suffix": "+", "label": "Indian Students Placed Abroad" },
+    { "value": 500, "suffix": "+", "label": "Indian Students Placed Abroad" },
     { "value": 5, "suffix": "", "label": "Countries with Internships" },
     { "value": 7, "suffix": "+", "label": "Years Placing Students" }
   ],
   "features": {
-    "heading_prefix": "Why Indian Ag Students Choose",
+    "heading_prefix": "Why Agriculture Students Choose",
     "heading_highlight": "GreenRoot",
-    "subheading": "A dedicated platform for Indian agriculture students seeking international internship and training opportunities abroad.",
+    "subheading": "We at GreenRoot are a dedicated platform for Indian agriculture students seeking international internship and training opportunities abroad.",
     "image": {
       "src": "https://go2agro.com/wp-content/uploads/2024/10/IMG_20190516_164106-890x1024-1.jpg",
       "alt": "GreenRoot students at an international agricultural internship programme"
@@ -39,22 +39,22 @@
       {
         "id": "integrity",
         "title": "Integrity",
-        "description": "Honest, transparent guidance throughout your international internship application — from profile creation to placement abroad."
+        "description": "Honest guidance from your first profile setup through to placement abroad."
       },
       {
         "id": "transparency",
         "title": "Transparency",
-        "description": "Clear information about programmes, countries, requirements, and costs at every stage of your internship journey."
+        "description": "Clear details on programmes, countries, requirements, and costs at every stage."
       },
       {
         "id": "service-excellence",
         "title": "Dedicated Support",
-        "description": "Our team supports Indian agriculture students through every step — application, screening, visa process, and pre-departure preparation."
+        "description": "We guide you through application, screening, visa paperwork, and pre-departure prep."
       },
       {
         "id": "international-training",
         "title": "International Internships",
-        "description": "Paid internship programmes in Denmark, Germany, the USA, Israel, and Australia — with hands-on experience in dairy farming, crop production, horticulture, and agribusiness."
+        "description": "Paid programmes in Denmark, Germany, the USA, Israel, and Australia."
       }
     ]
   },
@@ -62,15 +62,15 @@
     "heading_prefix": "Internship",
     "heading_highlight": "Destinations",
     "countries": [
-      { "flag": "🇩🇰", "name": "Denmark" },
-      { "flag": "🇩🇪", "name": "Germany" },
-      { "flag": "🇺🇸", "name": "USA" },
-      { "flag": "🇮🇱", "name": "Israel" },
-      { "flag": "🇦🇺", "name": "Australia" },
-      { "flag": "🇨🇦", "name": "Canada" },
-      { "flag": "🇮🇹", "name": "Italy" },
-      { "flag": "🇵🇹", "name": "Portugal" },
-      { "flag": "🇵🇪", "name": "Peru" }
+      { "flag": "🇩🇰", "name": "Denmark", "internshipCount": 12 },
+      { "flag": "🇩🇪", "name": "Germany", "internshipCount": 15 },
+      { "flag": "🇺🇸", "name": "USA", "internshipCount": 20 },
+      { "flag": "🇮🇱", "name": "Israel", "internshipCount": 10 },
+      { "flag": "🇦🇺", "name": "Australia", "internshipCount": 8 },
+      { "flag": "🇨🇦", "name": "Canada", "internshipCount": 6 },
+      { "flag": "🇮🇹", "name": "Italy", "internshipCount": 5 },
+      { "flag": "🇵🇹", "name": "Portugal", "internshipCount": 4 },
+      { "flag": "🇵🇪", "name": "Peru", "internshipCount": 3 }
     ]
   },
   "howItWorks": {
@@ -97,8 +97,14 @@
       },
       {
         "id": "step-4",
-        "icon": "checkCircle",
+        "icon": "fileCheck",
         "stepLabel": "Step 4",
+        "title": "Interview, Eligibility & Visa Process"
+      },
+      {
+        "id": "step-5",
+        "icon": "plane",
+        "stepLabel": "Step 5",
         "title": "Start Your Internship Abroad"
       }
     ]
@@ -123,12 +129,12 @@
   "faq": {
     "heading_prefix": "Frequently Asked",
     "heading_highlight": "Questions",
-    "description": "Common questions from Indian agriculture students about international internships through GreenRoot.",
+    "description": "Common questions from Indian agriculture students about international internships with us at GreenRoot.",
     "items": [
       {
         "id": "who-can-apply",
         "question": "Who can apply for international internships?",
-        "answer": "Any agriculture student or recent graduate from India can apply. We welcome students from all agricultural disciplines including Agronomy, Horticulture, Plant Breeding, Soil Science, Agricultural Engineering, and more."
+        "answer": "We welcome any agriculture student or recent graduate from India. We accept students from all agricultural disciplines including Agronomy, Horticulture, Plant Breeding, Soil Science, Agricultural Engineering, and more."
       },
       {
         "id": "which-countries",
@@ -143,14 +149,24 @@
       {
         "id": "required-documents",
         "question": "What documents are required to apply?",
-        "answer": "You will need your passport, Aadhaar card, PAN card, academic transcripts, resume/CV, and a statement of purpose. Specific programmes may require additional documents which will be clearly listed."
+        "answer": "You will need your passport, Aadhaar card, PAN card, academic transcripts, resume/CV, and a statement of purpose. Specific programmes may require additional documents, which we will clearly list for you."
+      },
+      {
+        "id": "paid-internships",
+        "question": "Are these international internships paid?",
+        "answer": "Yes. We connect students with paid internship programmes that include a monthly stipend or salary. The exact amount varies by country, host organisation, and programme duration — we share full compensation details before you apply."
+      },
+      {
+        "id": "visa-support",
+        "question": "Do you help with the visa and travel process?",
+        "answer": "Yes. Once your internship is confirmed, we guide you through visa documentation, application steps, and pre-departure preparation. We work closely with our partner organisations abroad to ensure a smooth transition from India to your host country."
       }
     ]
   },
   "cta": {
     "heading_prefix": "Ready to Start Your",
     "heading_highlight": "International Internship?",
-    "subheading": "Join over 100 Indian agriculture students who have trained abroad through GreenRoot's international internship programmes.",
+    "subheading": "Join over 500 Indian agriculture students who have trained abroad through our international internship programmes at GreenRoot.",
     "primary_button_text": "Browse Internships",
     "primary_button_link": "/internships",
     "secondary_button_text": "Create Account",

@@ -17,6 +17,8 @@ import {
   LABEL_SEARCH_PLACEHOLDER,
 } from '@/lib/appConfig'
 import { trackInternshipSearch } from '@/lib/analytics'
+import MotionReveal from '@/components/motion/MotionReveal'
+import { MotionStagger, MotionStaggerItem } from '@/components/motion/MotionStagger'
 
 type Internship = {
   id: string
@@ -257,7 +259,7 @@ export default function PublicInternships() {
           )}
         </div>
 
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+        <MotionReveal className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
           <div>
             <h1 className="font-bold text-2xl text-gray-900 mb-1">{INTERNSHIPS_PAGE_HEADING}</h1>
             <p className="text-sm text-gray-500">
@@ -280,7 +282,7 @@ export default function PublicInternships() {
               <option value="longest_duration">Longest Duration</option>
             </select>
           </div>
-        </div>
+        </MotionReveal>
 
         {isLoading ? (
           <div className="text-center py-12 text-gray-500">{LABEL_LOADING}</div>
@@ -288,9 +290,9 @@ export default function PublicInternships() {
           <div className="text-center py-12 text-gray-500">No internships found</div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <MotionStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {paginatedInternships.map((internship, index) => (
-                <div
+                <MotionStaggerItem
                   key={internship.id}
                   className="bg-white rounded-2xl border border-gr-border overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer"
                   onClick={() => router.push(`/internships/${internship.id}`)}
@@ -356,9 +358,9 @@ export default function PublicInternships() {
                       View Details
                     </button>
                   </div>
-                </div>
+                </MotionStaggerItem>
               ))}
-            </div>
+            </MotionStagger>
 
             {totalPages > 1 && (
               <div className="flex items-center justify-center gap-2 mb-8">

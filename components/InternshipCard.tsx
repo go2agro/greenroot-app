@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { analyticsAttrs } from '@/lib/analytics/attributes'
+import MotionReveal from '@/components/motion/MotionReveal'
 
 interface InternshipCardProps {
   id: string
@@ -26,6 +27,7 @@ export default function InternshipCard({
   const displayImage = imageUrl || `https://picsum.photos/seed/${id}/400/300`
 
   return (
+    <MotionReveal>
     <Link 
       href={`${basePath}/${id}`}
       className="block relative aspect-[4/3] rounded-xl overflow-hidden group w-full"
@@ -69,5 +71,6 @@ export default function InternshipCard({
         </div>
       )}
     </Link>
+    </MotionReveal>
   )
 }

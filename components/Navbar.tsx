@@ -15,9 +15,9 @@ interface NavbarProps {
 export default function Navbar({ activeLink }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  const linkStyle = (link: string) =>
-    `text-gray-700 hover:text-gr-primary transition-colors ${
-      activeLink === link ? 'border-b-2 border-gr-primary pb-1' : ''
+  const getNavLinkClass = (link: string) =>
+    `relative inline-flex items-center px-1 py-2 text-gray-700 hover:text-gr-primary transition-colors ${
+      activeLink === link ? 'text-gr-primary' : ''
     }`
 
   const navLinks = appConfig.nav_links
@@ -30,11 +30,11 @@ export default function Navbar({ activeLink }: NavbarProps) {
             <Image 
               src={APP_LOGO} 
               alt={APP_NAME} 
-              width={32} 
-              height={32}
+              width={44} 
+              height={44}
               priority
             />
-            <GreenRootWordmark className="text-xl" />
+            <GreenRootWordmark className="text-2xl" />
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
@@ -42,10 +42,16 @@ export default function Navbar({ activeLink }: NavbarProps) {
               <Link
                 key={link.key}
                 href={link.href}
-                className={linkStyle(link.key)}
+                className={getNavLinkClass(link.key)}
                 {...analyticsNavAttrs('public', link.key, link.label)}
               >
                 {link.label}
+                <span
+                  aria-hidden="true"
+                  className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-full transition-colors ${
+                    activeLink === link.key ? 'bg-gr-primary' : 'bg-transparent'
+                  }`}
+                />
               </Link>
             ))}
           </div>

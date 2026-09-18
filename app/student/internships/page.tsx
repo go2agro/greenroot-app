@@ -19,6 +19,7 @@ import {
   ITEMS_PER_PAGE,
   LABEL_LOADING,
 } from '@/lib/appConfig'
+import { MotionStagger, MotionStaggerItem } from '@/components/motion/MotionStagger'
 
 const internshipsCopy = pageCopyConfig.student.internships
 
@@ -334,9 +335,9 @@ export default function StudentInternships() {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <MotionStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {paginatedInternships.map((internship, index) => (
-                    <div
+                    <MotionStaggerItem
                       key={internship.id}
                       className="bg-white rounded-2xl border border-gr-border overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer"
                       onClick={() => router.push(`/student/internships/${internship.id}`)}
@@ -402,9 +403,9 @@ export default function StudentInternships() {
                           {BTN_VIEW_DETAILS}
                         </button>
                       </div>
-                    </div>
+                    </MotionStaggerItem>
                   ))}
-                </div>
+                </MotionStagger>
 
                 {totalPages > 1 && (
                   <div className="flex items-center justify-center gap-2 mt-8">

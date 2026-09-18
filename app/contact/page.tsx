@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { ExternalLink } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import MotionReveal from '@/components/motion/MotionReveal'
+import { MotionStagger, MotionStaggerItem } from '@/components/motion/MotionStagger'
 import { getContactInfo } from '@/lib/contact'
 
 function FacebookIcon({ className }: { className?: string }) {
@@ -60,17 +62,17 @@ export default async function Contact() {
 
       <main className="w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14 lg:py-16">
-          <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8 md:mb-10">
+          <MotionReveal className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8 md:mb-10">
             <h1 className="font-bold text-3xl md:text-4xl lg:text-[2.75rem] text-gr-text-dark leading-tight tracking-tight">
               {contact.pageTitle}
             </h1>
             <p className="md:max-w-md md:text-right text-sm md:text-[15px] text-gray-600 leading-relaxed">
               {contact.pageSubtitle}
             </p>
-          </header>
+          </MotionReveal>
 
           <div className="grid lg:grid-cols-12 gap-5 lg:gap-6">
-            <div className="lg:col-span-7 flex flex-col gap-4">
+            <MotionReveal delay={0.05} className="lg:col-span-7 flex flex-col gap-4">
               <div className="relative w-full h-[280px] sm:h-[360px] lg:h-full lg:min-h-[520px] overflow-hidden rounded-2xl bg-[#E8EDDF]">
                 <iframe
                   title={`${contact.officeName} location`}
@@ -81,10 +83,10 @@ export default async function Contact() {
                   allowFullScreen
                 />
               </div>
-            </div>
+            </MotionReveal>
 
-            <div className="lg:col-span-5 flex flex-col gap-5">
-              <div className="rounded-2xl bg-white border border-gray-200 px-6 py-6 sm:px-7 sm:py-7">
+            <MotionStagger className="lg:col-span-5 flex flex-col gap-5">
+              <MotionStaggerItem className="rounded-2xl bg-white border border-gray-200 px-6 py-6 sm:px-7 sm:py-7">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gr-primary mb-3">
                   Visit
                 </p>
@@ -118,10 +120,10 @@ export default async function Contact() {
                     {contact.whatsapp.label}
                   </a>
                 </div>
-              </div>
+              </MotionStaggerItem>
 
               <div className="grid sm:grid-cols-2 gap-5">
-                <div className="rounded-2xl bg-white border border-gray-200 px-6 py-6">
+                <MotionStaggerItem className="rounded-2xl bg-white border border-gray-200 px-6 py-6">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gr-primary mb-4">
                     Call
                   </p>
@@ -138,9 +140,9 @@ export default async function Contact() {
                       </li>
                     ))}
                   </ul>
-                </div>
+                </MotionStaggerItem>
 
-                <div className="rounded-2xl bg-white border border-gray-200 px-6 py-6">
+                <MotionStaggerItem className="rounded-2xl bg-white border border-gray-200 px-6 py-6">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gr-primary mb-4">
                     Email
                   </p>
@@ -157,10 +159,10 @@ export default async function Contact() {
                       </li>
                     ))}
                   </ul>
-                </div>
+                </MotionStaggerItem>
               </div>
 
-              <div className="rounded-2xl bg-gr-text-dark px-6 py-6 sm:px-7 text-white">
+              <MotionStaggerItem className="rounded-2xl bg-gr-text-dark px-6 py-6 sm:px-7 text-white">
                 <div className="grid sm:grid-cols-2 gap-8">
                   <div>
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gr-primary mb-4">
@@ -214,8 +216,8 @@ export default async function Contact() {
                     </p>
                   </div>
                 </div>
-              </div>
-            </div>
+              </MotionStaggerItem>
+            </MotionStagger>
           </div>
         </div>
       </main>

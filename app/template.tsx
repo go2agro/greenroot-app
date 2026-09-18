@@ -1,12 +1,12 @@
 'use client';
 
-import { PageTransition } from '@/components/PageTransition';
 import { ReactNode } from 'react';
+import PageMotion from '@/components/motion/PageMotion';
 
 interface TemplateProps {
   children: ReactNode;
 }
 
 export default function Template({ children }: TemplateProps) {
-  return <PageTransition>{children}</PageTransition>;
+  return <PageMotion className="flex-1 flex flex-col">{children}</PageMotion>;
 }

@@ -1,7 +1,11 @@
+'use client'
+
 import Link from 'next/link'
 import { FileText, Shield } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import MotionReveal from '@/components/motion/MotionReveal'
+import { MotionStagger, MotionStaggerItem } from '@/components/motion/MotionStagger'
 
 export type LegalBlock =
   | { type: 'p'; text: string }
@@ -70,7 +74,7 @@ export default function LegalDocument({ data, variant }: LegalDocumentProps) {
 
       <main className="flex-1">
         <div className="border-b border-gr-border bg-white">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+          <MotionReveal className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
             <Link
               href="/"
               className="text-sm text-gr-primary hover:underline mb-6 inline-block"
@@ -97,12 +101,12 @@ export default function LegalDocument({ data, variant }: LegalDocumentProps) {
                 </div>
               </div>
             </div>
-          </div>
+          </MotionReveal>
         </div>
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
           <div className="grid grid-cols-1 lg:grid-cols-[240px_minmax(0,1fr)] gap-8 lg:gap-12">
-            <aside className="lg:sticky lg:top-24 lg:self-start">
+            <MotionReveal delay={0.05} className="lg:sticky lg:top-24 lg:self-start">
               <div className="bg-white border border-gr-border rounded-2xl p-5">
                 <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-3">
                   On this page
@@ -119,28 +123,32 @@ export default function LegalDocument({ data, variant }: LegalDocumentProps) {
                   ))}
                 </nav>
               </div>
-            </aside>
+            </MotionReveal>
 
-            <article className="bg-white border border-gr-border rounded-2xl p-6 sm:p-10 space-y-10">
+            <MotionStagger className="bg-white border border-gr-border rounded-2xl p-6 sm:p-10 space-y-10">
               {data.intro && (
-                <p className="text-sm sm:text-[15px] text-gray-600 leading-relaxed border-l-4 border-gr-primary pl-4 bg-gr-primary-light py-3 rounded-r-lg">
-                  {data.intro}
-                </p>
+                <MotionStaggerItem>
+                  <p className="text-sm sm:text-[15px] text-gray-600 leading-relaxed border-l-4 border-gr-primary pl-4 bg-gr-primary-light py-3 rounded-r-lg">
+                    {data.intro}
+                  </p>
+                </MotionStaggerItem>
               )}
 
               {data.sections.map((section) => (
-                <section key={section.id} id={section.id} className="scroll-mt-28">
-                  <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gr-border">
-                    {section.title}
-                  </h2>
-                  <div className="space-y-4">
-                    {section.blocks.map((block, index) => (
-                      <LegalBlockRenderer key={`${section.id}-${index}`} block={block} />
-                    ))}
-                  </div>
-                </section>
+                <MotionStaggerItem key={section.id}>
+                  <section id={section.id} className="scroll-mt-28">
+                    <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gr-border">
+                      {section.title}
+                    </h2>
+                    <div className="space-y-4">
+                      {section.blocks.map((block, index) => (
+                        <LegalBlockRenderer key={`${section.id}-${index}`} block={block} />
+                      ))}
+                    </div>
+                  </section>
+                </MotionStaggerItem>
               ))}
-            </article>
+            </MotionStagger>
           </div>
         </div>
       </main>
