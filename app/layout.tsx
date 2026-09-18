@@ -21,8 +21,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GreenRoot Internship Platform",
-  description: "GreenRoot Internship Platform",
+  title: "GreenRoot — International Internships for Indian Agriculture Students",
+  description: appConfig.app_tagline,
   icons: { icon: '/greenroot-logo.svg' },
 };
 

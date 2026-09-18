@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
 import { appConfig } from '@/lib/appConfig'
 import { footerConfig } from '@/lib/config'
 import { analyticsAttrs } from '@/lib/analytics/attributes'
@@ -28,7 +29,7 @@ export default function Footer() {
                 width={32}
                 height={32}
               />
-              <span className="text-xl font-bold text-gray-900">{appConfig.app_name}</span>
+              <GreenRootWordmark className="text-xl" />
             </Link>
             <p className="text-sm text-gray-600">{footerConfig.tagline}</p>
           </div>

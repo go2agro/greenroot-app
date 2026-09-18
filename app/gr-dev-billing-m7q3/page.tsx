@@ -12,6 +12,7 @@ import {
   IndianRupee,
   Receipt,
 } from 'lucide-react'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -146,7 +147,7 @@ export default function DevBillingPage() {
                     width={36}
                     height={36}
                   />
-                  <span className="text-2xl font-bold text-gray-900">GreenRoot</span>
+                  <GreenRootWordmark className="text-2xl" />
                 </div>
                 <CardTitle className="text-xl font-bold text-gr-text-dark flex items-center gap-2 justify-center">
                   <ShieldAlert className="w-5 h-5 text-gr-primary" />

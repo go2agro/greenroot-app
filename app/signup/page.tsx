@@ -14,6 +14,7 @@ const signupCopy = pageCopyConfig.auth.signup
 import Image from 'next/image'
 import Link from 'next/link'
 import AuthLeftPanel from '@/components/AuthLeftPanel'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
 
 export default function Signup() {
   const router = useRouter()
@@ -97,7 +98,7 @@ export default function Signup() {
               width={32} 
               height={32}
             />
-            <span className="text-2xl font-bold text-gray-900">GreenRoot</span>
+            <GreenRootWordmark className="text-2xl" />
           </div>
 
           {/* Heading */}

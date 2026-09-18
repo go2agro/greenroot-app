@@ -234,7 +234,7 @@ export default function PublicInternships() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar activeLink="opportunities" />
+      <Navbar activeLink="internships" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="relative mb-6">
@@ -261,7 +261,7 @@ export default function PublicInternships() {
           <div>
             <h1 className="font-bold text-2xl text-gray-900 mb-1">{INTERNSHIPS_PAGE_HEADING}</h1>
             <p className="text-sm text-gray-500">
-              {INTERNSHIPS_PAGE_SUBHEADING} · Showing {filteredInternships.length} opportunities worldwide
+              {INTERNSHIPS_PAGE_SUBHEADING} · Showing {filteredInternships.length} internships abroad
             </p>
           </div>
           

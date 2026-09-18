@@ -20,6 +20,7 @@ import {
   ChevronRight,
   Image as ImageIcon,
 } from 'lucide-react'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
 import UserAvatar from '@/components/UserAvatar'
 import AlertBanner from '@/components/AlertBanner'
 import { ApplicationSubmittedDialog } from '@/components/ApplicationSubmittedDialog'
@@ -643,7 +644,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
             height={32}
             priority
           />
-          <span className="text-xl font-bold text-gray-900">GreenRoot</span>
+          <GreenRootWordmark className="text-xl" />
         </Link>
 
         <div className="absolute right-0 flex items-center gap-2 sm:gap-3">

@@ -1,5 +1,5 @@
 {
-  "tagline": "Cultivating the next generation of agricultural leaders through immersive international learning and technology.",
+  "tagline": "International internships for Indian agriculture students — hands-on training on farms and agricultural organisations abroad.",
   "copyright": "© 2025 GreenRoot Platform. All rights reserved.",
   "columns": [
     {
@@ -20,17 +20,17 @@
       "id": "quick-links",
       "heading": "Quick Links",
       "links": [
-        { "label": "Find Internships", "href": "/internships" },
-        { "label": "Learning Hub", "href": "/about" },
-        { "label": "For Employers", "href": "/contact" }
+        { "label": "Browse Internships", "href": "/internships" },
+        { "label": "About Us", "href": "/about" },
+        { "label": "Contact Us", "href": "/contact" }
       ]
     },
     {
       "id": "resources",
-      "heading": "Resources",
+      "heading": "For Students",
       "links": [
-        { "label": "Student Guide", "href": "/about" },
-        { "label": "Career Blog", "href": "/about" },
+        { "label": "How to Apply", "href": "/about" },
+        { "label": "Photo Gallery", "href": "/gallery" },
         { "label": "Support", "href": "/contact" }
       ]
     },

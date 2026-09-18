@@ -1,10 +1,10 @@
 {
   "auth": {
-    "panelHeading": "Empowering the Next Generation of Agri-Leaders.",
-    "panelSubheading": "Get international paid internships and revolutionise the future of agriculture.",
+    "panelHeading": "International Internships for Indian Agriculture Students.",
+    "panelSubheading": "Find and apply for paid agricultural internships abroad — with hands-on training on farms and agricultural organisations worldwide.",
     "login": {
       "heading": "Welcome Back!",
-      "subheading": "Please enter your credentials to access the platform. Take the first step in exploring your future.",
+      "subheading": "Log in to browse international internships abroad and track your application progress.",
       "roles": {
         "student": "Student",
         "admin": "Admin",
@@ -25,7 +25,7 @@
     },
     "signup": {
       "heading": "Create Your Account",
-      "subheading": "Start your journey in international paid internships today.",
+      "subheading": "Create your account to apply for international agricultural internships abroad.",
       "emailLabel": "Email Address",
       "emailPlaceholder": "example@email.com",
       "passwordLabel": "Password",
@@ -58,20 +58,20 @@
     "dashboard": {
       "welcomePrefix": "Welcome back,",
       "welcomeSuffix": "! 👋",
-      "subheading": "Here's a summary of your internship journey.",
+      "subheading": "Track your international internship applications and next steps.",
       "cardApplications": "Applications Submitted",
       "cardApproved": "Applications Approved",
       "cardPending": "Pending Review",
       "recentApplications": "My Recent Applications",
       "browseSection": "Browse Internships",
-      "browseCta": "Discover international agriculture internships tailored for you.",
+      "browseCta": "Browse paid international agricultural internships for Indian students.",
       "browseAllButton": "Browse All Internships",
       "emptyApplications": "You haven't applied to any internships yet.",
       "emptyCta": "Start Browsing"
     },
     "internships": {
-      "heading": "Agricultural Internships",
-      "searchPlaceholder": "Search internships (e.g. Soil Research, Germany...)",
+      "heading": "International Internships",
+      "searchPlaceholder": "Search internships abroad (e.g. Dairy Farming, Denmark...)",
       "sortLabel": "Sort by:",
       "sortOptions": [
         { "value": "recent", "label": "Most Recent" },
@@ -83,23 +83,23 @@
       ],
       "emptyHeading": "No internships found",
       "emptyBody": "Try adjusting your search or filters.",
-      "resultsCount": "Showing {count} relevant opportunities"
+      "resultsCount": "Showing {count} international internships abroad"
     },
     "applications": {
       "heading": "My Applications",
-      "subheading": "Track and manage all your internship applications.",
+      "subheading": "Track and manage all your international internship applications.",
       "statSubmitted": "Submitted",
       "statApproved": "Approved",
       "statPending": "Pending",
       "searchPlaceholder": "Search by internship name or country...",
       "emptyHeading": "No applications yet",
-      "emptyBody": "Start browsing internships and submit your first application!",
+      "emptyBody": "Start browsing international internships abroad and submit your first application!",
       "emptyButton": "Browse Internships"
     },
     "profile": {
       "heading": "My Profile",
       "completionHeading": "Complete Your Profile",
-      "completionBody": "Complete your profile to increase your chances of being matched with top international agriculture internships.",
+      "completionBody": "Complete your profile to strengthen your application for international agricultural internships abroad.",
       "completionLabel": "Profile Strength",
       "sections": {
         "personal": "Personal Information",
@@ -149,7 +149,7 @@
     },
     "notifications": {
       "heading": "Notifications",
-      "subheading": "Stay updated on your applications and internship progress.",
+      "subheading": "Stay updated on your international internship applications and progress.",
       "markAllRead": "Mark all as read",
       "filterTabs": [
         { "key": "all", "label": "All" },
@@ -173,7 +173,7 @@
       "stipendNote": "Interns receive a competitive monthly stipend to help cover personal living expenses throughout the internship.",
       "benefitsHeading": "Additional benefits may include:",
       "ctaHeading": "Ready to Start?",
-      "ctaSubheading": "Take the first step toward your global agriculture career.",
+      "ctaSubheading": "Take the first step toward your international agricultural internship abroad.",
       "similarHeading": "Similar Internships",
       "chipStartDate": "START DATE",
       "chipDuration": "DURATION",
@@ -353,7 +353,7 @@
   },
   "notFound": {
     "heading": "Page Not Found",
-    "body": "The page you are looking for doesn't exist or has been moved.",
+    "body": "The page you are looking for doesn't exist or has been moved. Head back to browse international internships for Indian agriculture students.",
     "button": "Go Back Home"
   }
 }

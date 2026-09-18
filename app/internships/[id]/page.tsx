@@ -119,7 +119,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
   if (loading) {
     return (
       <div className="min-h-screen bg-white">
-        <Navbar activeLink="opportunities" />
+        <Navbar activeLink="internships" />
         <div className="flex items-center justify-center h-96">
           <div className="text-gray-400">{LABEL_LOADING}</div>
         </div>
@@ -130,7 +130,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
   if (!internship) {
     return (
       <div className="min-h-screen bg-white">
-        <Navbar activeLink="opportunities" />
+        <Navbar activeLink="internships" />
         <div className="flex items-center justify-center h-96">
           <div className="text-gray-400">Internship not found</div>
         </div>
@@ -147,7 +147,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar activeLink="opportunities" />
+      <Navbar activeLink="internships" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         <button

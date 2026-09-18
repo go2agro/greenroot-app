@@ -183,9 +183,6 @@ export default function Home() {
                   className="object-cover"
                 />
               </div>
-              <div className="absolute top-[10%] left-[5%] w-3 h-3 bg-gr-primary rounded-full" />
-              <div className="absolute bottom-[15%] right-[10%] w-3 h-3 bg-gr-primary rounded-full" />
-              <div className="absolute top-[60%] right-[5%] w-4 h-4 border-2 border-gr-primary" />
             </div>
           </div>
         </div>
@@ -486,8 +483,6 @@ export default function Home() {
                 fill
                 className="object-cover"
               />
-              <div className="absolute -top-4 -left-4 w-3 h-3 bg-gr-primary rounded-full" />
-              <div className="absolute -bottom-4 -right-4 w-3 h-3 bg-gr-primary rounded-full" />
             </div>
           </div>
         </div>

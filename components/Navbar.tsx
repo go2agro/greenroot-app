@@ -4,11 +4,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Menu, X } from 'lucide-react'
 import { useState } from 'react'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
 import { APP_LOGO, APP_NAME, BTN_LOGIN, BTN_SIGNUP, appConfig } from '@/lib/appConfig'
 import { analyticsAttrs, analyticsNavAttrs } from '@/lib/analytics/attributes'
 
 interface NavbarProps {
-  activeLink?: 'about' | 'gallery' | 'opportunities' | 'contact' | 'learning'
+  activeLink?: 'about' | 'gallery' | 'internships' | 'contact'
 }
 
 export default function Navbar({ activeLink }: NavbarProps) {
@@ -33,7 +34,7 @@ export default function Navbar({ activeLink }: NavbarProps) {
               height={32}
               priority
             />
-            <span className="text-xl font-bold text-gray-900">{APP_NAME}</span>
+            <GreenRootWordmark className="text-xl" />
           </Link>
 
           <div className="hidden md:flex items-center gap-8">

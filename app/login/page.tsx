@@ -16,6 +16,7 @@ const loginCopy = pageCopyConfig.auth.login
 import Image from 'next/image'
 import Link from 'next/link'
 import AuthLeftPanel from '@/components/AuthLeftPanel'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
 
 export default function Login() {
   const router = useRouter()
@@ -154,7 +155,7 @@ export default function Login() {
               width={32} 
               height={32}
             />
-            <span className="text-2xl font-bold text-gray-900">{APP_NAME}</span>
+            <GreenRootWordmark className="text-2xl" />
           </div>
 
           {/* Welcome Heading */}

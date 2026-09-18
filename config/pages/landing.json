@@ -1,66 +1,66 @@
 {
   "hero": {
-    "heading_prefix": "Empowering the Next Generation of",
-    "heading_highlight": "Agricultural Leaders",
-    "subheading": "Gain hands-on experience with world-class farms and agricultural organizations across the globe. Take your first step toward a global agri-career.",
+    "heading_prefix": "International Internships for",
+    "heading_highlight": "Indian Agriculture Students",
+    "subheading": "GreenRoot helps Indian agriculture students find and apply for paid international internships on farms and agricultural organisations abroad — with hands-on training in dairy, horticulture, crop production, and more.",
     "cta_primary_text": "Browse Internships",
     "cta_primary_link": "/internships",
     "cta_secondary_text": "Learn More",
     "cta_secondary_link": "/about",
     "images": {
       "collage_top_right": {
-        "src": "https://picsum.photos/300/200?random=1",
-        "alt": "Agricultural work"
+        "src": "https://go2agro.com/wp-content/uploads/2022/08/1659770187722-compressed.jpg",
+        "alt": "Indian agriculture students at an international training programme abroad"
       },
       "collage_bottom_left": {
-        "src": "https://picsum.photos/300/200?random=2",
-        "alt": "Farm landscape"
+        "src": "https://go2agro.com/wp-content/uploads/2022/08/1659770187756-compressed.jpg",
+        "alt": "Hands-on farm training during an international agricultural internship"
       },
       "collage_center": {
-        "src": "https://picsum.photos/300/200?random=3",
-        "alt": "Students learning"
+        "src": "https://go2agro.com/wp-content/uploads/2022/08/1659770187788-compressed.jpg",
+        "alt": "Students gaining practical experience on an international farm"
       }
     }
   },
   "stats": [
-    { "value": 100, "suffix": "+", "label": "Students Placed Abroad" },
-    { "value": 5, "suffix": "", "label": "Countries Served" },
-    { "value": 7, "suffix": "+", "label": "Years of Experience" }
+    { "value": 100, "suffix": "+", "label": "Indian Students Placed Abroad" },
+    { "value": 5, "suffix": "", "label": "Countries with Internships" },
+    { "value": 7, "suffix": "+", "label": "Years Placing Students" }
   ],
   "features": {
-    "heading_prefix": "Why Choose",
-    "heading_highlight": "GreenRoot?",
-    "subheading": "Solutions. Service. Sustainability. High tech advantages with old fashioned service.",
+    "heading_prefix": "Why Indian Ag Students Choose",
+    "heading_highlight": "GreenRoot",
+    "subheading": "A dedicated platform for Indian agriculture students seeking international internship and training opportunities abroad.",
     "image": {
       "src": "https://go2agro.com/wp-content/uploads/2024/10/IMG_20190516_164106-890x1024-1.jpg",
-      "alt": "GreenRoot students at an international agricultural training programme"
+      "alt": "GreenRoot students at an international agricultural internship programme"
     },
     "items": [
       {
         "id": "integrity",
         "title": "Integrity",
-        "description": "Building trust with customers, communities, suppliers, and one another by doing what is right."
+        "description": "Honest, transparent guidance throughout your international internship application — from profile creation to placement abroad."
       },
       {
         "id": "transparency",
         "title": "Transparency",
-        "description": "Ensuring openness, communication, and accountability in all our engagements with students, partners, and farmers."
+        "description": "Clear information about programmes, countries, requirements, and costs at every stage of your internship journey."
       },
       {
         "id": "service-excellence",
-        "title": "Service Excellence",
-        "description": "Building an organisational culture based on service and operational excellence in thought and in execution."
+        "title": "Dedicated Support",
+        "description": "Our team supports Indian agriculture students through every step — application, screening, visa process, and pre-departure preparation."
       },
       {
         "id": "international-training",
-        "title": "International Internships & Training",
-        "description": "Tailored programmes in Denmark, Germany, the USA, Israel, and Australia — with hands-on experience in dairy farming, crop production, horticulture, and agribusiness management."
+        "title": "International Internships",
+        "description": "Paid internship programmes in Denmark, Germany, the USA, Israel, and Australia — with hands-on experience in dairy farming, crop production, horticulture, and agribusiness."
       }
     ]
   },
   "featuredCountries": {
-    "heading_prefix": "Featured",
-    "heading_highlight": "Countries",
+    "heading_prefix": "Internship",
+    "heading_highlight": "Destinations",
     "countries": [
       { "flag": "🇩🇰", "name": "Denmark" },
       { "flag": "🇩🇪", "name": "Germany" },
@@ -74,42 +74,42 @@
     ]
   },
   "howItWorks": {
-    "heading_prefix": "How It",
-    "heading_highlight": "Works?",
+    "heading_prefix": "How to Apply for an",
+    "heading_highlight": "International Internship",
     "steps": [
       {
         "id": "step-1",
         "icon": "user",
         "stepLabel": "Step 1",
-        "title": "Create Profile"
+        "title": "Create Your Profile"
       },
       {
         "id": "step-2",
         "icon": "globe",
         "stepLabel": "Step 2",
-        "title": "Browse Internships"
+        "title": "Browse Internships Abroad"
       },
       {
         "id": "step-3",
         "icon": "briefcase",
         "stepLabel": "Step 3",
-        "title": "Submit Application"
+        "title": "Submit Your Application"
       },
       {
         "id": "step-4",
         "icon": "checkCircle",
         "stepLabel": "Step 4",
-        "title": "Start your Journey!"
+        "title": "Start Your Internship Abroad"
       }
     ]
   },
   "featuredOpportunities": {
-    "heading_prefix": "Featured",
-    "heading_highlight": "Opportunities"
+    "heading_prefix": "Featured International",
+    "heading_highlight": "Internships"
   },
   "successStories": {
     "heading_prefix": "Partner",
-    "heading_highlight": "Testimonials",
+    "heading_highlight": "Testimonial",
     "stories": [
       {
         "id": "abraham-yehuda",
@@ -117,38 +117,17 @@
         "name": "Mr. Abraham Yehuda",
         "role": "CEO, Abraham Yehuda & Associates / INDIA–ISRAEL Initiatives, Mumbai",
         "quote": "GreenRoot has been associated with our firm for more than a year. They specialize in finding meaningful opportunities for Agri Graduates in Maharashtra. With us, they have been supplying good candidates for our Israel Kibbutz Volunteers' Programme — a one-year programme for Agri Graduates and young professionals aged 18–35. They have been meticulous in recruitment and have shown honesty, integrity, and transparency in their approach. We are very pleased to be associated with them."
-      },
-      {
-        "id": "gitaram-kadam",
-        "initials": "GK",
-        "name": "Mr. Gitaram Kadam",
-        "role": "MD, Anandghana Industries",
-        "quote": "GreenRoot has been providing services to us — participating and promoting in exhibitions and on social media. Outsourcing services of GreenRoot have benefited us a lot in business. We will do better together in the future."
-      },
-      {
-        "id": "ashok-modke",
-        "initials": "AM",
-        "name": "Mr. Ashok Modke",
-        "role": "Director, Agro Post Farm Services LLP",
-        "quote": "Thanks GreenRoot team. Your reach in rural agriculture is very deep and it is helping to spread the usage of the AgroPost app in Maharashtra state very fast. You guys are the best!"
-      },
-      {
-        "id": "anand-lokhande",
-        "initials": "AL",
-        "name": "Mr. Anand Lokhande",
-        "role": "Chairman, Vidyanand Agro",
-        "quote": "GreenRoot provides good service to us. It helps us a lot in marketing and also on social media."
       }
     ]
   },
   "faq": {
     "heading_prefix": "Frequently Asked",
     "heading_highlight": "Questions",
-    "description": "Find answers to the most common questions about GreenRoot internships.",
+    "description": "Common questions from Indian agriculture students about international internships through GreenRoot.",
     "items": [
       {
         "id": "who-can-apply",
-        "question": "Who can apply for GreenRoot internships?",
+        "question": "Who can apply for international internships?",
         "answer": "Any agriculture student or recent graduate from India can apply. We welcome students from all agricultural disciplines including Agronomy, Horticulture, Plant Breeding, Soil Science, Agricultural Engineering, and more."
       },
       {
@@ -158,8 +137,8 @@
       },
       {
         "id": "how-to-apply",
-        "question": "How do I apply for an internship?",
-        "answer": "Create your profile, complete all mandatory details, browse available internships, and submit your application through our simple 5-step process. Our team will guide you through every stage."
+        "question": "How do I apply for an international internship?",
+        "answer": "Create your student profile, complete all mandatory details, browse available internships abroad, and submit your application through our platform. Our team will guide you through screening, partner review, visa process, and pre-departure preparation."
       },
       {
         "id": "required-documents",
@@ -170,15 +149,15 @@
   },
   "cta": {
     "heading_prefix": "Ready to Start Your",
-    "heading_highlight": "Global Agriculture Journey?",
-    "subheading": "Join thousands of aspiring agriculture students building world-class careers through GreenRoot.",
+    "heading_highlight": "International Internship?",
+    "subheading": "Join over 100 Indian agriculture students who have trained abroad through GreenRoot's international internship programmes.",
     "primary_button_text": "Browse Internships",
     "primary_button_link": "/internships",
     "secondary_button_text": "Create Account",
     "secondary_button_link": "/signup",
     "image": {
-      "src": "https://picsum.photos/400/300?random=8",
-      "alt": "Students in agriculture"
+      "src": "https://go2agro.com/wp-content/uploads/2022/08/1659770187823-compressed.jpg",
+      "alt": "Indian agriculture students on an international farm internship"
     }
   }
 }

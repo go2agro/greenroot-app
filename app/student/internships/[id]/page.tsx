@@ -22,6 +22,7 @@ import {
   Info,
   X
 } from 'lucide-react'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
 import UserAvatar from '@/components/UserAvatar'
 import { getInternshipById } from '@/lib/internships'
 import { stripRequiredDocumentsBlock } from '@/lib/internshipContent'
@@ -214,7 +215,7 @@ export default function StudentInternshipDetail({ params }: { params: Promise<{ 
                 height={32}
                 priority
               />
-              <span className="text-xl font-bold text-gray-900">GreenRoot</span>
+              <GreenRootWordmark className="text-xl" />
             </Link>
 
             <div className="absolute right-0 flex items-center gap-2 sm:gap-3">

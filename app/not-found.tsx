@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowLeft, Compass, Home, Leaf, Sprout } from 'lucide-react'
 import { appConfig, contactConfig, pageCopyConfig } from '@/lib/config'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
 import { Button } from '@/components/ui/button'
 
 const notFoundCopy = pageCopyConfig.notFound
@@ -31,7 +32,7 @@ export default function NotFound() {
             height={44}
             className="size-11"
           />
-          <span className="text-xl font-bold text-gr-text-dark">{appConfig.app_name}</span>
+          <GreenRootWordmark className="text-xl" />
         </div>
 
         <div className="mb-8 flex size-24 items-center justify-center rounded-full border border-gr-primary/25 bg-white/80 shadow-sm backdrop-blur-sm">
@@ -78,7 +79,7 @@ export default function NotFound() {
               <Leaf className="size-5" aria-hidden="true" />
             </div>
             <p className="font-semibold text-gr-text-dark">About GreenRoot</p>
-            <p className="mt-1 text-sm text-gr-text-muted">Learn how we connect students worldwide.</p>
+            <p className="mt-1 text-sm text-gr-text-muted">Learn how we help Indian agriculture students intern abroad.</p>
           </Link>
 
           <Link
