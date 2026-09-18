@@ -24,17 +24,67 @@ const CATEGORY_LABELS: Record<string, string> = {
   events: 'Events',
 }
 
-function getTileClass(photo: GalleryPhoto, index: number): string {
-  if (photo.featured) {
-    return 'col-span-2 row-span-2 md:col-span-2 md:row-span-2'
-  }
-  if (index % 9 === 4) {
-    return 'col-span-2 row-span-1 md:col-span-2 md:row-span-1'
-  }
-  if (index % 7 === 3) {
-    return 'col-span-1 row-span-2 md:col-span-1 md:row-span-2'
-  }
-  return 'col-span-1 row-span-1'
+function GalleryMasonry({
+  children,
+  className = '',
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
+  return (
+    <div
+      className={`columns-2 gap-3 md:columns-3 md:gap-4 lg:columns-4 ${className}`}
+    >
+      {children}
+    </div>
+  )
+}
+
+function GalleryGridTile({
+  photo,
+  index,
+  onOpen,
+}: {
+  photo: GalleryPhoto
+  index: number
+  onOpen: () => void
+}) {
+  return (
+    <motion.button
+      type="button"
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: Math.min(index * 0.02, 0.4) }}
+      onClick={onOpen}
+      className="group relative mb-3 w-full break-inside-avoid overflow-hidden rounded-2xl border border-[#DCE6D0] bg-[#E4EED4] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-gr-primary focus-visible:ring-offset-2 md:mb-4 md:rounded-3xl"
+    >
+      <Image
+        src={photo.src}
+        alt={photo.alt}
+        width={0}
+        height={0}
+        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+        className="block h-auto w-full"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#1F2A14]/80 via-[#1F2A14]/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="absolute inset-x-0 bottom-0 translate-y-2 p-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 md:p-4">
+        <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-gr-primary">
+          {CATEGORY_LABELS[photo.category] ?? photo.category}
+        </p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="line-clamp-1 text-xs font-medium text-white md:text-sm">
+            View full photo
+          </p>
+          <Expand className="h-4 w-4 shrink-0 text-white" />
+        </div>
+      </div>
+      {photo.featured && (
+        <div className="absolute top-3 left-3 rounded-full bg-gr-primary/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#1F2A14]">
+          Featured
+        </div>
+      )}
+    </motion.button>
+  )
 }
 
 function MarqueeStrip({ photos }: { photos: GalleryPhoto[] }) {
@@ -69,15 +119,44 @@ function MarqueeStrip({ photos }: { photos: GalleryPhoto[] }) {
   )
 }
 
+function photoFilename(src: string) {
+  return src.split('/').pop() ?? src
+}
+
 export default function GalleryExperience({ content }: { content: GalleryContent }) {
-  const { hero, categories, photos, cta } = content
+  const { hero, categories, photos, cta, reviewMode, reviewModeNote } = content
   const [activeCategory, setActiveCategory] = useState('all')
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 
+  const reviewCategories = useMemo(
+    () => categories.filter((category) => category.id !== 'all'),
+    [categories]
+  )
+
+  const photosByCategory = useMemo(() => {
+    const grouped = new Map<string, GalleryPhoto[]>()
+    for (const category of reviewCategories) {
+      grouped.set(
+        category.id,
+        photos.filter((photo) => photo.category === category.id)
+      )
+    }
+    return grouped
+  }, [photos, reviewCategories])
+
+  const reviewPhotosFlat = useMemo(
+    () =>
+      reviewCategories.flatMap(
+        (category) => photosByCategory.get(category.id) ?? []
+      ),
+    [photosByCategory, reviewCategories]
+  )
+
   const filteredPhotos = useMemo(() => {
+    if (reviewMode) return reviewPhotosFlat
     if (activeCategory === 'all') return photos
     return photos.filter((photo) => photo.category === activeCategory)
-  }, [activeCategory, photos])
+  }, [activeCategory, photos, reviewMode, reviewPhotosFlat])
 
   const featuredPhotos = useMemo(
     () => photos.filter((photo) => photo.featured).slice(0, 12),
@@ -224,93 +303,173 @@ export default function GalleryExperience({ content }: { content: GalleryContent
         </div>
       </section>
 
-      {/* Filters */}
+      {/* Category navigation */}
       <section className="sticky top-16 z-40 border-b border-[#DCE6D0] bg-[#F7FAF2]/90 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-            {categories.map((category) => {
-              const count =
-                category.id === 'all'
-                  ? photos.length
-                  : photos.filter((p) => p.category === category.id).length
-              const isActive = activeCategory === category.id
+          {reviewMode ? (
+            <div className="space-y-3">
+              <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+                <p className="font-semibold">Category review mode</p>
+                <p className="mt-1 text-amber-900/80">
+                  {reviewModeNote ??
+                    'All photos are grouped by category below so you can verify each placement.'}
+                </p>
+              </div>
+              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                {reviewCategories.map((category) => {
+                  const count = photosByCategory.get(category.id)?.length ?? 0
+                  return (
+                    <a
+                      key={category.id}
+                      href={`#gallery-category-${category.id}`}
+                      className="shrink-0 inline-flex items-center gap-2 rounded-full border border-[#DCE6D0] bg-white px-4 py-2 text-sm font-medium text-[#4F5E48] hover:border-gr-primary hover:text-[#1F2A14] transition-colors"
+                    >
+                      {category.label}
+                      <span className="rounded-full bg-[#EAF5D4] px-2 py-0.5 text-[11px] tabular-nums text-[#5A6750]">
+                        {count}
+                      </span>
+                    </a>
+                  )
+                })}
+              </div>
+            </div>
+          ) : (
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              {categories.map((category) => {
+                const count =
+                  category.id === 'all'
+                    ? photos.length
+                    : photos.filter((p) => p.category === category.id).length
+                const isActive = activeCategory === category.id
 
-              return (
-                <button
-                  key={category.id}
-                  type="button"
-                  onClick={() => setActiveCategory(category.id)}
-                  className={`shrink-0 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all ${
-                    isActive
-                      ? 'bg-[#1F2A14] text-white shadow-md'
-                      : 'bg-white text-[#4F5E48] border border-[#DCE6D0] hover:border-gr-primary hover:text-[#1F2A14]'
-                  }`}
-                >
-                  {category.label}
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-[11px] tabular-nums ${
-                      isActive ? 'bg-white/15 text-white' : 'bg-[#EAF5D4] text-[#5A6750]'
+                return (
+                  <button
+                    key={category.id}
+                    type="button"
+                    onClick={() => setActiveCategory(category.id)}
+                    className={`shrink-0 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                      isActive
+                        ? 'bg-[#1F2A14] text-white shadow-md'
+                        : 'bg-white text-[#4F5E48] border border-[#DCE6D0] hover:border-gr-primary hover:text-[#1F2A14]'
                     }`}
                   >
-                    {count}
-                  </span>
-                </button>
-              )
-            })}
-          </div>
+                    {category.label}
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[11px] tabular-nums ${
+                        isActive ? 'bg-white/15 text-white' : 'bg-[#EAF5D4] text-[#5A6750]'
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Mosaic grid */}
+      {/* Photo grid */}
       <section className="bg-[#F7FAF2] py-10 md:py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeCategory}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.25 }}
-              className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 auto-rows-[130px] sm:auto-rows-[160px] md:auto-rows-[180px] gap-3 md:gap-4"
-            >
-              {filteredPhotos.map((photo, index) => (
-                <motion.button
-                  key={photo.id}
-                  type="button"
-                  initial={{ opacity: 0, scale: 0.94 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: Math.min(index * 0.02, 0.4) }}
-                  onClick={() => openLightbox(index)}
-                  className={`group relative overflow-hidden rounded-2xl md:rounded-3xl bg-[#E4EED4] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-gr-primary focus-visible:ring-offset-2 ${getTileClass(photo, index)}`}
-                >
-                  <Image
-                    src={photo.src}
-                    alt={photo.alt}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 16vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#1F2A14]/80 via-[#1F2A14]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className="absolute inset-x-0 bottom-0 p-3 md:p-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-gr-primary mb-1">
-                      {CATEGORY_LABELS[photo.category] ?? photo.category}
-                    </p>
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="text-xs md:text-sm font-medium text-white line-clamp-1">
-                        View full photo
-                      </p>
-                      <Expand className="w-4 h-4 text-white shrink-0" />
+          {reviewMode ? (
+            <div className="space-y-14">
+              {reviewCategories.map((category) => {
+                const categoryPhotos = photosByCategory.get(category.id) ?? []
+                if (categoryPhotos.length === 0) return null
+
+                return (
+                  <div
+                    key={category.id}
+                    id={`gallery-category-${category.id}`}
+                    className="scroll-mt-36"
+                  >
+                    <div className="mb-6 flex flex-wrap items-end justify-between gap-3 border-b border-[#DCE6D0] pb-4">
+                      <div>
+                        <h2 className="font-bold text-2xl md:text-3xl text-[#1F2A14] tracking-tight">
+                          {category.label}
+                        </h2>
+                        <p className="mt-1 text-sm text-[#5A6750]">
+                          {categoryPhotos.length} photo
+                          {categoryPhotos.length === 1 ? '' : 's'} in this category
+                        </p>
+                      </div>
                     </div>
+
+                    <GalleryMasonry>
+                      {categoryPhotos.map((photo) => {
+                        const flatIndex = reviewPhotosFlat.findIndex(
+                          (item) => item.id === photo.id
+                        )
+
+                        return (
+                          <button
+                            key={photo.id}
+                            type="button"
+                            onClick={() => openLightbox(flatIndex)}
+                            className="group mb-3 w-full break-inside-avoid overflow-hidden rounded-2xl border border-[#DCE6D0] bg-white text-left shadow-sm transition-shadow hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-gr-primary focus-visible:ring-offset-2 md:mb-4"
+                          >
+                            <div className="relative bg-[#E4EED4]">
+                              <Image
+                                src={photo.src}
+                                alt={photo.alt}
+                                width={0}
+                                height={0}
+                                sizes="(max-width: 768px) 100vw, 33vw"
+                                className="block h-auto w-full"
+                              />
+                              {photo.featured && (
+                                <div className="absolute top-3 left-3 rounded-full bg-gr-primary/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#1F2A14]">
+                                  Featured
+                                </div>
+                              )}
+                            </div>
+                            <div className="space-y-2 p-4">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="rounded-full bg-[#1F2A14] px-2.5 py-1 text-[11px] font-semibold text-white">
+                                  {photo.id}
+                                </span>
+                                <span className="rounded-full bg-[#EAF5D4] px-2.5 py-1 text-[11px] font-semibold text-[#3D4A32]">
+                                  {CATEGORY_LABELS[photo.category] ?? photo.category}
+                                </span>
+                              </div>
+                              <p className="text-sm font-medium text-[#1F2A14] leading-snug">
+                                {photo.alt}
+                              </p>
+                              <p className="text-[11px] text-[#7A8A72] truncate">
+                                {photoFilename(photo.src)}
+                              </p>
+                            </div>
+                          </button>
+                        )
+                      })}
+                    </GalleryMasonry>
                   </div>
-                  {photo.featured && (
-                    <div className="absolute top-3 left-3 rounded-full bg-gr-primary/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#1F2A14]">
-                      Featured
-                    </div>
-                  )}
-                </motion.button>
-              ))}
-            </motion.div>
-          </AnimatePresence>
+                )
+              })}
+            </div>
+          ) : (
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeCategory}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25 }}
+              >
+                <GalleryMasonry>
+                  {filteredPhotos.map((photo, index) => (
+                    <GalleryGridTile
+                      key={photo.id}
+                      photo={photo}
+                      index={index}
+                      onOpen={() => openLightbox(index)}
+                    />
+                  ))}
+                </GalleryMasonry>
+              </motion.div>
+            </AnimatePresence>
+          )}
 
           {filteredPhotos.length === 0 && (
             <div className="rounded-3xl border border-dashed border-[#DCE6D0] bg-white px-6 py-16 text-center">
@@ -367,8 +526,9 @@ export default function GalleryExperience({ content }: { content: GalleryContent
                 <div className="min-w-0">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gr-primary">
                     {CATEGORY_LABELS[activePhoto.category] ?? activePhoto.category}
+                    {reviewMode ? ` · ${activePhoto.id}` : ''}
                   </p>
-                  <p className="text-sm text-white/60 tabular-nums">
+                  <p className="text-xs text-white/50 tabular-nums">
                     {lightboxIndex + 1} / {filteredPhotos.length}
                   </p>
                 </div>

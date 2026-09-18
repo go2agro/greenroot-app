@@ -25,6 +25,8 @@ export type GalleryContent = {
   }
   categories: GalleryCategory[]
   photos: GalleryPhoto[]
+  reviewMode?: boolean
+  reviewModeNote?: string
   cta: {
     heading: string
     description: string

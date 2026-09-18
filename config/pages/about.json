@@ -9,10 +9,10 @@
     "secondaryCta": { "label": "Our Story", "href": "#our-story" },
     "highlightStat": { "value": "100+", "label": "Indian Students Placed Abroad" },
     "images": {
-      "main": "https://go2agro.com/wp-content/uploads/2024/10/IMG_20190516_164106-890x1024-1.jpg",
-      "mainAlt": "GreenRoot students at an international agricultural internship programme",
-      "secondary": "https://go2agro.com/wp-content/uploads/2023/02/WhatsApp-Image-2023-02-21-at-11.52.30-AM-2.jpeg",
-      "secondaryAlt": "Hands-on dairy and cooperative farming training during an international internship"
+      "main": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.16.08-PM.jpeg",
+      "mainAlt": "GreenRoot students together during an international agricultural programme abroad",
+      "secondary": "https://go2agro.com/wp-content/uploads/2022/08/image-7-compressed-3.jpg",
+      "secondaryAlt": "Hands-on field training on an international farm"
     }
   },
   "stats": [
@@ -80,41 +80,28 @@
         "role": "Founder & CEO",
         "email": "info@greenroot.in",
         "mobile": "+91 79729 37388",
-        "image": "https://go2agro.com/wp-content/uploads/2022/08/sunil_1.jpg"
+        "image": "/images/team/sunil-landkar.jpeg"
       }
     ],
     "members": [
       {
         "name": "Shubham Jaydeokar",
         "role": "Tech Lead",
-        "image": "https://picsum.photos/400/500?random=50"
+        "image": "/images/team/shubham-jaydeokar.jpeg"
       },
       {
         "name": "Kasturi Pawde",
         "role": "Design Head",
-        "image": "https://picsum.photos/400/500?random=51"
+        "image": "/images/team/kasturi-pawde.jpeg"
       }
     ],
     "advisors": [
-      {
-        "name": "Mr. Abraham Yehunda",
-        "roleLine1": "CEO — Israel-India Initiative",
-        "roleLine2": "Advisor — International Associate",
-        "image": "https://go2agro.com/wp-content/uploads/2022/08/Untitled-design-62.jpg"
-      },
       {
         "name": "Giri & Jadhav Associates",
         "roleLine1": "Advisor — Finance & Tax",
         "roleLine2": null,
         "image": "https://go2agro.com/wp-content/uploads/2024/11/061.jpg",
         "icon": "briefcase"
-      },
-      {
-        "name": "Radhika Sakseria",
-        "roleLine1": "Advocate",
-        "roleLine2": null,
-        "image": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-19-at-12.55.07-PM.jpeg",
-        "icon": "scale"
       }
     ]
   },
@@ -122,8 +109,8 @@
     "eyebrow": "What we offer",
     "heading": "International Internship Programmes",
     "description": "Paid internship and training programmes abroad, designed to give Indian agriculture students hands-on experience and career-ready skills on a global stage.",
-    "image": "https://go2agro.com/wp-content/uploads/2023/02/WhatsApp-Image-2023-02-21-at-11.52.29-AM-1.jpeg",
-    "imageAlt": "Indian agriculture students gaining practical international internship experience",
+    "image": "https://go2agro.com/wp-content/uploads/2022/08/IMG-20211028-WA0047.jpg",
+    "imageAlt": "Students working on an international farm",
     "items": [
       {
         "icon": "Globe",
@@ -153,7 +140,7 @@
     "description": "Join over 100 Indian agriculture students who have trained abroad through GreenRoot's international internship programmes.",
     "primaryCta": { "label": "Browse Internships", "href": "/internships" },
     "secondaryCta": { "label": "Create Account", "href": "/signup" },
-    "image": "https://go2agro.com/wp-content/uploads/2023/02/WhatsApp-Image-2023-02-21-at-11.52.28-AM.jpeg",
-    "imageAlt": "Indian agriculture students preparing for an international internship abroad"
+    "image": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.46-PM.jpeg",
+    "imageAlt": "GreenRoot students together during an international agricultural programme abroad"
   }
 }

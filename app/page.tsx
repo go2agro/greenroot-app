@@ -27,6 +27,7 @@ import FeaturedCountriesMarquee from '@/components/FeaturedCountriesMarquee';
 import FeaturesBento from '@/components/FeaturesBento';
 import SectionDivider from '@/components/SectionDivider';
 import AnimatedCounter from '@/components/AnimatedCounter';
+import HeroCollage from '@/components/HeroCollage';
 import MotionReveal from '@/components/motion/MotionReveal';
 import { MotionStagger, MotionStaggerItem } from '@/components/motion/MotionStagger';
 import { getTopPaidInternships } from '@/lib/internships';
@@ -165,32 +166,12 @@ export default function Home() {
               </div>
             </MotionReveal>
 
-            <MotionReveal delay={0.08} className="relative h-[400px] md:h-[500px]">
-              <div className="absolute top-0 right-0 w-[45%] h-[45%] rounded-xl overflow-hidden shadow-lg z-10">
-                <Image
-                  src={landingConfig.hero.images.collage_top_right.src}
-                  alt={landingConfig.hero.images.collage_top_right.alt}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="absolute bottom-0 left-0 w-[45%] h-[45%] rounded-xl overflow-hidden shadow-lg z-10">
-                <Image
-                  src={landingConfig.hero.images.collage_bottom_left.src}
-                  alt={landingConfig.hero.images.collage_bottom_left.alt}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50%] h-[50%] rounded-xl overflow-hidden shadow-xl z-20">
-                <Image
-                  src={landingConfig.hero.images.collage_center.src}
-                  alt={landingConfig.hero.images.collage_center.alt}
-                  fill
-                  className="object-cover"
-                  priority
-                />
-              </div>
+            <MotionReveal delay={0.08}>
+              <HeroCollage
+                topRight={landingConfig.hero.images.collage_top_right}
+                bottomLeft={landingConfig.hero.images.collage_bottom_left}
+                center={landingConfig.hero.images.collage_center}
+              />
             </MotionReveal>
           </div>
         </div>

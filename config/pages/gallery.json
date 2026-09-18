@@ -3,7 +3,7 @@
     "eyebrow": "Photo Gallery",
     "heading": "Life on",
     "headingHighlight": "International Farms",
-    "description": "Real moments from our students on paid internships and on-farm training abroad \u2014 captured across farms, programmes, and countries around the world.",
+    "description": "Real moments from our students on paid internships and on-farm training abroad — captured across farms, programmes, and countries around the world.",
     "cta": {
       "label": "Start Your Journey",
       "href": "/internships"
@@ -37,682 +37,598 @@
   ],
   "photos": [
     {
-      "id": "photo-001",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/1659770187722-compressed.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 1",
-      "category": "international-training",
-      "featured": true
-    },
-    {
       "id": "photo-002",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/1659770187756-compressed.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 2",
-      "category": "international-training",
-      "featured": true
-    },
-    {
-      "id": "photo-003",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/1659770187788-compressed.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 3",
-      "category": "international-training",
-      "featured": true
-    },
-    {
-      "id": "photo-004",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/1659770187823-compressed.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 4",
-      "category": "international-training",
-      "featured": true
-    },
-    {
-      "id": "photo-005",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/1659770187860-compressed.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 5",
-      "category": "international-training",
-      "featured": true
-    },
-    {
-      "id": "photo-006",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/1659770217102-min-300x225.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 6",
-      "category": "international-training",
+      "alt": "GreenRoot exhibition booth showcasing organic agricultural products",
+      "category": "events",
       "featured": true
     },
     {
       "id": "photo-007",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/1659770217143-min.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 7",
-      "category": "international-training",
+      "alt": "GreenRoot events, seminars, and exhibitions — 1659770217143-min",
+      "category": "events",
       "featured": true
-    },
-    {
-      "id": "photo-008",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG-20191219-WA0017-min.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 8",
-      "category": "international-training",
-      "featured": true
-    },
-    {
-      "id": "photo-009",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG-20191219-WA0019-min.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 9",
-      "category": "international-training",
-      "featured": false
-    },
-    {
-      "id": "photo-010",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG-20191219-WA0021-min.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 10",
-      "category": "international-training",
-      "featured": false
-    },
-    {
-      "id": "photo-011",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG-20201031-WA0008-min.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 11",
-      "category": "on-the-farm",
-      "featured": false
-    },
-    {
-      "id": "photo-012",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG-20201031-WA0009-min.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 12",
-      "category": "on-the-farm",
-      "featured": false
-    },
-    {
-      "id": "photo-013",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG-20211028-WA0045.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 13",
-      "category": "on-the-farm",
-      "featured": false
     },
     {
       "id": "photo-014",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG-20211028-WA0047.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 14",
+      "alt": "Students working on an international farm — IMG-20211028-WA0047",
       "category": "on-the-farm",
       "featured": true
     },
     {
       "id": "photo-015",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG-20211121-WA0009-compressed.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 15",
-      "category": "on-the-farm",
-      "featured": false
-    },
-    {
-      "id": "photo-016",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG-20211124-WA0013-compressed.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 16",
+      "alt": "Students working on an international farm — IMG-20211121-WA0009-compressed",
       "category": "on-the-farm",
       "featured": false
     },
     {
       "id": "photo-017",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG-20211129-WA0030-compressed.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 17",
+      "alt": "Students working on an international farm — IMG-20211129-WA0030-compressed",
       "category": "on-the-farm",
-      "featured": false
-    },
-    {
-      "id": "photo-018",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG-20220110-WA0006.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 18",
-      "category": "on-the-farm",
-      "featured": false
-    },
-    {
-      "id": "photo-019",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG-20220110-WA0022.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 19",
-      "category": "on-the-farm",
-      "featured": false
-    },
-    {
-      "id": "photo-020",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG-20220110-WA0023.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 20",
-      "category": "on-the-farm",
-      "featured": false
-    },
-    {
-      "id": "photo-021",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG20210310160352-compressed-300x225.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 21",
-      "category": "international-training",
-      "featured": false
-    },
-    {
-      "id": "photo-022",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG20210428181108-compressed-225x300.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 22",
-      "category": "international-training",
-      "featured": false
-    },
-    {
-      "id": "photo-023",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG20210502003516_01-compressed-300x225.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 23",
-      "category": "international-training",
       "featured": false
     },
     {
       "id": "photo-024",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG20211121010730-compressed-300x225.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 24",
-      "category": "international-training",
+      "alt": "Student life and travel moments from GreenRoot programmes — IMG20211121010730-compressed-300x225",
+      "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-025",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG20211121010844-compressed-300x225.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 25",
-      "category": "international-training",
+      "alt": "Student life and travel moments from GreenRoot programmes — IMG20211121010844-compressed-300x225",
+      "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-026",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG20211128223619-compressed-300x225.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 26",
-      "category": "international-training",
+      "alt": "Student life and travel moments from GreenRoot programmes — IMG20211128223619-compressed-300x225",
+      "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-027",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG20211128223648-compressed-300x225.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 27",
-      "category": "international-training",
+      "alt": "Student life and travel moments from GreenRoot programmes — IMG20211128223648-compressed-300x225",
+      "category": "student-moments",
       "featured": true
     },
     {
       "id": "photo-028",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG20211129010550-compressed-300x225.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 28",
-      "category": "international-training",
-      "featured": false
-    },
-    {
-      "id": "photo-029",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG20211129010625-compressed-300x225.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 29",
-      "category": "international-training",
-      "featured": false
-    },
-    {
-      "id": "photo-030",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG20211129010639-compressed-300x225.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 30",
-      "category": "international-training",
-      "featured": false
-    },
-    {
-      "id": "photo-031",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG20211129010643-compressed-300x225.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 31",
-      "category": "international-training",
+      "alt": "Student life and travel moments from GreenRoot programmes — IMG20211129010550-compressed-300x225",
+      "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-032",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG20211129010809-compressed-1-300x225.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 32",
-      "category": "international-training",
-      "featured": false
-    },
-    {
-      "id": "photo-033",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG_20211028_115849-min-300x138.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 33",
-      "category": "international-training",
-      "featured": false
-    },
-    {
-      "id": "photo-034",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG_20211028_115853-min-300x138.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 34",
-      "category": "international-training",
-      "featured": false
-    },
-    {
-      "id": "photo-035",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG_20211028_115928-min-300x138.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 35",
-      "category": "international-training",
-      "featured": false
-    },
-    {
-      "id": "photo-036",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG_20211028_115957-min-300x138.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 36",
-      "category": "international-training",
-      "featured": false
-    },
-    {
-      "id": "photo-037",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG_20211028_120147-min-300x138.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 37",
-      "category": "international-training",
-      "featured": false
-    },
-    {
-      "id": "photo-038",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG_20211028_123204-min-300x137.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 38",
-      "category": "international-training",
-      "featured": false
-    },
-    {
-      "id": "photo-039",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG_20211028_141814-min-300x135.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 39",
-      "category": "international-training",
-      "featured": false
-    },
-    {
-      "id": "photo-040",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG_20211028_141858-min-300x135.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 40",
-      "category": "international-training",
-      "featured": true
-    },
-    {
-      "id": "photo-041",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG_20211028_141954-min-300x169.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 41",
-      "category": "international-training",
-      "featured": false
-    },
-    {
-      "id": "photo-042",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG_20211028_142134-min-300x135.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 42",
-      "category": "international-training",
+      "alt": "Student life and travel moments from GreenRoot programmes — IMG20211129010809-compressed-1-300x225",
+      "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-043",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.07.55-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 43",
+      "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.07.55-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-044",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.07.57-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 44",
-      "category": "student-moments",
-      "featured": false
-    },
-    {
-      "id": "photo-045",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.07.59-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 45",
+      "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.07.57-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-046",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.08.02-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 46",
-      "category": "student-moments",
-      "featured": false
-    },
-    {
-      "id": "photo-047",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.08.04-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 47",
+      "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.08.02-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-048",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.08.05-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 48",
-      "category": "student-moments",
-      "featured": false
-    },
-    {
-      "id": "photo-049",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.08.07-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 49",
-      "category": "student-moments",
-      "featured": false
-    },
-    {
-      "id": "photo-050",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.08.10-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 50",
+      "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.08.05-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-051",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.42-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 51",
+      "alt": "Indian and international students together on campus lawn",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-052",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.43-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 52",
+      "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.15.43-PM",
       "category": "student-moments",
       "featured": false
     },
     {
-      "id": "photo-053",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.44-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 53",
-      "category": "student-moments",
-      "featured": true
-    },
-    {
       "id": "photo-054",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.46-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 54",
+      "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.15.46-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-055",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.47-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 55",
+      "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.15.47-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-056",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.48-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 56",
+      "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.15.48-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-057",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.50-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 57",
+      "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.15.50-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-058",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.52-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 58",
+      "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.15.52-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-059",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.54-PM-rotated.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 59",
-      "category": "student-moments",
-      "featured": false
-    },
-    {
-      "id": "photo-060",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.56-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 60",
+      "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.15.54-PM-rotated",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-061",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.59-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 61",
+      "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.15.59-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-062",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.16.01-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 62",
+      "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.16.01-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-063",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.16.03-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 63",
+      "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.16.03-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-064",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.16.04-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 64",
+      "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.16.04-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-065",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.16.06-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 65",
+      "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.16.06-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-066",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.16.08-PM.jpeg",
-      "alt": "International agricultural training and internship \u2014 photo 66",
+      "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.16.08-PM",
       "category": "student-moments",
       "featured": true
     },
     {
-      "id": "photo-067",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-0-compressed-1.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 67",
-      "category": "field-training",
-      "featured": false
-    },
-    {
       "id": "photo-068",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-0-compressed-2.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 68",
+      "alt": "Hands-on field training on an international farm — image-0-compressed-2",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-069",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-0-compressed-3.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 69",
+      "alt": "Hands-on field training on an international farm — image-0-compressed-3",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-070",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-0-compressed.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 70",
+      "alt": "Hands-on field training on an international farm — image-0-compressed",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-071",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-1-compressed-1.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 71",
+      "alt": "Hands-on field training on an international farm — image-1-compressed-1",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-072",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-1-compressed-2.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 72",
+      "alt": "Hands-on field training on an international farm — image-1-compressed-2",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-073",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-1-compressed-3.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 73",
-      "category": "field-training",
-      "featured": false
-    },
-    {
-      "id": "photo-074",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-1-compressed.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 74",
-      "category": "field-training",
-      "featured": false
-    },
-    {
-      "id": "photo-075",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-2-compressed-1.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 75",
+      "alt": "Hands-on field training on an international farm — image-1-compressed-3",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-076",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-2-compressed-2.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 76",
+      "alt": "Hands-on field training on an international farm — image-2-compressed-2",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-077",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-2-compressed-3.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 77",
-      "category": "field-training",
-      "featured": false
-    },
-    {
-      "id": "photo-078",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-2-compressed.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 78",
-      "category": "field-training",
-      "featured": false
-    },
-    {
-      "id": "photo-079",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-3-compressed-1.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 79",
-      "category": "field-training",
-      "featured": true
-    },
-    {
-      "id": "photo-080",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-3-compressed-2.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 80",
+      "alt": "Hands-on field training on an international farm — image-2-compressed-3",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-081",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-3-compressed-3.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 81",
+      "alt": "Hands-on field training on an international farm — image-3-compressed-3",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-082",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-4-compressed-1.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 82",
+      "alt": "Hands-on field training on an international farm — image-4-compressed-1",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-083",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-4-compressed-2.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 83",
-      "category": "field-training",
-      "featured": false
-    },
-    {
-      "id": "photo-084",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-4-compressed-3.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 84",
+      "alt": "Hands-on field training on an international farm — image-4-compressed-2",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-085",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-4-compressed.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 85",
+      "alt": "Hands-on field training on an international farm — image-4-compressed",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-086",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-5-compressed-1.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 86",
+      "alt": "Hands-on field training on an international farm — image-5-compressed-1",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-087",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-5-compressed-2.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 87",
+      "alt": "Hands-on field training on an international farm — image-5-compressed-2",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-088",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-5-compressed-3.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 88",
-      "category": "field-training",
-      "featured": false
-    },
-    {
-      "id": "photo-089",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-5-compressed.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 89",
-      "category": "field-training",
-      "featured": false
-    },
-    {
-      "id": "photo-090",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-6-compressed-1.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 90",
+      "alt": "Hands-on field training on an international farm — image-5-compressed-3",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-091",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-6-compressed-2.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 91",
+      "alt": "Hands-on field training on an international farm — image-6-compressed-2",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-092",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-6-compressed-3.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 92",
+      "alt": "Hands-on field training on an international farm — image-6-compressed-3",
       "category": "field-training",
       "featured": true
     },
     {
       "id": "photo-093",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-6-compressed.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 93",
+      "alt": "Hands-on field training on an international farm — image-6-compressed",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-094",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-7-compressed-1.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 94",
+      "alt": "Hands-on field training on an international farm — image-7-compressed-1",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-095",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-7-compressed-2.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 95",
+      "alt": "Hands-on field training on an international farm — image-7-compressed-2",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-096",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-7-compressed-3.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 96",
+      "alt": "Hands-on field training on an international farm — image-7-compressed-3",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-097",
       "src": "https://go2agro.com/wp-content/uploads/2022/08/image-7-compressed.jpg",
-      "alt": "International agricultural training and internship \u2014 photo 97",
+      "alt": "Hands-on field training on an international farm — image-7-compressed",
       "category": "field-training",
+      "featured": false
+    },
+    {
+      "id": "photo-098",
+      "src": "/images/gallery/partner-scotland-good-food-nation.jpeg",
+      "alt": "International agricultural training and internship programme — partner-scotland-good-food-nation",
+      "category": "international-training",
+      "featured": true
+    },
+    {
+      "id": "photo-099",
+      "src": "/images/gallery/partner-lantra-scotland-horticulture.jpeg",
+      "alt": "International agricultural training and internship programme — partner-lantra-scotland-horticulture",
+      "category": "international-training",
+      "featured": false
+    },
+    {
+      "id": "photo-100",
+      "src": "/images/gallery/partner-jean-marie-poirier-france.jpeg",
+      "alt": "International agricultural training and internship programme — partner-jean-marie-poirier-france",
+      "category": "international-training",
+      "featured": true
+    },
+    {
+      "id": "photo-101",
+      "src": "/images/gallery/partner-french-conference.jpeg",
+      "alt": "International agricultural training and internship programme — partner-french-conference",
+      "category": "international-training",
+      "featured": false
+    },
+    {
+      "id": "photo-102",
+      "src": "/images/gallery/partner-go2agro-tote-bag.jpeg",
+      "alt": "International agricultural training and internship programme — partner-go2agro-tote-bag",
+      "category": "international-training",
+      "featured": false
+    },
+    {
+      "id": "photo-103",
+      "src": "/images/gallery/partner-janine-knopfel-germany.jpeg",
+      "alt": "International agricultural training and internship programme — partner-janine-knopfel-germany",
+      "category": "international-training",
+      "featured": false
+    },
+    {
+      "id": "photo-104",
+      "src": "/images/gallery/partner-janine-knopfel-germany-2.jpeg",
+      "alt": "International agricultural training and internship programme — partner-janine-knopfel-germany-2",
+      "category": "international-training",
+      "featured": false
+    },
+    {
+      "id": "photo-105",
+      "src": "/images/gallery/partner-kay-behrens-usa.jpeg",
+      "alt": "International agricultural training and internship programme — partner-kay-behrens-usa",
+      "category": "international-training",
+      "featured": false
+    },
+    {
+      "id": "photo-106",
+      "src": "/images/gallery/partner-kathi-beveridge-usa.jpeg",
+      "alt": "International agricultural training and internship programme — partner-kathi-beveridge-usa",
+      "category": "international-training",
+      "featured": false
+    },
+    {
+      "id": "photo-107",
+      "src": "/images/gallery/partner-spiras-denmark.jpeg",
+      "alt": "International agricultural training and internship programme — partner-spiras-denmark",
+      "category": "international-training",
+      "featured": false
+    },
+    {
+      "id": "photo-108",
+      "src": "/images/gallery/partner-go2agro-lobby-1.jpeg",
+      "alt": "International agricultural training and internship programme — partner-go2agro-lobby-1",
+      "category": "international-training",
+      "featured": true
+    },
+    {
+      "id": "photo-109",
+      "src": "/images/gallery/partner-go2agro-lobby-2.jpeg",
+      "alt": "International agricultural training and internship programme — partner-go2agro-lobby-2",
+      "category": "international-training",
+      "featured": false
+    },
+    {
+      "id": "photo-110",
+      "src": "/images/gallery/partner-travel2farm-courtyard.jpeg",
+      "alt": "International agricultural training and internship programme — partner-travel2farm-courtyard",
+      "category": "international-training",
+      "featured": false
+    },
+    {
+      "id": "photo-111",
+      "src": "/images/gallery/event-wystc-lisbon.jpeg",
+      "alt": "GreenRoot events, seminars, and exhibitions — event-wystc-lisbon",
+      "category": "events",
+      "featured": true
+    },
+    {
+      "id": "photo-112",
+      "src": "/images/gallery/event-wystc-trade-show-1.jpeg",
+      "alt": "GreenRoot events, seminars, and exhibitions — event-wystc-trade-show-1",
+      "category": "events",
+      "featured": false
+    },
+    {
+      "id": "photo-113",
+      "src": "/images/gallery/event-wystc-trade-show-2.jpeg",
+      "alt": "GreenRoot events, seminars, and exhibitions — event-wystc-trade-show-2",
+      "category": "events",
+      "featured": false
+    },
+    {
+      "id": "photo-114",
+      "src": "/images/gallery/event-wise-foundation-booth.jpeg",
+      "alt": "GreenRoot events, seminars, and exhibitions — event-wise-foundation-booth",
+      "category": "events",
+      "featured": false
+    },
+    {
+      "id": "photo-115",
+      "src": "/images/gallery/partner-united-studies-booth.jpeg",
+      "alt": "International agricultural training and internship programme — partner-united-studies-booth",
+      "category": "international-training",
+      "featured": false
+    },
+    {
+      "id": "photo-116",
+      "src": "/images/gallery/partner-buja-tours-south-africa.jpeg",
+      "alt": "International agricultural training and internship programme — partner-buja-tours-south-africa",
+      "category": "international-training",
+      "featured": false
+    },
+    {
+      "id": "photo-117",
+      "src": "/images/gallery/event-professional-networking.jpeg",
+      "alt": "GreenRoot events, seminars, and exhibitions — event-professional-networking",
+      "category": "events",
+      "featured": false
+    },
+    {
+      "id": "photo-118",
+      "src": "/images/gallery/event-new-horizons-conference.jpeg",
+      "alt": "GreenRoot events, seminars, and exhibitions — event-new-horizons-conference",
+      "category": "events",
+      "featured": false
+    },
+    {
+      "id": "photo-119",
+      "src": "/images/gallery/field-milking-equipment-student.jpeg",
+      "alt": "Hands-on field training on an international farm — field-milking-equipment-student",
+      "category": "field-training",
+      "featured": true
+    },
+    {
+      "id": "photo-120",
+      "src": "/images/gallery/field-dairy-parlor-student.jpeg",
+      "alt": "Students working on an international farm — field-dairy-parlor-student",
+      "category": "on-the-farm",
+      "featured": true
+    },
+    {
+      "id": "photo-121",
+      "src": "/images/gallery/farm-student-dairy-barn-cropped.jpeg",
+      "alt": "GreenRoot student smiling inside a dairy barn with Holstein cows during an international internship",
+      "category": "on-the-farm",
+      "featured": true
+    },
+    {
+      "id": "photo-122",
+      "src": "/images/gallery/field-rotary-milking-parlor.jpeg",
+      "alt": "Hands-on field training on an international farm — field-rotary-milking-parlor",
+      "category": "field-training",
+      "featured": false
+    },
+    {
+      "id": "photo-123",
+      "src": "/images/gallery/farm-tractor-massey-ferguson.jpeg",
+      "alt": "Students working on an international farm — farm-tractor-massey-ferguson",
+      "category": "on-the-farm",
+      "featured": false
+    },
+    {
+      "id": "photo-124",
+      "src": "/images/gallery/farm-visit-barn-partners.jpeg",
+      "alt": "Students working on an international farm — farm-visit-barn-partners",
+      "category": "on-the-farm",
+      "featured": true
+    },
+    {
+      "id": "photo-125",
+      "src": "/images/gallery/farm-field-partners-wind-turbines.jpeg",
+      "alt": "Students working on an international farm — farm-field-partners-wind-turbines",
+      "category": "on-the-farm",
+      "featured": true
+    },
+    {
+      "id": "photo-126",
+      "src": "/images/gallery/event-gandhi-cap-australia-1.jpeg",
+      "alt": "GreenRoot events, seminars, and exhibitions — event-gandhi-cap-australia-1",
+      "category": "events",
+      "featured": true
+    },
+    {
+      "id": "photo-127",
+      "src": "/images/gallery/event-gandhi-cap-australia-2.jpeg",
+      "alt": "GreenRoot events, seminars, and exhibitions — event-gandhi-cap-australia-2",
+      "category": "events",
+      "featured": false
+    },
+    {
+      "id": "photo-128",
+      "src": "/images/gallery/event-formal-dinner-networking.jpeg",
+      "alt": "GreenRoot events, seminars, and exhibitions — event-formal-dinner-networking",
+      "category": "events",
+      "featured": false
+    },
+    {
+      "id": "photo-129",
+      "src": "/images/gallery/students-group-indoor.jpeg",
+      "alt": "Student life and travel moments from GreenRoot programmes — students-group-indoor",
+      "category": "student-moments",
+      "featured": false
+    },
+    {
+      "id": "photo-130",
+      "src": "/images/gallery/students-airport-departure.jpeg",
+      "alt": "Student life and travel moments from GreenRoot programmes — students-airport-departure",
+      "category": "student-moments",
+      "featured": true
+    },
+    {
+      "id": "photo-131",
+      "src": "/images/gallery/sunil-leadership-scotland.jpeg",
+      "alt": "International agricultural training and internship programme — sunil-leadership-scotland",
+      "category": "international-training",
       "featured": false
     }
   ],
@@ -727,5 +643,6 @@
       "label": "Contact Us",
       "href": "/contact"
     }
-  }
+  },
+  "reviewMode": false
 }

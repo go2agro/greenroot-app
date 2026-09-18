@@ -10,8 +10,8 @@ export default function AuthLeftPanel() {
     <div className="hidden lg:block relative lg:w-[40%] h-full bg-gradient-to-br from-gray-600 to-gray-800">
       <div className="relative w-full h-full">
         <Image 
-          src="/images/login-bg.jpg" 
-          alt="Agriculture background" 
+          src="https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.42-PM.jpeg"
+          alt="Indian and international students together on campus lawn during a GreenRoot programme abroad" 
           fill
           className="object-cover"
           priority

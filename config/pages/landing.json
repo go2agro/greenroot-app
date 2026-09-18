@@ -9,16 +9,19 @@
     "cta_secondary_link": "/about",
     "images": {
       "collage_top_right": {
-        "src": "https://go2agro.com/wp-content/uploads/2022/08/1659770187722-compressed.jpg",
-        "alt": "Indian agriculture students at an international training programme abroad"
+        "src": "https://go2agro.com/wp-content/uploads/2022/08/image-2-compressed-2.jpg",
+        "alt": "Students in hands-on field training on an international farm",
+        "imageClassName": "object-top",
+        "frameWidth": 44,
+        "frameHeight": 44
       },
       "collage_bottom_left": {
-        "src": "https://go2agro.com/wp-content/uploads/2022/08/1659770187756-compressed.jpg",
-        "alt": "Hands-on farm training during an international agricultural internship"
+        "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG-20211028-WA0047.jpg",
+        "alt": "Students working on an international farm"
       },
       "collage_center": {
-        "src": "https://go2agro.com/wp-content/uploads/2022/08/1659770187788-compressed.jpg",
-        "alt": "Students gaining practical experience on an international farm"
+        "src": "/images/gallery/farm-student-dairy-barn-cropped.jpeg",
+        "alt": "GreenRoot student smiling inside a dairy barn with Holstein cows during an international internship"
       }
     }
   },
@@ -32,8 +35,8 @@
     "heading_highlight": "GreenRoot",
     "subheading": "We at GreenRoot are a dedicated platform for Indian agriculture students seeking international internship and training opportunities abroad.",
     "image": {
-      "src": "https://go2agro.com/wp-content/uploads/2024/10/IMG_20190516_164106-890x1024-1.jpg",
-      "alt": "GreenRoot students at an international agricultural internship programme"
+      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.42-PM.jpeg",
+      "alt": "Indian and international students together on campus lawn during a GreenRoot programme abroad"
     },
     "items": [
       {
@@ -172,8 +175,8 @@
     "secondary_button_text": "Create Account",
     "secondary_button_link": "/signup",
     "image": {
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/1659770187823-compressed.jpg",
-      "alt": "Indian agriculture students on an international farm internship"
+      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.52-PM.jpeg",
+      "alt": "GreenRoot students together during an international agricultural programme abroad"
     }
   }
 }
