@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+import type { Viewport } from "next";
 import { Montserrat, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import appConfig from '@/config/appConfig.json';
@@ -8,6 +8,7 @@ import ThemeVariables from '@/components/ThemeVariables';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import AnalyticsInteractionTracker from '@/components/AnalyticsInteractionTracker';
 import { shouldLoadGoogleAnalytics } from '@/lib/analytics/config';
+import { rootMetadata } from '@/lib/site-metadata';
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -20,11 +21,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "GreenRoot Internship Platform",
-  description: "GreenRoot Internship Platform",
-  icons: { icon: '/greenroot-logo.svg' },
-};
+export const metadata = rootMetadata;
 
 export const viewport: Viewport = {
   width: 'device-width',

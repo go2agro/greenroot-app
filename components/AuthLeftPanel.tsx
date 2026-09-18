@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
 import { appConfig } from '@/lib/appConfig'
 import { pageCopyConfig } from '@/lib/config'
 
@@ -29,7 +30,7 @@ export default function AuthLeftPanel() {
           width={40} 
           height={40}
         />
-        <span className="text-2xl font-bold text-white">{appConfig.app_name}</span>
+        <GreenRootWordmark className="text-2xl" />
       </div>
 
       <div className="absolute bottom-8 left-8 right-8 z-10">

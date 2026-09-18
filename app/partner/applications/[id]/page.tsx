@@ -16,6 +16,7 @@ import {
 import { ApplicationTimeline } from '@/components/ApplicationTimeline'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { DetailSkeleton, PAGE_CLASS } from '@/components/detailLayout'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
 import PartnerBottomNavigation from '@/components/PartnerBottomNavigation'
 import { Textarea } from '@/components/ui/textarea'
 import { getPartnerApplicationTimeline } from '@/lib/applicationEvents'
@@ -347,7 +348,7 @@ export default function PartnerApplicationDetails({
               height={32}
               priority
             />
-            <span className="text-xl font-bold text-gray-900">GreenRoot</span>
+            <GreenRootWordmark className="text-xl" />
           </Link>
 
           <div className="absolute right-0 flex items-center gap-2 sm:gap-3">

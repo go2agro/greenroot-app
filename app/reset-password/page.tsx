@@ -13,6 +13,7 @@ import Link from 'next/link'
 import { Eye, EyeOff, Lock, CheckCircle2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('')
@@ -120,7 +121,7 @@ export default function ResetPasswordPage() {
                 width={32} 
                 height={32}
               />
-              <span className="text-xl font-bold text-gray-900">{APP_NAME}</span>
+              <GreenRootWordmark className="text-xl" />
             </div>
 
             <div className="flex flex-col items-center text-center mb-8">
@@ -187,7 +188,7 @@ export default function ResetPasswordPage() {
               width={32} 
               height={32}
             />
-            <span className="text-xl font-bold text-gray-900">GreenRoot</span>
+            <GreenRootWordmark className="text-xl" />
           </div>
 
           <div className="mb-8">

@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, FileText, User, Bell, HelpCircle, ChevronLeft, ChevronRight, Briefcase } from 'lucide-react'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
 import NotificationBadge from '@/components/NotificationBadge'
 import SidebarHelpContact from '@/components/SidebarHelpContact'
 import { getUnreadCount } from '@/lib/notifications'
@@ -86,7 +87,7 @@ export default function StudentSidebar({
                 width={32} 
                 height={32}
               />
-              <span className="text-xl font-bold text-gr-primary">GreenRoot</span>
+              <GreenRootWordmark className="text-xl" />
             </Link>
             {onToggle && (
               <button

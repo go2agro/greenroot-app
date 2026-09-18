@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ExternalLink } from 'lucide-react'
 import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 import { getContactInfo } from '@/lib/contact'
 
 function FacebookIcon({ className }: { className?: string }) {
@@ -218,6 +219,8 @@ export default async function Contact() {
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   )
 }

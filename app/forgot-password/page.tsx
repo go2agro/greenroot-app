@@ -12,6 +12,7 @@ import { getMessage } from '@/lib/messages'
 const forgotPasswordCopy = pageCopyConfig.auth.forgotPassword
 import Image from 'next/image'
 import AuthLeftPanel from '@/components/AuthLeftPanel'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
 
 export default function ForgotPassword() {
   const router = useRouter()
@@ -90,7 +91,7 @@ export default function ForgotPassword() {
               width={32} 
               height={32}
             />
-            <span className="text-2xl font-bold text-gray-900">GreenRoot</span>
+            <GreenRootWordmark className="text-2xl" />
           </div>
 
           {!isSuccess ? (

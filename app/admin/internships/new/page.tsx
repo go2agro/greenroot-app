@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import useSWR from 'swr'
 import { ArrowLeft, Save, Loader2 } from 'lucide-react'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -290,7 +291,7 @@ export default function AdminInternshipsNew() {
               height={32}
               priority
             />
-            <span className="text-xl font-bold text-gray-900">GreenRoot</span>
+            <GreenRootWordmark className="text-xl" />
           </Link>
 
           <div className="absolute right-0 flex items-center gap-2 sm:gap-3">

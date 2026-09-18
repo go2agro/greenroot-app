@@ -19,6 +19,7 @@ import {
   Briefcase,
   ChevronRight,
 } from 'lucide-react'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
 import { getStudentById, getStudentDocumentUrl } from '@/lib/adminQueries'
 import { getAllApplications } from '@/lib/adminApplications'
 import { getMyAdminProfile } from '@/lib/adminProfiles'
@@ -370,7 +371,7 @@ export default function AdminStudentDetails({ params }: { params: Promise<{ id: 
               height={32}
               priority
             />
-            <span className="text-xl font-bold text-gray-900">GreenRoot</span>
+            <GreenRootWordmark className="text-xl" />
           </Link>
 
           <div className="absolute right-0 flex items-center gap-2 sm:gap-3">

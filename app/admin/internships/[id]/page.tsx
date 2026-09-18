@@ -16,6 +16,7 @@ import {
   CreditCard,
   Briefcase,
 } from 'lucide-react'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -419,7 +420,7 @@ export default function AdminInternshipDetails({ params }: { params: Promise<{ i
               height={32}
               priority
             />
-            <span className="text-xl font-bold text-gray-900">GreenRoot</span>
+            <GreenRootWordmark className="text-xl" />
           </Link>
 
           <div className="absolute right-0 flex items-center gap-2 sm:gap-3">

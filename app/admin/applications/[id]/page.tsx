@@ -19,6 +19,7 @@ import {
   type ApplicationPaperInternship,
   type ApplicationPaperStudentProfile,
 } from '@/components/ApplicationPaperForm'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
 import { ApplicationTimeline } from '@/components/ApplicationTimeline'
 import { ApplicationStagesStepper } from '@/components/ApplicationStagesStepper'
 import { getMostRecentStageUpdate, getStageLabel, type ApplicationStageRecord } from '@/lib/applicationStages.shared'
@@ -539,7 +540,7 @@ export default function AdminApplicationDetails({
               height={32}
               priority
             />
-            <span className="text-xl font-bold text-gray-900">GreenRoot</span>
+            <GreenRootWordmark className="text-xl" />
           </Link>
 
           <div className="absolute right-0 flex items-center gap-2 sm:gap-3">

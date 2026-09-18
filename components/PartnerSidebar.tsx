@@ -12,6 +12,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
 import NotificationBadge from '@/components/NotificationBadge'
 import SidebarHelpContact from '@/components/SidebarHelpContact'
 import { getUnreadCount } from '@/lib/notifications'
@@ -83,7 +84,7 @@ export default function PartnerSidebar({
               className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
             >
               <Image src="/greenroot-logo.svg" alt="GreenRoot" width={32} height={32} />
-              <span className="text-xl font-bold text-gr-primary">GreenRoot</span>
+              <GreenRootWordmark className="text-xl" />
             </Link>
             {onToggle && (
               <button

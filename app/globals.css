@@ -58,6 +58,7 @@
   --color-gr-success: var(--gr-success);
   --color-gr-error: var(--gr-error);
   --color-gr-warning: var(--gr-warning);
+  --color-gr-root: var(--gr-root);
 }
 
 :root {
@@ -73,6 +74,7 @@
   --gr-success: #10B981;
   --gr-error: #EF4444;
   --gr-warning: #F59E0B;
+  --gr-root: #F5802D;
   --background: #FFFFFF;
   --foreground: #111111;
   --card: #FFFFFF;
