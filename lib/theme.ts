@@ -21,6 +21,7 @@ export function buildThemeVariableCss(): string {
     --gr-success: ${c.success};
     --gr-error: ${c.error};
     --gr-warning: ${c.warning};
+    --gr-root: ${c.root};
     --primary: ${c.primary};
     --secondary: ${c.secondary};
     --background: ${c.background};
