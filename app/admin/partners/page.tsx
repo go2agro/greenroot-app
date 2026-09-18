@@ -25,7 +25,6 @@ const TABLE_GRID_CLASS =
 type PartnerProfile = {
   id: string
   first_name?: string
-  middle_name?: string
   last_name?: string
   official_email?: string
   countries?: string[] | null
@@ -86,9 +85,7 @@ function displayValue(value?: string | null) {
 }
 
 function getPartnerName(partner: PartnerProfile) {
-  const name = [partner.first_name, partner.middle_name, partner.last_name]
-    .filter(Boolean)
-    .join(' ')
+  const name = [partner.first_name, partner.last_name].filter(Boolean).join(' ')
   return name || '-'
 }
 
@@ -250,10 +247,9 @@ export default function AdminPartners() {
       result = result.filter((partner) => {
         const firstName = partner.first_name?.toLowerCase() ?? ''
         const lastName = partner.last_name?.toLowerCase() ?? ''
-        const middleName = partner.middle_name?.toLowerCase() ?? ''
         const uniqueId = getNestedProfile(partner)?.unique_id?.toLowerCase() ?? ''
         const email = partner.official_email?.toLowerCase() ?? ''
-        const fullName = [firstName, middleName, lastName].filter(Boolean).join(' ')
+        const fullName = [firstName, lastName].filter(Boolean).join(' ')
         const countryMatch = (partner.countries ?? []).some((country) =>
           country.toLowerCase().includes(query)
         )
@@ -261,7 +257,6 @@ export default function AdminPartners() {
         return (
           firstName.includes(query) ||
           lastName.includes(query) ||
-          middleName.includes(query) ||
           fullName.includes(query) ||
           uniqueId.includes(query) ||
           email.includes(query) ||

@@ -8,7 +8,6 @@ import { createNotification } from '@/lib/notifications'
 type PartnerRow = {
   id: string
   first_name?: string | null
-  middle_name?: string | null
   last_name?: string | null
   official_email?: string | null
   countries?: string[] | null
@@ -28,7 +27,6 @@ function mapPartnerRow(partner: PartnerRow, profile: ProfileMeta | null) {
   return {
     id: partner.id,
     first_name: partner.first_name ?? undefined,
-    middle_name: partner.middle_name ?? undefined,
     last_name: partner.last_name ?? undefined,
     official_email: partner.official_email ?? undefined,
     countries: partner.countries ?? [],
@@ -67,7 +65,7 @@ async function fetchAllPartnerRows(
 ) {
   const { data: partners, error } = await supabase
     .from('partner_profiles')
-    .select('id, first_name, middle_name, last_name, official_email, countries')
+    .select('id, first_name, last_name, official_email, countries')
     .order('first_name', { ascending: true })
 
   if (error) throw error
@@ -119,7 +117,7 @@ function filterPartners(
     .filter((partner) => {
       const firstName = partner.first_name?.toLowerCase() ?? ''
       const lastName = partner.last_name?.toLowerCase() ?? ''
-      const fullName = [partner.first_name, partner.middle_name, partner.last_name]
+      const fullName = [partner.first_name, partner.last_name]
         .filter(Boolean)
         .join(' ')
         .toLowerCase()
@@ -213,7 +211,7 @@ export async function getApplicationAssignment(applicationId: string) {
 
   const { data: partner, error: partnerError } = await supabase
     .from('partner_profiles')
-    .select('id, first_name, middle_name, last_name, official_email, countries')
+    .select('id, first_name, last_name, official_email, countries')
     .eq('id', application.partner_id)
     .maybeSingle()
 

@@ -105,22 +105,10 @@ function extractFounders(html) {
 function extractAdvisors(html) {
   const advisors = [
     {
-      name: 'Mr. Abraham Yehunda',
-      roleLine1: 'CEO — Israel-India Initiative',
-      roleLine2: 'Advisor — International Associate',
-      imagePattern: /Untitled-design-62[^"']*\.jpg/,
-    },
-    {
       name: 'Giri & Jadhav Associates',
       roleLine1: 'Advisor — Finance & Tax',
       roleLine2: null,
       imagePattern: /\/2024\/11\/061[^"']*\.jpg/,
-    },
-    {
-      name: 'Radhika Sakseria',
-      roleLine1: 'Advocate',
-      roleLine2: null,
-      imagePattern: /WhatsApp-Image-2022-08-19-at-12\.55\.07-PM[^"']*\.jpeg/,
     },
   ]
 

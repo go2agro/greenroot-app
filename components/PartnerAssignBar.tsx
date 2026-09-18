@@ -13,7 +13,6 @@ import { LABEL_SEARCH_PLACEHOLDER } from '@/lib/appConfig'
 type PartnerOption = {
   id: string
   first_name?: string
-  middle_name?: string
   last_name?: string
   official_email?: string
   countries?: string[]
@@ -27,9 +26,7 @@ interface PartnerAssignBarProps {
 }
 
 function getPartnerName(partner: PartnerOption) {
-  return [partner.first_name, partner.middle_name, partner.last_name]
-    .filter(Boolean)
-    .join(' ')
+  return [partner.first_name, partner.last_name].filter(Boolean).join(' ')
 }
 
 export default function PartnerAssignBar({

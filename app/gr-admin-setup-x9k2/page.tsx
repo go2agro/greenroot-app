@@ -102,20 +102,24 @@ export default function AdminSetupPage() {
 
     setIsLoading(true)
 
-    const accountDetails = {
-      firstName: firstName.trim(),
-      middleName: middleName.trim() || undefined,
-      lastName: lastName.trim(),
-      personalEmail: personalEmail.trim() || undefined,
-      officialEmail: officialEmail.trim(),
-      phone: phone.trim() || undefined,
-      password,
-    }
-
     const { data, error: createError } =
       accountType === 'admin'
-        ? await createAdminAccount(accountDetails)
-        : await createPartnerAccount(accountDetails)
+        ? await createAdminAccount({
+            firstName: firstName.trim(),
+            middleName: middleName.trim() || undefined,
+            lastName: lastName.trim(),
+            personalEmail: personalEmail.trim() || undefined,
+            officialEmail: officialEmail.trim(),
+            phone: phone.trim() || undefined,
+            password,
+          })
+        : await createPartnerAccount({
+            firstName: firstName.trim(),
+            lastName: lastName.trim(),
+            officialEmail: officialEmail.trim(),
+            phone: phone.trim() || undefined,
+            password,
+          })
 
     if (createError) {
       setError(createError.message || `Failed to create ${accountType} account.`)
@@ -262,7 +266,7 @@ export default function AdminSetupPage() {
               </div>
 
               <form onSubmit={handleCreateAccount} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className={`grid grid-cols-1 gap-3 ${accountType === 'admin' ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
                   <div className="space-y-2">
                     <Label htmlFor="firstName">First Name *</Label>
                     <Input
@@ -274,17 +278,19 @@ export default function AdminSetupPage() {
                       className="bg-gr-input-bg border-0 h-11"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="middleName">Middle Name</Label>
-                    <Input
-                      id="middleName"
-                      value={middleName}
-                      onChange={(e) => setMiddleName(e.target.value)}
-                      placeholder="Optional"
-                      disabled={isLoading}
-                      className="bg-gr-input-bg border-0 h-11"
-                    />
-                  </div>
+                  {accountType === 'admin' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="middleName">Middle Name</Label>
+                      <Input
+                        id="middleName"
+                        value={middleName}
+                        onChange={(e) => setMiddleName(e.target.value)}
+                        placeholder="Optional"
+                        disabled={isLoading}
+                        className="bg-gr-input-bg border-0 h-11"
+                      />
+                    </div>
+                  )}
                   <div className="space-y-2">
                     <Label htmlFor="lastName">Last Name *</Label>
                     <Input
@@ -312,18 +318,20 @@ export default function AdminSetupPage() {
                   <p className="text-xs text-gray-500">Used for login</p>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="personalEmail">Personal Email</Label>
-                  <Input
-                    id="personalEmail"
-                    type="email"
-                    value={personalEmail}
-                    onChange={(e) => setPersonalEmail(e.target.value)}
-                    placeholder="optional@email.com"
-                    disabled={isLoading}
-                    className="bg-gr-input-bg border-0 h-11"
-                  />
-                </div>
+                {accountType === 'admin' && (
+                  <div className="space-y-2">
+                    <Label htmlFor="personalEmail">Personal Email</Label>
+                    <Input
+                      id="personalEmail"
+                      type="email"
+                      value={personalEmail}
+                      onChange={(e) => setPersonalEmail(e.target.value)}
+                      placeholder="optional@email.com"
+                      disabled={isLoading}
+                      className="bg-gr-input-bg border-0 h-11"
+                    />
+                  </div>
+                )}
 
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>

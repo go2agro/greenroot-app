@@ -6,9 +6,7 @@ import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 export async function createPartnerAccount(details: {
   firstName: string
-  middleName?: string
   lastName: string
-  personalEmail?: string
   officialEmail: string
   phone?: string
   password: string
@@ -51,9 +49,7 @@ export async function createPartnerAccount(details: {
     .insert({
       id: userId,
       first_name: details.firstName,
-      middle_name: details.middleName || null,
       last_name: details.lastName,
-      personal_email: details.personalEmail || null,
       official_email: details.officialEmail,
       phone_number: details.phone || null,
     })

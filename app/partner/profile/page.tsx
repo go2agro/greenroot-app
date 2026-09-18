@@ -13,24 +13,19 @@ import {
   Copy,
   CheckCircle2,
   Save,
-  Upload,
-  Trash2,
 } from 'lucide-react'
 import PartnerSidebar from '@/components/PartnerSidebar'
 import PartnerBottomNavigation from '@/components/PartnerBottomNavigation'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { getMyProfile } from '@/lib/profiles'
-import { getMyPartnerProfile, updatePartnerProfile, uploadPartnerDocument } from '@/lib/partnerProfiles'
+import { getMyPartnerProfile, updatePartnerProfile } from '@/lib/partnerProfiles'
 import { signOut } from '@/lib/auth'
 import { trackLogout } from '@/lib/analytics'
 import { PARTNER_COUNTRY_OPTIONS, getCountryFlag } from '@/lib/countries'
-import { MAX_FILE_UPLOAD_BYTES, MAX_FILE_UPLOAD_ERROR } from '@/lib/appConfig'
 
 interface PartnerProfileData {
   first_name?: string
-  middle_name?: string
   last_name?: string
-  personal_email?: string
   official_email?: string
   phone_number?: string
   alternate_phone_number?: string
@@ -41,9 +36,6 @@ interface PartnerProfileData {
   city?: string
   state?: string
   pincode?: string
-  passport_number?: string
-  passport_url?: string
-  passport_photo_url?: string
   countries?: string[]
 }
 
@@ -74,10 +66,8 @@ export default function PartnerProfilePage() {
     countries: false,
     contact: true,
     address: true,
-    identity: true,
   })
   const [selectedCountry, setSelectedCountry] = useState('')
-  const [uploadingDoc, setUploadingDoc] = useState<'passport' | 'passport_photo' | null>(null)
 
   const { data: profile } = useSWR('partnerMyProfile', () => fetcher(getMyProfile), {
     revalidateOnFocus: false,
@@ -132,7 +122,6 @@ export default function PartnerProfilePage() {
       if (section === 'personal') {
         dataToSave = {
           first_name: formData.first_name,
-          middle_name: formData.middle_name,
           last_name: formData.last_name,
           gender: formData.gender,
           date_of_birth: formData.date_of_birth,
@@ -147,7 +136,6 @@ export default function PartnerProfilePage() {
         }
       } else if (section === 'contact') {
         dataToSave = {
-          personal_email: formData.personal_email,
           phone_number: formData.phone_number,
           alternate_phone_number: formData.alternate_phone_number,
         }
@@ -158,10 +146,6 @@ export default function PartnerProfilePage() {
           city: formData.city,
           state: formData.state,
           pincode: formData.pincode,
-        }
-      } else if (section === 'identity') {
-        dataToSave = {
-          passport_number: formData.passport_number,
         }
       }
 
@@ -226,47 +210,6 @@ export default function PartnerProfilePage() {
       ...prev,
       countries: (prev.countries ?? []).filter((item) => item !== country),
     }))
-  }
-
-  const handleDocumentUpload = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    docType: 'passport' | 'passport_photo'
-  ) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    const allowedTypes =
-      docType === 'passport_photo'
-        ? ['image/jpeg', 'image/jpg', 'image/png']
-        : ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf']
-
-    if (!allowedTypes.includes(file.type)) {
-      e.target.value = ''
-      return
-    }
-
-    if (file.size > MAX_FILE_UPLOAD_BYTES) {
-      e.target.value = ''
-      return
-    }
-
-    setUploadingDoc(docType)
-    try {
-      const result = await uploadPartnerDocument(file, docType)
-      if (!result.error) {
-        await refreshPartnerProfile()
-      }
-    } finally {
-      setUploadingDoc(null)
-      e.target.value = ''
-    }
-  }
-
-  const handleDeleteDocument = async (docField: 'passport_url' | 'passport_photo_url') => {
-    const result = await updatePartnerProfile({ [docField]: null })
-    if (!result.error) {
-      await refreshPartnerProfile()
-    }
   }
 
   const isFirstLoad = profile === undefined && partnerProfile === undefined
@@ -365,10 +308,7 @@ export default function PartnerProfilePage() {
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Mail className="w-4 h-4 flex-shrink-0" />
                       <span className="truncate">
-                        {formData.official_email ||
-                          formData.personal_email ||
-                          profileData.email ||
-                          'Not provided'}
+                        {formData.official_email || profileData.email || 'Not provided'}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -423,16 +363,6 @@ export default function PartnerProfilePage() {
                         onChange={(e) => handleChange('first_name', e.target.value)}
                         className={inputClass}
                         placeholder="John"
-                      />
-                    </div>
-                    <div>
-                      <label className={labelClass}>Middle Name</label>
-                      <input
-                        type="text"
-                        value={formData.middle_name || ''}
-                        onChange={(e) => handleChange('middle_name', e.target.value)}
-                        className={inputClass}
-                        placeholder="William"
                       />
                     </div>
                     <div>
@@ -581,16 +511,6 @@ export default function PartnerProfilePage() {
                       />
                     </div>
                     <div>
-                      <label className={labelClass}>Personal Email</label>
-                      <input
-                        type="email"
-                        value={formData.personal_email || ''}
-                        onChange={(e) => handleChange('personal_email', e.target.value)}
-                        className={inputClass}
-                        placeholder="personal@example.com"
-                      />
-                    </div>
-                    <div>
                       <label className={labelClass}>Phone Number</label>
                       <input
                         type="tel"
@@ -697,144 +617,6 @@ export default function PartnerProfilePage() {
                     </div>
                   </div>
                   <SaveButton section="address" />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl border border-gr-border mb-6 overflow-hidden">
-              <button
-                type="button"
-                onClick={() => toggleSection('identity')}
-                className="w-full flex items-center justify-between p-6 hover:bg-green-50 transition-colors"
-              >
-                <h2 className="text-lg font-bold text-gray-900">
-                  Section E: <span className="text-gr-secondary">Identity & Documents</span>
-                </h2>
-                {collapsedSections.identity ? (
-                  <ChevronDown className="w-5 h-5 text-gray-500" />
-                ) : (
-                  <ChevronUp className="w-5 h-5 text-gray-500" />
-                )}
-              </button>
-              <div
-                className={`transition-all duration-300 ease-in-out ${
-                  collapsedSections.identity ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100'
-                } overflow-hidden`}
-              >
-                <div className="px-6 pb-6">
-                  <p className="text-sm text-gray-500 mb-4">
-                    Upload your passport details for identity verification. Passport is the standard
-                    proof of identity for international partners.
-                  </p>
-                  <div className="space-y-6">
-                    <div>
-                      <label className={labelClass}>Passport Number</label>
-                      <input
-                        type="text"
-                        value={formData.passport_number || ''}
-                        onChange={(e) => handleChange('passport_number', e.target.value)}
-                        className={inputClass}
-                        placeholder="A12345678"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className={labelClass}>Passport Document</label>
-                        <div
-                          className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
-                            formData.passport_url
-                              ? 'bg-green-50 border-green-300'
-                              : 'bg-gr-input-bg border-gray-300'
-                          }`}
-                        >
-                          {formData.passport_url ? (
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2 flex-1">
-                                <CheckCircle2 className="w-5 h-5 text-green-600" />
-                                <span className="text-sm text-green-700 font-medium">
-                                  Document Uploaded
-                                </span>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteDocument('passport_url')}
-                                className="text-red-500 hover:text-red-700 transition-colors"
-                              >
-                                <Trash2 className="w-5 h-5" />
-                              </button>
-                            </div>
-                          ) : (
-                            <>
-                              <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
-                              <input
-                                type="file"
-                                accept=".jpg,.jpeg,.png,.pdf"
-                                onChange={(e) => handleDocumentUpload(e, 'passport')}
-                                className="hidden"
-                                id="partner-passport-upload"
-                              />
-                              <label
-                                htmlFor="partner-passport-upload"
-                                className="cursor-pointer text-sm text-gr-primary hover:underline"
-                              >
-                                {uploadingDoc === 'passport' ? 'Uploading...' : 'Upload Document'}
-                              </label>
-                              <p className="text-xs text-gray-400 mt-1">JPEG, PNG, or PDF</p>
-                            </>
-                          )}
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className={labelClass}>Passport Photo</label>
-                        <div
-                          className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
-                            formData.passport_photo_url
-                              ? 'bg-green-50 border-green-300'
-                              : 'bg-gr-input-bg border-gray-300'
-                          }`}
-                        >
-                          {formData.passport_photo_url ? (
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2 flex-1">
-                                <CheckCircle2 className="w-5 h-5 text-green-600" />
-                                <span className="text-sm text-green-700 font-medium">
-                                  Photo Uploaded
-                                </span>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteDocument('passport_photo_url')}
-                                className="text-red-500 hover:text-red-700 transition-colors"
-                              >
-                                <Trash2 className="w-5 h-5" />
-                              </button>
-                            </div>
-                          ) : (
-                            <>
-                              <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
-                              <input
-                                type="file"
-                                accept=".jpg,.jpeg,.png"
-                                onChange={(e) => handleDocumentUpload(e, 'passport_photo')}
-                                className="hidden"
-                                id="partner-passport-photo-upload"
-                              />
-                              <label
-                                htmlFor="partner-passport-photo-upload"
-                                className="cursor-pointer text-sm text-gr-primary hover:underline"
-                              >
-                                {uploadingDoc === 'passport_photo' ? 'Uploading...' : 'Upload Photo'}
-                              </label>
-                              <p className="text-xs text-gray-400 mt-1">JPEG or PNG</p>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <SaveButton section="identity" />
                 </div>
               </div>
             </div>
