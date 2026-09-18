@@ -45,14 +45,14 @@ export function createPageMetadata({
 export const rootMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'GreenRoot — International Internships for Indian Agriculture Students',
+    default: 'GreenRoot — Global Farm Internships for Agriculture Students',
     template: `%s | ${SITE_NAME}`,
   },
   description: DEFAULT_DESCRIPTION,
   applicationName: SITE_NAME,
   icons: { icon: '/greenroot-logo.svg' },
   openGraph: {
-    title: 'GreenRoot — International Internships for Indian Agriculture Students',
+    title: 'GreenRoot — Global Farm Internships for Agriculture Students',
     description: DEFAULT_DESCRIPTION,
     url: SITE_URL,
     siteName: SITE_NAME,
@@ -61,7 +61,7 @@ export const rootMetadata: Metadata = {
   },
   twitter: {
     card: 'summary',
-    title: 'GreenRoot — International Internships for Indian Agriculture Students',
+    title: 'GreenRoot — Global Farm Internships for Agriculture Students',
     description: DEFAULT_DESCRIPTION,
   },
 }
@@ -71,19 +71,19 @@ export const publicPageMetadata = {
     title: 'About Us',
     path: '/about',
     description:
-      'Learn how GreenRoot helps Indian agriculture students find paid international internships and on-farm training abroad.',
+      'Discover how GreenRoot connects agriculture students in India with paid farm internships and on-the-ground training abroad.',
   }),
   gallery: createPageMetadata({
     title: 'Photo Gallery',
     path: '/gallery',
     description:
-      'Photos from Indian agriculture students on international internships and on-farm training programmes abroad.',
+      'Photos from our students on paid farm internships and training programmes across the world.',
   }),
   internships: createPageMetadata({
-    title: 'International Internships',
+    title: 'Global Farm Internships',
     path: '/internships',
     description:
-      'Browse paid international agricultural internships abroad for Indian agriculture students.',
+      'Browse paid agricultural internships abroad — dairy, horticulture, crops, and more.',
   }),
   internshipDetail: createPageMetadata({
     title: 'Internship Details',
@@ -95,7 +95,7 @@ export const publicPageMetadata = {
     title: 'Contact Us',
     path: '/contact',
     description:
-      'Contact GreenRoot for help with international internship applications for Indian agriculture students.',
+      'Get in touch with GreenRoot for help with applications, programmes, and training abroad.',
   }),
   login: createPageMetadata({
     title: 'Login',

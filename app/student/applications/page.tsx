@@ -21,6 +21,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
+import { MotionStagger, MotionStaggerItem } from '@/components/motion/MotionStagger'
 import { getMyApplications, deleteStudentApplication } from '@/lib/studentApplications'
 import { invalidateAllApplicationData } from '@/lib/cache'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
@@ -435,9 +436,9 @@ export default function StudentApplications() {
               </div>
             ) : (
               <>
-                <div className="space-y-3">
+                <MotionStagger className="space-y-3">
                   {paginatedApplications.map((application, index) => (
-                    <div
+                    <MotionStaggerItem
                       key={application.id}
                       className="bg-white border border-gr-border rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 hover:shadow-md transition-shadow"
                     >
@@ -526,9 +527,9 @@ export default function StudentApplications() {
                           </button>
                         </div>
                       </div>
-                    </div>
+                    </MotionStaggerItem>
                   ))}
-                </div>
+                </MotionStagger>
 
                 {totalPages > 1 && (
                   <div className="flex items-center justify-center gap-2 mt-8">

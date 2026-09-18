@@ -27,6 +27,8 @@ import { pageCopyConfig } from '@/lib/config'
 import { stripRequiredDocumentsBlock } from '@/lib/internshipContent'
 import { trackInternshipView } from '@/lib/analytics'
 import { analyticsAttrs } from '@/lib/analytics/attributes'
+import MotionReveal from '@/components/motion/MotionReveal'
+import { MotionStagger, MotionStaggerItem } from '@/components/motion/MotionStagger'
 
 const internshipCopy = pageCopyConfig.student.internshipDetail
 
@@ -198,7 +200,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
         </div>
       </div>
 
-      <div className="w-full bg-white border-b border-gr-border py-6">
+      <MotionReveal className="w-full bg-white border-b border-gr-border py-6">
         <div className="max-w-7xl mx-auto px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="flex items-center gap-3">
@@ -246,34 +248,34 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
             </div>
           </div>
         </div>
-      </div>
+      </MotionReveal>
 
-      <div className="max-w-7xl mx-auto px-8 py-10">
+      <MotionReveal className="max-w-7xl mx-auto px-8 py-10">
         <h2 className="font-bold text-xl mb-4 text-gr-text-dark">{internshipCopy.aboutHeading}</h2>
         <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">
           {stripRequiredDocumentsBlock(internship.long_description) || 'No description available.'}
         </p>
-      </div>
+      </MotionReveal>
 
       {responsibilities.length > 0 && (
-        <div className="max-w-7xl mx-auto px-8 py-10">
+        <MotionReveal className="max-w-7xl mx-auto px-8 py-10">
           <h2 className="font-bold text-xl mb-4 text-gr-text-dark">{internshipCopy.responsibilitiesHeading}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <MotionStagger className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {responsibilities.map((resp, idx) => {
               const IconComponent = responsibilityIcons[idx % responsibilityIcons.length]
               return (
-                <div key={idx} className="bg-gr-primary-light rounded-xl p-4 flex items-start gap-3">
+                <MotionStaggerItem key={idx} className="bg-gr-primary-light rounded-xl p-4 flex items-start gap-3">
                   <IconComponent className="w-5 h-5 text-gr-primary mt-0.5 flex-shrink-0" />
                   <p className="text-sm text-gray-700">{resp}</p>
-                </div>
+                </MotionStaggerItem>
               )
             })}
-          </div>
-        </div>
+          </MotionStagger>
+        </MotionReveal>
       )}
 
       {skills.length > 0 && (
-        <div className="max-w-7xl mx-auto px-8 py-10">
+        <MotionReveal className="max-w-7xl mx-auto px-8 py-10">
           <h2 className="font-bold text-xl mb-4 text-gr-text-dark">{internshipCopy.skillsHeading}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="relative h-72 rounded-2xl overflow-hidden">
@@ -296,10 +298,10 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
               })}
             </div>
           </div>
-        </div>
+        </MotionReveal>
       )}
 
-      <div className="max-w-7xl mx-auto px-8 py-10">
+      <MotionReveal className="max-w-7xl mx-auto px-8 py-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h2 className="font-bold text-xl mb-4 text-gr-text-dark">{internshipCopy.eligibilityHeading}</h2>
@@ -340,9 +342,9 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
             </div>
           </div>
         </div>
-      </div>
+      </MotionReveal>
 
-      <div className="max-w-7xl mx-auto px-8 py-10 mb-10">
+      <MotionReveal className="max-w-7xl mx-auto px-8 py-10 mb-10">
         <div className="bg-gr-primary-light rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <h3 className="font-bold text-lg text-gray-900 mb-1">{internshipCopy.ctaHeading}</h3>
@@ -361,7 +363,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
             {BTN_LOGIN_TO_APPLY}
           </button>
         </div>
-      </div>
+      </MotionReveal>
 
       <Footer />
     </div>

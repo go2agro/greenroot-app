@@ -14,7 +14,7 @@ export default function AnimatedCounter({
   target,
   suffix = '',
   padStart,
-  durationMs = 1200,
+  durationMs = 2400,
   className,
 }: AnimatedCounterProps) {
   const [count, setCount] = useState(0)

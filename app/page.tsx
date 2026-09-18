@@ -10,7 +10,8 @@ import {
   Award,
   Briefcase,
   User,
-  CheckCircle,
+  FileCheck,
+  Plane,
   CircleHelp,
   type LucideIcon,
 } from 'lucide-react';
@@ -22,7 +23,12 @@ import {
 } from '@/components/ui/accordion';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import FeaturedCountriesMarquee from '@/components/FeaturedCountriesMarquee';
+import FeaturesBento from '@/components/FeaturesBento';
+import SectionDivider from '@/components/SectionDivider';
 import AnimatedCounter from '@/components/AnimatedCounter';
+import MotionReveal from '@/components/motion/MotionReveal';
+import { MotionStagger, MotionStaggerItem } from '@/components/motion/MotionStagger';
 import { getTopPaidInternships } from '@/lib/internships';
 import landingConfig from '@/config/pages/landing.json';
 import { BTN_APPLY_NOW, DEFAULT_INTERNSHIP_IMAGE } from '@/lib/appConfig';
@@ -39,7 +45,8 @@ const HOW_IT_WORKS_ICONS: Record<string, LucideIcon> = {
   user: User,
   globe: Globe,
   briefcase: Briefcase,
-  checkCircle: CheckCircle,
+  fileCheck: FileCheck,
+  plane: Plane,
 };
 
 const STATS_GRID_CLASS: Record<number, string> = {
@@ -122,7 +129,7 @@ export default function Home() {
       <section className="w-full py-12 md:py-20 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-            <div className="flex flex-col gap-6">
+            <MotionReveal className="flex flex-col gap-6">
               <h1 className="font-bold text-3xl md:text-4xl lg:text-5xl text-gr-text-dark leading-tight">
                 {landingConfig.hero.heading_prefix}{' '}
                 <span className="text-gr-primary">{landingConfig.hero.heading_highlight}</span>
@@ -156,9 +163,9 @@ export default function Home() {
                   {landingConfig.hero.cta_secondary_text}
                 </Link>
               </div>
-            </div>
+            </MotionReveal>
 
-            <div className="relative h-[400px] md:h-[500px]">
+            <MotionReveal delay={0.08} className="relative h-[400px] md:h-[500px]">
               <div className="absolute top-0 right-0 w-[45%] h-[45%] rounded-xl overflow-hidden shadow-lg z-10">
                 <Image
                   src={landingConfig.hero.images.collage_top_right.src}
@@ -181,22 +188,26 @@ export default function Home() {
                   alt={landingConfig.hero.images.collage_center.alt}
                   fill
                   className="object-cover"
+                  priority
                 />
               </div>
-            </div>
+            </MotionReveal>
           </div>
         </div>
       </section>
 
+      <SectionDivider />
+
       {/* STATS */}
-      <section className="w-full bg-white border-t border-b border-gr-border py-8">
+      <section className="w-full bg-white py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div
             className={`grid grid-cols-1 ${statsGridClass} gap-8 divide-y md:divide-y-0 md:divide-x divide-gr-border`}
           >
             {landingConfig.stats.map((stat, index) => (
-              <div
+              <MotionReveal
                 key={index}
+                delay={index * 0.08}
                 className="flex flex-col items-center justify-center gap-2 pt-8 md:pt-0"
               >
                 <AnimatedCounter
@@ -206,123 +217,119 @@ export default function Home() {
                   className="font-bold text-3xl text-gr-secondary"
                 />
                 <div className="text-sm text-gr-text-muted font-semibold">{stat.label}</div>
-              </div>
+              </MotionReveal>
             ))}
           </div>
         </div>
       </section>
+
+      <SectionDivider />
 
       {/* FEATURES */}
       <section id="about" className="w-full py-12 md:py-20 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-            <div className="relative h-[300px] md:h-[400px] rounded-xl overflow-hidden">
+          <div className="grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-8 md:gap-10 md:items-stretch">
+            <MotionReveal className="relative mx-auto w-full max-w-[320px] aspect-[3/4] md:mx-0 md:max-w-none md:aspect-auto md:h-full md:min-h-[360px] rounded-3xl overflow-hidden shadow-md">
               <Image
                 src={landingConfig.features.image.src}
                 alt={landingConfig.features.image.alt}
                 fill
-                className="object-cover"
+                className="object-cover object-center"
               />
-            </div>
+            </MotionReveal>
 
-            <div className="flex flex-col gap-6">
-              <h2 className="font-bold text-2xl md:text-3xl text-gr-text-dark">
-                {landingConfig.features.heading_prefix}{' '}
-                <span className="text-gr-primary">{landingConfig.features.heading_highlight}</span>
-              </h2>
-              <p className="text-sm text-gr-text-muted">{landingConfig.features.subheading}</p>
+            <div className="flex h-full flex-col gap-6">
+              <MotionReveal>
+                <h2 className="font-bold text-2xl md:text-3xl text-gr-text-dark">
+                  {landingConfig.features.heading_prefix}{' '}
+                  <span className="text-gr-primary">{landingConfig.features.heading_highlight}</span>
+                </h2>
+                <p className="mt-3 text-sm text-gr-text-muted">{landingConfig.features.subheading}</p>
+              </MotionReveal>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {landingConfig.features.items.map((item) => {
-                  const Icon = FEATURE_ICONS[item.id] ?? Globe
-                  return (
-                    <div
-                      key={item.id}
-                      className="bg-white rounded-xl p-4 shadow-sm border border-gr-border hover:shadow-md transition-shadow"
-                    >
-                      <Icon className="w-8 h-8 text-gr-primary mb-3" />
-                      <h3 className="font-bold text-gr-text-dark mb-1">{item.title}</h3>
-                      <p className="text-sm text-gr-text-muted">{item.description}</p>
-                    </div>
-                  )
-                })}
-              </div>
+              <FeaturesBento items={landingConfig.features.items} icons={FEATURE_ICONS} />
             </div>
           </div>
         </div>
       </section>
+
+      <SectionDivider />
 
       {/* FEATURED COUNTRIES */}
       <section className="w-full py-12 md:py-20 lg:py-24 bg-gr-primary/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <MotionReveal>
           <SectionHeading
             prefix={landingConfig.featuredCountries.heading_prefix}
             highlight={landingConfig.featuredCountries.heading_highlight}
           />
+          </MotionReveal>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {landingConfig.featuredCountries.countries.map((country) => (
-              <div
-                key={country.name}
-                className="bg-white rounded-xl p-4 shadow-sm flex items-center gap-3 hover:shadow-md hover:border hover:border-gr-primary transition-all cursor-pointer border border-gr-border"
-              >
-                <span className="text-4xl">{country.flag}</span>
-                <span className="text-gr-text-dark font-medium">{country.name}</span>
-              </div>
-            ))}
-          </div>
+          <MotionReveal delay={0.08}>
+            <FeaturedCountriesMarquee countries={landingConfig.featuredCountries.countries} />
+          </MotionReveal>
         </div>
       </section>
+
+      <SectionDivider />
 
       {/* HOW IT WORKS */}
       <section className="w-full py-12 md:py-20 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            prefix={landingConfig.howItWorks.heading_prefix}
-            highlight={landingConfig.howItWorks.heading_highlight}
-          />
+          <MotionReveal>
+            <SectionHeading
+              prefix={landingConfig.howItWorks.heading_prefix}
+              highlight={landingConfig.howItWorks.heading_highlight}
+            />
+          </MotionReveal>
 
-          <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-8 md:gap-4">
+          <MotionStagger className="flex flex-col md:flex-row justify-between items-center md:items-start gap-8 md:gap-3">
             {landingConfig.howItWorks.steps.flatMap((step, index) => {
               const Icon = HOW_IT_WORKS_ICONS[step.icon] ?? User
               const elements = [
-                <div key={step.id} className="flex flex-col items-center gap-3 flex-1">
+                <MotionStaggerItem key={step.id} className="flex flex-col items-center gap-3 flex-1 min-w-0">
                   <div className="w-16 h-16 rounded-full bg-gr-primary flex items-center justify-center text-white">
                     <Icon className="w-8 h-8" />
                   </div>
                   <p className="text-xs font-semibold text-gr-primary uppercase tracking-wide">
                     {step.stepLabel}
                   </p>
-                  <p className="font-medium text-gr-text-dark text-center">{step.title}</p>
-                </div>,
+                  <p className="font-medium text-gr-text-dark text-center text-sm md:text-base px-1">
+                    {step.title}
+                  </p>
+                </MotionStaggerItem>,
               ]
 
               if (index < landingConfig.howItWorks.steps.length - 1) {
                 elements.push(
                   <div
                     key={`${step.id}-connector`}
-                    className="hidden md:block flex-1 border-t-2 border-dashed border-gr-primary opacity-40 mt-8"
+                    className="hidden md:block flex-1 border-t-2 border-dashed border-gr-primary opacity-40 mt-8 min-w-4"
                   />
                 )
               }
 
               return elements
             })}
-          </div>
+          </MotionStagger>
         </div>
       </section>
+
+      <SectionDivider />
 
       {/* FEATURED OPPORTUNITIES */}
       <section id="opportunities" className="w-full py-12 md:py-20 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            prefix={landingConfig.featuredOpportunities.heading_prefix}
-            highlight={landingConfig.featuredOpportunities.heading_highlight}
-          />
+          <MotionReveal>
+            <SectionHeading
+              prefix={landingConfig.featuredOpportunities.heading_prefix}
+              highlight={landingConfig.featuredOpportunities.heading_highlight}
+            />
+          </MotionReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <MotionStagger className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {featured.map((internship) => (
-              <div
+              <MotionStaggerItem
                 key={internship.id}
                 className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gr-border overflow-hidden"
               >
@@ -363,23 +370,27 @@ export default function Home() {
                     {BTN_APPLY_NOW}
                   </Link>
                 </div>
-              </div>
+              </MotionStaggerItem>
             ))}
-          </div>
+          </MotionStagger>
         </div>
       </section>
+
+      <SectionDivider />
 
       {/* SUCCESS STORIES */}
       <section className="w-full py-12 md:py-20 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            prefix={landingConfig.successStories.heading_prefix}
-            highlight={landingConfig.successStories.heading_highlight}
-          />
+          <MotionReveal>
+            <SectionHeading
+              prefix={landingConfig.successStories.heading_prefix}
+              highlight={landingConfig.successStories.heading_highlight}
+            />
+          </MotionReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <MotionStagger className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {landingConfig.successStories.stories.map((story) => (
-              <div
+              <MotionStaggerItem
                 key={story.id}
                 className="bg-gr-primary/10 rounded-xl p-6 shadow-sm border-l-4 border-gr-primary"
               >
@@ -393,54 +404,66 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-sm text-gr-text-muted italic">&quot;{story.quote}&quot;</p>
-              </div>
+              </MotionStaggerItem>
             ))}
-          </div>
+          </MotionStagger>
         </div>
       </section>
+
+      <SectionDivider />
 
       {/* FAQ */}
       <section className="w-full py-12 md:py-20 lg:py-24 bg-gr-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-5 gap-8 md:gap-12">
-            <div className="md:col-span-2 flex flex-col gap-4">
-              <CircleHelp className="w-12 h-12 text-gr-primary" />
-              <SectionHeading
-                prefix={landingConfig.faq.heading_prefix}
-                highlight={landingConfig.faq.heading_highlight}
-                className="mb-0"
-              />
-              <p className="text-sm text-gr-text-muted">{landingConfig.faq.description}</p>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <MotionReveal className="flex flex-col items-center text-center gap-4 mb-10 md:mb-12">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gr-primary-light">
+              <CircleHelp className="h-7 w-7 text-gr-primary" />
             </div>
+            <SectionHeading
+              prefix={landingConfig.faq.heading_prefix}
+              highlight={landingConfig.faq.heading_highlight}
+              className="mb-0"
+            />
+            <p className="max-w-2xl text-sm md:text-base text-gr-text-muted">
+              {landingConfig.faq.description}
+            </p>
+          </MotionReveal>
 
-            <div className="md:col-span-3 flex flex-col gap-4">
-              {landingConfig.faq.items.map((item) => (
-                <div
+          <MotionReveal delay={0.08} className="overflow-hidden rounded-2xl border border-gr-border bg-white shadow-sm">
+            <Accordion type="single" collapsible className="w-full divide-y divide-gr-border">
+              {landingConfig.faq.items.map((item, index) => (
+                <AccordionItem
                   key={item.id}
-                  className="bg-white rounded-xl p-4 shadow-sm border border-gr-border"
+                  value={item.id}
+                  className="border-none px-5 md:px-6 data-[state=open]:bg-gr-primary-light/40"
                 >
-                  <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value={item.id} className="border-none">
-                      <AccordionTrigger className="text-left hover:no-underline text-base font-semibold">
+                  <AccordionTrigger className="gap-4 py-5 text-left hover:no-underline hover:text-gr-primary [&[data-state=open]]:text-gr-primary">
+                    <span className="flex min-w-0 flex-1 items-start gap-4">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gr-primary-light text-sm font-bold text-gr-primary">
+                        {index + 1}
+                      </span>
+                      <span className="pt-0.5 text-base md:text-lg font-semibold text-gr-text-dark group-aria-expanded/accordion-trigger:text-gr-primary">
                         {item.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="text-gr-text-muted text-sm">
-                        {item.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                </div>
+                      </span>
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-5 pl-12 md:pl-14 text-sm md:text-base leading-relaxed text-gr-text-muted">
+                    {item.answer}
+                  </AccordionContent>
+                </AccordionItem>
               ))}
-            </div>
-          </div>
+            </Accordion>
+          </MotionReveal>
         </div>
       </section>
+
+      <SectionDivider />
 
       {/* CTA */}
       <section className="w-full py-12 md:py-20 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-            <div className="flex flex-col gap-6">
+            <MotionReveal className="flex flex-col gap-6">
               <h2 className="font-bold text-3xl md:text-4xl text-gr-text-dark leading-tight">
                 {landingConfig.cta.heading_prefix}{' '}
                 <span className="text-gr-primary">{landingConfig.cta.heading_highlight}</span>
@@ -474,16 +497,16 @@ export default function Home() {
                   {landingConfig.cta.secondary_button_text}
                 </Link>
               </div>
-            </div>
+            </MotionReveal>
 
-            <div className="hidden md:block relative h-[300px] rounded-xl overflow-hidden">
+            <MotionReveal delay={0.08} className="hidden md:block relative h-[300px] rounded-xl overflow-hidden">
               <Image
                 src={landingConfig.cta.image.src}
                 alt={landingConfig.cta.image.alt}
                 fill
                 className="object-cover"
               />
-            </div>
+            </MotionReveal>
           </div>
         </div>
       </section>

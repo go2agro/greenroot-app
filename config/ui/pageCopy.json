@@ -1,7 +1,7 @@
 {
   "auth": {
-    "panelHeading": "International Internships for Indian Agriculture Students.",
-    "panelSubheading": "Find and apply for paid agricultural internships abroad — with hands-on training on farms and agricultural organisations worldwide.",
+    "panelHeading": "Train on Farms Worldwide.",
+    "panelSubheading": "Discover paid internships, apply in one place, and track every step of your journey abroad.",
     "login": {
       "heading": "Welcome Back!",
       "subheading": "Log in to browse international internships abroad and track your application progress.",
@@ -70,7 +70,7 @@
       "emptyCta": "Start Browsing"
     },
     "internships": {
-      "heading": "International Internships",
+      "heading": "Global Farm Internships",
       "searchPlaceholder": "Search internships abroad (e.g. Dairy Farming, Denmark...)",
       "sortLabel": "Sort by:",
       "sortOptions": [

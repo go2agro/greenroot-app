@@ -1,15 +1,15 @@
 {
   "app_name": "GreenRoot",
-  "app_tagline": "International internships for Indian agriculture students — hands-on training on farms and agricultural organisations abroad.",
+  "app_tagline": "Paid farm internships abroad — hands-on training for India's agriculture students on farms and agricultural organisations worldwide.",
   "app_logo": "/greenroot-logo.svg",
   "default_internship_image": "/images/placeholder.png",
 
-  "home_hero_heading": "International Internships for Indian Agriculture Students",
-  "home_hero_subheading": "GreenRoot helps Indian agriculture students find paid international internships on farms and agricultural organisations abroad.",
+  "home_hero_heading": "From Indian Farmlands to Global Agriculture Careers",
+  "home_hero_subheading": "We at GreenRoot connect agriculture students with paid internships on farms and agricultural organisations worldwide.",
   "home_hero_cta_button": "Browse Internships",
 
-  "internships_page_heading": "International Internships",
-  "internships_page_subheading": "Browse paid agricultural internships abroad for Indian agriculture students.",
+  "internships_page_heading": "Global Farm Internships",
+  "internships_page_subheading": "Explore paid programmes across dairy, horticulture, crop production, and more.",
 
   "nav_links": [
     { "label": "Internships", "href": "/internships", "key": "internships" },
@@ -27,7 +27,7 @@
   "btn_withdraw_application": "Withdraw",
   "btn_view_details": "View Details",
   "btn_login": "Login",
-  "btn_signup": "Get Started",
+  "btn_signup": "Signup",
   "btn_create_account": "Create Account",
   "btn_logout": "Log out",
   "btn_cancel": "Cancel",
@@ -64,9 +64,9 @@
   "label_uploading": "Uploading...",
   "label_submitting": "Submitting...",
 
-  "footer_text": "© 2025 GreenRoot Platform. All rights reserved.",
-  "footer_tagline": "International internships for Indian agriculture students — hands-on training on farms and agricultural organisations abroad.",
-  "auth_footer_text": "© 2025 GreenRoot Student Internship Portal. All rights reserved.",
+  "footer_text": "© 2026 GreenRoot Platform. All rights reserved.",
+  "footer_tagline": "We connect India's agriculture students with paid farm internships and on-the-ground training abroad.",
+  "auth_footer_text": "© 2026 GreenRoot Student Internship Portal. All rights reserved.",
 
   "maintenance_mode": false,
   "max_applications_per_student": 100,

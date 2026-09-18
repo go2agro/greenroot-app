@@ -13,15 +13,18 @@ import {
   Copy,
   CheckCircle2,
   Save,
+  Upload,
+  Trash2,
 } from 'lucide-react'
 import PartnerSidebar from '@/components/PartnerSidebar'
 import PartnerBottomNavigation from '@/components/PartnerBottomNavigation'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { getMyProfile } from '@/lib/profiles'
-import { getMyPartnerProfile, updatePartnerProfile } from '@/lib/partnerProfiles'
+import { getMyPartnerProfile, updatePartnerProfile, uploadPartnerDocument } from '@/lib/partnerProfiles'
 import { signOut } from '@/lib/auth'
 import { trackLogout } from '@/lib/analytics'
 import { PARTNER_COUNTRY_OPTIONS, getCountryFlag } from '@/lib/countries'
+import { MAX_FILE_UPLOAD_BYTES, MAX_FILE_UPLOAD_ERROR } from '@/lib/appConfig'
 
 interface PartnerProfileData {
   first_name?: string
@@ -38,8 +41,9 @@ interface PartnerProfileData {
   city?: string
   state?: string
   pincode?: string
-  aadhar_number?: string
-  pan_number?: string
+  passport_number?: string
+  passport_url?: string
+  passport_photo_url?: string
   countries?: string[]
 }
 
@@ -73,6 +77,7 @@ export default function PartnerProfilePage() {
     identity: true,
   })
   const [selectedCountry, setSelectedCountry] = useState('')
+  const [uploadingDoc, setUploadingDoc] = useState<'passport' | 'passport_photo' | null>(null)
 
   const { data: profile } = useSWR('partnerMyProfile', () => fetcher(getMyProfile), {
     revalidateOnFocus: false,
@@ -156,8 +161,7 @@ export default function PartnerProfilePage() {
         }
       } else if (section === 'identity') {
         dataToSave = {
-          aadhar_number: formData.aadhar_number,
-          pan_number: formData.pan_number,
+          passport_number: formData.passport_number,
         }
       }
 
@@ -222,6 +226,47 @@ export default function PartnerProfilePage() {
       ...prev,
       countries: (prev.countries ?? []).filter((item) => item !== country),
     }))
+  }
+
+  const handleDocumentUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    docType: 'passport' | 'passport_photo'
+  ) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const allowedTypes =
+      docType === 'passport_photo'
+        ? ['image/jpeg', 'image/jpg', 'image/png']
+        : ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf']
+
+    if (!allowedTypes.includes(file.type)) {
+      e.target.value = ''
+      return
+    }
+
+    if (file.size > MAX_FILE_UPLOAD_BYTES) {
+      e.target.value = ''
+      return
+    }
+
+    setUploadingDoc(docType)
+    try {
+      const result = await uploadPartnerDocument(file, docType)
+      if (!result.error) {
+        await refreshPartnerProfile()
+      }
+    } finally {
+      setUploadingDoc(null)
+      e.target.value = ''
+    }
+  }
+
+  const handleDeleteDocument = async (docField: 'passport_url' | 'passport_photo_url') => {
+    const result = await updatePartnerProfile({ [docField]: null })
+    if (!result.error) {
+      await refreshPartnerProfile()
+    }
   }
 
   const isFirstLoad = profile === undefined && partnerProfile === undefined
@@ -677,26 +722,116 @@ export default function PartnerProfilePage() {
                 } overflow-hidden`}
               >
                 <div className="px-6 pb-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <p className="text-sm text-gray-500 mb-4">
+                    Upload your passport details for identity verification. Passport is the standard
+                    proof of identity for international partners.
+                  </p>
+                  <div className="space-y-6">
                     <div>
-                      <label className={labelClass}>Aadhar Number</label>
+                      <label className={labelClass}>Passport Number</label>
                       <input
                         type="text"
-                        value={formData.aadhar_number || ''}
-                        onChange={(e) => handleChange('aadhar_number', e.target.value)}
+                        value={formData.passport_number || ''}
+                        onChange={(e) => handleChange('passport_number', e.target.value)}
                         className={inputClass}
-                        placeholder="1234 5678 9012"
+                        placeholder="A12345678"
                       />
                     </div>
-                    <div>
-                      <label className={labelClass}>PAN Number</label>
-                      <input
-                        type="text"
-                        value={formData.pan_number || ''}
-                        onChange={(e) => handleChange('pan_number', e.target.value)}
-                        className={inputClass}
-                        placeholder="ABCDE1234F"
-                      />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className={labelClass}>Passport Document</label>
+                        <div
+                          className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
+                            formData.passport_url
+                              ? 'bg-green-50 border-green-300'
+                              : 'bg-gr-input-bg border-gray-300'
+                          }`}
+                        >
+                          {formData.passport_url ? (
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2 flex-1">
+                                <CheckCircle2 className="w-5 h-5 text-green-600" />
+                                <span className="text-sm text-green-700 font-medium">
+                                  Document Uploaded
+                                </span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteDocument('passport_url')}
+                                className="text-red-500 hover:text-red-700 transition-colors"
+                              >
+                                <Trash2 className="w-5 h-5" />
+                              </button>
+                            </div>
+                          ) : (
+                            <>
+                              <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
+                              <input
+                                type="file"
+                                accept=".jpg,.jpeg,.png,.pdf"
+                                onChange={(e) => handleDocumentUpload(e, 'passport')}
+                                className="hidden"
+                                id="partner-passport-upload"
+                              />
+                              <label
+                                htmlFor="partner-passport-upload"
+                                className="cursor-pointer text-sm text-gr-primary hover:underline"
+                              >
+                                {uploadingDoc === 'passport' ? 'Uploading...' : 'Upload Document'}
+                              </label>
+                              <p className="text-xs text-gray-400 mt-1">JPEG, PNG, or PDF</p>
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className={labelClass}>Passport Photo</label>
+                        <div
+                          className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
+                            formData.passport_photo_url
+                              ? 'bg-green-50 border-green-300'
+                              : 'bg-gr-input-bg border-gray-300'
+                          }`}
+                        >
+                          {formData.passport_photo_url ? (
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2 flex-1">
+                                <CheckCircle2 className="w-5 h-5 text-green-600" />
+                                <span className="text-sm text-green-700 font-medium">
+                                  Photo Uploaded
+                                </span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteDocument('passport_photo_url')}
+                                className="text-red-500 hover:text-red-700 transition-colors"
+                              >
+                                <Trash2 className="w-5 h-5" />
+                              </button>
+                            </div>
+                          ) : (
+                            <>
+                              <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
+                              <input
+                                type="file"
+                                accept=".jpg,.jpeg,.png"
+                                onChange={(e) => handleDocumentUpload(e, 'passport_photo')}
+                                className="hidden"
+                                id="partner-passport-photo-upload"
+                              />
+                              <label
+                                htmlFor="partner-passport-photo-upload"
+                                className="cursor-pointer text-sm text-gr-primary hover:underline"
+                              >
+                                {uploadingDoc === 'passport_photo' ? 'Uploading...' : 'Upload Photo'}
+                              </label>
+                              <p className="text-xs text-gray-400 mt-1">JPEG or PNG</p>
+                            </>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <SaveButton section="identity" />
