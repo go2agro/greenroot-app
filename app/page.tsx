@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -28,11 +27,10 @@ import FeaturesBento from '@/components/FeaturesBento';
 import SectionDivider from '@/components/SectionDivider';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import HeroCollage from '@/components/HeroCollage';
+import HeroHeadline from '@/components/HeroHeadline';
 import MotionReveal from '@/components/motion/MotionReveal';
 import { MotionStagger, MotionStaggerItem } from '@/components/motion/MotionStagger';
-import { getTopPaidInternships } from '@/lib/internships';
 import landingConfig from '@/config/pages/landing.json';
-import { BTN_APPLY_NOW, DEFAULT_INTERNSHIP_IMAGE } from '@/lib/appConfig';
 import { analyticsAttrs } from '@/lib/analytics/attributes';
 
 const FEATURE_ICONS: Record<string, LucideIcon> = {
@@ -57,44 +55,6 @@ const STATS_GRID_CLASS: Record<number, string> = {
   4: 'md:grid-cols-4',
 };
 
-type FeaturedInternship = {
-  id: string
-  title: string
-  country?: string
-  duration_months?: number
-  stipend_monthly?: number
-  image_url?: string
-  flag_emoji?: string
-}
-
-const getCountryFlag = (country?: string, emoji?: string) => {
-  if (emoji) return emoji
-  if (!country) return '🌍'
-
-  const countryToCode: { [key: string]: string } = {
-    'USA': 'US',
-    'United States': 'US',
-    'UK': 'GB',
-    'United Kingdom': 'GB',
-    'Canada': 'CA',
-    'Australia': 'AU',
-    'India': 'IN',
-    'Germany': 'DE',
-    'France': 'FR',
-    'Italy': 'IT',
-    'Spain': 'ES',
-    'Netherlands': 'NL',
-    'Denmark': 'DK',
-    'Portugal': 'PT',
-    'Israel': 'IL',
-    'Peru': 'PE',
-  }
-
-  const code = countryToCode[country] || countryToCode[country.split(',')[0]?.trim()]
-  if (!code) return '🌍'
-  return String.fromCodePoint(...[...code].map(c => c.charCodeAt(0) + 127397))
-}
-
 function SectionHeading({
   prefix,
   highlight,
@@ -106,21 +66,15 @@ function SectionHeading({
 }) {
   return (
     <h2 className={`font-bold text-2xl md:text-3xl text-gr-text-dark ${className}`}>
-      {prefix} <span className="text-gr-primary">{highlight}</span>
+      {prefix ? `${prefix} ` : ''}
+      <span className="text-gr-primary">{highlight}</span>
     </h2>
   )
 }
 
 export default function Home() {
-  const [featured, setFeatured] = useState<FeaturedInternship[]>([])
   const statsGridClass =
     STATS_GRID_CLASS[landingConfig.stats.length] ?? 'md:grid-cols-3'
-
-  useEffect(() => {
-    getTopPaidInternships(3).then((result) => {
-      if (result.data) setFeatured(result.data as FeaturedInternship[])
-    })
-  }, [])
 
   return (
     <div className="min-h-screen bg-white">
@@ -131,10 +85,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
             <MotionReveal className="flex flex-col gap-6">
-              <h1 className="font-bold text-3xl md:text-4xl lg:text-5xl text-gr-text-dark leading-tight">
-                {landingConfig.hero.heading_prefix}{' '}
-                <span className="text-gr-primary">{landingConfig.hero.heading_highlight}</span>
-              </h1>
+              <HeroHeadline headlines={landingConfig.hero.headlines} />
               <p className="text-sm md:text-base text-gr-text-muted leading-relaxed font-semibold">
                 {landingConfig.hero.subheading}
               </p>
@@ -298,68 +249,7 @@ export default function Home() {
 
       <SectionDivider />
 
-      {/* FEATURED OPPORTUNITIES */}
-      <section id="opportunities" className="w-full py-12 md:py-20 lg:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <MotionReveal>
-            <SectionHeading
-              prefix={landingConfig.featuredOpportunities.heading_prefix}
-              highlight={landingConfig.featuredOpportunities.heading_highlight}
-            />
-          </MotionReveal>
-
-          <MotionStagger className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {featured.map((internship) => (
-              <MotionStaggerItem
-                key={internship.id}
-                className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gr-border overflow-hidden"
-              >
-                <div className="relative h-48 w-full">
-                  <Image
-                    src={internship.image_url || DEFAULT_INTERNSHIP_IMAGE}
-                    alt={internship.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="p-4">
-                  <p className="text-sm text-gr-text-muted mb-1 flex items-center gap-2">
-                    <span className="text-base">
-                      {getCountryFlag(internship.country, internship.flag_emoji)}
-                    </span>
-                    <span>{internship.country || 'Global'}</span>
-                  </p>
-                  <h3 className="font-bold text-lg text-gr-text-dark mb-2">{internship.title}</h3>
-                  <p className="text-sm text-gr-text-muted mb-4">
-                    {internship.duration_months
-                      ? `${internship.duration_months} months`
-                      : 'Flexible'}
-                    {internship.stipend_monthly
-                      ? ` - $ ${internship.stipend_monthly.toLocaleString()} / Month`
-                      : ' - Paid Internship'}
-                  </p>
-                  <Link
-                    href={`/internships/${internship.id}`}
-                    className="w-full block text-center bg-gr-primary text-white rounded-lg py-2 hover:bg-gr-primary-hover transition-colors font-semibold"
-                    {...analyticsAttrs({
-                      id: `home_featured_internship_${internship.id}`,
-                      label: internship.title,
-                      section: 'home_featured_opportunities',
-                      type: 'internship_cta',
-                    })}
-                  >
-                    {BTN_APPLY_NOW}
-                  </Link>
-                </div>
-              </MotionStaggerItem>
-            ))}
-          </MotionStagger>
-        </div>
-      </section>
-
-      <SectionDivider />
-
-      {/* SUCCESS STORIES */}
+      {/* TESTIMONIAL */}
       <section className="w-full py-12 md:py-20 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <MotionReveal>

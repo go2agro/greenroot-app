@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Menu, X } from 'lucide-react'
 import { useState } from 'react'
+import { usePathname } from 'next/navigation'
 import GreenRootWordmark from '@/components/GreenRootWordmark'
 import { APP_LOGO, APP_NAME, BTN_LOGIN, BTN_SIGNUP, appConfig } from '@/lib/appConfig'
 import { analyticsAttrs, analyticsNavAttrs } from '@/lib/analytics/attributes'
@@ -12,13 +13,32 @@ interface NavbarProps {
   activeLink?: 'about' | 'gallery' | 'internships' | 'contact'
 }
 
+function resolveActiveLink(
+  pathname: string,
+  activeLink?: NavbarProps['activeLink']
+): NavbarProps['activeLink'] {
+  if (activeLink) return activeLink
+  if (pathname.startsWith('/internships')) return 'internships'
+  if (pathname.startsWith('/gallery')) return 'gallery'
+  if (pathname.startsWith('/about')) return 'about'
+  if (pathname.startsWith('/contact')) return 'contact'
+  return undefined
+}
+
 export default function Navbar({ activeLink }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
+  const currentActiveLink = resolveActiveLink(pathname, activeLink)
 
   const getNavLinkClass = (link: string) =>
-    `relative inline-flex items-center px-1 py-2 text-gray-700 hover:text-gr-primary transition-colors ${
-      activeLink === link ? 'text-gr-primary' : ''
-    }`
+    currentActiveLink === link
+      ? 'relative inline-flex items-center px-1 py-2 font-semibold text-gr-primary transition-colors'
+      : 'relative inline-flex items-center px-1 py-2 text-gray-700 hover:text-gr-primary transition-colors'
+
+  const getMobileNavLinkClass = (link: string) =>
+    currentActiveLink === link
+      ? 'py-2 font-semibold text-gr-primary'
+      : 'py-2 text-gray-700 hover:text-gr-primary'
 
   const navLinks = appConfig.nav_links
 
@@ -49,7 +69,7 @@ export default function Navbar({ activeLink }: NavbarProps) {
                 <span
                   aria-hidden="true"
                   className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-full transition-colors ${
-                    activeLink === link.key ? 'bg-gr-primary' : 'bg-transparent'
+                    currentActiveLink === link.key ? 'bg-gr-primary' : 'bg-transparent'
                   }`}
                 />
               </Link>
@@ -88,7 +108,7 @@ export default function Navbar({ activeLink }: NavbarProps) {
                 <Link
                   key={link.key}
                   href={link.href}
-                  className="text-gray-700 hover:text-gr-primary py-2"
+                  className={getMobileNavLinkClass(link.key)}
                   onClick={() => setMobileMenuOpen(false)}
                   {...analyticsNavAttrs('public', link.key, link.label)}
                 >

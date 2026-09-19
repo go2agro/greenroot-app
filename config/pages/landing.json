@@ -1,7 +1,39 @@
 {
   "hero": {
-    "heading_prefix": "From Indian Farmlands to",
-    "heading_highlight": "Global Agriculture Careers",
+    "headlines": [
+      {
+        "heading_prefix": "From Indian Farmlands to",
+        "heading_highlight": "Global Agriculture Careers"
+      },
+      {
+        "heading_prefix": "Your Gateway to",
+        "heading_highlight": "Worldwide Farm Training"
+      },
+      {
+        "heading_prefix": "Build Your Ag Career",
+        "heading_highlight": "Beyond Borders"
+      },
+      {
+        "heading_prefix": "Paid Farm Placements for",
+        "heading_highlight": "India's Ag Students"
+      },
+      {
+        "heading_prefix": "From Campus to",
+        "heading_highlight": "International Farms"
+      },
+      {
+        "heading_prefix": "Hands-On Training on",
+        "heading_highlight": "Global Farms"
+      },
+      {
+        "heading_prefix": "Launch Your Career in",
+        "heading_highlight": "International Agriculture"
+      },
+      {
+        "heading_prefix": "Train Abroad on",
+        "heading_highlight": "World-Class Farms"
+      }
+    ],
     "subheading": "We at GreenRoot connect agriculture students with paid internships on farms and agricultural organisations worldwide — hands-on training in dairy, horticulture, crop production, and more.",
     "cta_primary_text": "Browse Internships",
     "cta_primary_link": "/internships",
@@ -112,12 +144,8 @@
       }
     ]
   },
-  "featuredOpportunities": {
-    "heading_prefix": "Featured International",
-    "heading_highlight": "Internships"
-  },
   "successStories": {
-    "heading_prefix": "Partner",
+    "heading_prefix": "",
     "heading_highlight": "Testimonial",
     "stories": [
       {

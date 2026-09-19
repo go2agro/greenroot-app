@@ -26,15 +26,6 @@
       ]
     },
     {
-      "id": "resources",
-      "heading": "For Students",
-      "links": [
-        { "label": "How to Apply", "href": "/internships" },
-        { "label": "Photo Gallery", "href": "/gallery" },
-        { "label": "Support", "href": "/contact" }
-      ]
-    },
-    {
       "id": "socials",
       "heading": "Socials",
       "links": [

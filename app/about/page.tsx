@@ -78,7 +78,7 @@ export default async function About() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 h-[340px] sm:h-[400px]">
+              <div className="grid grid-cols-2 grid-rows-[2fr_1fr] gap-3 sm:gap-4 h-[380px] sm:h-[440px]">
                 <div className="relative row-span-2 rounded-3xl overflow-hidden bg-[#E4EED4]">
                   <Image
                     src={hero.images.main}
@@ -89,7 +89,7 @@ export default async function About() {
                     priority
                   />
                 </div>
-                <div className="relative rounded-3xl overflow-hidden bg-[#D6EAF8]">
+                <div className="relative min-h-0 rounded-3xl overflow-hidden bg-[#D6EAF8]">
                   <Image
                     src={hero.images.secondary}
                     alt={hero.images.secondaryAlt}
@@ -98,13 +98,13 @@ export default async function About() {
                     sizes="(max-width: 1024px) 50vw, 25vw"
                   />
                 </div>
-                <div className="rounded-3xl bg-gr-primary p-5 flex flex-col justify-between">
-                  <Sprout className="w-6 h-6 text-[#1F2A14]" />
+                <div className="rounded-3xl bg-gr-primary p-4 flex flex-col justify-between min-h-0">
+                  <Sprout className="w-5 h-5 text-[#1F2A14]" />
                   <div>
-                    <p className="font-bold text-3xl text-[#1F2A14] tracking-tight">
+                    <p className="font-bold text-2xl text-[#1F2A14] tracking-tight">
                       {hero.highlightStat.value}
                     </p>
-                    <p className="text-xs font-medium text-[#1F2A14]/75 mt-1 leading-snug">
+                    <p className="text-[11px] font-medium text-[#1F2A14]/75 mt-1 leading-snug">
                       {hero.highlightStat.label}
                     </p>
                   </div>
