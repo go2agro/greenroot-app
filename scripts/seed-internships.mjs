@@ -15,6 +15,28 @@ import { resolve } from 'node:path'
 
 const PLACEHOLDER_IMAGE = '/images/placeholder.png'
 
+const INTERNSHIP_IMAGES = {
+  'Denmark Dairy Farming Internship Program': '/images/internships/denmark-dairy-farming.png',
+  'Denmark Poultry Farming Internship Program': '/images/internships/denmark-poultry-farming.png',
+  'Denmark Horticulture Internship Program': '/images/internships/denmark-horticulture.png',
+  'Germany Dairy Farming Internship Program': '/images/internships/germany-dairy-farming.png',
+  'Germany Poultry Farming Internship Program': '/images/internships/germany-poultry-farming.png',
+  'Germany Horticulture Internship Program': '/images/internships/germany-horticulture.png',
+  'Israel Dairy Farming Volunteering Program': '/images/internships/israel-dairy-farming.png',
+  'Israel Poultry Farming Volunteering Program': '/images/internships/israel-poultry-farming.png',
+  'Israel Horticulture Volunteering Program': '/images/internships/israel-horticulture.png',
+  'USA Field Crop Internship Program': '/images/internships/usa-field-crop.png',
+  'USA Dairy & Poultry Farming Internship Program': '/images/internships/usa-dairy-poultry-farming.png',
+  'USA Greenhouse Initiative Internship Program': '/images/internships/usa-greenhouse-initiative.png',
+  'USA Vegetable Production Internship Program': '/images/internships/usa-vegetable-production.png',
+  'USA Wine Course Internship Program': '/images/internships/usa-wine-course.png',
+  'Australia Horticulture Internship Program': '/images/internships/australia-horticulture.png',
+  'Australia Dairy & Poultry Farming Internship Program':
+    '/images/internships/australia-dairy-poultry-farming.png',
+  'Short-Duration Educational & Volunteering Programs':
+    '/images/internships/short-duration-programs.jpg',
+}
+
 function parseEnvFile(filePath) {
   const raw = readFileSync(filePath, 'utf8')
   const env = {}
@@ -279,16 +301,17 @@ const AUSTRALIA_BENEFITS = [
   'Actual work and lessons vary by placement and previous experience',
 ]
 
-function withPlaceholderImages(listing) {
+function withListingImages(listing) {
+  const image = INTERNSHIP_IMAGES[listing.title] || PLACEHOLDER_IMAGE
   return {
     ...listing,
-    image_url: PLACEHOLDER_IMAGE,
-    secondary_image_url: PLACEHOLDER_IMAGE,
+    image_url: image,
+    secondary_image_url: image,
   }
 }
 
 function denmarkListing(category, subtitle, intro, responsibilities, skills, badge = category) {
-  return withPlaceholderImages({
+  return withListingImages({
     title: `Denmark ${category} Internship Program`,
     badge,
     subtitle,
@@ -317,7 +340,7 @@ Stipend: kr 9,000 per month (before tax) for the first 6 months; kr 10,700 per m
 }
 
 function germanyListing(category, subtitle, intro, responsibilities, skills, badge = category) {
-  return withPlaceholderImages({
+  return withListingImages({
     title: `Germany ${category} Internship Program`,
     badge,
     subtitle,
@@ -347,7 +370,7 @@ Stipend: €1,116 per month (before tax). Stipend can vary from farm to farm.`,
 }
 
 function israelListing(category, subtitle, intro, responsibilities, skills, badge = category) {
-  return withPlaceholderImages({
+  return withListingImages({
     title: `Israel ${category} Volunteering Program`,
     badge,
     subtitle,
@@ -377,7 +400,7 @@ Stipend: ₪1,859 per month.`,
 }
 
 function usaListing(category, subtitle, intro, responsibilities, skills, availability, badge = category) {
-  return withPlaceholderImages({
+  return withListingImages({
     title: `USA ${category} Internship Program`,
     badge,
     subtitle,
@@ -407,7 +430,7 @@ Stipend: $1,177 per month (before tax). Stipend can vary from farm to farm.`,
 }
 
 function australiaListing(category, subtitle, intro, responsibilities, skills, availability, badge = category) {
-  return withPlaceholderImages({
+  return withListingImages({
     title: `Australia ${category} Internship Program`,
     badge,
     subtitle,
@@ -590,7 +613,7 @@ const internships = [
   ),
 
   // ── Short-Duration (1) ───────────────────────────────────
-  withPlaceholderImages({
+  withListingImages({
     title: 'Short-Duration Educational & Volunteering Programs',
     badge: 'Short-Duration',
     subtitle: '7–30 day programmes across Europe, Latin America, and Israel',
