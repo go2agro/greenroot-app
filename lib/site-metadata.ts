@@ -5,6 +5,14 @@ export const SITE_NAME = appConfig.app_name
 export const DEFAULT_DESCRIPTION = appConfig.app_tagline
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://greenroot.co.in'
 
+/** Raster OG image (PNG) — social crawlers do not reliably preview SVG logos. */
+export const OG_IMAGE = {
+  url: '/opengraph-image',
+  width: 1200,
+  height: 630,
+  alt: `${SITE_NAME} logo`,
+}
+
 type PageMetadataOptions = {
   title: string
   description?: string
@@ -33,11 +41,13 @@ export function createPageMetadata({
       siteName: SITE_NAME,
       type: 'website',
       locale: 'en_IN',
+      images: [OG_IMAGE],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title: `${title} | ${SITE_NAME}`,
       description,
+      images: [OG_IMAGE.url],
     },
   }
 }
@@ -58,11 +68,13 @@ export const rootMetadata: Metadata = {
     siteName: SITE_NAME,
     type: 'website',
     locale: 'en_IN',
+    images: [OG_IMAGE],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'GreenRoot — Global Farm Internships for Agriculture Students',
     description: DEFAULT_DESCRIPTION,
+    images: [OG_IMAGE.url],
   },
 }
 
