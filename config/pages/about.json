@@ -80,7 +80,8 @@
         "role": "CEO",
         "email": "info@greenroot.in",
         "mobile": "+91 79729 37388",
-        "image": "/images/team/sunil-landkar.jpeg"
+        "image": "/images/team/sunil-landkar.jpeg",
+        "imageClassName": "object-cover object-[center_24%]"
       }
     ],
     "members": [

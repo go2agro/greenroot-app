@@ -20,7 +20,7 @@
       "id": "quick-links",
       "heading": "Quick Links",
       "links": [
-        { "label": "Browse Internships", "href": "/internships" },
+        { "label": "Internships", "href": "/internships" },
         { "label": "About Us", "href": "/about" },
         { "label": "Contact Us", "href": "/contact" }
       ]

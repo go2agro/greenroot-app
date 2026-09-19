@@ -3,7 +3,7 @@ import GreenRootWordmark from '@/components/GreenRootWordmark'
 import { appConfig } from '@/lib/appConfig'
 import { pageCopyConfig } from '@/lib/config'
 
-export default function AuthLeftPanel() {
+export default function AuthLeftPanel({ showLogo = true }: { showLogo?: boolean }) {
   const auth = pageCopyConfig.auth
 
   return (
@@ -23,15 +23,17 @@ export default function AuthLeftPanel() {
       </div>
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
       
-      <div className="absolute top-4 left-4 flex items-center gap-2 z-10">
-        <Image 
-          src={appConfig.app_logo}
-          alt={appConfig.app_name}
-          width={40} 
-          height={40}
-        />
-        <GreenRootWordmark className="text-2xl" />
-      </div>
+      {showLogo && (
+        <div className="absolute top-4 left-4 flex items-center gap-2 z-10">
+          <Image 
+            src={appConfig.app_logo}
+            alt={appConfig.app_name}
+            width={40} 
+            height={40}
+          />
+          <GreenRootWordmark className="text-2xl" />
+        </div>
+      )}
 
       <div className="absolute bottom-8 left-8 right-8 z-10">
         <h1 className="text-white font-bold text-3xl mb-4 leading-tight">

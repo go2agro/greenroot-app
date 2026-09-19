@@ -1,7 +1,10 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { ExternalLink } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import GreenRootWordmark from '@/components/GreenRootWordmark'
+import { APP_LOGO, APP_NAME } from '@/lib/appConfig'
 import MotionReveal from '@/components/motion/MotionReveal'
 import { MotionStagger, MotionStaggerItem } from '@/components/motion/MotionStagger'
 import { getContactInfo } from '@/lib/contact'
@@ -90,6 +93,15 @@ export default async function Contact() {
                 <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gr-primary mb-3">
                   Visit
                 </p>
+                <div className="flex items-center gap-3 mb-2">
+                  <Image
+                    src={APP_LOGO}
+                    alt={APP_NAME}
+                    width={40}
+                    height={40}
+                  />
+                  <GreenRootWordmark className="text-2xl" />
+                </div>
                 <h2 className="text-xl font-bold text-gr-text-dark mb-2">
                   {contact.officeName}
                 </h2>

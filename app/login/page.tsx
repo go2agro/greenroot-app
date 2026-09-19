@@ -142,20 +142,20 @@ export default function Login() {
 
   return (
     <div className="flex h-screen w-full">
-      <AuthLeftPanel />
+      <AuthLeftPanel showLogo={false} />
 
       {/* Right Panel */}
       <div className="w-full lg:w-[60%] h-full bg-white flex items-center justify-center px-6 sm:px-12 py-10">
         <div className="w-full max-w-[460px]">
           {/* Logo - visible on all screens */}
-          <div className="flex items-center gap-2 mb-8">
+          <div className="flex items-center gap-3 mb-8">
             <Image 
               src={APP_LOGO} 
               alt={APP_NAME} 
-              width={32} 
-              height={32}
+              width={48} 
+              height={48}
             />
-            <GreenRootWordmark className="text-2xl" />
+            <GreenRootWordmark className="text-3xl sm:text-4xl" />
           </div>
 
           {/* Welcome Heading */}

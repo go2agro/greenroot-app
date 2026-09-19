@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import SectionDivider from '@/components/SectionDivider'
 import { getAboutContent } from '@/lib/about'
 
 const iconMap: Record<string, LucideIcon> = {
@@ -114,8 +115,10 @@ export default async function About() {
           </div>
         </section>
 
+        <SectionDivider />
+
         {/* Stats */}
-        <section className="border-y border-[#DCE6D0] bg-white/70">
+        <section className="bg-white/70">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6">
               {stats.map((stat, index) => (
@@ -138,6 +141,8 @@ export default async function About() {
             </div>
           </div>
         </section>
+
+        <SectionDivider />
 
         {/* Our Story */}
         <section
@@ -193,6 +198,8 @@ export default async function About() {
           </div>
         </section>
 
+        <SectionDivider />
+
         {/* Pillars */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 md:pb-20">
           <div className="rounded-3xl bg-gr-primary px-6 py-8 sm:px-8 sm:py-9 mb-5">
@@ -232,8 +239,10 @@ export default async function About() {
           </div>
         </section>
 
+        <SectionDivider />
+
         {/* Team */}
-        <section id="team" className="bg-white/60 border-y border-[#DCE6D0]">
+        <section id="team" className="bg-white/60">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10 md:mb-12">
               <div>
@@ -255,12 +264,14 @@ export default async function About() {
                   key={person.name}
                   className="rounded-3xl overflow-hidden bg-[#F7FAF2] border border-[#DCE6D0] flex flex-col sm:flex-row"
                 >
-                  <div className="relative h-72 sm:h-[320px] sm:w-[42%] overflow-hidden bg-[#E4EED4] shrink-0">
+                  <div className="relative h-80 sm:h-[400px] sm:w-[40%] overflow-hidden bg-[#E4EED4] shrink-0">
                     <Image
                       src={person.image}
                       alt={person.name}
                       fill
-                      className="object-cover object-top"
+                      className={'imageClassName' in person && person.imageClassName
+                        ? person.imageClassName
+                        : 'object-cover object-top'}
                       sizes="(max-width: 640px) 100vw, 42vw"
                     />
                   </div>
@@ -297,39 +308,39 @@ export default async function About() {
               {team.advisors.map((advisor) => (
                 <article
                   key={advisor.name}
-                  className="rounded-3xl bg-[#F7FAF2] border border-[#DCE6D0] p-5 flex gap-4 items-center min-h-[112px]"
+                  className="rounded-3xl bg-[#F7FAF2] border border-[#DCE6D0] p-6 flex gap-5 items-center min-h-[156px]"
                 >
                   {'image' in advisor && advisor.image ? (
-                    <div className="relative w-14 h-14 shrink-0">
+                    <div className="relative w-32 h-32 shrink-0">
                       <Image
                         src={advisor.image}
                         alt={advisor.name}
                         fill
                         className="rounded-xl object-cover"
-                        sizes="56px"
+                        sizes="128px"
                       />
                     </div>
                   ) : advisor.icon === 'briefcase' ? (
-                    <div className="w-14 h-14 shrink-0 rounded-xl bg-[#EAF5D4] flex items-center justify-center">
-                      <Briefcase className="w-5 h-5 text-gr-primary" />
+                    <div className="w-32 h-32 shrink-0 rounded-xl bg-[#EAF5D4] flex items-center justify-center">
+                      <Briefcase className="w-6 h-6 text-gr-primary" />
                     </div>
                   ) : (
-                    <div className="w-14 h-14 shrink-0 rounded-xl bg-[#E4F0FA] flex items-center justify-center">
-                      <Scale className="w-5 h-5 text-gr-secondary" />
+                    <div className="w-32 h-32 shrink-0 rounded-xl bg-[#E4F0FA] flex items-center justify-center">
+                      <Scale className="w-6 h-6 text-gr-secondary" />
                     </div>
                   )}
                   <div className="min-w-0">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#7BA82A] mb-1">
+                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#7BA82A] mb-1.5">
                       Advisor
                     </p>
-                    <h3 className="font-semibold text-[#1F2A14] text-sm leading-snug">
+                    <h3 className="font-semibold text-[#1F2A14] text-base leading-snug">
                       {advisor.name}
                     </h3>
-                    <p className="text-xs text-[#6B7A60] mt-1 leading-relaxed">
+                    <p className="text-sm text-[#6B7A60] mt-1.5 leading-relaxed">
                       {advisor.roleLine1}
                     </p>
                     {advisor.roleLine2 && (
-                      <p className="text-xs text-gr-primary font-medium mt-0.5">
+                      <p className="text-sm text-gr-primary font-medium mt-1">
                         {advisor.roleLine2}
                       </p>
                     )}
@@ -340,25 +351,25 @@ export default async function About() {
               {team.members.map((person) => (
                 <article
                   key={person.name}
-                  className="rounded-3xl bg-[#F7FAF2] border border-[#DCE6D0] p-5 flex gap-4 items-center min-h-[112px]"
+                  className="rounded-3xl bg-[#F7FAF2] border border-[#DCE6D0] p-6 flex gap-5 items-center min-h-[156px]"
                 >
-                  <div className="relative w-14 h-14 shrink-0 overflow-hidden rounded-xl bg-[#E4EED4]">
+                  <div className="relative w-32 h-32 shrink-0 overflow-hidden rounded-xl bg-[#E4EED4]">
                     <Image
                       src={person.image}
                       alt={person.name}
                       fill
                       className="object-cover object-top"
-                      sizes="56px"
+                      sizes="128px"
                     />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#7BA82A] mb-1">
+                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#7BA82A] mb-1.5">
                       Team
                     </p>
-                    <h3 className="font-semibold text-[#1F2A14] text-sm leading-snug">
+                    <h3 className="font-semibold text-[#1F2A14] text-base leading-snug">
                       {person.name}
                     </h3>
-                    <p className="text-xs text-gr-primary font-medium mt-1">
+                    <p className="text-sm text-gr-primary font-medium mt-1.5">
                       {person.role}
                     </p>
                   </div>
@@ -367,6 +378,8 @@ export default async function About() {
             </div>
           </div>
         </section>
+
+        <SectionDivider />
 
         {/* Goals */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
@@ -423,6 +436,8 @@ export default async function About() {
             </div>
           </div>
         </section>
+
+        <SectionDivider />
 
         {/* CTA */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 md:pb-20">

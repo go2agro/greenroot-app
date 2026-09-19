@@ -2,7 +2,7 @@
   "pageTitle": "Get in Touch",
   "pageSubtitle": "Questions about programmes abroad or your application? Our team is here to guide you through every step of the process.",
   "responseNote": "We typically respond within 1–2 business days.",
-  "officeName": "GreenRoot Platform",
+  "officeName": "Greenroot LLP",
   "addressLines": [
     "25–26, 4th Floor, B-Wing, City Vista",
     "Downtown Road, Kharadi",
@@ -21,21 +21,12 @@
       "label": "Phone Number",
       "display": "+91 79729 37388",
       "tel": "+917972937388"
-    },
-    {
-      "label": "Alternate Number",
-      "display": "+91 77383 94086",
-      "tel": "+917738394086"
     }
   ],
   "emails": [
     {
-      "label": "Support",
-      "email": "support@greenroot.in"
-    },
-    {
-      "label": "General Enquiries",
-      "email": "info@greenroot.in"
+      "label": "Email",
+      "email": "info@greenroot.co.in"
     }
   ],
   "officeHours": [
@@ -78,6 +69,6 @@
     "heading": "Need help?",
     "body": "Contact our support team for help with international internship applications abroad.",
     "phone": "+91 79729 37388",
-    "email": "support@greenroot.in"
+    "email": "info@greenroot.co.in"
   }
 }
