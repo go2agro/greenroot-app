@@ -18,7 +18,6 @@ export default async function AppleIcon() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#FFFFFF',
         }}
       >
         <img src={logoSrc} width={140} height={160} alt="" />
