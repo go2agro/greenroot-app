@@ -7,6 +7,7 @@ import { PARTNER_VISIBLE_STATUSES } from './partnerApplicationVisibility'
 import { recordApplicationEvent } from './applicationEvents'
 import { createNotification } from './notifications'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
+import type { ApplicationStageRecord } from './applicationStages.shared'
 
 type ApplicationRow = {
   student_id?: string
@@ -281,6 +282,57 @@ export async function submitPartnerDecision(
   }
 
   return toPlainResponse(data, error)
+}
+
+export async function getPartnerApplicationStages(applicationId: string) {
+  const { error: authError } = await assertPartnerOwnsApplication(applicationId)
+  if (authError) return toPlainResponse([] as ApplicationStageRecord[], authError)
+
+  const adminClient = createAdminClient()
+
+  const { data, error } = await adminClient
+    .from('application_stages')
+    .select('*')
+    .eq('application_id', applicationId)
+    .order('recorded_at', { ascending: true })
+
+  if (error) {
+    console.error('Error fetching partner application stages:', error)
+    return toPlainResponse([] as ApplicationStageRecord[], null)
+  }
+
+  if (!data?.length) {
+    return toPlainResponse([] as ApplicationStageRecord[], null)
+  }
+
+  const adminIds = [...new Set(data.map((record) => record.recorded_by).filter(Boolean))]
+
+  let adminNames: Record<string, string> = {}
+  if (adminIds.length > 0) {
+    const { data: admins } = await adminClient
+      .from('admin_profiles')
+      .select('id, first_name, last_name')
+      .in('id', adminIds)
+
+    if (admins) {
+      adminNames = admins.reduce<Record<string, string>>((acc, admin) => {
+        acc[admin.id] = [admin.first_name, admin.last_name].filter(Boolean).join(' ')
+        return acc
+      }, {})
+    }
+  }
+
+  const stages: ApplicationStageRecord[] = data.map((record) => ({
+    id: record.id,
+    application_id: record.application_id,
+    stage_key: record.stage_key,
+    comment: record.comment,
+    recorded_by: record.recorded_by,
+    recorded_at: record.recorded_at,
+    admin_name: adminNames[record.recorded_by] || undefined,
+  }))
+
+  return toPlainResponse(stages, null)
 }
 
 export async function canPartnerDecide(applicationId: string) {

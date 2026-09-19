@@ -25,6 +25,7 @@ import GreenRootWordmark from '@/components/GreenRootWordmark'
 import UserAvatar from '@/components/UserAvatar'
 import { getInternshipById } from '@/lib/internships'
 import { stripRequiredDocumentsBlock } from '@/lib/internshipContent'
+import { filterDisplayedEligibility } from '@/lib/internshipEligibility'
 import { startApplication } from '@/lib/studentApplications'
 import { trackApplicationStarted, trackInternshipView } from '@/lib/analytics'
 import { BTN_APPLY_NOW, DEFAULT_INTERNSHIP_IMAGE, LABEL_LOADING } from '@/lib/appConfig'
@@ -183,7 +184,7 @@ export default function StudentInternshipDetail({ params }: { params: Promise<{ 
 
   const responsibilities = parseArray(internship.key_responsibilities)
   const skills = parseSkills(internship.skills_learned)
-  const eligibility = parseArray(internship.eligibility_requirements)
+  const eligibility = filterDisplayedEligibility(parseArray(internship.eligibility_requirements))
   const benefits = parseArray(internship.stipend_benefits)
 
   const responsibilityIcons = [Settings2, Droplets, Layers, BarChart3]

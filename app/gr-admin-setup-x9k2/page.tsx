@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import {
   CheckCircle2,
+  Copy,
   Eye,
   EyeOff,
   KeyRound,
@@ -41,8 +42,26 @@ export default function AdminSetupPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [createdAccountId, setCreatedAccountId] = useState('')
+  const [copiedCredentials, setCopiedCredentials] = useState(false)
 
   const fullName = [firstName, middleName, lastName].filter(Boolean).join(' ')
+
+  const credentialsText = [
+    `Name: ${fullName}`,
+    `Official Email: ${officialEmail}`,
+    `${accountType === 'admin' ? 'Admin ID' : 'Partner ID'}: ${createdAccountId}`,
+    `Password: ${password}`,
+  ].join('\n')
+
+  async function handleCopyCredentials() {
+    try {
+      await navigator.clipboard.writeText(credentialsText)
+      setCopiedCredentials(true)
+      window.setTimeout(() => setCopiedCredentials(false), 2000)
+    } catch {
+      setCopiedCredentials(false)
+    }
+  }
 
   async function handleVerifyAccess() {
     setKeyError('')
@@ -196,7 +215,16 @@ export default function AdminSetupPage() {
               <h2 className="text-2xl font-bold text-gr-text-dark">
                 {accountType === 'admin' ? 'Admin' : 'Partner'} Account Created!
               </h2>
-              <div className="bg-gr-input-bg rounded-lg p-4 text-left space-y-3">
+              <div className="bg-gr-input-bg rounded-lg p-4 text-left space-y-3 relative">
+                <button
+                  type="button"
+                  onClick={handleCopyCredentials}
+                  className="absolute top-3 right-3 inline-flex items-center justify-center rounded-md p-2 text-gray-500 hover:text-gr-primary hover:bg-white transition-colors"
+                  aria-label="Copy account credentials"
+                  title={copiedCredentials ? 'Copied!' : 'Copy credentials'}
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
                 <div>
                   <p className="text-xs text-gray-500 uppercase tracking-wide">Name</p>
                   <p className="text-sm font-medium text-gray-900">{fullName}</p>
@@ -216,6 +244,9 @@ export default function AdminSetupPage() {
                   <p className="text-sm font-medium text-gray-900 font-mono">{password}</p>
                 </div>
               </div>
+              {copiedCredentials && (
+                <p className="text-sm text-gr-primary">Credentials copied to clipboard.</p>
+              )}
               <p className="text-sm text-gray-500">
                 Share credentials securely with the {accountType}.
               </p>

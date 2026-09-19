@@ -237,7 +237,6 @@ const DENMARK_ELIGIBILITY = [
 
 const GERMANY_ELIGIBILITY = [
   'Must have relevant international experience in agriculture',
-  'Fresher candidates are not eligible',
   'Valid passport required',
 ]
 
@@ -270,7 +269,6 @@ const USA_ELIGIBILITY = [
   'Must be pursuing a degree in agriculture',
   'Graduate candidates can apply within 12 months of passing out',
   'If graduated more than a year ago, must have relevant agricultural experience',
-  'Fresher candidates are not eligible',
   'Valid passport required',
 ]
 
@@ -286,7 +284,6 @@ const USA_BENEFITS = [
 
 const AUSTRALIA_ELIGIBILITY = [
   'Must have relevant international experience in agriculture',
-  'Fresher candidates are not eligible',
   'Valid passport required',
 ]
 

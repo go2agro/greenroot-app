@@ -46,6 +46,7 @@ type ApplicationStatus =
 type Application = {
   id: string
   status: ApplicationStatus
+  partner_decision?: 'approve' | 'reject' | null
   started_at?: string
   submitted_at?: string
   updated_at?: string
@@ -280,9 +281,14 @@ export default function PartnerApplications() {
       (app) => app.status === 'submitted' || app.status === 'under_review'
     ).length
     const approved = applicationList.filter(
-      (app) => app.status === 'approved' || app.status === 'accepted'
+      (app) =>
+        app.partner_decision === 'approve' ||
+        app.status === 'approved' ||
+        app.status === 'accepted'
     ).length
-    const rejected = applicationList.filter((app) => app.status === 'rejected').length
+    const rejected = applicationList.filter(
+      (app) => app.partner_decision === 'reject' || app.status === 'rejected'
+    ).length
     return { total, pending, approved, rejected }
   }, [applicationList])
 

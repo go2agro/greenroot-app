@@ -53,7 +53,7 @@ export default function StudentSidebar({
   return (
     <div 
       className={`h-screen bg-white border-r border-gr-border flex flex-col transition-all duration-300 ${
-        isCollapsed ? 'w-20' : 'w-[220px]'
+        isCollapsed ? 'w-20' : 'w-[280px]'
       }`}
     >
       {/* Logo and Toggle */}

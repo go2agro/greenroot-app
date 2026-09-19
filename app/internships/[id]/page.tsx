@@ -23,6 +23,7 @@ import Footer from '@/components/Footer'
 import { getInternshipById } from '@/lib/internships'
 import { BTN_LOGIN_TO_APPLY, DEFAULT_INTERNSHIP_IMAGE, LABEL_LOADING } from '@/lib/appConfig'
 import { formatStipendMonthlyDetail } from '@/lib/formatStipend'
+import { filterDisplayedEligibility } from '@/lib/internshipEligibility'
 import { pageCopyConfig } from '@/lib/config'
 import { stripRequiredDocumentsBlock } from '@/lib/internshipContent'
 import { trackInternshipView } from '@/lib/analytics'
@@ -136,7 +137,7 @@ export default function PublicInternshipDetail({ params }: { params: Promise<{ i
 
   const responsibilities = parseArray(internship.key_responsibilities)
   const skills = parseSkills(internship.skills_learned)
-  const eligibility = parseArray(internship.eligibility_requirements)
+  const eligibility = filterDisplayedEligibility(parseArray(internship.eligibility_requirements))
   const benefits = parseArray(internship.stipend_benefits)
 
   const responsibilityIcons = [Settings2, Droplets, Layers, BarChart3]

@@ -16,7 +16,7 @@ export default function SidebarHelpContact() {
             <Phone className="w-4 h-4 text-gr-primary flex-shrink-0" />
             <a
               href={`tel:${help.phone.replace(/\s/g, '')}`}
-              className="text-gr-primary break-all hover:underline tabular-nums"
+              className="text-gr-primary whitespace-nowrap hover:underline tabular-nums"
             >
               {help.phone}
             </a>
@@ -25,7 +25,7 @@ export default function SidebarHelpContact() {
             <Mail className="w-4 h-4 text-gr-primary flex-shrink-0" />
             <a
               href={`mailto:${help.email}`}
-              className="text-gr-primary break-all text-xs hover:underline"
+              className="text-gr-primary whitespace-nowrap text-xs hover:underline"
             >
               {help.email}
             </a>

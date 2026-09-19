@@ -31,7 +31,7 @@
     "passwordMismatch": "Passwords do not match.",
     "emailExists": "An account with this email already exists.",
     "fileTooLarge": "File size must be under 1MB.",
-    "tooManyFiles": "Maximum 5 files allowed.",
+    "tooManyFiles": "Maximum 10 files allowed.",
     "requiredField": "This field is required.",
     "invalidFormat": "Invalid file format. Please upload PDF, JPG, or PNG only.",
     "uploadFailed": "Document upload failed. Please try again.",

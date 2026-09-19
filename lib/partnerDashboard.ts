@@ -15,7 +15,7 @@ export async function getPartnerDashboardData() {
   ] = await Promise.all([
     supabase
       .from('applications')
-      .select('status')
+      .select('status, partner_decision')
       .eq('partner_id', userId)
       .in('status', [...PARTNER_VISIBLE_STATUSES])
       .not('reviewed_at', 'is', null),
@@ -36,8 +36,15 @@ export async function getPartnerDashboardData() {
   if (profileError) return toPlainResponse(null, profileError)
 
   const rows = applications ?? []
-  const approved = rows.filter((row) => row.status === 'approved').length
-  const rejected = rows.filter((row) => row.status === 'rejected').length
+  const approved = rows.filter(
+    (row) =>
+      row.partner_decision === 'approve' ||
+      row.status === 'approved' ||
+      row.status === 'accepted'
+  ).length
+  const rejected = rows.filter(
+    (row) => row.partner_decision === 'reject' || row.status === 'rejected'
+  ).length
 
   return toPlainResponse(
     {

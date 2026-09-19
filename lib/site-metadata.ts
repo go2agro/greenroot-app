@@ -60,7 +60,10 @@ export const rootMetadata: Metadata = {
   },
   description: DEFAULT_DESCRIPTION,
   applicationName: SITE_NAME,
-  icons: { icon: '/greenroot-logo.svg' },
+  icons: {
+    icon: [{ url: '/icon', type: 'image/png' }],
+    apple: [{ url: '/apple-icon', type: 'image/png' }],
+  },
   openGraph: {
     title: 'GreenRoot — Global Farm Internships for Agriculture Students',
     description: DEFAULT_DESCRIPTION,

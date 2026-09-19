@@ -14,6 +14,7 @@ import {
   type ApplicationPaperStudentProfile,
 } from '@/components/ApplicationPaperForm'
 import { ApplicationTimeline } from '@/components/ApplicationTimeline'
+import { PostAcceptanceStageBanner } from '@/components/PostAcceptanceStageBanner'
 import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { DetailSkeleton, PAGE_CLASS } from '@/components/detailLayout'
 import GreenRootWordmark from '@/components/GreenRootWordmark'
@@ -24,9 +25,14 @@ import { buildApplicationTimeline, type TimelineStep } from '@/lib/applicationTi
 import {
   getMyAssignedApplicationById,
   getPartnerApplicationFile,
+  getPartnerApplicationStages,
   getPartnerStudentDocumentUrl,
   submitPartnerDecision,
 } from '@/lib/partnerApplications'
+import {
+  getMostRecentStageUpdate,
+  type ApplicationStageRecord,
+} from '@/lib/applicationStages.shared'
 import { getMyPartnerProfile } from '@/lib/partnerProfiles'
 import { getMyProfile } from '@/lib/profiles'
 import {
@@ -49,6 +55,7 @@ type ApplicationDetail = ApplicationPaperData & {
   partner_decision?: 'approve' | 'reject' | null
   partner_remarks?: string | null
   partner_decided_at?: string | null
+  accepted_at?: string | null
 }
 
 type PartnerProfile = {
@@ -94,6 +101,7 @@ export default function PartnerApplicationDetails({
   const [decisionDialog, setDecisionDialog] = useState<DecisionDialog>(null)
   const [decisionLoading, setDecisionLoading] = useState(false)
   const [remarks, setRemarks] = useState('')
+  const [latestStage, setLatestStage] = useState<ApplicationStageRecord | null>(null)
 
   const { data: partnerProfile } = useSWR(
     'partnerProfileApplicationDetail',
@@ -127,12 +135,24 @@ export default function PartnerApplicationDetails({
       setNotFound(true)
       setApplication(null)
       setTimelineSteps([])
+      setLatestStage(null)
     } else {
       const app = result.data as ApplicationDetail
       setApplication(app)
       setNotFound(false)
       setRemarks(app.partner_remarks || '')
       await loadTimeline(app.id, app)
+
+      if (app.status === 'accepted') {
+        const stagesResult = await getPartnerApplicationStages(app.id)
+        if (stagesResult.data) {
+          setLatestStage(getMostRecentStageUpdate(stagesResult.data))
+        } else {
+          setLatestStage(null)
+        }
+      } else {
+        setLatestStage(null)
+      }
     }
 
     setLoading(false)
@@ -334,10 +354,10 @@ export default function PartnerApplicationDetails({
         <div className="relative flex items-center justify-center">
           <Link
             href="/partner/applications"
-            className="absolute left-0 flex items-center gap-2 text-gray-600 hover:text-gr-primary transition-colors"
+            className="absolute left-0 flex items-center text-gray-600 hover:text-gr-primary transition-colors"
+            aria-label={applicationDetailCopy.backLink}
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-medium">{applicationDetailCopy.backLink}</span>
           </Link>
 
           <Link href="/partner/dashboard" className="flex items-center gap-2">
@@ -385,7 +405,14 @@ export default function PartnerApplicationDetails({
           </div>
         ) : (
           <div className={`${PAGE_CLASS} p-4 sm:p-6 lg:p-8 space-y-5`}>
-            <ApplicationTimeline steps={timelineSteps} applicationRef={applicationRef} />
+            {application.status === 'accepted' ? (
+              <PostAcceptanceStageBanner
+                latestStage={latestStage}
+                acceptedAt={application.accepted_at}
+              />
+            ) : (
+              <ApplicationTimeline steps={timelineSteps} applicationRef={applicationRef} />
+            )}
 
             <ApplicationPaperForm
               application={application}

@@ -212,17 +212,17 @@
       "allergiesPlaceholder": "List any allergies, or type \"None\"",
       "disabilities": "Disabilities",
       "disabilitiesPlaceholder": "List any disabilities, or type \"None\"",
-      "documentsSubheading": "Upload your PDF documents below. Maximum 5 files, 1MB each.",
+      "documentsSubheading": "Upload your PDF documents below. Maximum 10 files, 1MB each.",
       "uploadGuidelines": "Upload Guidelines",
-      "uploadRule1": "Maximum 5 files total",
+      "uploadRule1": "Maximum 10 files total",
       "uploadRule2": "Each file must be under 1MB",
       "uploadRule3": "Accepted format: PDF only",
       "uploadBoxText": "Click to upload or drag and drop",
-      "uploadBoxSubtext": "PDF only • Max 1MB per file • Max 5 files",
+      "uploadBoxSubtext": "PDF only • Max 1MB per file • Max 10 files",
       "uploadPdfOnlyError": "Only PDF files are allowed.",
       "uploadFailedError": "Document upload failed. Please try again.",
       "uploadRequiredError": "Please upload at least one PDF document before continuing.",
-      "fileCounter": "{count} / 5 files uploaded",
+      "fileCounter": "{count} / 10 files uploaded",
       "reviewSubheading": "Please carefully review all your information before submitting your application.",
       "declaration1": "I confirm that all the information provided in this application is true, accurate, and complete to the best of my knowledge. I understand that any false or misleading information may result in immediate disqualification.",
       "declaration2": "I agree to the Terms & Conditions and Privacy Policy of GreenRoot. I understand that my information will be shared with the respective internship programme coordinators for evaluation purposes."
@@ -287,7 +287,7 @@
       "emptyBody": "Try adjusting your search or filter criteria."
     },
     "applicationDetail": {
-      "backLink": "← Back to Applications",
+      "backLink": "Back to Applications",
       "applicationDetails": "Application Details",
       "forwardToPartner": "Forward to Partner",
       "forwardSearchPlaceholder": "Search partner by name or organisation...",
@@ -341,7 +341,7 @@
       "reviewButton": "Review"
     },
     "applicationDetail": {
-      "backLink": "← Back to Applications",
+      "backLink": "Back to Applications",
       "noteLabel": "Your Review Comments (Required)",
       "notePlaceholder": "Write your detailed review comments. This message will be shared with the admin only, not the student.",
       "confirmApproveHeading": "Confirm Approval",
