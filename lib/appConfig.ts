@@ -11,6 +11,7 @@ export const MAX_FILE_UPLOAD_BYTES = MAX_FILE_UPLOAD_MB * 1024 * 1024
 export const MAX_FILE_UPLOAD_ERROR = `File must be under ${MAX_FILE_UPLOAD_MB} MB`
 export const APPLICATION_STEPS_COUNT = appConfig.application_steps_count
 export const ITEMS_PER_PAGE = appConfig.items_per_page
+export const INTERNSHIPS_ITEMS_PER_PAGE = appConfig.internships_items_per_page
 export const MAX_APPLICATIONS_PER_STUDENT = appConfig.max_applications_per_student
 
 export const DEFAULT_INTERNSHIP_IMAGE = appConfig.default_internship_image

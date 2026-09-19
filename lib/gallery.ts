@@ -37,7 +37,7 @@ export type GalleryContent = {
 
 /**
  * Single source for Gallery page content.
- * Edit config/pages/gallery.json or run scripts/extract-go2agro-gallery.mjs
+ * Edit config/pages/gallery.json to update gallery photos.
  */
 export async function getGalleryContent(): Promise<GalleryContent> {
   return galleryConfig as GalleryContent

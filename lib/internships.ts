@@ -20,6 +20,8 @@ export async function getAllInternships(filters?: {
   let query = supabase
     .from('internships')
     .select('*')
+    .order('created_at', { ascending: false })
+    .limit(500)
 
   if (filters?.search) {
     query = query.or(

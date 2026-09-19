@@ -419,7 +419,7 @@ export default function AdminInternshipsNew() {
 
           <FormSection title="Compensation">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Field label="Monthly Stipend ($)">
+              <Field label="Monthly Stipend (local currency)">
                 <Input
                   type="number"
                   min="0"
@@ -429,7 +429,7 @@ export default function AdminInternshipsNew() {
                   className={FIELD_CLASS}
                 />
               </Field>
-              <Field label="Yearly Stipend ($)">
+              <Field label="Yearly Stipend (local currency)">
                 <Input
                   type="number"
                   min="0"

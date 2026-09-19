@@ -38,5 +38,14 @@
   "legalLinks": [
     { "label": "Privacy Policy", "href": "/privacy" },
     { "label": "Terms of Service", "href": "/terms" }
-  ]
+  ],
+  "attribution": {
+    "madeWithLove": {
+      "prefix": "Made with",
+      "suffix": "by",
+      "handle": "@appdev.happy",
+      "url": "https://www.instagram.com/appdev.happy/"
+    },
+    "madeInIndia": "Proudly made in India"
+  }
 }

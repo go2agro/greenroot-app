@@ -84,6 +84,7 @@ type UploadedFile = {
 }
 
 import { pageCopyConfig } from '@/lib/config'
+import { formatStipendMonthly } from '@/lib/formatStipend'
 
 const STEP_NAMES = pageCopyConfig.student.applicationForm.steps
 const formCopy = pageCopyConfig.student.applicationForm
@@ -820,7 +821,12 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                     <span>•</span>
                     <span>{application.internships?.duration_months} Months</span>
                     <span>•</span>
-                    <span>₹{application.internships?.stipend_monthly?.toLocaleString()} / Month</span>
+                    <span>
+                      {formatStipendMonthly(
+                        application.internships?.stipend_monthly,
+                        application.internships?.country
+                      )}
+                    </span>
                   </div>
                 </div>
                 <div className="flex-shrink-0">

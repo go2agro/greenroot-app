@@ -82,6 +82,33 @@ export default function Footer() {
             ))}
           </div>
         </div>
+
+        <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5 text-sm sm:text-base text-gray-500">
+          <p className="flex items-center gap-1.5">
+            {footerConfig.attribution.madeWithLove.prefix}
+            <span aria-hidden="true">❤️</span>
+            {footerConfig.attribution.madeWithLove.suffix}
+            <Link
+              href={footerConfig.attribution.madeWithLove.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium hover:text-gr-primary transition-colors"
+              {...analyticsAttrs({
+                id: 'footer_attribution_appdev_happy',
+                label: footerConfig.attribution.madeWithLove.handle,
+                section: 'footer_attribution',
+                type: 'outbound_link',
+              })}
+            >
+              {footerConfig.attribution.madeWithLove.handle}
+            </Link>
+          </p>
+          <span className="hidden sm:inline text-gray-300" aria-hidden="true">·</span>
+          <p className="flex items-center gap-1.5">
+            <span className="text-xl sm:text-2xl leading-none" aria-hidden="true">🇮🇳</span>
+            {footerConfig.attribution.madeInIndia}
+          </p>
+        </div>
       </div>
     </footer>
   )

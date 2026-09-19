@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { ExternalLink, FileText, Image as ImageIcon, Loader2 } from 'lucide-react'
+import { formatStipendMonthly } from '@/lib/formatStipend'
 import {
   formatApplicationReferenceId,
   formatApplicationStatusLabel,
@@ -580,7 +581,7 @@ export function ApplicationPaperForm({
               label="Monthly Stipend"
               value={
                 internship?.stipend_monthly != null
-                  ? `₹${internship.stipend_monthly.toLocaleString()}`
+                  ? formatStipendMonthly(internship.stipend_monthly, internship.country)
                   : '—'
               }
             />
@@ -588,7 +589,10 @@ export function ApplicationPaperForm({
               label="Yearly Stipend"
               value={
                 internship?.stipend_yearly != null
-                  ? `₹${internship.stipend_yearly.toLocaleString()}`
+                  ? formatStipendMonthly(internship.stipend_yearly, internship.country).replace(
+                      '/month',
+                      '/year'
+                    )
                   : '—'
               }
             />

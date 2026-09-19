@@ -38,357 +38,357 @@
   "photos": [
     {
       "id": "photo-002",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/1659770187756-compressed.jpg",
+      "src": "/images/placeholder.png",
       "alt": "GreenRoot exhibition booth showcasing organic agricultural products",
       "category": "events",
       "featured": true
     },
     {
       "id": "photo-007",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/1659770217143-min.jpg",
+      "src": "/images/placeholder.png",
       "alt": "GreenRoot events, seminars, and exhibitions — 1659770217143-min",
       "category": "events",
       "featured": true
     },
     {
       "id": "photo-014",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG-20211028-WA0047.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Students working on an international farm — IMG-20211028-WA0047",
       "category": "on-the-farm",
       "featured": true
     },
     {
       "id": "photo-015",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG-20211121-WA0009-compressed.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Students working on an international farm — IMG-20211121-WA0009-compressed",
       "category": "on-the-farm",
       "featured": false
     },
     {
       "id": "photo-017",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG-20211129-WA0030-compressed.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Students working on an international farm — IMG-20211129-WA0030-compressed",
       "category": "on-the-farm",
       "featured": false
     },
     {
       "id": "photo-024",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG20211121010730-compressed-300x225.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — IMG20211121010730-compressed-300x225",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-025",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG20211121010844-compressed-300x225.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — IMG20211121010844-compressed-300x225",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-026",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG20211128223619-compressed-300x225.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — IMG20211128223619-compressed-300x225",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-027",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG20211128223648-compressed-300x225.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — IMG20211128223648-compressed-300x225",
       "category": "student-moments",
       "featured": true
     },
     {
       "id": "photo-028",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG20211129010550-compressed-300x225.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — IMG20211129010550-compressed-300x225",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-032",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/IMG20211129010809-compressed-1-300x225.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — IMG20211129010809-compressed-1-300x225",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-043",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.07.55-PM.jpeg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.07.55-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-044",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.07.57-PM.jpeg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.07.57-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-046",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.08.02-PM.jpeg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.08.02-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-048",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.08.05-PM.jpeg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.08.05-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-051",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.42-PM.jpeg",
+      "src": "/images/placeholder.png",
       "alt": "Indian and international students together on campus lawn",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-052",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.43-PM.jpeg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.15.43-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-054",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.46-PM.jpeg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.15.46-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-055",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.47-PM.jpeg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.15.47-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-056",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.48-PM.jpeg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.15.48-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-057",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.50-PM.jpeg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.15.50-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-058",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.52-PM.jpeg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.15.52-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-059",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.54-PM-rotated.jpeg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.15.54-PM-rotated",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-061",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.15.59-PM.jpeg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.15.59-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-062",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.16.01-PM.jpeg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.16.01-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-063",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.16.03-PM.jpeg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.16.03-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-064",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.16.04-PM.jpeg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.16.04-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-065",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.16.06-PM.jpeg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.16.06-PM",
       "category": "student-moments",
       "featured": false
     },
     {
       "id": "photo-066",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/WhatsApp-Image-2022-08-16-at-2.16.08-PM.jpeg",
+      "src": "/images/placeholder.png",
       "alt": "Student life and travel moments from GreenRoot programmes — WhatsApp-Image-2022-08-16-at-2.16.08-PM",
       "category": "student-moments",
       "featured": true
     },
     {
       "id": "photo-068",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-0-compressed-2.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-0-compressed-2",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-069",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-0-compressed-3.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-0-compressed-3",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-070",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-0-compressed.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-0-compressed",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-071",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-1-compressed-1.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-1-compressed-1",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-072",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-1-compressed-2.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-1-compressed-2",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-073",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-1-compressed-3.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-1-compressed-3",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-076",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-2-compressed-2.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-2-compressed-2",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-077",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-2-compressed-3.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-2-compressed-3",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-081",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-3-compressed-3.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-3-compressed-3",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-082",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-4-compressed-1.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-4-compressed-1",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-083",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-4-compressed-2.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-4-compressed-2",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-085",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-4-compressed.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-4-compressed",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-086",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-5-compressed-1.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-5-compressed-1",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-087",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-5-compressed-2.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-5-compressed-2",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-088",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-5-compressed-3.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-5-compressed-3",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-091",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-6-compressed-2.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-6-compressed-2",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-092",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-6-compressed-3.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-6-compressed-3",
       "category": "field-training",
       "featured": true
     },
     {
       "id": "photo-093",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-6-compressed.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-6-compressed",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-094",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-7-compressed-1.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-7-compressed-1",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-095",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-7-compressed-2.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-7-compressed-2",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-096",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-7-compressed-3.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-7-compressed-3",
       "category": "field-training",
       "featured": false
     },
     {
       "id": "photo-097",
-      "src": "https://go2agro.com/wp-content/uploads/2022/08/image-7-compressed.jpg",
+      "src": "/images/placeholder.png",
       "alt": "Hands-on field training on an international farm — image-7-compressed",
       "category": "field-training",
       "featured": false
@@ -423,8 +423,8 @@
     },
     {
       "id": "photo-102",
-      "src": "/images/gallery/partner-go2agro-tote-bag.jpeg",
-      "alt": "International agricultural training and internship programme — partner-go2agro-tote-bag",
+      "src": "/images/gallery/partner-event-tote-bag.jpeg",
+      "alt": "International agricultural training and internship programme — partner-event-tote-bag",
       "category": "international-training",
       "featured": false
     },
@@ -465,15 +465,15 @@
     },
     {
       "id": "photo-108",
-      "src": "/images/gallery/partner-go2agro-lobby-1.jpeg",
-      "alt": "International agricultural training and internship programme — partner-go2agro-lobby-1",
+      "src": "/images/gallery/partner-lobby-1.jpeg",
+      "alt": "International agricultural training and internship programme — partner-lobby-1",
       "category": "international-training",
       "featured": true
     },
     {
       "id": "photo-109",
-      "src": "/images/gallery/partner-go2agro-lobby-2.jpeg",
-      "alt": "International agricultural training and internship programme — partner-go2agro-lobby-2",
+      "src": "/images/gallery/partner-lobby-2.jpeg",
+      "alt": "International agricultural training and internship programme — partner-lobby-2",
       "category": "international-training",
       "featured": false
     },

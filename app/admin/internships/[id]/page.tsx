@@ -11,7 +11,6 @@ import {
   Trash2,
   Loader2,
   MapPin,
-  CalendarDays,
   Clock,
   CreditCard,
   Briefcase,
@@ -21,6 +20,8 @@ import { ConfirmationDialog } from '@/components/ConfirmationDialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { DEFAULT_INTERNSHIP_IMAGE } from '@/lib/appConfig'
+import { formatStipendMonthly } from '@/lib/formatStipend'
 import { getInternshipById, updateInternship, deleteInternship } from '@/lib/internships'
 import { extractRequiredDocuments, mergeRequiredDocuments } from '@/lib/internshipContent'
 import { getMyAdminProfile } from '@/lib/adminProfiles'
@@ -391,15 +392,6 @@ export default function AdminInternshipDetails({ params }: { params: Promise<{ i
     router.push('/admin/internships')
   }
 
-  const formatPreviewDate = (dateString?: string) => {
-    if (!dateString) return 'TBA'
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    })
-  }
-
   return (
     <div className="min-h-screen bg-gr-background flex flex-col">
       <div className="bg-white border-b border-gr-border px-4 sm:px-6 lg:px-8 py-4 flex-shrink-0">
@@ -457,7 +449,7 @@ export default function AdminInternshipDetails({ params }: { params: Promise<{ i
             <div className={`${PAGE_CLASS} p-4 sm:p-6 lg:p-8 space-y-6`}>
               <div className="relative h-48 sm:h-56 rounded-2xl overflow-hidden border border-gr-border">
                 <Image
-                  src={form.image_url || `https://picsum.photos/seed/${id}/1200/600`}
+                  src={form.image_url || DEFAULT_INTERNSHIP_IMAGE}
                   alt={form.title || 'Internship cover'}
                   fill
                   className="object-cover"
@@ -482,13 +474,8 @@ export default function AdminInternshipDetails({ params }: { params: Promise<{ i
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {[
-                  {
-                    icon: CalendarDays,
-                    label: 'Start Date',
-                    value: formatPreviewDate(form.start_date),
-                  },
                   {
                     icon: Clock,
                     label: 'Duration',
@@ -498,7 +485,7 @@ export default function AdminInternshipDetails({ params }: { params: Promise<{ i
                     icon: CreditCard,
                     label: 'Stipend',
                     value: form.stipend_monthly
-                      ? `$${Number(form.stipend_monthly).toLocaleString()}/mo`
+                      ? formatStipendMonthly(Number(form.stipend_monthly), form.country)
                       : 'N/A',
                   },
                   {
@@ -621,7 +608,7 @@ export default function AdminInternshipDetails({ params }: { params: Promise<{ i
 
               <FormSection title="Compensation">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Field label="Monthly Stipend ($)">
+                  <Field label="Monthly Stipend (local currency)">
                     <Input
                       type="number"
                       min="0"
@@ -631,7 +618,7 @@ export default function AdminInternshipDetails({ params }: { params: Promise<{ i
                       className={FIELD_CLASS}
                     />
                   </Field>
-                  <Field label="Yearly Stipend ($)">
+                  <Field label="Yearly Stipend (local currency)">
                     <Input
                       type="number"
                       min="0"

@@ -27,7 +27,8 @@ import { invalidateAllApplicationData } from '@/lib/cache'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
 import { getApplicationStatusTimestamp, formatApplicationReferenceId } from '@/lib/utils'
-import { BTN_DELETE, ITEMS_PER_PAGE } from '@/lib/appConfig'
+import { BTN_DELETE, DEFAULT_INTERNSHIP_IMAGE, ITEMS_PER_PAGE } from '@/lib/appConfig'
+import { formatStipendMonthly } from '@/lib/formatStipend'
 import { pageCopyConfig } from '@/lib/config'
 import { getMessage } from '@/lib/messages'
 
@@ -445,7 +446,7 @@ export default function StudentApplications() {
                       <div className="flex items-center gap-4 flex-1 min-w-0">
                         <div className="relative w-24 h-20 rounded-xl overflow-hidden flex-shrink-0">
                           <Image
-                            src={application.internships?.image_url || `https://picsum.photos/100/80?random=${startIndex + index}`}
+                            src={application.internships?.image_url || DEFAULT_INTERNSHIP_IMAGE}
                             alt={application.internships?.title || 'Internship'}
                             fill
                             className="object-cover"
@@ -489,7 +490,10 @@ export default function StudentApplications() {
                               <Banknote className="w-4 h-4 flex-shrink-0" />
                               <span>
                                 {application.internships?.stipend_monthly
-                                  ? `₹${application.internships.stipend_monthly.toLocaleString()} / Month`
+                                  ? formatStipendMonthly(
+                                      application.internships.stipend_monthly,
+                                      application.internships.country
+                                    )
                                   : 'Stipend not specified'}
                               </span>
                             </div>

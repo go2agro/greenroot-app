@@ -2,21 +2,21 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
+import InternshipListCard from '@/components/InternshipListCard'
 import useSWR from 'swr'
 import StudentSidebar from '@/components/StudentSidebar'
 import StudentMobileLogo from '@/components/StudentMobileLogo'
 import BottomNavigation from '@/components/BottomNavigation'
 import UserAvatar from '@/components/UserAvatar'
-import { Search, MapPin, Clock, Banknote, ChevronLeft, ChevronRight, X, RefreshCw } from 'lucide-react'
+import { Search, ChevronLeft, ChevronRight, X, RefreshCw } from 'lucide-react'
 import { getAllInternships } from '@/lib/internships'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
 import { pageCopyConfig } from '@/lib/config'
 import {
   BTN_VIEW_DETAILS,
-  ITEMS_PER_PAGE,
+  INTERNSHIPS_ITEMS_PER_PAGE,
   LABEL_LOADING,
 } from '@/lib/appConfig'
 import { MotionStagger, MotionStaggerItem } from '@/components/motion/MotionStagger'
@@ -36,73 +36,11 @@ type Internship = {
   stipend_monthly: number
   stipend_yearly?: number
   image_url?: string
+  flag_emoji?: string
   created_at: string
 }
 
 type SortOption = (typeof internshipsCopy.sortOptions)[number]['value']
-
-const getBadgeColor = (badge: string) => {
-  const badgeUpper = badge?.toUpperCase() || ''
-  if (badgeUpper.includes('RESEARCH')) return 'bg-blue-500'
-  if (badgeUpper.includes('TECHNOLOGY')) return 'bg-purple-500'
-  if (badgeUpper.includes('FIELD')) return 'bg-teal-500'
-  if (badgeUpper.includes('HORTICULTURE')) return 'bg-green-600'
-  if (badgeUpper.includes('GENETICS')) return 'bg-indigo-500'
-  if (badgeUpper.includes('AUTOMATION')) return 'bg-orange-500'
-  return 'bg-gr-primary'
-}
-
-const getCountryFlag = (country: string) => {
-  const countryToCode: { [key: string]: string } = {
-    'USA': 'US',
-    'United States': 'US',
-    'UK': 'GB',
-    'United Kingdom': 'GB',
-    'Canada': 'CA',
-    'Australia': 'AU',
-    'India': 'IN',
-    'Germany': 'DE',
-    'France': 'FR',
-    'Italy': 'IT',
-    'Spain': 'ES',
-    'Netherlands': 'NL',
-    'Belgium': 'BE',
-    'Switzerland': 'CH',
-    'Austria': 'AT',
-    'Japan': 'JP',
-    'China': 'CN',
-    'South Korea': 'KR',
-    'Brazil': 'BR',
-    'Mexico': 'MX',
-    'Argentina': 'AR',
-    'New Zealand': 'NZ',
-    'Singapore': 'SG',
-    'Ireland': 'IE',
-    'Denmark': 'DK',
-    'Sweden': 'SE',
-    'Norway': 'NO',
-    'Finland': 'FI',
-    'Poland': 'PL',
-    'Portugal': 'PT',
-    'Greece': 'GR',
-    'Israel': 'IL',
-    'UAE': 'AE',
-    'South Africa': 'ZA',
-    'Kenya': 'KE',
-    'Nigeria': 'NG',
-    'Egypt': 'EG',
-    'Thailand': 'TH',
-    'Vietnam': 'VN',
-    'Indonesia': 'ID',
-    'Philippines': 'PH',
-    'Malaysia': 'MY',
-  }
-  
-  const code = countryToCode[country] || countryToCode[country?.split(',')[0]?.trim()]
-  if (!code) return '🌍'
-  
-  return String.fromCodePoint(...[...code].map(c => c.charCodeAt(0) + 127397))
-}
 
 const fetcher = (fn: () => Promise<any>) => fn().then(res => res.data)
 
@@ -193,9 +131,9 @@ export default function StudentInternships() {
     setCurrentPage(1)
   }, [searchQuery, sortBy, internships])
 
-  const totalPages = Math.ceil(filteredInternships.length / ITEMS_PER_PAGE)
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
-  const paginatedInternships = filteredInternships.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+  const totalPages = Math.ceil(filteredInternships.length / INTERNSHIPS_ITEMS_PER_PAGE)
+  const startIndex = (currentPage - 1) * INTERNSHIPS_ITEMS_PER_PAGE
+  const paginatedInternships = filteredInternships.slice(startIndex, startIndex + INTERNSHIPS_ITEMS_PER_PAGE)
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -335,74 +273,19 @@ export default function StudentInternships() {
               </div>
             ) : (
               <>
-                <MotionStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {paginatedInternships.map((internship, index) => (
-                    <MotionStaggerItem
-                      key={internship.id}
-                      className="bg-white rounded-2xl border border-gr-border overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer"
-                      onClick={() => router.push(`/student/internships/${internship.id}`)}
-                    >
-                      <div className="relative h-48 w-full">
-                        <Image
-                          src={internship.image_url || `https://picsum.photos/400/250?random=${startIndex + index}`}
-                          alt={internship.title}
-                          fill
-                          className="object-cover"
-                        />
-                        <div className={`absolute top-3 left-3 ${getBadgeColor(internship.badge)} text-white text-xs font-bold px-3 py-1 rounded-full uppercase`}>
-                          {internship.badge}
-                        </div>
-                      </div>
-                      
-                      <div className="p-4">
-                        <h3 className="font-bold text-gray-900 text-base mb-2 line-clamp-2">
-                          {internship.title}
-                        </h3>
-                        
-                        {internship.short_description && (
-                          <p className="text-sm text-gray-600 mb-3 line-clamp-3">
-                            {internship.short_description}
-                          </p>
-                        )}
-                        
-                        <div className="space-y-2 mb-4">
-                          {internship.country && (
-                            <div className="flex items-center gap-2 text-sm text-gray-500">
-                              <MapPin className="w-4 h-4" />
-                              <span className="flex items-center gap-1.5">
-                                <span className="text-base">{getCountryFlag(internship.country)}</span>
-                                {internship.country}
-                              </span>
-                            </div>
-                          )}
-                          
-                          {internship.duration_months && (
-                            <div className="flex items-center gap-2 text-sm text-gray-500">
-                              <Clock className="w-4 h-4" />
-                              <span>{internship.duration_months} Months</span>
-                            </div>
-                          )}
-                          
-                          {internship.stipend_monthly && (
-                            <div className="flex items-center gap-2 text-sm">
-                              <Banknote className="w-4 h-4 text-gray-500" />
-                              <span className="font-bold text-gr-primary">
-                                $ {internship.stipend_monthly.toLocaleString()} / Month
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                        
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            router.push(`/student/internships/${internship.id}`)
-                          }}
-                          className="w-full bg-gr-primary text-white rounded-lg py-2.5 font-semibold text-sm hover:bg-gr-primary-hover transition-colors"
-                        >
-                          {BTN_VIEW_DETAILS}
-                        </button>
-                      </div>
+                <MotionStagger className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {paginatedInternships.map((internship) => (
+                    <MotionStaggerItem key={internship.id} className="flex h-full">
+                      <InternshipListCard
+                        className="w-full"
+                        internship={internship}
+                        ctaLabel={BTN_VIEW_DETAILS}
+                        onCardClick={() => router.push(`/student/internships/${internship.id}`)}
+                        onCtaClick={(e) => {
+                          e.stopPropagation()
+                          router.push(`/student/internships/${internship.id}`)
+                        }}
+                      />
                     </MotionStaggerItem>
                   ))}
                 </MotionStagger>

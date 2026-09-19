@@ -6,7 +6,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { 
   MapPin, 
-  CalendarDays, 
   Clock, 
   CreditCard, 
   Briefcase,
@@ -28,7 +27,8 @@ import { getInternshipById } from '@/lib/internships'
 import { stripRequiredDocumentsBlock } from '@/lib/internshipContent'
 import { startApplication } from '@/lib/studentApplications'
 import { trackApplicationStarted, trackInternshipView } from '@/lib/analytics'
-import { BTN_APPLY_NOW, LABEL_LOADING } from '@/lib/appConfig'
+import { BTN_APPLY_NOW, DEFAULT_INTERNSHIP_IMAGE, LABEL_LOADING } from '@/lib/appConfig'
+import { formatStipendMonthlyDetail } from '@/lib/formatStipend'
 import { getMessage } from '@/lib/messages'
 import { getMyStudentProfile } from '@/lib/studentProfiles'
 import { getMyProfile } from '@/lib/profiles'
@@ -138,12 +138,6 @@ export default function StudentInternshipDetail({ params }: { params: Promise<{ 
   const userName = profile
     ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.email || 'Student'
     : 'Student'
-
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return 'TBA'
-    const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-  }
 
   const parseArray = (data: string | string[] | undefined): string[] => {
     if (!data) return []
@@ -267,7 +261,7 @@ export default function StudentInternshipDetail({ params }: { params: Promise<{ 
 
       <div className="relative w-full h-[300px] md:h-[450px]">
         <Image
-          src={internship.image_url || `https://picsum.photos/seed/${internship.id}/1920/900`}
+          src={internship.image_url || DEFAULT_INTERNSHIP_IMAGE}
           alt={internship.title}
           fill
           className="object-cover"
@@ -301,17 +295,7 @@ export default function StudentInternshipDetail({ params }: { params: Promise<{ 
 
       <div className="w-full bg-white border-b border-gr-border py-6">
         <div className="max-w-7xl mx-auto px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
-                <CalendarDays className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-400 uppercase tracking-wide">{internshipCopy.chipStartDate}</p>
-                <p className="text-sm font-semibold text-gray-900">{formatDate(internship.start_date)}</p>
-              </div>
-            </div>
-
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
                 <Clock className="w-5 h-5 text-white" />
@@ -329,9 +313,7 @@ export default function StudentInternshipDetail({ params }: { params: Promise<{ 
               <div>
                 <p className="text-xs text-gray-400 uppercase tracking-wide">{internshipCopy.chipStipend}</p>
                 <p className="text-sm font-semibold text-gray-900">
-                  {internship.stipend_monthly 
-                    ? `₹${internship.stipend_monthly.toLocaleString('en-IN')}/month` 
-                    : 'N/A'}
+                  {formatStipendMonthlyDetail(internship.stipend_monthly, internship.country)}
                 </p>
               </div>
             </div>
@@ -379,7 +361,7 @@ export default function StudentInternshipDetail({ params }: { params: Promise<{ 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="relative h-72 rounded-2xl overflow-hidden">
               <Image
-                src={internship.secondary_image_url || `https://picsum.photos/seed/${internship.id}-2/600/400`}
+                src={internship.secondary_image_url || DEFAULT_INTERNSHIP_IMAGE}
                 alt="Skills"
                 fill
                 className="object-cover"
@@ -423,9 +405,7 @@ export default function StudentInternshipDetail({ params }: { params: Promise<{ 
             <div className="bg-white border-l-4 border-gr-primary rounded-r-xl p-6 shadow-sm">
               <p className="font-semibold text-gray-900 mb-2">{internshipCopy.monthlyStipendSubheading}</p>
               <p className="text-sm text-gray-600 mb-4">
-                {internship.stipend_monthly 
-                  ? `₹${internship.stipend_monthly.toLocaleString('en-IN')}/month` 
-                  : 'To be discussed'}
+                {formatStipendMonthlyDetail(internship.stipend_monthly, internship.country)}
               </p>
               {benefits.length > 0 && (
                 <>

@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { analyticsAttrs } from '@/lib/analytics/attributes'
+import { DEFAULT_INTERNSHIP_IMAGE } from '@/lib/appConfig'
 import MotionReveal from '@/components/motion/MotionReveal'
 
 interface InternshipCardProps {
@@ -24,7 +25,7 @@ export default function InternshipCard({
   flag,
   basePath = '/student/internships'
 }: InternshipCardProps) {
-  const displayImage = imageUrl || `https://picsum.photos/seed/${id}/400/300`
+  const displayImage = imageUrl || DEFAULT_INTERNSHIP_IMAGE
 
   return (
     <MotionReveal>
@@ -46,7 +47,7 @@ export default function InternshipCard({
         className="object-cover group-hover:scale-110 transition-transform duration-500"
         onError={(e) => {
           const target = e.target as HTMLImageElement
-          target.src = 'https://picsum.photos/400/300?grayscale'
+          target.src = DEFAULT_INTERNSHIP_IMAGE
         }}
       />
       
