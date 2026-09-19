@@ -1,9 +1,11 @@
 import { ImageResponse } from 'next/og'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import appConfig from '@/config/appConfig.json'
 
-export const alt = `${appConfig.app_name} — Global Farm Internships for Agriculture Students`
+const BRAND_GREEN = '#8DC63F'
+const BRAND_ORANGE = '#F5802D'
+
+export const alt = 'GreenRoot — Global Farm Internships for Agriculture Students'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -21,10 +23,9 @@ export default async function Image() {
           height: '100%',
           width: '100%',
           display: 'flex',
-          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          background: 'linear-gradient(135deg, #1F2A14 0%, #2D3A1F 50%, #1F2A14 100%)',
+          backgroundColor: '#FFFFFF',
           padding: 64,
         }}
       >
@@ -37,36 +38,17 @@ export default async function Image() {
           }}
         >
           <img src={logoSrc} width={160} height={182} alt="" />
-          <div
+          <span
             style={{
-              display: 'flex',
-              flexDirection: 'column',
-              maxWidth: 640,
+              fontSize: 96,
+              fontWeight: 700,
+              letterSpacing: '-0.02em',
+              lineHeight: 1,
             }}
           >
-            <span
-              style={{
-                fontSize: 72,
-                fontWeight: 700,
-                color: '#A3D32F',
-                letterSpacing: '-0.02em',
-                lineHeight: 1.1,
-              }}
-            >
-              {appConfig.app_name}
-            </span>
-            <span
-              style={{
-                marginTop: 20,
-                fontSize: 26,
-                fontWeight: 500,
-                color: 'rgba(255, 255, 255, 0.88)',
-                lineHeight: 1.45,
-              }}
-            >
-              {appConfig.app_tagline}
-            </span>
-          </div>
+            <span style={{ color: BRAND_GREEN }}>Green</span>
+            <span style={{ color: BRAND_ORANGE }}>Root</span>
+          </span>
         </div>
       </div>
     ),
