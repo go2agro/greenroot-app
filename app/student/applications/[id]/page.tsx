@@ -742,6 +742,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
               getStudentDocUrl={getMyStudentDocumentUrl}
               getApplicationDocUrl={getMyApplicationFile}
               placementDocumentsRole="student"
+              adminDocumentsRole="student"
             />
             {application.status === 'approved' && (
               <AcceptApplicationSection

@@ -633,6 +633,7 @@ export default function AdminApplicationDetails({
               getApplicationDocUrl={getApplicationFile}
               decisionSlot={screeningSlot}
               placementDocumentsRole="admin"
+              adminDocumentsRole="admin"
             />
 
             {isTerminal && (

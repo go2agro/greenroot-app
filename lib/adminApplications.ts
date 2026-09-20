@@ -5,6 +5,7 @@ import { getAdminDbClient } from './adminAuth'
 import { listAllStoragePaths } from './supabase-admin'
 import { recordApplicationEvent } from '@/lib/applicationEvents'
 import { createNotification } from '@/lib/notifications'
+import { deleteAllAdminApplicationDocumentsForApplication } from '@/lib/adminApplicationDocuments'
 import { deleteAllPlacementDocumentsForApplication } from '@/lib/placementDocuments'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 
@@ -301,6 +302,7 @@ export async function rejectApplication(
     const studentId = existing.student_id
 
     await deleteAllPlacementDocumentsForApplication(applicationId, supabase)
+    await deleteAllAdminApplicationDocumentsForApplication(applicationId, supabase)
 
     await recordApplicationEvent({
       applicationId,
@@ -421,6 +423,12 @@ export async function deleteApplication(applicationId: string) {
   )
   if (placementCleanupError) {
     return toPlainResponse(null, placementCleanupError)
+  }
+
+  const adminDocumentsCleanupError =
+    await deleteAllAdminApplicationDocumentsForApplication(applicationId, supabase)
+  if (adminDocumentsCleanupError) {
+    return toPlainResponse(null, adminDocumentsCleanupError)
   }
 
   await recordApplicationEvent({

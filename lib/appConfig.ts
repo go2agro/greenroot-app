@@ -15,6 +15,12 @@ export const MAX_PLACEMENT_DOCUMENT_UPLOAD_MB =
 export const MAX_PLACEMENT_DOCUMENT_UPLOAD_BYTES =
   MAX_PLACEMENT_DOCUMENT_UPLOAD_MB * 1024 * 1024
 export const MAX_PLACEMENT_DOCUMENT_UPLOAD_ERROR = `File must be under ${MAX_PLACEMENT_DOCUMENT_UPLOAD_MB} MB`
+export const MAX_ADMIN_APPLICATION_DOCUMENTS_COUNT =
+  appConfig.max_admin_application_documents_count ?? 10
+export const MAX_ADMIN_APPLICATION_DOCUMENT_UPLOAD_MB = appConfig.max_file_upload_mb
+export const MAX_ADMIN_APPLICATION_DOCUMENT_UPLOAD_BYTES =
+  MAX_ADMIN_APPLICATION_DOCUMENT_UPLOAD_MB * 1024 * 1024
+export const MAX_ADMIN_APPLICATION_DOCUMENT_UPLOAD_ERROR = `File must be under ${MAX_ADMIN_APPLICATION_DOCUMENT_UPLOAD_MB} MB`
 export const APPLICATION_STEPS_COUNT = appConfig.application_steps_count
 export const ITEMS_PER_PAGE = appConfig.items_per_page
 export const INTERNSHIPS_ITEMS_PER_PAGE = appConfig.internships_items_per_page

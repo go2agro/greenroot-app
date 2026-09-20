@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { ExternalLink, FileText, Image as ImageIcon, Loader2 } from 'lucide-react'
+import { AdminDocumentsSection } from '@/components/AdminDocumentsSection'
 import { PlacementDocumentsSection } from '@/components/PlacementDocumentsSection'
 import { formatStipendMonthly } from '@/lib/formatStipend'
 import {
@@ -400,6 +401,7 @@ export type ApplicationPaperFormProps = {
   decisionSlot?: React.ReactNode
   showAdminLinks?: boolean
   placementDocumentsRole?: 'partner' | 'admin' | 'student'
+  adminDocumentsRole?: 'partner' | 'admin' | 'student'
 }
 
 export function ApplicationPaperForm({
@@ -414,6 +416,7 @@ export function ApplicationPaperForm({
   decisionSlot,
   showAdminLinks = false,
   placementDocumentsRole,
+  adminDocumentsRole,
 }: ApplicationPaperFormProps) {
   const [openingDoc, setOpeningDoc] = useState<string | null>(null)
 
@@ -476,8 +479,14 @@ export function ApplicationPaperForm({
   const showPlacementDocuments =
     application.status === 'accepted' && Boolean(placementDocumentsRole)
 
+  const showAdminDocuments =
+    application.status === 'accepted' && Boolean(adminDocumentsRole)
+
   let nextSectionNumber = 11
   const placementSectionNumber = showPlacementDocuments
+    ? String(nextSectionNumber++)
+    : null
+  const adminDocumentsSectionNumber = showAdminDocuments
     ? String(nextSectionNumber++)
     : null
   const adminRemarksSectionNumber = showAdminRemarks
@@ -839,6 +848,14 @@ export function ApplicationPaperForm({
             applicationId={application.id}
             role={placementDocumentsRole}
             sectionNumber={placementSectionNumber}
+          />
+        )}
+
+        {showAdminDocuments && adminDocumentsSectionNumber && adminDocumentsRole && (
+          <AdminDocumentsSection
+            applicationId={application.id}
+            role={adminDocumentsRole}
+            sectionNumber={adminDocumentsSectionNumber}
           />
         )}
 

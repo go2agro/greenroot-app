@@ -425,6 +425,7 @@ export default function PartnerApplicationDetails({
               getApplicationDocUrl={(filePath) => getPartnerApplicationFile(id, filePath)}
               decisionSlot={decisionSlot}
               placementDocumentsRole="partner"
+              adminDocumentsRole="partner"
             />
 
             {hasDecided && (

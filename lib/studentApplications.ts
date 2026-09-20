@@ -5,6 +5,7 @@ import { createAdminClient } from './supabase-admin'
 import { checkProfileCompletion } from './studentProfiles'
 import { recordApplicationEvent } from '@/lib/applicationEvents'
 import { createNotification } from '@/lib/notifications'
+import { deleteAllAdminApplicationDocumentsForApplication } from '@/lib/adminApplicationDocuments'
 import { deleteAllPlacementDocumentsForApplication } from '@/lib/placementDocuments'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 import {
@@ -485,6 +486,7 @@ export async function withdrawApplication(applicationId: string) {
 
   if (!error && data) {
     await deleteAllPlacementDocumentsForApplication(applicationId)
+    await deleteAllAdminApplicationDocumentsForApplication(applicationId)
   }
 
   return toPlainResponse(data, error)
@@ -714,6 +716,9 @@ export async function acceptApplication(
     }
 
     for (const otherApp of previouslyAccepted) {
+      await deleteAllPlacementDocumentsForApplication(otherApp.id)
+      await deleteAllAdminApplicationDocumentsForApplication(otherApp.id)
+
       await recordApplicationEvent({
         applicationId: otherApp.id,
         eventType: 'auto_closed',
@@ -781,6 +786,9 @@ export async function acceptApplication(
     }
 
     for (const otherApp of otherApproved) {
+      await deleteAllPlacementDocumentsForApplication(otherApp.id)
+      await deleteAllAdminApplicationDocumentsForApplication(otherApp.id)
+
       await recordApplicationEvent({
         applicationId: otherApp.id,
         eventType: 'auto_closed',
