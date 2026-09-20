@@ -154,6 +154,7 @@ export default function StudentProfile() {
     message: string
     onRetry?: () => Promise<void>
   } | null>(null)
+  const [saveAlert, setSaveAlert] = useState<string | null>(null)
   const [isRetryingUpload, setIsRetryingUpload] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [isDeletingAccount, setIsDeletingAccount] = useState(false)
@@ -359,17 +360,16 @@ export default function StudentProfile() {
 
       const result = await updateStudentProfile(dataToSave)
       if (result.error) {
-        // Error handling without toast
+        setSaveAlert(result.error.message || getMessage('error', 'profileSaveFailed'))
       } else {
+        setSaveAlert(null)
         await refreshProfile()
         await refreshCompletion()
-        // Collapse the section after save
         setCollapsedSections(prev => ({ ...prev, [section]: true }))
-        // Scroll to progress bar smoothly
         progressBarRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }
-    } catch (error) {
-      // Error handling without toast
+    } catch {
+      setSaveAlert(getMessage('error', 'profileSaveFailed'))
     } finally {
       setSavingSection(null)
     }
@@ -396,12 +396,15 @@ export default function StudentProfile() {
   const handleDeleteDocument = async (docType: string) => {
     try {
       const result = await updateStudentProfile({ [docType]: null })
-      if (!result.error) {
+      if (result.error) {
+        setSaveAlert(result.error.message || getMessage('error', 'profileSaveFailed'))
+      } else {
+        setSaveAlert(null)
         await refreshProfile()
         await refreshCompletion()
       }
-    } catch (error) {
-      // Error handling without toast
+    } catch {
+      setSaveAlert(getMessage('error', 'profileSaveFailed'))
     }
   }
 
@@ -469,11 +472,14 @@ export default function StudentProfile() {
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
-      {uploadAlert && (
+      {(uploadAlert || saveAlert) && (
         <AlertBanner
-          message={uploadAlert.message}
-          onRetry={uploadAlert.onRetry ? handleUploadRetry : undefined}
-          onDismiss={() => setUploadAlert(null)}
+          message={uploadAlert?.message ?? saveAlert ?? ''}
+          onRetry={uploadAlert?.onRetry ? handleUploadRetry : undefined}
+          onDismiss={() => {
+            setUploadAlert(null)
+            setSaveAlert(null)
+          }}
           isRetrying={isRetryingUpload}
         />
       )}

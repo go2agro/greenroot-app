@@ -120,12 +120,20 @@ export async function updateStudentProfile(profileData: {
 }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return toPlainResponse(null, null)
+  if (!user) return toPlainResponse(null, { message: 'Not logged in' })
+
+  const cleanData = Object.fromEntries(
+    Object.entries(profileData).filter(([, value]) => value !== undefined)
+  )
 
   const { data, error } = await supabase
     .from('student_profiles')
-    .update({ ...profileData, updated_at: new Date().toISOString() })
-    .eq('id', user.id)
+    .upsert(
+      { id: user.id, ...cleanData, updated_at: new Date().toISOString() },
+      { onConflict: 'id' }
+    )
+    .select()
+    .single()
 
   return toPlainResponse(data, error)
 }
