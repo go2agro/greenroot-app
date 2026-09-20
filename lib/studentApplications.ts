@@ -14,6 +14,11 @@ import {
   MAX_FILE_UPLOAD_BYTES,
   MAX_FILE_UPLOAD_ERROR,
 } from '@/lib/appConfig'
+import {
+  getApplicationDocumentContentType,
+  getApplicationDocumentType,
+  isAllowedApplicationDocument,
+} from '@/lib/applicationDocumentUpload'
 
 const ACTIVE_APPLICATION_STATUSES = [
   'draft',
@@ -363,20 +368,26 @@ export async function uploadFileAnswer(
     return toPlainResponse(null, { message: MAX_FILE_UPLOAD_ERROR })
   }
 
-  const isPdf =
-    file.type.toLowerCase().includes('pdf') ||
-    file.name.toLowerCase().endsWith('.pdf')
+  if (!isAllowedApplicationDocument(file)) {
+    return toPlainResponse(null, {
+      message: 'Only PDF, DOC, and DOCX files are allowed',
+    })
+  }
 
-  if (!isPdf) {
-    return toPlainResponse(null, { message: 'Only PDF files are allowed' })
+  const documentType = getApplicationDocumentType(file.type, file.name)
+  if (!documentType) {
+    return toPlainResponse(null, {
+      message: 'Only PDF, DOC, and DOCX files are allowed',
+    })
   }
 
   // Upload file to storage
   const filePath = `${user.id}/${applicationId}/${fieldKey}-${Date.now()}.${file.name.split('.').pop()}`
+  const contentType = getApplicationDocumentContentType(file.type, file.name)
 
   const { error: uploadError } = await supabase.storage
     .from('application-documents')
-    .upload(filePath, file)
+    .upload(filePath, file, contentType ? { contentType } : undefined)
 
   if (uploadError) return toPlainResponse(null, uploadError)
 
@@ -389,7 +400,7 @@ export async function uploadFileAnswer(
       field_key: fieldKey,
       file_url: filePath,
       file_name: file.name,
-      file_type: 'pdf',
+      file_type: documentType,
       updated_at: new Date().toISOString()
     }, { onConflict: 'application_id,field_key' })
 

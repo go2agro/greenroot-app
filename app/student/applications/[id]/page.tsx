@@ -46,6 +46,12 @@ import { getMyStudentProfile, getMyStudentDocumentUrl } from '@/lib/studentProfi
 import { getMyProfile } from '@/lib/profiles'
 import { formatStudentStatusLabel, formatApplicationReferenceId } from '@/lib/utils'
 import {
+  APPLICATION_DOCUMENT_ACCEPT,
+  getApplicationDocumentType,
+  isAllowedApplicationDocument,
+  isApplicationDocumentFile,
+} from '@/lib/applicationDocumentUpload'
+import {
   APPLICATION_STEPS_COUNT,
   BTN_NEXT_STEP,
   BTN_PREV_STEP,
@@ -94,8 +100,6 @@ const MAX_LANGUAGES = 8
 
 const isLanguageComplete = (lang: Language) =>
   Boolean(lang.language && lang.read && lang.write && lang.speak)
-
-const isPdfFile = (fileType: string) => fileType.toLowerCase().includes('pdf')
 
 function getStudentStatusBadgeClass(status: string) {
   switch (status) {
@@ -223,10 +227,8 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
               console.error('Error parsing languages', e)
             }
           } else if (answer.field_key?.startsWith('doc_upload_') && answer.file_url) {
-            const storedType = answer.file_type || ''
-            const inferredType = storedType.toLowerCase().includes('pdf') || answer.file_name?.toLowerCase().endsWith('.pdf')
-              ? 'pdf'
-              : 'image'
+            const inferredType =
+              getApplicationDocumentType(answer.file_type, answer.file_name) || 'file'
             files.push({
               fieldKey: answer.field_key,
               fileName: answer.file_name || 'Document',
@@ -465,11 +467,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
         continue
       }
       
-      const fileType = file.type.toLowerCase()
-      const isPdf =
-        fileType.includes('pdf') || file.name.toLowerCase().endsWith('.pdf')
-
-      if (!isPdf) {
+      if (!isAllowedApplicationDocument(file)) {
         rejectedForFormat = true
         continue
       }
@@ -1250,7 +1248,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                       id="file-input"
                       type="file"
                       multiple
-                      accept=".pdf,application/pdf"
+                      accept={APPLICATION_DOCUMENT_ACCEPT}
                       onChange={(e) => handleFileSelect(e.target.files)}
                       className="hidden"
                     />
@@ -1277,7 +1275,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                     <div className="mt-4 grid grid-cols-1 gap-3">
                       {existingFiles.map((file, index) => (
                         <div key={`existing-${index}`} className="bg-white border border-gr-border rounded-xl p-3 flex items-center gap-3">
-                          {isPdfFile(file.fileType) ? (
+                          {isApplicationDocumentFile(file.fileType, file.fileName) ? (
                             <FileText className="w-8 h-8 text-red-500 flex-shrink-0" />
                           ) : (
                             <ImageIcon className="w-8 h-8 text-blue-500 flex-shrink-0" />
@@ -1291,7 +1289,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
 
                       {uploadedFiles.map((file, index) => (
                         <div key={`new-${index}`} className="bg-white border border-gr-border rounded-xl p-3 flex items-center gap-3">
-                          {isPdfFile(file.file.type) ? (
+                          {isApplicationDocumentFile(file.file.type, file.file.name) ? (
                             <FileText className="w-8 h-8 text-red-500 flex-shrink-0" />
                           ) : (
                             <ImageIcon className="w-8 h-8 text-blue-500 flex-shrink-0" />
@@ -1453,7 +1451,7 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                           })),
                         ].map((file) => (
                           <div key={file.key} className="flex items-center gap-2">
-                            {isPdfFile(file.type) ? (
+                            {isApplicationDocumentFile(file.type, file.name) ? (
                               <FileText className="w-4 h-4 text-red-500 flex-shrink-0" />
                             ) : (
                               <ImageIcon className="w-4 h-4 text-blue-500 flex-shrink-0" />

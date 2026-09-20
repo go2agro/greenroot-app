@@ -11,6 +11,10 @@ import {
   formatApplicationStatusLabel,
   formatStudentStatusLabel,
 } from '@/lib/utils'
+import {
+  getApplicationDocumentLabel,
+  isApplicationDocumentFile,
+} from '@/lib/applicationDocumentUpload'
 
 export type ApplicationAnswer = {
   field_key: string
@@ -217,12 +221,6 @@ function parseLanguages(raw?: string): Language[] {
   }
 }
 
-function isPdfFile(fileType?: string, fileName?: string) {
-  const type = (fileType || '').toLowerCase()
-  const name = (fileName || '').toLowerCase()
-  return type.includes('pdf') || name.endsWith('.pdf')
-}
-
 function isImageFile(fileType?: string, fileName?: string) {
   const type = (fileType || '').toLowerCase()
   const name = (fileName || '').toLowerCase()
@@ -316,8 +314,8 @@ export function DocumentRow({
   getSignedUrl?: GetSignedUrl
 }) {
   const uploaded = Boolean(filePath?.trim())
-  const isPdf = isPdfFile(fileType, fileName || label)
-  const isImage = !isPdf && isImageFile(fileType, fileName || label)
+  const isDocument = isApplicationDocumentFile(fileType, fileName || label)
+  const isImage = !isDocument && isImageFile(fileType, fileName || label)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
   useEffect(() => {
@@ -354,7 +352,7 @@ export function DocumentRow({
               className="w-full h-full object-cover"
             />
           </div>
-        ) : uploaded && isPdf ? (
+        ) : uploaded && isDocument ? (
           <FileText className="w-8 h-8 text-red-500 flex-shrink-0" />
         ) : uploaded && isImage ? (
           <ImageIcon className="w-8 h-8 text-blue-500 flex-shrink-0" />
@@ -362,7 +360,14 @@ export function DocumentRow({
         <div className="min-w-0">
           <p className="text-sm font-medium text-gray-900 truncate">{label}</p>
           <p className="text-xs text-gray-400 mt-0.5 uppercase">
-            {subtitle || (uploaded ? (isPdf ? 'PDF' : isImage ? 'Image' : 'Uploaded') : 'Not uploaded')}
+            {subtitle ||
+              (uploaded
+                ? isDocument
+                  ? getApplicationDocumentLabel(fileType, fileName || label)
+                  : isImage
+                    ? 'Image'
+                    : 'Uploaded'
+                : 'Not uploaded')}
           </p>
         </div>
       </div>
@@ -825,8 +830,8 @@ export function ApplicationPaperForm({
                   index={index + 1}
                   label={doc.file_name || `Document ${index + 1}`}
                   subtitle={
-                    isPdfFile(doc.file_type, doc.file_name)
-                      ? 'PDF'
+                    isApplicationDocumentFile(doc.file_type, doc.file_name)
+                      ? getApplicationDocumentLabel(doc.file_type, doc.file_name)
                       : isImageFile(doc.file_type, doc.file_name)
                         ? 'Image'
                         : doc.file_type || 'File'
