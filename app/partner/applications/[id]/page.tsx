@@ -424,6 +424,7 @@ export default function PartnerApplicationDetails({
               getStudentDocUrl={(filePath) => getPartnerStudentDocumentUrl(id, filePath)}
               getApplicationDocUrl={(filePath) => getPartnerApplicationFile(id, filePath)}
               decisionSlot={decisionSlot}
+              placementDocumentsRole="partner"
             />
 
             {hasDecided && (

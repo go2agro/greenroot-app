@@ -73,6 +73,7 @@
   "items_per_page": 10,
   "internships_items_per_page": 24,
   "max_file_upload_mb": 1,
+  "max_placement_document_upload_mb": 10,
   "application_steps_count": 5,
 
   "colors": {

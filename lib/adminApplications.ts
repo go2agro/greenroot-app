@@ -5,6 +5,7 @@ import { getAdminDbClient } from './adminAuth'
 import { listAllStoragePaths } from './supabase-admin'
 import { recordApplicationEvent } from '@/lib/applicationEvents'
 import { createNotification } from '@/lib/notifications'
+import { deleteAllPlacementDocumentsForApplication } from '@/lib/placementDocuments'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 
 // ─────────────────────────────────────────
@@ -299,6 +300,8 @@ export async function rejectApplication(
   if (!error && data) {
     const studentId = existing.student_id
 
+    await deleteAllPlacementDocumentsForApplication(applicationId, supabase)
+
     await recordApplicationEvent({
       applicationId,
       eventType: isScreeningRejection ? 'admin_rejected' : 'final_rejected',
@@ -410,6 +413,14 @@ export async function deleteApplication(applicationId: string) {
 
   if (fetchError || !application) {
     return toPlainResponse(null, fetchError || { message: 'Application not found' })
+  }
+
+  const placementCleanupError = await deleteAllPlacementDocumentsForApplication(
+    applicationId,
+    supabase
+  )
+  if (placementCleanupError) {
+    return toPlainResponse(null, placementCleanupError)
   }
 
   await recordApplicationEvent({

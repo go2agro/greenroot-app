@@ -5,6 +5,7 @@ import { createAdminClient } from './supabase-admin'
 import { checkProfileCompletion } from './studentProfiles'
 import { recordApplicationEvent } from '@/lib/applicationEvents'
 import { createNotification } from '@/lib/notifications'
+import { deleteAllPlacementDocumentsForApplication } from '@/lib/placementDocuments'
 import { toPlainResponse } from '@/lib/utils/serverResponse'
 import {
   appConfig,
@@ -481,6 +482,10 @@ export async function withdrawApplication(applicationId: string) {
     .in('status', ['draft', 'submitted', 'under_review', 'approved'])
     .select()
     .single()
+
+  if (!error && data) {
+    await deleteAllPlacementDocumentsForApplication(applicationId)
+  }
 
   return toPlainResponse(data, error)
 }

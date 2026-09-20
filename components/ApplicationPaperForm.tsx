@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { ExternalLink, FileText, Image as ImageIcon, Loader2 } from 'lucide-react'
+import { PlacementDocumentsSection } from '@/components/PlacementDocumentsSection'
 import { formatStipendMonthly } from '@/lib/formatStipend'
 import {
   formatApplicationReferenceId,
@@ -398,6 +399,7 @@ export type ApplicationPaperFormProps = {
   getApplicationDocUrl: GetSignedUrl
   decisionSlot?: React.ReactNode
   showAdminLinks?: boolean
+  placementDocumentsRole?: 'partner' | 'admin' | 'student'
 }
 
 export function ApplicationPaperForm({
@@ -411,6 +413,7 @@ export function ApplicationPaperForm({
   getApplicationDocUrl,
   decisionSlot,
   showAdminLinks = false,
+  placementDocumentsRole,
 }: ApplicationPaperFormProps) {
   const [openingDoc, setOpeningDoc] = useState<string | null>(null)
 
@@ -469,6 +472,18 @@ export function ApplicationPaperForm({
 
   const showAdminRemarks =
     mode === 'student' && Boolean(application.admin_remarks?.trim())
+
+  const showPlacementDocuments =
+    application.status === 'accepted' && Boolean(placementDocumentsRole)
+
+  let nextSectionNumber = 11
+  const placementSectionNumber = showPlacementDocuments
+    ? String(nextSectionNumber++)
+    : null
+  const adminRemarksSectionNumber = showAdminRemarks
+    ? String(nextSectionNumber++)
+    : null
+  const decisionSectionNumber = decisionSlot ? String(nextSectionNumber++) : null
 
   const openSignedFile = async (filePath: string, getter: GetSignedUrl) => {
     setOpeningDoc(filePath)
@@ -819,8 +834,16 @@ export function ApplicationPaperForm({
           )}
         </FormSection>
 
-        {showAdminRemarks && (
-          <FormSection number="11" title="Administrative Remarks">
+        {showPlacementDocuments && placementSectionNumber && placementDocumentsRole && (
+          <PlacementDocumentsSection
+            applicationId={application.id}
+            role={placementDocumentsRole}
+            sectionNumber={placementSectionNumber}
+          />
+        )}
+
+        {showAdminRemarks && adminRemarksSectionNumber && (
+          <FormSection number={adminRemarksSectionNumber} title="Administrative Remarks">
             <FormBlock
               label="Administrative Remarks"
               value={application.admin_remarks}
@@ -828,11 +851,8 @@ export function ApplicationPaperForm({
           </FormSection>
         )}
 
-        {decisionSlot && (
-          <FormSection
-            number={showAdminRemarks ? "12" : "11"}
-            title="Screening & Forwarding"
-          >
+        {decisionSlot && decisionSectionNumber && (
+          <FormSection number={decisionSectionNumber} title="Screening & Forwarding">
             {decisionSlot}
           </FormSection>
         )}

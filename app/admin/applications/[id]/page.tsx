@@ -632,6 +632,7 @@ export default function AdminApplicationDetails({
               getStudentDocUrl={getStudentDocumentUrl}
               getApplicationDocUrl={getApplicationFile}
               decisionSlot={screeningSlot}
+              placementDocumentsRole="admin"
             />
 
             {isTerminal && (
