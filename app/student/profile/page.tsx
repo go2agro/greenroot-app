@@ -687,7 +687,6 @@ export default function StudentProfile() {
                     value={formData.nationality || ''}
                     onChange={(e) => handleChange('nationality', e.target.value)}
                     className="bg-gr-input-bg rounded-lg py-3 px-4 w-full outline-none text-sm"
-                    placeholder="Indian"
                   />
                 </div>
                 <div>
