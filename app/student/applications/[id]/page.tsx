@@ -1481,17 +1481,38 @@ export default function ApplicationForm({ params }: { params: Promise<{ id: stri
                       </span>
                     </label>
 
-                    <label className="flex items-start gap-3 cursor-pointer">
+                    <div className="flex items-start gap-3">
                       <input
+                        id="application-terms-declaration"
                         type="checkbox"
                         checked={declarations.terms}
                         onChange={(e) => setDeclarations({ ...declarations, terms: e.target.checked })}
                         className="mt-1 w-5 h-5 rounded border-gray-300 text-gr-primary focus:ring-gr-primary accent-gr-primary"
                       />
-                      <span className="text-sm text-gray-700">
-                        {formCopy.declaration2}
-                      </span>
-                    </label>
+                      <label htmlFor="application-terms-declaration" className="text-sm text-gray-700 cursor-pointer">
+                        I agree to the{' '}
+                        <Link
+                          href="/terms"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-gr-primary font-medium hover:underline"
+                          onMouseDown={(e) => e.preventDefault()}
+                        >
+                          Terms & Conditions
+                        </Link>
+                        {' '}and{' '}
+                        <Link
+                          href="/privacy"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-gr-primary font-medium hover:underline"
+                          onMouseDown={(e) => e.preventDefault()}
+                        >
+                          Privacy Policy
+                        </Link>
+                        {' '}of GreenRoot. I understand that my information will be shared with the respective internship programme coordinators for evaluation purposes.
+                      </label>
+                    </div>
 
                     <button
                       onClick={handleSubmit}

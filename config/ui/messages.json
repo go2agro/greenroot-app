@@ -1,7 +1,7 @@
 {
   "success": {
     "login": "Welcome back!",
-    "signup": "Account created successfully! Please login with your credentials.",
+    "signup": "Account created successfully! We've sent a verification email to your inbox. Please click the link in that email to verify your account, then come back and log in with your email and password.",
     "logout": "You have been logged out.",
     "profileUpdate": "Profile updated successfully!",
     "applicationSubmit": "Application submitted successfully!",

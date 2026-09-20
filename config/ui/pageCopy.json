@@ -32,7 +32,11 @@
       "passwordHint": "(Must contain at least 8 characters)*",
       "confirmPasswordLabel": "Re-enter Password",
       "loginPrompt": "Already have an account?",
-      "loginLink": "Login here."
+      "loginLink": "Login here.",
+      "successHeading": "Account created successfully!",
+      "successLine1": "We've sent a verification email to your inbox. Please open that email and click the verification link to activate your account.",
+      "successLine2": "Once verified, come back to this app and log in with your email and password.",
+      "successLine3": "If you don't see the email, please check your Spam or Junk folder."
     },
     "forgotPassword": {
       "heading": "Forgot your password?",

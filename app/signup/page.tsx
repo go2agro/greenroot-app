@@ -6,7 +6,7 @@ import { AtSign, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { signUp } from '@/lib/auth'
 import { trackSignUp, trackSignUpFailed } from '@/lib/analytics'
 import { analyticsAttrs } from '@/lib/analytics/attributes'
-import { appConfig, BTN_CREATE_ACCOUNT } from '@/lib/appConfig'
+import { appConfig, BTN_BACK_TO_LOGIN, BTN_CREATE_ACCOUNT } from '@/lib/appConfig'
 import { pageCopyConfig } from '@/lib/config'
 import { getMessage } from '@/lib/messages'
 
@@ -27,6 +27,7 @@ export default function Signup() {
   const [passwordError, setPasswordError] = useState('')
   const [confirmPasswordError, setConfirmPasswordError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -75,12 +76,17 @@ export default function Signup() {
 
       if (data?.user?.id) {
         trackSignUp({ userId: data.user.id })
-        router.push('/student/dashboard')
+        setIsSuccess(true)
+        setIsLoading(false)
       }
     } catch (error) {
       setPasswordError(getMessage('error', 'generic'))
       setIsLoading(false)
     }
+  }
+
+  const handleBackToLogin = () => {
+    router.push('/login')
   }
 
   return (
@@ -101,6 +107,8 @@ export default function Signup() {
             <GreenRootWordmark className="text-2xl" />
           </div>
 
+          {!isSuccess ? (
+            <>
           {/* Heading */}
           <h2 className="text-2xl sm:text-3xl font-bold text-gr-text-dark mb-2">{signupCopy.heading}</h2>
           <p className="text-sm text-gray-500 mb-6">
@@ -238,6 +246,30 @@ export default function Signup() {
               {signupCopy.loginLink}
             </Link>
           </p>
+            </>
+          ) : (
+            <>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gr-text-dark mb-2">
+                {signupCopy.successHeading}
+              </h2>
+              <p className="text-sm text-gr-text-dark mb-2">
+                {signupCopy.successLine1}
+              </p>
+              <p className="text-sm text-gr-text-dark mb-2">
+                {signupCopy.successLine2}
+              </p>
+              <p className="text-sm text-gr-text-dark mb-6">
+                {signupCopy.successLine3}
+              </p>
+
+              <button
+                onClick={handleBackToLogin}
+                className="w-full bg-gr-primary text-white rounded-lg py-3 text-base font-semibold hover:bg-gr-primary-hover transition-colors"
+              >
+                {BTN_BACK_TO_LOGIN}
+              </button>
+            </>
+          )}
 
           {/* Footer */}
           <p className="text-xs text-gray-400 text-center mt-8 sm:mt-12">
