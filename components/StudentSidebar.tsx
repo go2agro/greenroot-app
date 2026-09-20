@@ -79,7 +79,7 @@ export default function StudentSidebar({
             </Link>
           </div>
         ) : (
-          <div className="flex items-center justify-between gap-2">
+          <div className="relative flex justify-center">
             <Link href="/student/dashboard" className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
               <Image 
                 src="/greenroot-logo.svg" 
@@ -92,7 +92,7 @@ export default function StudentSidebar({
             {onToggle && (
               <button
                 onClick={onToggle}
-                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                className="absolute right-0 top-1/2 -translate-y-1/2 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
                 aria-label="Collapse sidebar"
               >
                 <ChevronLeft className="w-5 h-5 text-gray-600" />
@@ -103,7 +103,7 @@ export default function StudentSidebar({
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2">
+      <nav className={`flex-1 space-y-2 ${isCollapsed ? 'p-4' : 'px-6 py-4'}`}>
         {navItems.map((item) => {
           const Icon = item.icon
           const isActive = activePage ? activePage === item.id : pathname === item.href
@@ -115,11 +115,11 @@ export default function StudentSidebar({
               href={item.href}
               title={isCollapsed ? item.label : undefined}
               {...analyticsNavAttrs('student', item.id, item.label)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+              className={`flex items-center gap-3 py-3 rounded-lg transition-colors ${
                 isActive 
                   ? 'bg-gr-primary text-white font-medium' 
                   : 'text-[#555555] hover:bg-gray-100'
-              } ${isCollapsed ? 'justify-center' : ''}`}
+              } ${isCollapsed ? 'justify-center px-4' : 'px-5'}`}
             >
               <span className="relative flex-shrink-0">
                 <Icon className="w-5 h-5" />
