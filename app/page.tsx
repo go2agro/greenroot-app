@@ -249,40 +249,6 @@ export default function Home() {
 
       <SectionDivider />
 
-      {/* TESTIMONIAL */}
-      <section className="w-full py-12 md:py-20 lg:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <MotionReveal>
-            <SectionHeading
-              prefix={landingConfig.successStories.heading_prefix}
-              highlight={landingConfig.successStories.heading_highlight}
-            />
-          </MotionReveal>
-
-          <MotionStagger className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {landingConfig.successStories.stories.map((story) => (
-              <MotionStaggerItem
-                key={story.id}
-                className="bg-gr-primary/10 rounded-xl p-6 shadow-sm border-l-4 border-gr-primary"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-full bg-gr-border flex items-center justify-center">
-                    <span className="font-bold text-gr-text-muted">{story.initials}</span>
-                  </div>
-                  <div>
-                    <p className="font-bold text-gr-text-dark">{story.name}</p>
-                    <p className="text-sm text-gr-text-muted">{story.role}</p>
-                  </div>
-                </div>
-                <p className="text-sm text-gr-text-muted italic">&quot;{story.quote}&quot;</p>
-              </MotionStaggerItem>
-            ))}
-          </MotionStagger>
-        </div>
-      </section>
-
-      <SectionDivider />
-
       {/* FAQ */}
       <section className="w-full py-12 md:py-20 lg:py-24 bg-gr-background">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">

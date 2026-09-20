@@ -144,19 +144,6 @@
       }
     ]
   },
-  "successStories": {
-    "heading_prefix": "",
-    "heading_highlight": "Testimonial",
-    "stories": [
-      {
-        "id": "abraham-yehuda",
-        "initials": "AY",
-        "name": "Mr. Abraham Yehuda",
-        "role": "CEO, Abraham Yehuda & Associates / INDIA–ISRAEL Initiatives, Mumbai",
-        "quote": "GreenRoot has been associated with our firm for more than a year. They specialize in finding meaningful opportunities for Agri Graduates in Maharashtra. With us, they have been supplying good candidates for our Israel Kibbutz Volunteers' Programme — a one-year programme for Agri Graduates and young professionals aged 18–35. They have been meticulous in recruitment and have shown honesty, integrity, and transparency in their approach. We are very pleased to be associated with them."
-      }
-    ]
-  },
   "faq": {
     "heading_prefix": "Frequently Asked",
     "heading_highlight": "Questions",
