@@ -8,7 +8,7 @@ import { trackSignUp, trackSignUpFailed } from '@/lib/analytics'
 import { analyticsAttrs } from '@/lib/analytics/attributes'
 import { appConfig, BTN_BACK_TO_LOGIN, BTN_CREATE_ACCOUNT } from '@/lib/appConfig'
 import { pageCopyConfig } from '@/lib/config'
-import { getMessage } from '@/lib/messages'
+import { getAuthErrorMessage, getMessage } from '@/lib/messages'
 
 const signupCopy = pageCopyConfig.auth.signup
 import Image from 'next/image'
@@ -69,7 +69,7 @@ export default function Signup() {
         trackSignUpFailed({
           reason: error.message || 'signup_error',
         })
-        setPasswordError(error.message || getMessage('error', 'signup'))
+        setPasswordError(getAuthErrorMessage(error.message, 'signup'))
         setIsLoading(false)
         return
       }

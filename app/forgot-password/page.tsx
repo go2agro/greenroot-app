@@ -7,7 +7,7 @@ import { resetPassword } from '@/lib/auth'
 import { trackPasswordResetRequest } from '@/lib/analytics'
 import { appConfig, BTN_BACK_TO_LOGIN, BTN_SEND_RESET_LINK } from '@/lib/appConfig'
 import { pageCopyConfig } from '@/lib/config'
-import { getMessage } from '@/lib/messages'
+import { getAuthErrorMessage, getMessage } from '@/lib/messages'
 
 const forgotPasswordCopy = pageCopyConfig.auth.forgotPassword
 import Image from 'next/image'
@@ -44,7 +44,7 @@ export default function ForgotPassword() {
       const { error } = await resetPassword(email)
       
       if (error) {
-        setGeneralError(getMessage('error', 'generic'))
+        setGeneralError(getAuthErrorMessage(error.message, 'generic'))
         setIsLoading(false)
         return
       }

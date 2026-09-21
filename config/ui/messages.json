@@ -38,7 +38,8 @@
     "profileSaveFailed": "Failed to save profile. Please try again.",
     "noteRequired": "A note is required before recording this stage.",
     "stageOrder": "Stages must be completed in order.",
-    "resetLinkExpired": "Your reset link has expired. Please request a new one."
+    "resetLinkExpired": "Your reset link has expired. Please request a new one.",
+    "emailRateLimit": "We're experiencing high signup volume right now. Please try again in a few minutes. If the issue persists, contact support at support@greenroot.in."
   },
   "loading": {
     "generic": "Loading...",
