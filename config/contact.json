@@ -4,12 +4,12 @@
   "responseNote": "We typically respond within 1–2 business days.",
   "officeName": "Greenroot LLP",
   "addressLines": [
-    "25–26, 4th Floor, B-Wing, City Vista",
-    "Downtown Road, Kharadi",
-    "Pune, Maharashtra 411014, India"
+    "Office No. 113, 1st Floor, Mainland Hub",
+    "Above Irani Cafe, Kesnand Road, Wagholi",
+    "Pune, Maharashtra 412207, India"
   ],
-  "mapEmbedUrl": "https://www.google.com/maps?q=City+Vista+Downtown+Road+Kharadi+Pune+411014&hl=en&z=16&output=embed",
-  "mapDirectionsUrl": "https://www.google.com/maps/dir/?api=1&destination=City+Vista+Downtown+Road+Kharadi+Pune+411014",
+  "mapEmbedUrl": "https://www.google.com/maps?q=18.5771658,73.9994695&hl=en&z=17&output=embed",
+  "mapDirectionsUrl": "https://maps.app.goo.gl/2vR1YM7ieTuBCEceA",
   "websiteUrl": "https://greenroot.co.in",
   "whatsapp": {
     "label": "WhatsApp",
