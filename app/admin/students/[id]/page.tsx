@@ -68,8 +68,6 @@ type StudentProfile = {
   branch_specialization?: string
   passport_url?: string
   passport_photo_url?: string
-  aadhar_front_url?: string
-  aadhar_back_url?: string
   pan_url?: string
   driving_license_url?: string
   digital_signature_url?: string
@@ -128,8 +126,6 @@ const DOCUMENT_FIELDS: { key: keyof StudentProfile; label: string }[] = [
   { key: 'profile_photo_url', label: 'Profile Photo' },
   { key: 'passport_url', label: 'Passport Document' },
   { key: 'passport_photo_url', label: 'Passport Photo' },
-  { key: 'aadhar_front_url', label: 'Aadhar Front' },
-  { key: 'aadhar_back_url', label: 'Aadhar Back' },
   { key: 'pan_url', label: 'PAN Card' },
   { key: 'driving_license_url', label: 'Driving License' },
   { key: 'digital_signature_url', label: 'Digital Signature' },

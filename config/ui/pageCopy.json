@@ -136,7 +136,6 @@
         "passportNumber": "Passport Number",
         "passportPdf": "Passport PDF",
         "aadhaarNumber": "Aadhaar Number",
-        "aadhaarPdf": "Aadhaar PDF (Front & Back)",
         "panNumber": "PAN Number",
         "panPdf": "PAN PDF",
         "drivingLicenseNumber": "Driving License Number (Optional)",

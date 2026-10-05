@@ -132,8 +132,6 @@ export async function deleteAccount() {
     .select(`
       passport_url,
       passport_photo_url,
-      aadhar_front_url,
-      aadhar_back_url,
       pan_url,
       driving_license_url,
       digital_signature_url,

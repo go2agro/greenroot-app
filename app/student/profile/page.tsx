@@ -75,8 +75,6 @@ interface ProfileData {
   passport_url?: string
   passport_photo_url?: string
   aadhar_number?: string
-  aadhar_front_url?: string
-  aadhar_back_url?: string
   pan_number?: string
   pan_url?: string
   driving_license_number?: string
@@ -232,7 +230,7 @@ export default function StudentProfile() {
   // Handle document upload
   const performDocumentUpload = async (
     file: File,
-    docType: 'passport' | 'passport_photo' | 'aadhar_front' | 'aadhar_back' | 'pan' | 'driving_license' | 'digital_signature',
+    docType: 'passport' | 'passport_photo' | 'pan' | 'driving_license' | 'digital_signature',
     inputEl?: HTMLInputElement
   ) => {
     setUploadingDoc(docType)
@@ -265,7 +263,7 @@ export default function StudentProfile() {
 
   const handleDocumentUpload = async (
     e: React.ChangeEvent<HTMLInputElement>, 
-    docType: 'passport' | 'passport_photo' | 'aadhar_front' | 'aadhar_back' | 'pan' | 'driving_license' | 'digital_signature'
+    docType: 'passport' | 'passport_photo' | 'pan' | 'driving_license' | 'digital_signature'
   ) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -1179,94 +1177,6 @@ export default function StudentProfile() {
                               className="cursor-pointer text-sm text-gr-primary hover:underline"
                             >
                               {uploadingDoc === 'passport_photo' ? 'Uploading...' : 'Upload Photo'}
-                            </label>
-                          </>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Aadhar Front */}
-                    <div>
-                      <label className="text-sm font-medium text-gray-700 mb-2 block">
-                        Aadhar Front
-                      </label>
-                      <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
-                        studentProfile?.aadhar_front_url 
-                          ? 'bg-green-50 border-green-300' 
-                          : 'bg-gr-input-bg border-gray-300'
-                      }`}>
-                        {studentProfile?.aadhar_front_url ? (
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 flex-1">
-                              <CheckCircle2 className="w-5 h-5 text-green-600" />
-                              <span className="text-sm text-green-700 font-medium">Aadhar Front Uploaded</span>
-                            </div>
-                            <button
-                              onClick={() => handleDeleteDocument('aadhar_front_url')}
-                              className="text-red-500 hover:text-red-700 transition-colors"
-                            >
-                              <Trash2 className="w-5 h-5" />
-                            </button>
-                          </div>
-                        ) : (
-                          <>
-                            <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
-                            <input
-                              type="file"
-                              accept=".jpg,.jpeg,.png,.pdf"
-                              onChange={(e) => handleDocumentUpload(e, 'aadhar_front')}
-                              className="hidden"
-                              id="aadhar-front-upload"
-                            />
-                            <label
-                              htmlFor="aadhar-front-upload"
-                              className="cursor-pointer text-sm text-gr-primary hover:underline"
-                            >
-                              {uploadingDoc === 'aadhar_front' ? 'Uploading...' : 'Upload Aadhar Front'}
-                            </label>
-                          </>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Aadhar Back */}
-                    <div>
-                      <label className="text-sm font-medium text-gray-700 mb-2 block">
-                        Aadhar Back
-                      </label>
-                      <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
-                        studentProfile?.aadhar_back_url 
-                          ? 'bg-green-50 border-green-300' 
-                          : 'bg-gr-input-bg border-gray-300'
-                      }`}>
-                        {studentProfile?.aadhar_back_url ? (
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 flex-1">
-                              <CheckCircle2 className="w-5 h-5 text-green-600" />
-                              <span className="text-sm text-green-700 font-medium">Aadhar Back Uploaded</span>
-                            </div>
-                            <button
-                              onClick={() => handleDeleteDocument('aadhar_back_url')}
-                              className="text-red-500 hover:text-red-700 transition-colors"
-                            >
-                              <Trash2 className="w-5 h-5" />
-                            </button>
-                          </div>
-                        ) : (
-                          <>
-                            <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
-                            <input
-                              type="file"
-                              accept=".jpg,.jpeg,.png,.pdf"
-                              onChange={(e) => handleDocumentUpload(e, 'aadhar_back')}
-                              className="hidden"
-                              id="aadhar-back-upload"
-                            />
-                            <label
-                              htmlFor="aadhar-back-upload"
-                              className="cursor-pointer text-sm text-gr-primary hover:underline"
-                            >
-                              {uploadingDoc === 'aadhar_back' ? 'Uploading...' : 'Upload Aadhar Back'}
                             </label>
                           </>
                         )}

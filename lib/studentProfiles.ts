@@ -46,8 +46,6 @@ export async function createStudentProfile(profileData: {
   degree_name?: string
   branch_specialization?: string
   aadhar_number?: string
-  aadhar_front_url?: string
-  aadhar_back_url?: string
   pan_number?: string
   pan_url?: string
   passport_number?: string
@@ -101,8 +99,6 @@ export async function updateStudentProfile(profileData: {
   degree_name?: string
   branch_specialization?: string
   aadhar_number?: string
-  aadhar_front_url?: string
-  aadhar_back_url?: string
   pan_number?: string
   pan_url?: string
   passport_number?: string
@@ -144,7 +140,6 @@ export async function updateStudentProfile(profileData: {
 export async function uploadStudentDocument(
   file: File,
   documentType: 'passport' | 'passport_photo' | 
-                'aadhar_front' | 'aadhar_back' |
                 'pan' | 'driving_license' | 'digital_signature'
 ) {
   const supabase = await createClient()
