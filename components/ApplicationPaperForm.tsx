@@ -66,6 +66,7 @@ export type ApplicationPaperStudentProfile = {
   passport_url?: string
   passport_photo_url?: string
   pan_url?: string
+  resume_url?: string
   driving_license_url?: string
   digital_signature_url?: string
   profile_photo_url?: string
@@ -135,6 +136,7 @@ export const IDENTITY_DOCUMENTS: {
   { key: 'passport_url', label: 'Passport Document' },
   { key: 'passport_photo_url', label: 'Passport Photo' },
   { key: 'pan_url', label: 'PAN Card' },
+  { key: 'resume_url', label: 'Resume / CV' },
   { key: 'driving_license_url', label: 'Driving License' },
   { key: 'digital_signature_url', label: 'Digital Signature' },
 ]

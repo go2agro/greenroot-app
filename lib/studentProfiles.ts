@@ -57,6 +57,7 @@ export async function createStudentProfile(profileData: {
   driving_license_number?: string
   driving_license_url?: string
   digital_signature_url?: string
+  resume_url?: string
   short_bio?: string
   profile_photo_url?: string
   current_residential_address?: string
@@ -110,6 +111,7 @@ export async function updateStudentProfile(profileData: {
   driving_license_number?: string
   driving_license_url?: string
   digital_signature_url?: string
+  resume_url?: string
   short_bio?: string
   profile_photo_url?: string
   current_residential_address?: string
@@ -140,7 +142,7 @@ export async function updateStudentProfile(profileData: {
 export async function uploadStudentDocument(
   file: File,
   documentType: 'passport' | 'passport_photo' | 
-                'pan' | 'driving_license' | 'digital_signature'
+                'pan' | 'resume' | 'driving_license' | 'digital_signature'
 ) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

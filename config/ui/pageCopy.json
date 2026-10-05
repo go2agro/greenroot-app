@@ -138,6 +138,7 @@
         "aadhaarNumber": "Aadhaar Number",
         "panNumber": "PAN Number",
         "panPdf": "PAN PDF",
+        "resumeCv": "Resume / CV",
         "drivingLicenseNumber": "Driving License Number (Optional)",
         "drivingLicensePdf": "Driving License PDF (Optional)",
         "passportPhoto": "Passport Size Photograph",

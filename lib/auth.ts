@@ -133,6 +133,7 @@ export async function deleteAccount() {
       passport_url,
       passport_photo_url,
       pan_url,
+      resume_url,
       driving_license_url,
       digital_signature_url,
       profile_photo_url

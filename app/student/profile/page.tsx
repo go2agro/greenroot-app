@@ -77,6 +77,7 @@ interface ProfileData {
   aadhar_number?: string
   pan_number?: string
   pan_url?: string
+  resume_url?: string
   driving_license_number?: string
   driving_license_url?: string
   digital_signature_url?: string
@@ -230,7 +231,7 @@ export default function StudentProfile() {
   // Handle document upload
   const performDocumentUpload = async (
     file: File,
-    docType: 'passport' | 'passport_photo' | 'pan' | 'driving_license' | 'digital_signature',
+    docType: 'passport' | 'passport_photo' | 'pan' | 'resume' | 'driving_license' | 'digital_signature',
     inputEl?: HTMLInputElement
   ) => {
     setUploadingDoc(docType)
@@ -263,7 +264,7 @@ export default function StudentProfile() {
 
   const handleDocumentUpload = async (
     e: React.ChangeEvent<HTMLInputElement>, 
-    docType: 'passport' | 'passport_photo' | 'pan' | 'driving_license' | 'digital_signature'
+    docType: 'passport' | 'passport_photo' | 'pan' | 'resume' | 'driving_license' | 'digital_signature'
   ) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -1221,6 +1222,50 @@ export default function StudentProfile() {
                               className="cursor-pointer text-sm text-gr-primary hover:underline"
                             >
                               {uploadingDoc === 'pan' ? 'Uploading...' : 'Upload PAN Card'}
+                            </label>
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Resume / CV */}
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 mb-2 block">
+                        {profileCopy.fields.resumeCv}
+                      </label>
+                      <div className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
+                        studentProfile?.resume_url
+                          ? 'bg-green-50 border-green-300'
+                          : 'bg-gr-input-bg border-gray-300'
+                      }`}>
+                        {studentProfile?.resume_url ? (
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 flex-1">
+                              <CheckCircle2 className="w-5 h-5 text-green-600" />
+                              <span className="text-sm text-green-700 font-medium">Resume / CV Uploaded</span>
+                            </div>
+                            <button
+                              onClick={() => handleDeleteDocument('resume_url')}
+                              className="text-red-500 hover:text-red-700 transition-colors"
+                            >
+                              <Trash2 className="w-5 h-5" />
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
+                            <input
+                              type="file"
+                              accept=".jpg,.jpeg,.png,.pdf"
+                              onChange={(e) => handleDocumentUpload(e, 'resume')}
+                              className="hidden"
+                              id="resume-upload"
+                            />
+                            <label
+                              htmlFor="resume-upload"
+                              className="cursor-pointer text-sm text-gr-primary hover:underline"
+                            >
+                              {uploadingDoc === 'resume' ? 'Uploading...' : profileCopy.uploadButton}
                             </label>
                           </>
                         )}
